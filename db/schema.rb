@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_27_123627) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_27_132259) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_27_123627) do
     t.index ["feed_link"], name: "index_channels_on_feed_link", unique: true
   end
 
+  create_table "items", force: :cascade do |t|
+    t.bigint "channel_id", null: false
+    t.string "guid", limit: 255, null: false
+    t.string "title", limit: 100, null: false
+    t.string "link", limit: 255, null: false
+    t.string "image_url", limit: 255
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_id", "guid"], name: "index_items_on_channel_id_and_guid", unique: true
+    t.index ["channel_id"], name: "index_items_on_channel_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", limit: 15, null: false
     t.string "email", limit: 319, null: false
@@ -33,4 +45,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_27_123627) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "items", "channels"
 end
