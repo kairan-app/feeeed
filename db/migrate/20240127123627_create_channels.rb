@@ -5,7 +5,7 @@ class CreateChannels < ActiveRecord::Migration[7.1]
       t.string :description, limit: 255
       t.string :site_link, null: false, limit: 255
       t.string :feed_link, null: false, limit: 255
-      t.string :image_url, null: false, limit: 255
+      t.string :image_url, limit: 255
 
       t.timestamps
     end
