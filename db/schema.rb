@@ -19,7 +19,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_27_132259) do
     t.string "description", limit: 255
     t.string "site_link", limit: 255, null: false
     t.string "feed_link", limit: 255, null: false
-    t.string "image_url", limit: 255, null: false
+    t.string "image_url", limit: 255
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feed_link"], name: "index_channels_on_feed_link", unique: true
