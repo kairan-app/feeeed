@@ -106,6 +106,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
+    feedbag (1.0.0)
+      nokogiri (~> 1.8, >= 1.8.2)
     feedjira (3.2.2)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
@@ -267,6 +269,7 @@ DEPENDENCIES
   capybara
   debug
   faraday
+  feedbag
   feedjira
   importmap-rails
   jbuilder

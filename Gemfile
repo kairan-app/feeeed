@@ -6,6 +6,7 @@ gem "rails", "~> 7.1.3"
 
 gem "bootsnap", require: false
 gem "faraday"
+gem "feedbag"
 gem "feedjira"
 gem "importmap-rails"
 gem "jbuilder"
