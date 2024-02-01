@@ -31,3 +31,9 @@ table {
     }
   }
 }
+
+form {
+  input[type="text"] {
+    width: 50%;
+  }
+}
