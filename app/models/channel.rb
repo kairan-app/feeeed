@@ -35,29 +35,26 @@ class Channel < ApplicationRecord
     end
 
     def build_from_rss(feed)
-      p "save_from_rss"
       og = OpenGraph.new(feed.url)
       {
         title: feed.title,
         description: feed.description,
         site_link: feed.url,
-        image_url: og.images.first,
+        image_url: og.image,
       }
     end
 
     def build_from_atom(feed)
-      p "save_from_atom"
       og = OpenGraph.new(feed.url)
       {
         title: feed.title,
         description: feed.description,
         site_link: feed.links.first,
-        image_url: og.images.first,
+        image_url: og.image,
       }
     end
 
     def build_from_itunes_rss(feed)
-      p "save_from_itunes_rss"
       {
         title: feed.title,
         description: feed.description,
@@ -67,10 +64,12 @@ class Channel < ApplicationRecord
     end
 
     def build_from_atom_youtube(feed)
-      p "save_from_atom_youtube"
+      og = OpenGraph.new(feed.url)
       {
         title: feed.title,
+        description: og.description,
         site_link: feed.url,
+        image_url: og.image,
       }
     end
   end

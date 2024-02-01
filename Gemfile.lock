@@ -164,9 +164,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
-    opengraph_parser (0.2.5)
-      addressable
-      nokogiri
     pg (1.5.4)
     psych (5.1.2)
       stringio
@@ -276,7 +273,6 @@ DEPENDENCIES
   feedjira
   importmap-rails
   jbuilder
-  opengraph_parser
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.3)

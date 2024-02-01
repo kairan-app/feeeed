@@ -10,7 +10,7 @@
   <% @channels.each do |channel| %>
   <tr>
     <td><%= channel.title %></td>
-    <td><%= channel.description[0..300] %></td>
+    <td><%= channel.description.to_s[0..300] %></td>
     <td>
       <ul>
         <li><%= link_to("Site", channel.site_link) %></li>
