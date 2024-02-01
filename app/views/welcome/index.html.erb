@@ -1,1 +1,27 @@
-welcome#index
+<h2>Channels</h2>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Links</th>
+    <th>Image</th>
+  </tr>
+  <% @channels.each do |channel| %>
+  <tr>
+    <td><%= channel.title %></td>
+    <td><%= channel.description.to_s[0..300] %></td>
+    <td>
+      <ul>
+        <li><%= link_to("Site", channel.site_link) %></li>
+        <li><%= link_to("Feed", channel.feed_link) %></li>
+      </ul>
+    </td>
+    <td style="width: 100px; height: 100px;">
+      <% if channel.image_url %>
+      <%= image_tag(channel.image_url, width: "100%", height: "100%") %>
+      <% end %>
+    </td>
+  </tr>
+  <% end%>
+</table>

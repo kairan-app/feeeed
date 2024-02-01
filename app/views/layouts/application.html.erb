@@ -14,6 +14,7 @@
     <header>
       <h1><%= link_to("Feeeed!", root_path) %></h1>
     </header>
+    <%= render(partial: "channels/form") %>
     <%= yield %>
   </body>
 </html>
