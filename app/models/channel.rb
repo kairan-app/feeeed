@@ -1,11 +1,11 @@
 class Channel < ApplicationRecord
   has_many :items, dependent: :destroy
 
-  validates :title, presence: true, length: { maximum: 100 }
-  validates :description, length: { maximum: 255 }
-  validates :site_link, presence: true, length: { maximum: 255 }
-  validates :feed_link, presence: true, length: { maximum: 255 }, uniqueness: true
-  validates :image_url, length: { maximum: 255 }
+  validates :title, presence: true, length: { maximum: 256 }
+  validates :description, length: { maximum: 1024 }
+  validates :site_url, presence: true, length: { maximum: 2083 }
+  validates :feed_url, presence: true, length: { maximum: 2083 }, uniqueness: true
+  validates :image_url, length: { maximum: 2083 }
 
   class << self
     def add(url)
@@ -31,7 +31,7 @@ class Channel < ApplicationRecord
           build_from_atom_youtube(feed)
         end
 
-      Channel.find_or_initialize_by(feed_link: feed_url).update(parameters)
+      Channel.find_or_initialize_by(feed_url: feed_url).update(parameters)
     end
 
     def build_from_rss(feed)
@@ -39,7 +39,7 @@ class Channel < ApplicationRecord
       {
         title: feed.title,
         description: feed.description,
-        site_link: feed.url,
+        site_url: feed.url,
         image_url: og.image,
       }
     end
@@ -49,7 +49,7 @@ class Channel < ApplicationRecord
       {
         title: feed.title,
         description: feed.description,
-        site_link: feed.links.first,
+        site_url: feed.links.first,
         image_url: og.image,
       }
     end
@@ -58,7 +58,7 @@ class Channel < ApplicationRecord
       {
         title: feed.title,
         description: feed.description,
-        site_link: feed.url,
+        site_url: feed.url,
         image_url: feed.itunes_image,
       }
     end
@@ -68,7 +68,7 @@ class Channel < ApplicationRecord
       {
         title: feed.title,
         description: og.description,
-        site_link: feed.url,
+        site_url: feed.url,
         image_url: og.image,
       }
     end

@@ -4,7 +4,7 @@
   <tr>
     <th>Title</th>
     <th>Description</th>
-    <th>Links</th>
+    <th>URLs</th>
     <th>Image</th>
   </tr>
   <% @channels.each do |channel| %>
@@ -13,8 +13,8 @@
     <td><%= channel.description.to_s[0..300] %></td>
     <td>
       <ul>
-        <li><%= link_to("Site", channel.site_link) %></li>
-        <li><%= link_to("Feed", channel.feed_link) %></li>
+        <li><%= link_to("Site", channel.site_url) %></li>
+        <li><%= link_to("Feed", channel.feed_url) %></li>
       </ul>
     </td>
     <td style="width: 100px; height: 100px;">
