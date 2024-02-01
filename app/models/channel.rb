@@ -13,11 +13,12 @@ class Channel < ApplicationRecord
 
       return nil if feed_url.nil?
 
-      feed = Feedjira.parse(Faraday.get(feed_url).body)
-      save_from(feed, feed_url)
+      save_from(feed_url)
     end
 
-    def save_from(feed, feed_url)
+    def save_from(feed_url)
+      feed = Feedjira.parse(Faraday.get(feed_url).body)
+
       parameters =
         case feed
         when Feedjira::Parser::RSS
@@ -30,7 +31,7 @@ class Channel < ApplicationRecord
           build_from_atom_youtube(feed)
         end
 
-      Channel.create(parameters.merge(feed_link: feed_url))
+      Channel.find_or_initialize_by(feed_link: feed_url).update(parameters)
     end
 
     def build_from_rss(feed)
