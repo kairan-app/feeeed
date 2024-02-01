@@ -15,32 +15,35 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_27_132259) do
   enable_extension "plpgsql"
 
   create_table "channels", force: :cascade do |t|
-    t.string "title", limit: 100, null: false
-    t.string "description", limit: 255
-    t.string "site_link", limit: 255, null: false
-    t.string "feed_link", limit: 255, null: false
-    t.string "image_url", limit: 255
+    t.string "title", limit: 256, null: false
+    t.string "description", limit: 1024
+    t.string "site_url", limit: 2083, null: false
+    t.string "feed_url", limit: 2083, null: false
+    t.string "image_url", limit: 2083
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["feed_link"], name: "index_channels_on_feed_link", unique: true
+    t.index ["feed_url"], name: "index_channels_on_feed_url", unique: true
+    t.index ["site_url"], name: "index_channels_on_site_url"
   end
 
   create_table "items", force: :cascade do |t|
     t.bigint "channel_id", null: false
-    t.string "guid", limit: 255, null: false
-    t.string "title", limit: 100, null: false
-    t.string "link", limit: 255, null: false
-    t.string "image_url", limit: 255
+    t.string "guid", limit: 256, null: false
+    t.string "title", limit: 256, null: false
+    t.string "url", limit: 2083, null: false
+    t.string "image_url", limit: 2083
+    t.datetime "published_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_id", "guid"], name: "index_items_on_channel_id_and_guid", unique: true
     t.index ["channel_id"], name: "index_items_on_channel_id"
+    t.index ["published_at"], name: "index_items_on_published_at"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "name", limit: 15, null: false
-    t.string "email", limit: 319, null: false
-    t.string "icon_url", limit: 255, null: false
+    t.string "email", limit: 254, null: false
+    t.string "icon_url", limit: 2083, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
