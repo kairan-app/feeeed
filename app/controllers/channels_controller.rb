@@ -8,4 +8,9 @@ class ChannelsController < ApplicationController
 
     redirect_to root_path
   end
+
+  def show
+    @channel = Channel.find(params[:channel_id])
+    @items = @channel.items.order(published_at: :desc)
+  end
 end

@@ -73,4 +73,26 @@ class Channel < ApplicationRecord
       }
     end
   end
+
+  def fetch_and_save_items
+    feed = Feedjira.parse(Faraday.get(feed_url).body)
+
+    items_parameters =
+      feed.entries.map do |entry|
+        og = OpenGraph.new(entry.url)
+        {
+          guid: entry.entry_id,
+          title: entry.title,
+          url: entry.url,
+          image_url: og.image,
+          published_at: entry.published,
+        }
+      end
+
+    items_parameters.sort_by { |item|
+      item[:published_at]
+    }.each { |parameters|
+      self.items.find_or_initialize_by(guid: parameters[:guid]).update(parameters)
+    }
+  end
 end
