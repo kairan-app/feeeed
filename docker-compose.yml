@@ -25,6 +25,17 @@ services:
       - 6379:6379
     volumes:
       - redis:/data
+  sidekiq:
+    build: .
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - database
+      - redis
+    command: bundle exec sidekiq
 volumes:
   redis:
   bundle:
