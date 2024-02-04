@@ -7,6 +7,8 @@ class Channel < ApplicationRecord
   validates :feed_url, presence: true, length: { maximum: 2083 }, uniqueness: true
   validates :image_url, length: { maximum: 2083 }
 
+  after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
+
   class << self
     def add(url)
       feed_url = Feedbag.find(url).first
@@ -86,8 +88,7 @@ class Channel < ApplicationRecord
 
     items_parameters =
       entries.map do |entry|
-        p "Fetching:"
-        p [entry.published, entry.title, entry.url]
+        p ["Fetching", entry.published, entry.title, entry.url]
         og = OpenGraph.new(entry.url)
         {
           guid: entry.entry_id,
