@@ -12,6 +12,7 @@ gem "importmap-rails"
 gem "jbuilder"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
+gem "sidekiq", "= 6.5.12"
 gem "sprockets-rails"
 gem "stimulus-rails"
 gem "turbo-rails"
@@ -23,6 +24,7 @@ group :development, :test do
 end
 
 group :development do
+  gem "dotenv-rails"
   gem "web-console"
 end
 
