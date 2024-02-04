@@ -74,11 +74,20 @@ class Channel < ApplicationRecord
     end
   end
 
-  def fetch_and_save_items
+  def fetch_and_save_items(mode = :only_new)
     feed = Feedjira.parse(Faraday.get(feed_url).body)
 
+    entries =
+      if mode == :only_new
+        feed.entries.reject { self.items.exists?(guid: _1.entry_id) }
+      else
+        feed.entries
+      end
+
     items_parameters =
-      feed.entries.map do |entry|
+      entries.map do |entry|
+        p "Fetching:"
+        p [entry.published, entry.title, entry.url]
         og = OpenGraph.new(entry.url)
         {
           guid: entry.entry_id,
