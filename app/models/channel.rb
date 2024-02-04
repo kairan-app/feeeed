@@ -90,23 +90,20 @@ class Channel < ApplicationRecord
         feed.entries
       end
 
-    items_parameters =
-      entries.map do |entry|
-        p ["Fetching", entry.published, entry.title, entry.url]
-        og = OpenGraph.new(entry.url)
-        {
-          guid: entry.entry_id,
-          title: entry.title,
-          url: entry.url,
-          image_url: og.image,
-          published_at: entry.published,
-        }
-      end
+    entries.sort_by(&:published).each do |entry|
+      p ["Fetching", entry.published, entry.title, entry.url]
 
-    items_parameters.sort_by { |item|
-      item[:published_at]
-    }.each { |parameters|
+      sleep 3
+
+      og = OpenGraph.new(entry.url)
+      parameters = {
+        guid: entry.entry_id,
+        title: entry.title,
+        url: entry.url,
+        image_url: og.image,
+        published_at: entry.published,
+      }
       self.items.find_or_initialize_by(guid: parameters[:guid]).update(parameters)
-    }
+    end
   end
 end
