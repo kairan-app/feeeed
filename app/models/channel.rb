@@ -10,6 +10,10 @@ class Channel < ApplicationRecord
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   class << self
+    def fetch_and_save_items
+      find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
+    end
+
     def add(url)
       feed_url = Feedbag.find(url).first
 
