@@ -3,10 +3,9 @@ class ItemCreationNotifierJob < ApplicationJob
 
   def perform(item_id)
     item = Item.find(item_id)
+    channel = item.channel
 
-    # 同じChannelの直近のItemが3分以内に通知されていたら通知しない
-    prev_notified_at = item.channel.items.where.not(id: item.id).order(id: :desc).first&.created_at
-    return if prev_notified_at && prev_notified_at > 3.minute.ago
+    return unless should_notify?(item)
 
     Faraday.post(
       ENV["DISCORD_WEBHOOK_URL"], {
@@ -14,5 +13,18 @@ class ItemCreationNotifierJob < ApplicationJob
       }.to_json,
       "Content-Type" => "application/json"
     )
+  end
+
+  def should_notify?(item)
+    channel = item.channel
+
+    # Channel作成から一定以上の時間が経過しているものは、新着検知されたItemとみなして通知する
+    return true if item.channel.created_at < 10.minutes.ago
+
+    # Channel作成時に一括でItemが保存されるときは、最新のItemをひとつだけ通知する
+    feed = Feedjira.parse(Faraday.get(channel.feed_url).body)
+    return true if item.guid == feed.entries.sort_by(&:published).last.entry_id
+
+    false
   end
 end
