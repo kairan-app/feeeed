@@ -8,6 +8,7 @@ gem "bootsnap", require: false
 gem "faraday"
 gem "feedbag"
 gem "feedjira"
+gem "googleauth"
 gem "importmap-rails"
 gem "jbuilder"
 gem "pg", "~> 1.1"
