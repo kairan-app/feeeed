@@ -19,7 +19,7 @@ class ItemCreationNotifierJob < ApplicationJob
     channel = item.channel
 
     # Channel作成から一定以上の時間が経過しているものは、新着検知されたItemとみなして通知する
-    return true if item.channel.created_at < 10.minutes.ago
+    return true if item.channel.created_at < 1.hour.ago
 
     # Channel作成時に一括でItemが保存されるときは、最新のItemをひとつだけ通知する
     feed = Feedjira.parse(Faraday.get(channel.feed_url).body)
