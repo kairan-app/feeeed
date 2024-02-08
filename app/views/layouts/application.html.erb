@@ -15,6 +15,7 @@
       <h1><%= link_to("Feeeed!", root_path) %></h1>
     </header>
     <%= render(partial: "channels/form") %>
+    <%= render(partial: "layouts/google_login") %>
     <%= yield %>
   </body>
 </html>

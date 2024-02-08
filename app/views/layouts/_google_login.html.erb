@@ -1,0 +1,25 @@
+<% if logged_in? %>
+
+<p>
+  <%= image_tag(current_user.icon_url, size: "24x24", style: "border-radius: 50%; vertical-align: top;") %>
+  <%= link_to("Log out", session_path, data: { turbo_method: :delete }, style: "display: inline-block; line-height: 24px;") %>
+</p>
+
+<% else %>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<div id="g_id_onload"
+   data-client_id="<%= Rails.application.credentials.google_auth_app.client_id %>"
+   data-login_uri="<%= Rails.application.credentials.google_auth_app.host %>/google_auth_callback"
+   data-auto_prompt="false">
+</div>
+<div class="g_id_signin button p-0"
+   data-type="standard"
+   data-size="large"
+   data-theme="outline"
+   data-text="sign_in_with"
+   data-shape="rectangular"
+   data-logo_alignment="left">
+</div>
+
+<% end %>
