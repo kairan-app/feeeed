@@ -9,8 +9,11 @@ Rails.application.routes.draw do
   post "/google_auth_callback", to: "sessions#create"
   delete "/session", to: "sessions#destroy", as: "session"
 
+  get "channels", to: "channels#index"
   post "channels", to: "channels#create"
   get "channels/:channel_id", to: "channels#show", as: "channel"
+
+  get "items", to: "items#index"
 
   root "welcome#index"
 end
