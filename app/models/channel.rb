@@ -1,5 +1,7 @@
 class Channel < ApplicationRecord
   has_many :items, dependent: :destroy
+  has_many :ownerships, dependent: :destroy
+  has_many :owners, through: :ownerships, source: :user
 
   validates :title, presence: true, length: { maximum: 256 }
   validates :description, length: { maximum: 1024 }
@@ -105,5 +107,9 @@ class Channel < ApplicationRecord
       }
       self.items.find_or_initialize_by(guid: parameters[:guid]).update(parameters)
     end
+  end
+
+  def owned_by?(user)
+    self.owners.exists?(id: user.id)
   end
 end

@@ -1,0 +1,7 @@
+<% if logged_in? %>
+  <% if channel.owned_by?(current_user) %>
+    <%= link_to("Remove from my own", channel_ownership_path(channel), data: { turbo_method: :delete }) %>
+  <% else %>
+    <%= link_to("Add to my own", channel_ownership_path(channel), data: { turbo_method: :post }) %>
+  <% end %>
+<% end %>
