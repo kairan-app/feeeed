@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   get "items", to: "items#index"
 
-  get "/@:user_name", to: "users#show", as: "user"
+  get "/@:user_name", to: "users#show", as: "user", constraints: { user_name: /[^\/]+/ }
 
   root "welcome#index"
 end
