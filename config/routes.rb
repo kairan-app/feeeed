@@ -18,5 +18,7 @@ Rails.application.routes.draw do
 
   get "items", to: "items#index"
 
+  get "/@:user_name", to: "users#show", as: "user"
+
   root "welcome#index"
 end
