@@ -1,4 +1,15 @@
 class ChannelsController < ApplicationController
+  before_action :login_required, only: %i[create]
+
+  def index
+    @channels = Channel.order(id: :desc).page(params[:page])
+  end
+
+  def show
+    @channel = Channel.find(params[:channel_id])
+    @items = @channel.items.order(published_at: :desc)
+  end
+
   def create
     if Channel.add(params[:url])
       flash[:notice] = "Channel added successfully"
@@ -7,10 +18,5 @@ class ChannelsController < ApplicationController
     end
 
     redirect_to root_path
-  end
-
-  def show
-    @channel = Channel.find(params[:channel_id])
-    @items = @channel.items.order(published_at: :desc)
   end
 end
