@@ -6,7 +6,12 @@
   </tr>
   <% items.each do |item| %>
     <tr>
-      <td><%= link_to(item.title, item.url) %></td>
+      <td>
+        <% if with_channel %>
+        <%= link_to(item.channel.title, item.channel) %><br>
+        <% end %>
+        <%= link_to(item.title, item.url) %>
+      </td>
       <td><%= item.published_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
       <td style="width: 100px; height: 100px;">
         <%= image_tag(item.image_url, width: "100%", height: "100%") if item.image_url %>
