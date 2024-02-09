@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   post "channels", to: "channels#create"
   get "channels/:channel_id", to: "channels#show", as: "channel"
 
+  post "channels/:channel_id/ownership", to: "ownerships#create", as: "channel_ownership"
+  delete "channels/:channel_id/ownership", to: "ownerships#destroy"
+
   get "items", to: "items#index"
 
   root "welcome#index"

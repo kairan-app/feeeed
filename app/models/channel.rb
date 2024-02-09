@@ -108,4 +108,8 @@ class Channel < ApplicationRecord
       self.items.find_or_initialize_by(guid: parameters[:guid]).update(parameters)
     end
   end
+
+  def owned_by?(user)
+    self.owners.exists?(id: user.id)
+  end
 end
