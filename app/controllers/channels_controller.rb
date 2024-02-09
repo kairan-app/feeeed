@@ -1,4 +1,6 @@
 class ChannelsController < ApplicationController
+  before_action :login_required, only: %i[create]
+
   def index
     @channels = Channel.order(id: :desc).page(params[:page])
   end
