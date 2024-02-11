@@ -2,6 +2,7 @@ class Channel < ApplicationRecord
   has_many :items, dependent: :destroy
   has_many :ownerships, dependent: :destroy
   has_many :owners, through: :ownerships, source: :user
+  has_one :stopper, class_name: "ChannelStopper", dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 256 }
   validates :description, length: { maximum: 1024 }
@@ -11,9 +12,11 @@ class Channel < ApplicationRecord
 
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
+  scope :not_stopped, -> { where.missing(:stopper) }
+
   class << self
     def fetch_and_save_items
-      find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
+      not_stopped.find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
     end
 
     def add(url)

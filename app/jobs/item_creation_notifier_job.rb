@@ -2,13 +2,16 @@ class ItemCreationNotifierJob < ApplicationJob
   queue_as :default
 
   def perform(item_id)
+    webhook_url = ENV["DISCORD_WEBHOOK_URL"]
+    return if webhook_url.nil?
+
     item = Item.find(item_id)
     channel = item.channel
 
     return unless should_notify?(item)
 
     Faraday.post(
-      ENV["DISCORD_WEBHOOK_URL"], {
+      webhook_url, {
         content: "[#{Rails.env}] New item created #{item.url}"
       }.to_json,
       "Content-Type" => "application/json"
