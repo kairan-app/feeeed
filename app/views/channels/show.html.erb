@@ -10,6 +10,9 @@
 <p>
   <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
 </p>
+<p>
+  <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
+</p>
 
 <% if @channel.stopper %>
   <p style="padding: 20px; background-color: #ffdf89; color: #946c00;">

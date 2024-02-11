@@ -15,4 +15,12 @@ class User < ApplicationRecord
   def remove_channel(channel)
     owned_channels.delete(channel)
   end
+
+  def subscribe(channel)
+    subscribed_channels << channel
+  end
+
+  def unsubscribe(channel)
+    subscribed_channels.delete(channel)
+  end
 end

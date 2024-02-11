@@ -117,4 +117,8 @@ class Channel < ApplicationRecord
   def owned_by?(user)
     self.owners.exists?(id: user.id)
   end
+
+  def subscribed_by?(user)
+    self.subscribers.exists?(id: user.id)
+  end
 end
