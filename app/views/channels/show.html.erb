@@ -11,4 +11,10 @@
   <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
 </p>
 
+<% if @channel.stopper %>
+  <p style="padding: 20px; background-color: #ffdf89; color: #946c00;">
+    This channel has stopped updating
+  </p>
+<% end %>
+
 <%= render(partial: "items/table", locals: { items: @items, with_channel: false }) %>
