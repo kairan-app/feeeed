@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_09_091553) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_11_092319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "channel_stoppers", force: :cascade do |t|
+    t.bigint "channel_id", null: false
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_id"], name: "index_channel_stoppers_on_channel_id", unique: true
+  end
 
   create_table "channels", force: :cascade do |t|
     t.string "title", limit: 256, null: false
@@ -58,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_09_091553) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "channel_stoppers", "channels"
   add_foreign_key "items", "channels"
   add_foreign_key "ownerships", "channels"
   add_foreign_key "ownerships", "users"
