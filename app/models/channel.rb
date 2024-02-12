@@ -121,4 +121,8 @@ class Channel < ApplicationRecord
   def subscribed_by?(user)
     self.subscribers.exists?(id: user.id)
   end
+
+  def favicon_url
+    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(site_url).host}"
+  end
 end
