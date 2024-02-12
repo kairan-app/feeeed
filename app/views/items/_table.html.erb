@@ -8,6 +8,7 @@
     <tr>
       <td>
         <% if with_channel %>
+        <%= image_tag(item.channel.favicon_url, size: "16x16") %>
         <%= link_to(item.channel.title, item.channel) %><br>
         <% end %>
         <%= link_to(item.title, item.url) %>
