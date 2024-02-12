@@ -16,12 +16,15 @@ class ChannelsController < ApplicationController
   end
 
   def create
-    if Channel.add(params[:url])
-      flash[:notice] = "Channel added successfully"
-    else
-      flash[:alert] = "Channel could not be added"
-    end
+    url = params[:url]
 
-    redirect_to root_path
+    if channel = Channel.add(url)
+      flash[:notice] = "Channel added successfully"
+      redirect_to channel
+    else
+      flash[:alert] = "Can't find feed from '#{url}'"
+
+      redirect_to root_path
+    end
   end
 end
