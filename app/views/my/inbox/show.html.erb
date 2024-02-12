@@ -1,0 +1,6 @@
+<section>
+  <h2>Inbox</h2>
+  <%= paginate(@items) %>
+  <%= render(partial: "items/table", locals: { items: @items, with_channel: true }) %>
+  <%= paginate(@items) %>
+</section>

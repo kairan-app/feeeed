@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :owned_channels, through: :ownerships, source: :channel
   has_many :subscriptions, dependent: :destroy
   has_many :subscribed_channels, through: :subscriptions, source: :channel
+  has_many :subscribed_items, through: :subscribed_channels, source: :items
 
   validates :name, presence: true, length: { in: 2..15 }
   validates :email, presence: true, length: { maximum: 254 }
