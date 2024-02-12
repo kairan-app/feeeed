@@ -44,7 +44,9 @@ class Channel < ApplicationRecord
           build_from_atom_youtube(feed)
         end
 
-      Channel.find_or_initialize_by(feed_url: feed_url).update(parameters)
+      channel = Channel.find_or_initialize_by(feed_url: feed_url)
+      channel.update(parameters)
+      channel
     end
 
     def build_from_rss(feed)

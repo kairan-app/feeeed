@@ -14,8 +14,10 @@
     <header>
       <h1><%= link_to("Feeeed!", root_path) %></h1>
     </header>
-    <%= render(partial: "channels/form") %>
     <%= render(partial: "layouts/google_login") %>
+    <%= render(partial: "layouts/menu") %>
+    <%= render(partial: "channels/form") %>
+    <%= render(partial: "layouts/flash_messages") %>
     <%= yield %>
   </body>
 </html>
