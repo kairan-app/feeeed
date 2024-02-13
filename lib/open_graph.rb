@@ -7,9 +7,16 @@ class OpenGraph
   end
 
   def fetch_and_parse
-    @html = Nokogiri::HTML(Faraday.get(@url).body)
+    uri = URI.parse(@url)
+    connection = Faraday.new(uri) do |c|
+      c.use FaradayMiddleware::FollowRedirects
+    end
+
+    @html = Nokogiri::HTML(connection.get(uri.path).body)
     @title = @html.css("title").text
-    @description = @html.css("meta[name='description']").first&.attributes&.dig("content")&.value
-    @image = @html.css("meta[property='og:image']").first&.attributes&.dig("content")&.value
+
+    metas = @html.css("meta")
+    @description = metas.find { |m| m.attributes.find { |a| a[1].value == "og:description" } }&.attributes.dig("content")&.value
+    @image = metas.find { |m| m.attributes.find { |a| a[1].value == "og:image" } }&.attributes.dig("content")&.value
   end
 end

@@ -100,9 +100,9 @@ class Channel < ApplicationRecord
       end
 
     entries.sort_by(&:published).each do |entry|
-      p ["Fetching", entry.published, entry.title, entry.url]
+      sleep 2
 
-      sleep 3
+      p ["Fetching", entry.published, entry.title, entry.url]
 
       og = OpenGraph.new(entry.url)
       parameters = {
