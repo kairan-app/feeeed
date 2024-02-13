@@ -6,6 +6,7 @@ gem "rails", "~> 7.1.3"
 
 gem "bootsnap", require: false
 gem "faraday"
+gem "faraday_middleware"
 gem "feedbag"
 gem "feedjira"
 gem "googleauth"

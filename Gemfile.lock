@@ -103,10 +103,11 @@ GEM
     drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
-    faraday (2.9.0)
-      faraday-net_http (>= 2.0, < 3.2)
-    faraday-net_http (3.1.0)
-      net-http
+    faraday (1.2.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords
+    faraday_middleware (1.2.0)
+      faraday (~> 1.0)
     feedbag (1.0.0)
       nokogiri (~> 1.8, >= 1.8.2)
     feedjira (3.2.2)
@@ -163,9 +164,8 @@ GEM
     minitest (5.22.2)
     msgpack (1.7.2)
     multi_json (1.15.0)
+    multipart-post (2.4.0)
     mutex_m (0.2.0)
-    net-http (0.4.1)
-      uri
     net-imap (0.4.9.1)
       date
       net-protocol
@@ -283,7 +283,6 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uri (0.13.0)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -312,6 +311,7 @@ DEPENDENCIES
   debug
   dotenv
   faraday
+  faraday_middleware
   feedbag
   feedjira
   googleauth
