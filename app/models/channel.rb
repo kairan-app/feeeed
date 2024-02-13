@@ -127,4 +127,8 @@ class Channel < ApplicationRecord
   def favicon_url
     "https://www.google.com/s2/favicons?domain_url=#{URI.parse(site_url).host}"
   end
+
+  def image_url_or_placeholder
+    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{self.title}"
+  end
 end
