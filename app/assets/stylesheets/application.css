@@ -18,6 +18,52 @@ body {
   background-color: #feeeed;
 }
 
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #feeeed;
+  margin: 0;
+  padding: 10px 20px;
+  margin-bottom: 0px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.google_login {
+  position: absolute;
+  right: 20px;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 69px 0 0;
+  padding: 0;
+  width: 100%;
+}
+
+aside{
+  width: 240px;
+}
+
+.main {
+  width: calc(100% - 240px);
+}
+
+.channel-form {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 10px 20px;
+  background-color: #d9adaa;
+} 
+
 table {
   tr {
     td {
@@ -34,6 +80,11 @@ table {
 
 form {
   input[type="text"] {
+    margin: 0 0 0 25%;
     width: 50%;
   }
+}
+
+img {
+  display: inline-block;
 }
