@@ -41,7 +41,7 @@ header {
 .wrapper {
   display: flex;
   flex-wrap: wrap;
-  margin: 69px 0 0;
+  margin: 69px 0;
   padding: 0;
   width: 100%;
 }
@@ -80,16 +80,16 @@ aside{
 }
 
 .channel-card{
-  width: 240px;
+  width: 210px;
   img {
-    height: 240px;
+    height: 210px;
   }
 }
 
 .item-card{
-  width: 300px;
+  width: 270px;
   img {
-    height: 200px;
+    height: 180px;
   }
 }
 
