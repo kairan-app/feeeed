@@ -3,7 +3,7 @@
   <p>
     <%= link_to("All items", items_path) %>
   </p>
-  <%= render(partial: "items/table", locals: { items: @items, with_channel: true }) %>
+  <%= render(partial: "items/cards", locals: { items: @items, with_channel: true }) %>
 </section>
 
 <section>
@@ -11,5 +11,5 @@
   <p>
     <%= link_to("All channels", channels_path) %>
   </p>
-  <%= render(partial: "channels/table", locals: { channels: @channels }) %>
+  <%= render(partial: "channels/cards", locals: { channels: @channels }) %>
 </section>

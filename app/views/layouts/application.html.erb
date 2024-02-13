@@ -6,6 +6,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= favicon_link_tag "square.png" %>
+    <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -13,11 +14,25 @@
   <body>
     <header>
       <h1><%= link_to("Feeeed!", root_path) %></h1>
+      <div class="google-login">
+        <%= render(partial: "layouts/google_login") %>
+      </div>
+      <div class="channel-form">
+        <%= render(partial: "channels/form") %>
+      </div>
+      <div class="flash-messages">
+        <%= render(partial: "layouts/flash_messages") %>
+      </div>
     </header>
-    <%= render(partial: "layouts/google_login") %>
-    <%= render(partial: "layouts/menu") %>
-    <%= render(partial: "channels/form") %>
-    <%= render(partial: "layouts/flash_messages") %>
-    <%= yield %>
+    <div class="wrapper">
+      <aside>
+        <nav>
+          <%= render(partial: "layouts/menu") %>
+        </nav>
+      </aside>
+      <div class="main">
+        <%= yield %>
+      </div>
+    </div>
   </body>
 </html>

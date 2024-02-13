@@ -18,22 +18,106 @@ body {
   background-color: #feeeed;
 }
 
-table {
-  tr {
-    td {
-      padding: 5px 10px;
-      border: 1px solid #fff;
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #feeeed;
+  margin: 0;
+  padding: 10px 20px;
+  margin-bottom: 0px;
+  border-bottom: 1px solid #e0e0e0;
+}
 
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-    }
+.google-login {
+  position: absolute;
+  right: 20px;
+}
+
+.channel-form {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 10px 20px;
+  background-color: #d9adaa;
+}
+
+.flash-messages {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: #ffff;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 69px 0;
+  padding: 0;
+  width: 100%;
+}
+
+aside {
+  width: 240px;
+}
+
+.main {
+  width: calc(100% - 240px);
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.card {
+  margin: 0 15px 15px 0;
+
+  img {
+    background-color: #ffffff;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+.channel-card {
+  width: 210px;
+
+  img {
+    height: 210px;
+  }
+}
+
+.item-card {
+  width: 270px;
+
+  img {
+    height: 180px;
+  }
+}
+
+.card-title, .card-channel {
+  img {
+    width: 16px;
+    height: auto;
   }
 }
 
 form {
   input[type="text"] {
+    margin: 0 0 0 25%;
     width: 50%;
   }
+}
+
+img {
+  display: inline-block;
 }

@@ -4,7 +4,7 @@
 </p>
 
 <h3>Owned Channels</h3>
-<%= render(partial: "channels/table", locals: { channels: @owned_channels }) %>
+<%= render(partial: "channels/cards", locals: { channels: @owned_channels }) %>
 
 <h3>Subscribed Channels</h3>
-<%= render(partial: "channels/table", locals: { channels: @subscribed_channels }) %>
+<%= render(partial: "channels/cards", locals: { channels: @subscribed_channels }) %>

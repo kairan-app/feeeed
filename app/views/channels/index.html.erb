@@ -1,6 +1,6 @@
 <section>
   <h2>Channels</h2>
   <%= paginate(@channels) %>
-  <%= render(partial: "channels/table", locals: { channels: @channels }) %>
+  <%= render(partial: "channels/cards", locals: { channels: @channels }) %>
   <%= paginate(@channels) %>
 </section>
