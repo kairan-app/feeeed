@@ -111,20 +111,6 @@ aside {
   }
 }
 
-table {
-  tr {
-    td {
-      padding: 5px 10px;
-      border: 1px solid #fff;
-
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-    }
-  }
-}
-
 form {
   input[type="text"] {
     margin: 0 0 0 25%;
