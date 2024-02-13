@@ -62,7 +62,36 @@ aside{
   margin: 0;
   padding: 10px 20px;
   background-color: #d9adaa;
-} 
+}
+
+.cards{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.card{
+  margin: 0 15px 15px 0;
+  img {
+    background-color: #ffffff;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+.channel-card{
+  width: 240px;
+  img {
+    height: 240px;
+  }
+}
+
+.card-title, .card-channel{
+  img {
+    width: 16px;
+    height: auto;
+  }
+}
 
 table {
   tr {
