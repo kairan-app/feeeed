@@ -16,7 +16,7 @@ class OpenGraph
     @title = @html.css("title").text
 
     metas = @html.css("meta")
-    @description = metas.find { |m| m.attributes.find { |a| a[1].value == "og:description" } }&.attributes.dig("content")&.value
-    @image = metas.find { |m| m.attributes.find { |a| a[1].value == "og:image" } }&.attributes.dig("content")&.value
+    @description = metas.find { |m| m.attributes.find { |a| a[1].value == "og:description" } }&.attributes&.dig("content")&.value
+    @image = metas.find { |m| m.attributes.find { |a| a[1].value == "og:image" } }&.attributes&.dig("content")&.value
   end
 end
