@@ -17,6 +17,9 @@
       <div class="google_login">
         <%= render(partial: "layouts/google_login") %>
       </div>
+      <div class="channel-form">
+        <%= render(partial: "channels/form") %>
+      </div>
       <div class="flash-messages">
         <%= render(partial: "layouts/flash_messages") %>
       </div>
@@ -30,9 +33,6 @@
       <div class="main">
         <%= yield %>
       </div>
-    </div>
-    <div class="channel-form">
-      <%= render(partial: "channels/form") %>
     </div>
   </body>
 </html>
