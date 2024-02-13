@@ -86,6 +86,13 @@ aside{
   }
 }
 
+.item-card{
+  width: 300px;
+  img {
+    height: 200px;
+  }
+}
+
 .card-title, .card-channel{
   img {
     width: 16px;
