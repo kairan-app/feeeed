@@ -64,7 +64,7 @@ header {
   width: 100%;
 }
 
-aside{
+aside {
   width: 240px;
 }
 
@@ -72,14 +72,15 @@ aside{
   width: calc(100% - 240px);
 }
 
-.cards{
+.cards {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
 }
 
-.card{
+.card {
   margin: 0 15px 15px 0;
+
   img {
     background-color: #ffffff;
     width: 100%;
@@ -87,21 +88,23 @@ aside{
   }
 }
 
-.channel-card{
+.channel-card {
   width: 210px;
+
   img {
     height: 210px;
   }
 }
 
-.item-card{
+.item-card {
   width: 270px;
+
   img {
     height: 180px;
   }
 }
 
-.card-title, .card-channel{
+.card-title, .card-channel {
   img {
     width: 16px;
     height: auto;
