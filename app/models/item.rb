@@ -9,4 +9,8 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
 
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
+
+  def image_url_or_placeholder
+    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
+  end
 end
