@@ -31,6 +31,7 @@ header {
   padding: 10px 20px;
   margin-bottom: 0px;
   border-bottom: 1px solid #e0e0e0;
+  z-index: 2;
 }
 
 .google-login {
@@ -79,12 +80,11 @@ aside {
 }
 
 .card {
+  position: relative;
   margin: 0 15px 15px 0;
 
   img {
-    background-color: #ffffff;
     width: 100%;
-    object-fit: contain;
   }
 }
 
@@ -102,6 +102,26 @@ aside {
   img {
     height: 180px;
   }
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.card-image-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.card-image-back {
+  object-fit: cover;
+  filter: blur(10px) brightness(125%) opacity(100%);
 }
 
 .card-title, .card-channel {
