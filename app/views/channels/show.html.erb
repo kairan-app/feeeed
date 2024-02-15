@@ -3,6 +3,10 @@
 <% if @channel.description %>
   <p><%= @channel.description %></p>
 <% end %>
+<ul>
+  <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
+  <li>Feed: <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
+</ul>
 <% if @channel.image_url %>
   <p><%= image_tag(@channel.image_url, style: "max-height: 200px;") %>
 <% end %>

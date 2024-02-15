@@ -4,14 +4,14 @@
     <div class="card-image">
       <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%") %>
     </div>
-    <h3 class="card-title"><%= link_to(item.title, item.url) %></h3>
+    <h3 class="card-title"><%= link_to(item.title, item.url, target: "_blank") %></h3>
     <% if with_channel %>
       <span class="card-channel">
         <%= image_tag(item.channel.favicon_url, size: "16x16") %>
         <%= link_to(item.channel.title, item.channel) %>
       </span><br/>
     <% end %>
-    <span class="card-publish"><%= item.published_at.strftime("%Y-%m-%d %H:%M:%S") %></span>
+    <span class="card-publish"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
   </div>
   <% end %>
 </div>
