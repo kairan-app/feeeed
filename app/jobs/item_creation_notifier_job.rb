@@ -21,6 +21,9 @@ class ItemCreationNotifierJob < ApplicationJob
   def should_notify?(item)
     channel = item.channel
 
+    # ChannelのItemが直近30分間で5件以上つくられていたら通知しない
+    return false if channel.items.where("created_at > ?", 30.minutes.ago).count >= 5
+
     # Channel作成から一定以上の時間が経過しているものは、新着検知されたItemとみなして通知する
     return true if item.channel.created_at < 1.hour.ago
 
