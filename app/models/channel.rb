@@ -104,11 +104,13 @@ class Channel < ApplicationRecord
 
       p ["Fetching", entry.published, entry.title, entry.url]
 
-      og = OpenGraph.new(entry.url)
+      encoded_url = entry.url.chars.map { |c| c.bytesize > 1 ? URI.encode_www_form_component(c) : c }.join
+
+      og = OpenGraph.new(encoded_url)
       parameters = {
         guid: entry.entry_id,
         title: entry.title,
-        url: entry.url,
+        url: encoded_url,
         image_url: og.image,
         published_at: entry.published,
       }
