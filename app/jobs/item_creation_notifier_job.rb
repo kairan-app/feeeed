@@ -1,6 +1,4 @@
 class ItemCreationNotifierJob < ApplicationJob
-  queue_as :default
-
   def perform(item_id)
     webhook_url = ENV["DISCORD_WEBHOOK_URL"]
     return if webhook_url.nil?
