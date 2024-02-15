@@ -111,6 +111,7 @@ aside {
 
   img {
     width: 100%;
+    object-fit: cover;
   }
 }
 
@@ -128,17 +129,6 @@ aside {
   }
 }
 
-@media screen and (max-width: 768px) {
-  .channel-card {
-    width: calc(50% - 7.5px);
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
-
 .item-card {
   width: 270px;
 
@@ -148,7 +138,7 @@ aside {
 }
 
 @media screen and (max-width: 768px) {
-  .item-card {
+  .channel-card, .item-card {
     width: calc(50% - 7.5px);
 
     img {
@@ -159,32 +149,16 @@ aside {
 }
 
 .card-image {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
   line-height: 0;
 }
 
 @media screen and (max-width: 768px) {
   .channel-card .card-image {
-    height: calc((100vw - 55px)/2);
+    height: calc((100vw - 55px) / 2);
   }
   .item-card .card-image {
-    height: calc((100vw - 55px)/3);
+    height: calc((100vw - 55px) / 3);
   }
-}
-
-.card-image-front {
-  position: absolute;
-  top: 0;
-  left: 0;
-  object-fit: contain;
-  z-index: 1;
-}
-
-.card-image-back {
-  object-fit: cover;
-  filter: blur(10px) brightness(125%) opacity(100%);
 }
 
 .card-title, .card-channel {
