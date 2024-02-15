@@ -16,6 +16,13 @@
 
 body {
   background-color: #feeeed;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 90%;
+  }
 }
 
 header {
@@ -65,12 +72,31 @@ header {
   width: 100%;
 }
 
+@media screen and (max-width: 768px) {
+  .wrapper {
+    margin: 69px 20px;
+    width: calc(100% - 40px);
+  }
+}
+
 aside {
   width: 240px;
 }
 
+@media screen and (max-width: 768px) {
+  aside {
+    width: 100%;
+  }
+}
+
 .main {
   width: calc(100% - 240px);
+}
+
+@media screen and (max-width: 768px) {
+  .main {
+    width: 100%;
+  }
 }
 
 .cards {
@@ -88,11 +114,28 @@ aside {
   }
 }
 
+@media screen and (max-width: 768px) {
+  .card:nth-child(2n) {
+    margin: 0 0 15px 0;
+  }
+}
+
 .channel-card {
   width: 210px;
 
   img {
     height: 210px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .channel-card {
+    width: calc(50% - 7.5px);
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
@@ -104,11 +147,31 @@ aside {
   }
 }
 
+@media screen and (max-width: 768px) {
+  .item-card {
+    width: calc(50% - 7.5px);
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
 .card-image {
   position: relative;
   width: 100%;
   overflow: hidden;
   line-height: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .channel-card .card-image {
+    height: calc((100vw - 55px)/2);
+  }
+  .item-card .card-image {
+    height: calc((100vw - 55px)/3);
+  }
 }
 
 .card-image-front {
