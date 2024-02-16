@@ -171,11 +171,30 @@ aside {
   }
 }
 
+h3.card-title {
+  margin: 0.5em 0 0.3em;
+  font-size: 1em;
+  line-height: 1.4em;
+  font-weight: bold;
+}
+
 .card-title, .card-channel {
   img {
-    width: 16px;
+    width: 14px;
     height: auto;
   }
+}
+
+.card-description, .card-channel, .card-publish {
+  display: block;
+  margin: 0 0 0.1em;
+  font-size: 0.9em;
+  line-height: 1.5em;
+  color: #555555;
+}
+
+.card-channel a {
+  color: #555555;
 }
 
 form {
