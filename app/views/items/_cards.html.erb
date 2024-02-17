@@ -9,7 +9,7 @@
       <span class="card-channel">
         <%= image_tag(item.channel.favicon_url, size: "16x16") %>
         <%= link_to(item.channel.title, item.channel) %>
-      </span><br/>
+      </span>
     <% end %>
     <span class="card-publish"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
   </div>
