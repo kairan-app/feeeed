@@ -17,17 +17,9 @@ class ItemCreationNotifierJob < ApplicationJob
   end
 
   def should_notify?(item)
-    channel = item.channel
-
-    # ChannelのItemが直近30分間で5件以上つくられていたら通知しない
-    return false if channel.items.where("created_at > ?", 30.minutes.ago).count >= 5
-
-    # Channel作成から一定以上の時間が経過しているものは、新着検知されたItemとみなして通知する
-    return true if item.channel.created_at < 1.hour.ago
-
-    # Channel作成時に一括でItemが保存されるときは、最新のItemをひとつだけ通知する
-    feed = Feedjira.parse(Faraday.get(channel.feed_url).body)
-    return true if item.guid == feed.entries.sort_by(&:published).last.entry_id
+    # 新しい方から見て3件以内のItemのみ通知する
+    feed = Feedjira.parse(Faraday.get(item.channel.feed_url).body)
+    return true if item.guid.in?(feed.entries.sort_by(&:published).reverse.take(3).map(&:entry_id))
 
     false
   end
