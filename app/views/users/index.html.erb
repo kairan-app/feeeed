@@ -1,0 +1,8 @@
+<section>
+  <h2>Users</h2>
+  <ul>
+    <% @users.each do |user| %>
+      <li><%= link_to("@" + user.name, user_path(user_name: user.name)) %></li>
+    <% end %>
+  </ul>
+</section>
