@@ -10,7 +10,7 @@ class ChannelsController < ApplicationController
 
   def show
     @channel = Channel.find(params[:channel_id])
-    @items = @channel.items.order(published_at: :desc)
+    @items = @channel.items.order(published_at: :desc, title: :desc)
 
     @title = @channel.title
   end
