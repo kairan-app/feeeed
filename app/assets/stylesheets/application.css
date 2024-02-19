@@ -170,6 +170,7 @@ aside {
   .channel-card .card-image {
     height: calc((100vw - 55px) / 2);
   }
+
   .item-card .card-image {
     height: calc((100vw - 55px) / 3);
   }
@@ -233,7 +234,7 @@ img {
 }
 
 @media screen and (max-width: 768px) {
-  .profile-image{
+  .profile-image {
     width: 96px;
     height: 96px;
   }
