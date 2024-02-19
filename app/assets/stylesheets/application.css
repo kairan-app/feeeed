@@ -19,6 +19,10 @@ body {
   word-break: break-all;
 }
 
+h2, h3 {
+  margin: 1em 0 0.5em;
+}
+
 @media screen and (max-width: 768px) {
   body {
     font-size: 90%;
@@ -206,4 +210,31 @@ form {
 
 img {
   display: inline-block;
+}
+
+.profile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 2em 0;
+}
+
+.profile-image {
+  width: 128px;
+  height: 128px;
+  margin-right: 20px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .profile-image{
+    width: 96px;
+    height: 96px;
+  }
 }
