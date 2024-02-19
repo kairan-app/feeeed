@@ -1,7 +1,12 @@
-<h2><%= "@" + @user.name %></h2>
-<p>
-  <%= image_tag(@user.icon_url, size: "128x128") %>
-</p>
+
+<div class="profile">
+  <div class="profile-image">
+    <%= image_tag(@user.icon_url, size: "128x128") %>
+  </div>
+  <div class="profile-info">
+    <h2><%= "@" + @user.name %></h2>
+  </div>
+</div>
 
 <h3>Owned Channels</h3>
 <%= render(partial: "channels/cards", locals: { channels: @owned_channels }) %>
