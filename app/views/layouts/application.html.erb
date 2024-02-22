@@ -22,12 +22,7 @@
         <%= yield %>
       </div>
     </div>
-    <div class="google-login">
-      <%= render(partial: "layouts/google_login") %>
-    </div>
-    <div class="channel-form">
-      <%= render(partial: "channels/form") %>
-    </div>
-
+    <%= render(partial: "layouts/google_login") %>
+    <%= render(partial: "channels/form") %>
   </body>
 </html>
