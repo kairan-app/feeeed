@@ -8,8 +8,12 @@
   </div>
 </div>
 
+<% if @owned_channels.exists? %>
 <h3>Owned Channels</h3>
 <%= render(partial: "channels/cards", locals: { channels: @owned_channels }) %>
+<% end %>
 
+<% if @subscribed_channels.exists? %>
 <h3>Subscribed Channels</h3>
 <%= render(partial: "channels/cards", locals: { channels: @subscribed_channels }) %>
+<% end %>
