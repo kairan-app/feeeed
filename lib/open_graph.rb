@@ -12,7 +12,7 @@ class OpenGraph
       c.use FaradayMiddleware::FollowRedirects
     end
 
-    @html = Nokogiri::HTML(connection.get(uri.path).body)
+    @html = Nokogiri::HTML(connection.get(uri.path).body.force_encoding("UTF-8"))
     @title = @html.css("title").text
 
     metas = @html.css("meta")
