@@ -12,25 +12,22 @@
   </head>
 
   <body>
-    <header>
-      <h1><%= link_to("Feeeed!", root_path) %></h1>
-      <div class="google-login">
-        <%= render(partial: "layouts/google_login") %>
-      </div>
-      <div class="channel-form">
-        <%= render(partial: "channels/form") %>
-      </div>
-      <div class="flash-messages">
-        <%= render(partial: "layouts/flash_messages") %>
-      </div>
-    </header>
     <div class="wrapper">
       <aside>
+        <h1><%= link_to("Feeeed!", root_path) %></h1>
         <%= render(partial: "layouts/menu") %>
       </aside>
       <div class="main">
+        <%= render(partial: "layouts/flash_messages") %>
         <%= yield %>
       </div>
     </div>
+    <div class="google-login">
+      <%= render(partial: "layouts/google_login") %>
+    </div>
+    <div class="channel-form">
+      <%= render(partial: "channels/form") %>
+    </div>
+
   </body>
 </html>

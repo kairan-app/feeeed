@@ -19,9 +19,14 @@ body {
   word-break: break-all;
 }
 
+h1 {
+  margin: 1em 0 0.5em 20px;
+}
+
 h2, h3 {
   margin: 1em 0 0.5em;
 }
+
 
 ul {
   list-style: none;
@@ -61,8 +66,13 @@ header {
 }
 
 .google-login {
-  position: absolute;
-  right: 20px;
+  position: fixed;
+  bottom: 70px;
+  left: 15px;
+  background-color: #ffffff;
+  padding: 10px 15px;
+  border-radius: 30px;
+  z-index: 1;
 }
 
 .channel-form {
@@ -76,17 +86,24 @@ header {
 }
 
 .flash-messages {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  background-color: #ffff;
-  margin: 0;
+  display: inline-block;
+  margin: 1em 0 0;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.notice {
+  color: #296fa8;
+}
+
+.allert {
+  color: #cc0f35;
 }
 
 .wrapper {
   display: flex;
   flex-wrap: wrap;
-  margin: 69px 0;
+  margin: 0 0 70px;
   padding: 0;
   width: 100%;
 }
@@ -99,6 +116,7 @@ header {
 }
 
 aside {
+  position: fixed;
   width: 240px;
 }
 
@@ -127,6 +145,7 @@ aside nav ul li a {
 
 .main {
   width: calc(100% - 240px);
+  margin: 0 0 0 240px;
 }
 
 @media screen and (max-width: 768px) {
