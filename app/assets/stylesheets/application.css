@@ -23,6 +23,12 @@ h1 {
   margin: 1em 0 0.5em 20px;
 }
 
+@media screen and (max-width: 768px) {
+  h1 {
+    margin: 1em 0 0.5em;
+  }
+}
+
 h2, h3 {
   margin: 1em 0 0.5em;
 }
@@ -47,22 +53,6 @@ a {
 a:hover {
   color: #111111;
   text-decoration: underline;
-}
-
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  background-color: #feeeed;
-  margin: 0;
-  padding: 10px 20px;
-  margin-bottom: 0px;
-  border-bottom: 1px solid #e0e0e0;
-  z-index: 2;
 }
 
 .google-login {
@@ -110,7 +100,7 @@ header {
 
 @media screen and (max-width: 768px) {
   .wrapper {
-    margin: 69px 20px;
+    margin: 0 auto 70px;
     width: calc(100% - 40px);
   }
 }
@@ -122,6 +112,7 @@ aside {
 
 @media screen and (max-width: 768px) {
   aside {
+    position: relative;
     width: 100%;
   }
 }
@@ -151,6 +142,7 @@ aside nav ul li a {
 @media screen and (max-width: 768px) {
   .main {
     width: 100%;
+    margin: 0;
   }
 }
 
