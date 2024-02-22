@@ -285,3 +285,28 @@ img {
     height: 96px;
   }
 }
+
+.item-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+
+  iframe {
+    width: 80%;
+    height: 800px;
+    margin: 9.5%;
+  }
+}
+
+.with-item-modal {
+  overflow: hidden;
+
+  .item-modal {
+    display: block;
+  }
+}
