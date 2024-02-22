@@ -19,9 +19,20 @@ body {
   word-break: break-all;
 }
 
+h1 {
+  margin: 1em 0 0.5em 20px;
+}
+
+@media screen and (max-width: 768px) {
+  h1 {
+    margin: 1em 0 0.5em;
+  }
+}
+
 h2, h3 {
   margin: 1em 0 0.5em;
 }
+
 
 ul {
   list-style: none;
@@ -44,25 +55,14 @@ a:hover {
   text-decoration: underline;
 }
 
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  background-color: #feeeed;
-  margin: 0;
-  padding: 10px 20px;
-  margin-bottom: 0px;
-  border-bottom: 1px solid #e0e0e0;
-  z-index: 2;
-}
-
 .google-login {
-  position: absolute;
-  right: 20px;
+  position: fixed;
+  bottom: 70px;
+  left: 15px;
+  background-color: #ffffff;
+  padding: 10px 15px;
+  border-radius: 30px;
+  z-index: 1;
 }
 
 .channel-form {
@@ -76,34 +76,43 @@ header {
 }
 
 .flash-messages {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  background-color: #ffff;
-  margin: 0;
+  display: inline-block;
+  margin: 1em 0 0;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.notice {
+  color: #296fa8;
+}
+
+.allert {
+  color: #cc0f35;
 }
 
 .wrapper {
   display: flex;
   flex-wrap: wrap;
-  margin: 69px 0;
+  margin: 0 0 70px;
   padding: 0;
   width: 100%;
 }
 
 @media screen and (max-width: 768px) {
   .wrapper {
-    margin: 69px 20px;
+    margin: 0 auto 70px;
     width: calc(100% - 40px);
   }
 }
 
 aside {
+  position: fixed;
   width: 240px;
 }
 
 @media screen and (max-width: 768px) {
   aside {
+    position: relative;
     width: 100%;
   }
 }
@@ -127,11 +136,13 @@ aside nav ul li a {
 
 .main {
   width: calc(100% - 240px);
+  margin: 0 0 0 240px;
 }
 
 @media screen and (max-width: 768px) {
   .main {
     width: 100%;
+    margin: 0;
   }
 }
 
