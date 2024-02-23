@@ -16,9 +16,11 @@ Rails.application.routes.draw do
   get    "/items",                             to: "items#index"
   post   "/items/:item_id/reaction",           to: "reactions#create",     as: "item_reaction"
   delete "/items/:item_id/reaction",           to: "reactions#destroy"
+  get    "/reactions",                         to: "reactions#index"
   get    "/users",                             to: "users#index"
   get    "/@:user_name",                       to: "users#show",           as: "user", constraints: { user_name: /[^\/]+/ }
   get    "/my/inbox",                          to: "my/inbox#show",        as: "inbox"
+  get    "/my/reactions",                      to: "my/reactions#index",   as: "my_reactions"
 
   root "welcome#index"
 end

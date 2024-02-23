@@ -1,0 +1,11 @@
+<ul>
+  <% reactions.each do |reaction| %>
+    <% user = reaction.user %>
+    <% item = reaction.item %>
+    <li>
+      <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
+      <span>reacted on <%= reaction.created_at.strftime("%Y-%m-%d %H:%M") %></span><br>
+      <%= link_to(item.title, item.url, target: "_blank") %>
+    </li>
+  <% end %>
+</ul>
