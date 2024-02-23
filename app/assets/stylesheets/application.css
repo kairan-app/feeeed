@@ -73,6 +73,11 @@ a:hover {
   margin: 0;
   padding: 10px 20px;
   background-color: #d9adaa;
+
+  input[type="text"] {
+    margin: 0 0 0 25%;
+    width: 50%;
+  }
 }
 
 .flash-messages {
@@ -246,13 +251,6 @@ h3.card-title {
 
 .card-channel a {
   color: #555555;
-}
-
-form {
-  input[type="text"] {
-    margin: 0 0 0 25%;
-    width: 50%;
-  }
 }
 
 img {
