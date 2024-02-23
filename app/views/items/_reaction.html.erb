@@ -1,12 +1,13 @@
 <% if logged_in? %>
   <%= turbo_frame_tag(item) do %>
+    <% reaction = item.reactions.find_by(user: current_user) %>
+
     <%= form_tag(item_reaction_path(item), method: :post) do %>
-      <% reaction = item.reactions.find_by(user: current_user) %>
       <%= text_field_tag(:memo, reaction&.memo, placeholder: "Memo") %>
       <%= submit_tag("React!") %>
     <% end %>
 
-    <% if current_user.reacted_to?(item) %>
+    <% if reaction %>
       <p class="button-to-unreact">
         <%= link_to("Unreact!", item_reaction_path(item), method: :delete) %>
       </p>
