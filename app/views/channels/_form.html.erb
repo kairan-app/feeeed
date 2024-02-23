@@ -1,8 +1,8 @@
 <% if logged_in? %>
-
-<%= form_tag(channels_path) do %>
-  <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
-  <%= submit_tag("Add") %>
-<% end%>
-
+<div class="channel-form">
+  <%= form_tag(channels_path) do %>
+    <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
+    <%= submit_tag("Add") %>
+  <% end%>
+</div>
 <% end %>
