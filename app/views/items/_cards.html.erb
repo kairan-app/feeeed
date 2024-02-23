@@ -12,6 +12,7 @@
       </span>
     <% end %>
     <span class="card-publish"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
+    <%= render(partial: "items/reaction", locals: { item: item }) %>
   </div>
   <% end %>
 </div>
