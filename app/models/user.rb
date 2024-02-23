@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :subscribed_channels, through: :subscriptions, source: :channel
   has_many :subscribed_items, through: :subscribed_channels, source: :items
+  has_many :reactions, dependent: :destroy
+  has_many :reacted_items, through: :reactions, source: :item
 
   validates :name, presence: true, length: { in: 2..15 }
   validates :email, presence: true, length: { maximum: 254 }
@@ -23,5 +25,17 @@ class User < ApplicationRecord
 
   def unsubscribe(channel)
     subscribed_channels.delete(channel)
+  end
+
+  def add_reaction(item, memo:)
+    reactions.find_or_initialize_by(item: item).update(memo: memo.presence)
+  end
+
+  def remove_reaction(item)
+    reactions.find_by(item: item).destroy
+  end
+
+  def reacted_to?(item)
+    reacted_items.include?(item)
   end
 end
