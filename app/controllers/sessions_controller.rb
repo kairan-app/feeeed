@@ -10,6 +10,7 @@ class SessionsController < ApplicationController
       aud: Rails.application.credentials.google_auth_app.client_id
     )
     user = User.find_or_initialize_by(email: payload["email"])
+    user.google_guid = payload["sub"]
     user.name ||= payload["email"].split("@").first
     user.icon_url = payload["picture"]
     user.save
