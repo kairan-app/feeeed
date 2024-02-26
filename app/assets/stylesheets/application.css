@@ -14,6 +14,9 @@
  *= require_self
  */
 
+/* Google font Icon */
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons+Outlined);
+
 body {
   background-color: #feeeed;
   word-break: break-all;
@@ -123,7 +126,7 @@ aside {
 }
 
 aside nav ul {
-  margin: 1em 20px;
+  margin: 1em 15px;
   padding: 0;
 }
 
@@ -134,9 +137,53 @@ aside nav ul {
 }
 
 aside nav ul li a {
-  display: inline-block;
+  position: relative;
+  display: block;
   margin: 0;
-  padding: 0.5em 0;
+  padding: 0.5em 0 0.5em 2.5em;
+}
+
+aside nav ul li a:hover {
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-icon::before {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-family: "Material Icons Outlined";
+  padding: 0 0 0 0;
+  font-size: 1.4em;
+  font-weight: 100;
+}
+
+.nav-icon-items::before {
+  content: "\f009";
+}
+
+.nav-icon-channels::before {
+  content: "\e851";
+}
+
+.nav-icon-reactions::before {
+  content: "\f8d7";
+}
+
+.nav-icon-users::before {
+  content: "\f233";
+}
+
+.nav-icon-my-inbox::before {
+  content: "\e156";
+}
+
+.nav-icon-my-reactions::before {
+  content: "\e87d";
+}
+
+.nav-icon-my-profile::before {
+  content: "\e853";
 }
 
 .main {

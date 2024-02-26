@@ -1,14 +1,14 @@
 <nav>
   <ul>
-    <li><%= link_to("Channels", channels_path) %></li>
-    <li><%= link_to("Items", items_path) %></li>
-    <li><%= link_to("Reactions", reactions_path) %></li>
-    <li><%= link_to("Users", users_path) %></li>
+    <li><%= link_to("Channels", channels_path, class: 'nav-icon nav-icon-channels') %></li>
+    <li><%= link_to("Items", items_path, class: 'nav-icon nav-icon-items') %></li>
+    <li><%= link_to("Reactions", reactions_path, class: 'nav-icon nav-icon-reactions') %></li>
+    <li><%= link_to("Users", users_path, class: 'nav-icon nav-icon-users') %></li>
 
     <% if logged_in? %>
-    <li><%= link_to("My Inbox", inbox_path) %></li>
-    <li><%= link_to("My Reactions", my_reactions_path) %></li>
-    <li><%= link_to("My Profile", user_path(user_name: current_user.name)) %></li>
+    <li><%= link_to("My Inbox", inbox_path, class: 'nav-icon nav-icon-my-inbox') %></li>
+    <li><%= link_to("My Reactions", my_reactions_path, class: 'nav-icon nav-icon-my-reactions') %></li>
+    <li><%= link_to("My Profile", user_path(user_name: current_user.name), class: 'nav-icon nav-icon-my-profile') %></li>
     <% end %>
   </ul>
 </nav>
