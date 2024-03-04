@@ -19,6 +19,12 @@
 
 body {
   background-color: #feeeed;
+  font-family:
+    "Helvetica Neue",
+    "Arial",
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    sans-serif;
   word-break: break-all;
 }
 
