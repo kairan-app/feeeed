@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get    "/@:user_name",                       to: "users#show",           as: "user", constraints: { user_name: /[^\/]+/ }
   get    "/my/inbox",                          to: "my/inbox#show",        as: "inbox"
   get    "/my/reactions",                      to: "my/reactions#index",   as: "my_reactions"
+  get    "/my/profile",                        to: "my/profile#show",      as: "my_profile"
+  put    "/my/profile",                        to: "my/profile#update"
 
   root "welcome#index"
 end
