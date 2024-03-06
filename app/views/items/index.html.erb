@@ -1,6 +1,9 @@
 <section>
   <h2>Items</h2>
   <%= paginate(@items) %>
+  <div class="autopagerize_page_element">
   <%= render(partial: "items/cards", locals: { items: @items, with_channel: true }) %>
+  </div>
+  <div class="autopagerize_insert_before"></div>
   <%= paginate(@items) %>
 </section>
