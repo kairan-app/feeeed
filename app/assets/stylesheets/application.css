@@ -224,7 +224,7 @@ aside nav ul li a:hover {
     background-color: #ffffff;
     transform: translateY(-100%);
     transition: 0.3s;
-    z-index: 1;
+    z-index: 2;
   }
 
   #hamburger:checked~.hamburger-menu-list {
@@ -250,7 +250,7 @@ aside nav ul li a:hover {
   height: 100vh;
   background-color: #000;
   opacity: 0.4;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hamburger-menu-button {
@@ -275,7 +275,7 @@ aside nav ul li a:hover {
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    z-index: 1;
+    z-index: 2;
   }
 }
 
