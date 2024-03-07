@@ -1,5 +1,7 @@
 <nav>
-  <ul>
+  <input type="checkbox" name="hamburger" id="hamburger" class="hamburger-menu-input"/>
+  <label for="hamburger" class="hamburger-menu-bg"></label>
+  <ul class="hamburger-menu-list">
     <li><%= link_to("Channels", channels_path, class: 'nav-icon nav-icon-channels') %></li>
     <li><%= link_to("Items", items_path, class: 'nav-icon nav-icon-items') %></li>
     <li><%= link_to("Reactions", reactions_path, class: 'nav-icon nav-icon-reactions') %></li>
@@ -12,4 +14,9 @@
     <li><%= link_to("@#{current_user.name}", user_path(user_name: current_user.name), class: 'nav-icon nav-icon-my-profile') %></li>
     <% end %>
   </ul>
+  <label for="hamburger" class="hamburger-menu-button">
+    <span class="hamburger-menu-button-mark"></span>
+    <span class="hamburger-menu-button-mark"></span>
+    <span class="hamburger-menu-button-mark"></span>
+  </label>
 </nav>
