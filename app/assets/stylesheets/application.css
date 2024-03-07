@@ -131,6 +131,10 @@ aside {
   }
 }
 
+aside nav {
+  position: relative;
+}
+
 aside nav ul {
   margin: 1em 15px;
   padding: 0;
@@ -147,6 +151,12 @@ aside nav ul li a {
   display: block;
   margin: 0;
   padding: 0.5em 0 0.5em 2.5em;
+}
+
+@media screen and (max-width: 768px) {
+  aside nav ul li a {
+    font-size: 1.2em;
+  }
 }
 
 aside nav ul li a:hover {
@@ -190,6 +200,100 @@ aside nav ul li a:hover {
 
 .nav-icon-my-profile::before {
   content: "\e853";
+}
+
+/* Hamburger Menu for Smatrphone */
+@media screen and (max-width: 768px) {
+  .hamburger-menu-list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background-color: #ffffff;
+    transform: translateY(-100%);
+    transition: 0.3s;
+    z-index: 1;
+  }
+
+  #hamburger:checked~.hamburger-menu-list {
+    transform: translateY(0%);
+    transition: 0.3s;
+  }
+}
+
+.hamburger-menu-input {
+  display: none;
+}
+
+.hamburger-menu-bg {
+  display: none;
+}
+
+#hamburger:checked~.hamburger-menu-bg {
+  position: fixed;
+  top: 0;
+  left: -20px;
+  display: block;
+  width: calc(100% + 40px);
+  height: 100vh;
+  background-color: #000;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.hamburger-menu-button {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .hamburger-menu-button {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    gap: 5px;
+    appearance: none;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 8px -4px #555555;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1;
+  }
+}
+
+.hamburger-menu-button-mark {
+  display: block;
+  width: 20px;
+  height: 1px;
+  background-color: #000;
+  transition: 0.3s;
+}
+
+@media screen and (max-width: 768px) {
+  #hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(1) {
+    transform: translate(3px, -1px) rotate(45deg);
+    transform-origin: 0%;
+  }
+
+  #hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(2) {
+    opacity: 0;
+  }
+
+  #hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(3) {
+    transform: translate(3px, 1px) rotate(-45deg);
+    transform-origin: 0%;
+  }
 }
 
 .main {
