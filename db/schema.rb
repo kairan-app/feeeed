@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_05_145631) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_12_132505) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,6 +46,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_145631) do
     t.index ["channel_id", "guid"], name: "index_items_on_channel_id_and_guid", unique: true
     t.index ["channel_id"], name: "index_items_on_channel_id"
     t.index ["published_at"], name: "index_items_on_published_at"
+  end
+
+  create_table "notification_webhooks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "url", limit: 2083, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notification_webhooks_on_user_id"
   end
 
   create_table "ownerships", force: :cascade do |t|
@@ -92,6 +100,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_145631) do
 
   add_foreign_key "channel_stoppers", "channels"
   add_foreign_key "items", "channels"
+  add_foreign_key "notification_webhooks", "users"
   add_foreign_key "ownerships", "channels"
   add_foreign_key "ownerships", "users"
   add_foreign_key "reactions", "items"

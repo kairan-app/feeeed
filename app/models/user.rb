@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :subscribed_items, through: :subscribed_channels, source: :items
   has_many :reactions, dependent: :destroy
   has_many :reacted_items, through: :reactions, source: :item
+  has_many :notification_webhooks, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..15 }
   validates :email, presence: true, length: { maximum: 254 }
