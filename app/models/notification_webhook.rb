@@ -5,26 +5,22 @@ class NotificationWebhook < ApplicationRecord
   validates :url, presence: true, length: { maximum: 2083 }
 
   def notify_reactions(recent: 24.hours.ago)
-    reactions = user.reactions.where("created_at > ?", recent)
+    reactions = user.reactions.where("created_at >= ?", recent).order(id: :desc)
     return if reactions.empty?
 
-    reactions_text =
+    content = "@#{user.name}'s recent pawprints 🐾"
+    embeds =
       reactions.map { |reaction|
-        string = "- #{reaction.item.title} | #{reaction.item.channel.title}\n  - #{reaction.item.url}"
-        string += "\n  - 💬 #{reaction.memo}" if reaction.memo.present?
-        string
-      }.join("\n")
-
-    message = <<~MESSAGE
-      @#{user.name}'s recent pawprints 🐾
-      #{reactions_text}
-    MESSAGE
-
-    # https://discord.com/developers/docs/resources/channel#message-object-message-flags
-    flags = "01000000100".to_i(2)
+        {
+          title: [reaction.item.title, reaction.item.channel.title].join(" | "),
+          description: reaction.memo.present? ? "💬 #{reaction.memo}" : nil,
+          url: reaction.item.url,
+          thumbnail: { url: reaction.item.image_url_or_placeholder },
+        }
+      }
 
     Faraday.post(
-      url, { content: message, flags: flags }.to_json, "Content-Type" => "application/json"
+      url, { content:, embeds: }.to_json, "Content-Type" => "application/json"
     )
   end
 end
