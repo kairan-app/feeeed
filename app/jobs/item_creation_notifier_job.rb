@@ -8,13 +8,15 @@ class ItemCreationNotifierJob < ApplicationJob
 
     return unless should_notify?(item)
 
-    content = "[#{Rails.env}] New item saved in #{channel.title}"
+    content = "[#{Rails.env}] New item saved"
     embeds = [
       {
+        author: { name: channel.title, url: channel.site_url },
         title: item.title,
-        description: item.published_at.strftime("%Y-%m-%d %H:%M"),
+        description: URI.parse(item.url).host,
         url: item.url,
         thumbnail: { url: item.image_url },
+        timestamp: item.published_at.iso8601,
       }
     ]
 
