@@ -4,6 +4,12 @@ class NotificationWebhook < ApplicationRecord
   validates :user_id, presence: true
   validates :url, presence: true, length: { maximum: 2083 }
 
+  class << self
+    def notify
+      find_each { _1.notify_reactions }
+    end
+  end
+
   def notify_reactions(since: nil)
     at = since || reactions_last_notified_at || 6.hours.ago
     reactions = user.reactions.where("created_at >= ?", at).order(id: :desc)
