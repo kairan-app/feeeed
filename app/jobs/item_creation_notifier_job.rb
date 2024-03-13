@@ -8,11 +8,18 @@ class ItemCreationNotifierJob < ApplicationJob
 
     return unless should_notify?(item)
 
+    content = "[#{Rails.env}] New item saved in #{channel.title}"
+    embeds = [
+      {
+        title: item.title,
+        description: item.published_at.strftime("%Y-%m-%d %H:%M"),
+        url: item.url,
+        thumbnail: { url: item.image_url },
+      }
+    ]
+
     Faraday.post(
-      webhook_url, {
-        content: "[#{Rails.env}] New item created #{item.url}"
-      }.to_json,
-      "Content-Type" => "application/json"
+      webhook_url, { content: , embeds: }.to_json, "Content-Type" => "application/json"
     )
   end
 

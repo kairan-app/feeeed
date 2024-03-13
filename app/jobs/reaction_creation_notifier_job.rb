@@ -13,7 +13,7 @@ class ReactionCreationNotifierJob < ApplicationJob
         title: [item.title, item.channel.title].join(" | "),
         description: reaction.memo.present? ? "💬 #{reaction.memo}" : nil,
         url: item.url,
-        thumbnail: { url: item.image_url_or_placeholder },
+        thumbnail: { url: item.image_url },
       }
     ]
   
