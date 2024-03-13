@@ -4,8 +4,15 @@ class NotificationWebhook < ApplicationRecord
   validates :user_id, presence: true
   validates :url, presence: true, length: { maximum: 2083 }
 
-  def notify_reactions(recent: 24.hours.ago)
-    reactions = user.reactions.where("created_at >= ?", recent).order(id: :desc)
+  class << self
+    def notify
+      find_each { _1.notify_reactions }
+    end
+  end
+
+  def notify_reactions(since: nil)
+    at = since || reactions_last_notified_at || 6.hours.ago
+    reactions = user.reactions.where("created_at >= ?", at).order(id: :desc)
     return if reactions.empty?
 
     content = "@#{user.name}'s recent pawprints 🐾"
@@ -26,5 +33,22 @@ class NotificationWebhook < ApplicationRecord
         url, { content:, embeds: }.to_json, "Content-Type" => "application/json"
       )
     }
+
+    update_reactions_last_notified_at
+  end
+
+  def reactions_last_notified_at
+    value = Rails.cache.read(cache_key(:reactions_last_notified_at))
+    return if value.nil?
+
+    Time.zone.at(value)
+  end
+
+  def update_reactions_last_notified_at
+    Rails.cache.write(cache_key(:reactions_last_notified_at), Time.current.to_i)
+  end
+
+  def cache_key(suffix)
+    "notification_webhook/#{id}/#{suffix}"
   end
 end

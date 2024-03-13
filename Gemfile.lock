@@ -147,6 +147,7 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
+    hiredis (0.6.3)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     i18n (1.14.4)
@@ -261,6 +262,8 @@ GEM
     rake (13.1.0)
     rdoc (6.6.2)
       psych (>= 4.0.0)
+    redis (5.1.0)
+      redis-client (>= 0.17.0)
     redis-client (0.20.0)
       connection_pool
     regexp_parser (2.9.0)
@@ -341,12 +344,14 @@ DEPENDENCIES
   feedbag
   feedjira
   googleauth
+  hiredis
   importmap-rails
   jbuilder
   kaminari
   pg (~> 1.5)
   puma (>= 5.0)
   rails (~> 7.1.3)
+  redis
   selenium-webdriver
   sentry-rails
   sidekiq (= 7.2.2)
