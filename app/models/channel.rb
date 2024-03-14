@@ -107,9 +107,11 @@ class Channel < ApplicationRecord
       url = entry.url || self.site_url
       encoded_url = url.chars.map { |c| c.bytesize > 1 ? URI.encode_www_form_component(c) : c }.join
 
+      guid = entry.entry_id || entry.url
+
       og = OpenGraph.new(encoded_url)
       parameters = {
-        guid: entry.entry_id,
+        guid: guid,
         title: entry.title,
         url: encoded_url,
         image_url: og.image,
