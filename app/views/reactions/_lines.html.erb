@@ -1,11 +1,21 @@
-<ul>
+<ul class="reaction-list">
   <% reactions.each do |reaction| %>
     <% user = reaction.user %>
     <% item = reaction.item %>
     <li>
-      <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
-      <span>reacted on <%= reaction.created_at.strftime("%Y-%m-%d %H:%M") %></span><br>
-      <%= link_to(item.title, item.url, target: "_blank") %>
+      <div class="reaction-user">
+        <%= image_tag(user.icon_url, size: "24x24") %>
+      </div>
+      <div class="reaction-info">
+        <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
+        <span>reacted on <%= reaction.created_at.strftime("%Y-%m-%d %H:%M") %></span><br>
+        <%= link_to(item.title, item.url, target: "_blank") %>
+      </div>
+      <% if reaction.memo.present? %>
+      <div class="reaction-memo">
+        <p><%= reaction.memo %></p>
+      </div>
+      <% end %>
     </li>
   <% end %>
 </ul>
