@@ -42,7 +42,6 @@ h2, h3 {
   margin: 1em 0 0.5em;
 }
 
-
 ul {
   list-style: none;
   padding: 0;
@@ -450,4 +449,46 @@ img {
 
 .button-to-unreact {
   text-align: center;
+}
+
+.reaction-list li {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 20px 0.5em 0;
+  padding: 0.5em 0em;
+  border-top: 1px solid #aaaaaa;
+  line-height: 1.5em;
+}
+
+.reaction-user {
+  width: 24px;
+  margin: 0 10px 0 0;
+}
+
+.reaction-info {
+  width: 50%;
+  margin: 0 20px 0 0;
+}
+
+@media screen and (max-width: 768px) {
+  .reaction-info {
+    width: calc(100% - 34px);
+    margin: 0;
+  }
+}
+
+.reaction-memo {
+  width: calc(50% - 54px);
+}
+
+@media screen and (max-width: 768px) {
+  .reaction-memo {
+    width: 100%;
+  }
+}
+
+
+.reaction-memo p {
+  background-color: #ffffff;
+  padding: 0.75em 1em;
 }
