@@ -109,12 +109,18 @@ class Channel < ApplicationRecord
 
       guid = entry.entry_id || entry.url
 
-      og = OpenGraph.new(encoded_url)
+      image_url =
+        if guid.start_with?("yt:video:")
+          "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
+        else
+          OpenGraph.new(encoded_url).image
+        end
+
       parameters = {
         guid: guid,
         title: entry.title,
         url: encoded_url,
-        image_url: og.image,
+        image_url: image_url,
         published_at: entry.published,
       }
       self.items.find_or_initialize_by(guid: parameters[:guid]).update(parameters)
