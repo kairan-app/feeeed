@@ -18,15 +18,7 @@ class NotificationWebhook < ApplicationRecord
     content = "@#{user.name}'s recent pawprints 🐾"
 
     reactions.find_in_batches(batch_size: 10) { |sub_reactions|
-      embeds =
-        sub_reactions.map { |reaction|
-          {
-            title: [reaction.item.title, reaction.item.channel.title].join(" | "),
-            description: reaction.memo.present? ? "💬 #{reaction.memo}" : nil,
-            url: reaction.item.url,
-            thumbnail: { url: reaction.item.image_url },
-          }
-        }
+      embeds = sub_reactions.map(&:to_embed)
 
       sleep 2
       Faraday.post(

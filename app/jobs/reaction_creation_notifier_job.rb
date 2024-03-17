@@ -5,17 +5,9 @@ class ReactionCreationNotifierJob < ApplicationJob
 
     reaction = Reaction.find(reaction_id)
     user = reaction.user
-    item = reaction.item
 
     content = "@#{user.name} pawed!"
-    embeds = [
-      {
-        title: [item.title, item.channel.title].join(" | "),
-        description: reaction.memo.present? ? "💬 #{reaction.memo}" : nil,
-        url: item.url,
-        thumbnail: { url: item.image_url },
-      }
-    ]
+    embeds = [reaction.to_embed]
   
     Faraday.post(
       webhook_url, { content: "[#{Rails.env}] #{content}", embeds: }.to_json, "Content-Type" => "application/json"

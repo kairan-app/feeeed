@@ -15,4 +15,14 @@ class Item < ApplicationRecord
   def image_url_or_placeholder
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
   end
+
+  def to_embed
+    {
+      author: { name: [channel.title, URI.parse(self.url).host].join(" | "), url: channel.site_url },
+      title: self.title,
+      url: self.url,
+      thumbnail: { url: self.image_url },
+      timestamp: self.published_at.iso8601,
+    }
+  end
 end
