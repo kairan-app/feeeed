@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_12_132505) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_17_144036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_132505) do
     t.string "url", limit: 2083, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_notified_at"
     t.index ["user_id"], name: "index_notification_webhooks_on_user_id"
   end
 
