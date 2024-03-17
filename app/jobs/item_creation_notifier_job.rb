@@ -8,7 +8,6 @@ class ItemCreationNotifierJob < ApplicationJob
     return unless should_notify?(item)
 
     content = "[#{Rails.env}] New item saved"
-    p item.to_embed
     embeds = [item.to_embed]
 
     Faraday.post(
