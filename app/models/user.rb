@@ -28,11 +28,11 @@ class User < ApplicationRecord
     subscribed_channels.delete(channel)
   end
 
-  def add_pawprint(item, memo:)
+  def paw(item, memo:)
     pawprints.find_or_initialize_by(item: item).update(memo: memo.presence)
   end
 
-  def remove_pawprint(item)
+  def unpaw(item)
     pawprints.find_by(item: item).destroy
   end
 
