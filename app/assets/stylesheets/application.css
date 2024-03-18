@@ -189,7 +189,7 @@ aside nav ul li a:hover {
   content: "\e851";
 }
 
-.nav-icon-reactions::before {
+.nav-icon-pawprints::before {
   content: "\f8d7";
 }
 
@@ -201,7 +201,7 @@ aside nav ul li a:hover {
   content: "\e156";
 }
 
-.nav-icon-my-reactions::before {
+.nav-icon-my-pawprints::before {
   content: "\e87d";
 }
 
@@ -448,11 +448,11 @@ img {
   }
 }
 
-.button-to-unreact {
+.button-to-unpaw {
   text-align: center;
 }
 
-.reaction-list li {
+.pawprint-list li {
   display: flex;
   flex-wrap: wrap;
   margin: 0 20px 0.5em 0;
@@ -463,12 +463,12 @@ img {
 
 
 @media screen and (max-width: 768px) {
-  .reaction-list li {
+  .pawprint-list li {
     margin: 0 0 0.5em 0;
   }
 }
 
-.reaction-user {
+.pawprint-user {
   width: 24px;
   margin: 0 10px 0 0;
 
@@ -478,30 +478,30 @@ img {
   }
 }
 
-.reaction-info {
+.pawprint-info {
   width: 50%;
   margin: 0 20px 0 0;
 }
 
 @media screen and (max-width: 768px) {
-  .reaction-info {
+  .pawprint-info {
     width: calc(100% - 34px);
     margin: 0;
   }
 }
 
-.reaction-memo {
+.pawprint-memo {
   width: calc(50% - 54px);
 }
 
 @media screen and (max-width: 768px) {
-  .reaction-memo {
+  .pawprint-memo {
     width: 100%;
   }
 }
 
 
-.reaction-memo p {
+.pawprint-memo p {
   background-color: #ffffff;
   padding: 0.75em 1em;
 }

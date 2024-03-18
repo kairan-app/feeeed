@@ -1,0 +1,6 @@
+<section>
+  <h2>Pawprints</h2>
+  <%= paginate(@pawprints) %>
+  <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
+  <%= paginate(@pawprints) %>
+</section>
