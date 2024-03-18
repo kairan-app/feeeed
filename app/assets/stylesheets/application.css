@@ -121,6 +121,7 @@ a:hover {
 @media screen and (max-width: 768px) {
   .wrapper {
     margin: 0 auto 70px;
+    padding: 0 0 50px;
     width: calc(100% - 40px);
   }
 }
