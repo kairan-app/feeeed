@@ -121,6 +121,7 @@ a:hover {
 @media screen and (max-width: 768px) {
   .wrapper {
     margin: 0 auto 70px;
+    padding: 0 0 50px;
     width: calc(100% - 40px);
   }
 }
@@ -460,9 +461,21 @@ img {
   line-height: 1.5em;
 }
 
+
+@media screen and (max-width: 768px) {
+  .reaction-list li {
+    margin: 0 0 0.5em 0;
+  }
+}
+
 .reaction-user {
   width: 24px;
   margin: 0 10px 0 0;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
+  }
 }
 
 .reaction-info {
