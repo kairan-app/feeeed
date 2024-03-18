@@ -1,0 +1,3 @@
+<%= turbo_stream.replace(@item) do %>
+  <%= render(partial: "items/pawprint", locals: { item: @item }) %>
+<% end %>

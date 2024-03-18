@@ -1,7 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :channel
-  has_many :reactions, dependent: :destroy
-  has_many :reacted_users, through: :reactions, source: :user
+  has_many :pawprints, dependent: :destroy
+  has_many :pawed_users, through: :pawprints, source: :user
 
   validates :channel_id, presence: true
   validates :guid, presence: true, length: { maximum: 256 }, uniqueness: { scope: :channel_id }

@@ -1,4 +1,4 @@
-class Reaction < ApplicationRecord
+class Pawprint < ApplicationRecord
   belongs_to :user
   belongs_to :item
 
@@ -6,7 +6,7 @@ class Reaction < ApplicationRecord
   validates :item_id, presence: true, uniqueness: { scope: :user_id }
   validates :memo, length: { maximum: 300 }
 
-  after_create_commit { ReactionCreationNotifierJob.perform_later(self.id) }
+  after_create_commit { PawprintCreationNotifierJob.perform_later(self.id) }
 
   def to_embed
     channel = item.channel

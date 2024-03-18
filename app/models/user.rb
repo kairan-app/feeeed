@@ -4,8 +4,8 @@ class User < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :subscribed_channels, through: :subscriptions, source: :channel
   has_many :subscribed_items, through: :subscribed_channels, source: :items
-  has_many :reactions, dependent: :destroy
-  has_many :reacted_items, through: :reactions, source: :item
+  has_many :pawprints, dependent: :destroy
+  has_many :pawed_items, through: :pawprints, source: :item
   has_many :notification_webhooks, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..15 }
@@ -28,15 +28,15 @@ class User < ApplicationRecord
     subscribed_channels.delete(channel)
   end
 
-  def add_reaction(item, memo:)
-    reactions.find_or_initialize_by(item: item).update(memo: memo.presence)
+  def paw(item, memo:)
+    pawprints.find_or_initialize_by(item: item).update(memo: memo.presence)
   end
 
-  def remove_reaction(item)
-    reactions.find_by(item: item).destroy
+  def unpaw(item)
+    pawprints.find_by(item: item).destroy
   end
 
-  def reacted_to?(item)
-    reacted_items.include?(item)
+  def pawed?(item)
+    pawed_items.include?(item)
   end
 end

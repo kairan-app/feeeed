@@ -14,13 +14,13 @@ Rails.application.routes.draw do
   post   "/channels/:channel_id/subscription", to: "subscriptions#create", as: "channel_subscription"
   delete "/channels/:channel_id/subscription", to: "subscriptions#destroy"
   get    "/items",                             to: "items#index"
-  post   "/items/:item_id/reaction",           to: "reactions#create",     as: "item_reaction"
-  delete "/items/:item_id/reaction",           to: "reactions#destroy"
-  get    "/reactions",                         to: "reactions#index"
+  post   "/items/:item_id/pawprint",           to: "pawprints#create",     as: "item_pawprint"
+  delete "/items/:item_id/pawprint",           to: "pawprints#destroy"
+  get    "/pawprints",                         to: "pawprints#index"
   get    "/users",                             to: "users#index"
   get    "/@:user_name",                       to: "users#show",           as: "user", constraints: { user_name: /[^\/]+/ }
   get    "/my/inbox",                          to: "my/inbox#show",        as: "inbox"
-  get    "/my/reactions",                      to: "my/reactions#index",   as: "my_reactions"
+  get    "/my/pawprints",                      to: "my/pawprints#index",   as: "my_pawprints"
   get    "/my/profile",                        to: "my/profile#show",      as: "my_profile"
   put    "/my/profile",                        to: "my/profile#update"
 
