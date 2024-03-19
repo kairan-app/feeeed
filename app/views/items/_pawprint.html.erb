@@ -9,7 +9,7 @@
 
     <% if pawprint %>
       <p class="button-to-unpaw">
-        <%= link_to("Unpaw!", item_pawprint_path(item), method: :delete) %>
+        <%= link_to("Unpaw!", item_pawprint_path(item), data: { turbo_method: :delete }) %>
       </p>
     <% end %>
   <% end %>
