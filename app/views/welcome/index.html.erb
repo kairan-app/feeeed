@@ -13,3 +13,11 @@
   </p>
   <%= render(partial: "channels/cards", locals: { channels: @channels }) %>
 </section>
+
+<section>
+  <h2>Recent Pawprints</h2>
+  <p>
+    <%= link_to("All Pawprints", pawprints_path) %>
+  </p>
+  <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
+</section>
