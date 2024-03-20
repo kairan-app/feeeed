@@ -306,6 +306,7 @@ aside nav ul li a:hover {
 .main {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   width: calc(100% - 240px);
   margin: 0 0 0 240px;
 }
@@ -340,10 +341,10 @@ aside nav ul li a:hover {
 }
 
 .channel-card {
-  width: 210px;
+  width: calc(20% - 15px);
 
   img {
-    height: 210px;
+    height: 100%;
   }
 }
 
@@ -361,10 +362,10 @@ aside nav ul li a:hover {
 }
 
 .item-card {
-  width: 270px;
+  width: calc(25% - 15px);
 
   img {
-    height: 180px;
+    height: 100%;
   }
 }
 
@@ -380,7 +381,16 @@ aside nav ul li a:hover {
 }
 
 .card-image {
+  width: 100%;
   line-height: 0;
+}
+
+.channel-card .card-image {
+  aspect-ratio: 1 / 1;
+}
+
+.item-card .card-image {
+  aspect-ratio: 3 / 2;
 }
 
 @media screen and (max-width: 768px) {
@@ -507,7 +517,8 @@ img {
 }
 
 .main-column {
-  width: calc(100% - 360px);
+  width: calc(100% - 340px);
+  margin: 0 20px 0 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -517,18 +528,24 @@ img {
 }
 
 .sub-column {
-  width: 360px;
+  width: 320px;
+  position: sticky;
+  bottom: 50px;
 }
 
 @media screen and (max-width: 768px) {
   .sub-column {
     width: 100%;
+    position: relative;
+    bottom: auto;
   }
 }
 
 .sub-column .pawprint-info {
   width: calc(100% - 34px);
   margin: 0;
+  font-size: 0.9em;
+  line-height: 1.5em;
 
   span {
     display: inline-block;
@@ -538,4 +555,6 @@ img {
 
 .sub-column .pawprint-memo {
   width: 100%;
+  font-size: 0.9em;
+  line-height: 1.5em;
 }
