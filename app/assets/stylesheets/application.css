@@ -304,6 +304,8 @@ aside nav ul li a:hover {
 }
 
 .main {
+  display: flex;
+  flex-wrap: wrap;
   width: calc(100% - 240px);
   margin: 0 0 0 240px;
 }
@@ -461,7 +463,6 @@ img {
   line-height: 1.5em;
 }
 
-
 @media screen and (max-width: 768px) {
   .pawprint-list li {
     margin: 0 0 0.5em 0;
@@ -500,8 +501,41 @@ img {
   }
 }
 
-
 .pawprint-memo p {
   background-color: #ffffff;
   padding: 0.75em 1em;
+}
+
+.main-column {
+  width: calc(100% - 360px);
+}
+
+@media screen and (max-width: 768px) {
+  .main-column {
+    width: 100%;
+  }
+}
+
+.sub-column {
+  width: 360px;
+}
+
+@media screen and (max-width: 768px) {
+  .sub-column {
+    width: 100%;
+  }
+}
+
+.sub-column .pawprint-info {
+  width: calc(100% - 34px);
+  margin: 0;
+
+  span {
+    display: inline-block;
+    margin: 0 0 0em;
+  }
+}
+
+.sub-column .pawprint-memo {
+  width: 100%;
 }
