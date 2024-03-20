@@ -436,6 +436,7 @@ img {
 .profile {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
   align-items: center;
   margin: 2em 0;
 }
