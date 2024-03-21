@@ -1,28 +1,34 @@
-<h2><%= @channel.title %></h2>
+<div class="channel-profile">
 
-<% if @channel.description %>
-  <p><%= @channel.description %></p>
-<% end %>
-<ul>
-  <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
-  <li>Feed: <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
-</ul>
-<% if @channel.image_url %>
-  <p><%= image_tag(@channel.image_url, style: "max-height: 200px;") %>
-<% end %>
+  <h2><%= @channel.title %></h2>
 
-<p>
-  <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
-</p>
-<p>
-  <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
-</p>
+  <% if @channel.description %>
+    <p><%= @channel.description %></p>
+  <% end %>
 
-<% if @channel.stopper %>
-  <p style="padding: 20px; background-color: #ffdf89; color: #946c00;">
-    This channel has stopped updating
+  <ul>
+    <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
+    <li>Feed: <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
+  </ul>
+
+  <% if @channel.image_url %>
+    <p><%= image_tag(@channel.image_url, style: "max-height: 200px;") %>
+  <% end %>
+
+  <p>
+    <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
   </p>
-<% end %>
+  <p>
+    <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
+  </p>
+
+  <% if @channel.stopper %>
+    <p style="padding: 20px; background-color: #ffdf89; color: #946c00;">
+      This channel has stopped updating
+    </p>
+  <% end %>
+
+</div>
 
 <h3>Items</h3>
 
