@@ -306,7 +306,6 @@ aside nav ul li a:hover {
 .main {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
   width: calc(100% - 240px);
   margin: 0 0 0 240px;
 }
@@ -340,14 +339,6 @@ aside nav ul li a:hover {
   }
 }
 
-.channel-card {
-  width: calc(20% - 15px);
-
-  img {
-    height: 100%;
-  }
-}
-
 .channel-card ul {
   display: flex;
   flex-wrap: wrap;
@@ -361,22 +352,57 @@ aside nav ul li a:hover {
   line-height: 1em;
 }
 
-.item-card {
-  width: calc(25% - 15px);
+.channel-card {
+  width: calc(16.66666% - 15px);
 
   img {
+    width: 100%;
     height: 100%;
+  }
+}
+
+.item-card {
+  width: calc(20% - 15px);
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .channel-card {
+    width: calc(20% - 15px);
+  }
+
+  .item-card {
+    width: calc(25% - 15px);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .channel-card {
+    width: calc(25% - 15px);
+  }
+
+  .item-card {
+    width: calc(33.33333% - 15px);
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .channel-card {
+    width: calc(33.33333% - 15px);
+  }
+
+  .item-card {
+    width: calc(50% - 15px);
   }
 }
 
 @media screen and (max-width: 768px) {
   .channel-card, .item-card {
     width: calc(50% - 7.5px);
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
   }
 }
 
@@ -525,13 +551,12 @@ img {
 @media screen and (max-width: 768px) {
   .main-column {
     width: 100%;
+    margin: 0 0 0 0;
   }
 }
 
 .sub-column {
   width: 320px;
-  position: sticky;
-  bottom: 50px;
 }
 
 @media screen and (max-width: 768px) {
@@ -558,4 +583,61 @@ img {
   width: 100%;
   font-size: 0.9em;
   line-height: 1.5em;
+}
+
+.channel-profile {
+  display: flex;
+  flex-wrap: wrap;
+  width: calc(100% - 15px);
+  margin: 2em 0 0;
+  padding: 0 0 20px 0;
+  border-bottom: solid 1px #aaaaaa;
+}
+
+@media screen and (max-width: 768px) {
+  .channel-profile {
+    width: 100%;
+    margin: 1em 0 0;
+    padding: 0 0 20px 0;
+  }
+}
+
+.channel-profile-image {
+  width: 240px;
+  height: 240px;
+  margin-right: 30px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .channel-profile-image {
+    width: 240px;
+    height: 240px;
+    margin: 0 auto 20px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.channel-profile-info {
+  width: calc(100% - 270px);
+
+  h2 {
+    margin: 0 0 0.5em;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .channel-profile-info {
+    width: 100%;
+  }
 }
