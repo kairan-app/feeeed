@@ -339,14 +339,6 @@ aside nav ul li a:hover {
   }
 }
 
-.channel-card {
-  width: calc(20% - 15px);
-
-  img {
-    height: 100%;
-  }
-}
-
 .channel-card ul {
   display: flex;
   flex-wrap: wrap;
@@ -360,22 +352,57 @@ aside nav ul li a:hover {
   line-height: 1em;
 }
 
-.item-card {
-  width: calc(25% - 15px);
+.channel-card {
+  width: calc(16.66666% - 15px);
 
   img {
+    width: 100%;
     height: 100%;
+  }
+}
+
+.item-card {
+  width: calc(20% - 15px);
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .channel-card {
+    width: calc(20% - 15px);
+  }
+
+  .item-card {
+    width: calc(25% - 15px);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .channel-card {
+    width: calc(25% - 15px);
+  }
+
+  .item-card {
+    width: calc(33.33333% - 15px);
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .channel-card {
+    width: calc(33.33333% - 15px);
+  }
+
+  .item-card {
+    width: calc(50% - 15px);
   }
 }
 
 @media screen and (max-width: 768px) {
   .channel-card, .item-card {
     width: calc(50% - 7.5px);
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
   }
 }
 
