@@ -2,7 +2,7 @@ class NotificationWebhook < ApplicationRecord
   belongs_to :user
 
   validates :user_id, presence: true
-  validates :url, presence: true, length: { maximum: 2083 }
+  validates :url, presence: true, length: { maximum: 2083 }, format: { with: URI.regexp }
   validates :mode, presence: true
 
   enum mode: {
