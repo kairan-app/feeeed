@@ -3,6 +3,12 @@ class NotificationWebhook < ApplicationRecord
 
   validates :user_id, presence: true
   validates :url, presence: true, length: { maximum: 2083 }
+  validates :mode, presence: true
+
+  enum mode: {
+    my_subscribed_items: 0,
+    my_pawprints: 1,
+  }
 
   class << self
     def notify
