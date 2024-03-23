@@ -6,7 +6,7 @@ class NotificationWebhook < ApplicationRecord
   validates :mode, presence: true
 
   enum mode: {
-    my_subscribed_item: 0,
+    my_subscribed_items: 0,
     my_pawprints: 1,
   }
 
