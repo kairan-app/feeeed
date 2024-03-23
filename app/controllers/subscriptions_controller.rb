@@ -4,6 +4,7 @@ class SubscriptionsController < ApplicationController
 
   def create
     current_user.subscribe(@channel)
+    Disco.post_content("@#{current_user.name} subscribed to #{@channel.title}")
 
     redirect_to @channel
   end
