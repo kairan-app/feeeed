@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   post   "/items/:item_id/pawprint",           to: "pawprints#create",               as: "item_pawprint"
   delete "/items/:item_id/pawprint",           to: "pawprints#destroy"
   get    "/pawprints",                         to: "pawprints#index"
+  post   "/notification_webhooks",             to: "notification_webhooks#create"
+  delete "/notification_webhooks/:id",         to: "notification_webhooks#destroy",  as: "notification_webhook"
   get    "/users",                             to: "users#index"
   get    "/@:user_name",                       to: "users#show",                     as: "user", constraints: { user_name: /[^\/]+/ }
   get    "/my",                                to: "my#index"

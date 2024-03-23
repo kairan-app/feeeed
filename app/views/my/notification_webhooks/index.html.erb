@@ -1,5 +1,18 @@
 <section>
   <h2>My Notification Webhooks</h2>
+  <%= form_for(@new_notification_webhook) do |form| %>
+    <div>
+      <%= form.label :mode %>
+      <%= form.select :mode, NotificationWebhook.modes.keys %>
+    </div>
+    <div>
+      <%= form.label :url %>
+      <%= form.text_field :url %>
+    </div>
+    <div>
+      <%= form.submit "Add" %>
+    </div>
+  <% end %>
 
   <% if @notification_webhooks.count > 0 %>
   <table>
@@ -9,6 +22,7 @@
         <th>Webhook URL</th>
         <th>Created</th>
         <th>Last Notified</th>
+        <th>Action</th>
       </tr>
       <% @notification_webhooks.each do |nw| %>
       <tr>
@@ -16,6 +30,7 @@
         <td><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
         <td><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
         <td><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+        <td><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
       </tr>
       <% end %>
     </tbody>
