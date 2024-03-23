@@ -10,7 +10,7 @@
     <% if logged_in? %>
     <li><%= link_to("My Inbox", inbox_path, class: 'nav-icon nav-icon-my-inbox') %></li>
     <li><%= link_to("My Pawprints", my_pawprints_path, class: 'nav-icon nav-icon-my-pawprints') %></li>
-    <li><%= link_to("My Profile", my_profile_path, class: 'nav-icon nav-icon-my-profile') %></li>
+    <li><%= link_to("Settings", my_path, class: 'nav-icon nav-icon-my-profile') %></li>
     <li><%= link_to("@#{current_user.name}", user_path(user_name: current_user.name), class: 'nav-icon nav-icon-my-profile') %></li>
     <% end %>
   </ul>
