@@ -1,8 +1,5 @@
 class ItemCreationNotifierJob < ApplicationJob
   def perform(item_id)
-    webhook_url = ENV["DISCORD_WEBHOOK_URL"]
-    return if webhook_url.nil?
-
     item = Item.find(item_id)
 
     return unless should_notify?(item)
@@ -10,9 +7,7 @@ class ItemCreationNotifierJob < ApplicationJob
     content = "[#{Rails.env}] New item saved"
     embeds = [item.to_embed]
 
-    Faraday.post(
-      webhook_url, { content: , embeds: }.to_json, "Content-Type" => "application/json"
-    )
+    Disco.post({ content: , embeds: })
   end
 
   def should_notify?(item)
