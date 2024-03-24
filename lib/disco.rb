@@ -11,19 +11,14 @@ module Disco
       handle_response(response)
     end
 
-    def post_content(content)
-      payload = { content: content }
-      post(payload)
-    end
-
     private
 
     def handle_response(response)
       case response.status
       when 200..299
-        puts "Message sent successfully"
+        puts "[Diso] Message sent successfully"
       else
-        puts "Error sending message: #{response.body}"
+        puts "[Diso] Error sending message: #{response.body}"
       end
     end
   end
