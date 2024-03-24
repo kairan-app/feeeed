@@ -18,7 +18,7 @@ class ChannelsController < ApplicationController
   def create
     url = params[:url]
 
-    Disco.post_content("@#{current_user.name} try to add #{url}")
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} try to add #{url}")
 
     if channel = Channel.add(url)
       flash[:notice] = "Channel added successfully"

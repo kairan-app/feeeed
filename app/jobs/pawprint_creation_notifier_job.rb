@@ -6,6 +6,6 @@ class PawprintCreationNotifierJob < ApplicationJob
     content = "@#{user.name} pawed!"
     embeds = [pawprint.to_embed]
 
-    Disco.post({ content: "[#{Rails.env}] #{content}", embeds: })
+    DiscoPosterJob.perform_later(content:, embeds:)
   end
 end

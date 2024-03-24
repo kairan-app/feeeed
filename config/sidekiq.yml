@@ -1,5 +1,9 @@
 ---
 :concurrency: 5
+:max_retries: 5
 :queues:
   - default
-:max_retries: 5
+  - disco
+:limits:
+  default: 4
+  disco: 1
