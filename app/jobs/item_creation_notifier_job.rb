@@ -7,7 +7,7 @@ class ItemCreationNotifierJob < ApplicationJob
     content = "[#{Rails.env}] New item saved"
     embeds = [item.to_embed]
 
-    Disco.post({ content: , embeds: })
+    DiscoPosterJob.perform_later(content:, embeds:)
   end
 
   def should_notify?(item)
