@@ -4,7 +4,7 @@ class ItemCreationNotifierJob < ApplicationJob
 
     return unless should_notify?(item)
 
-    content = "[#{Rails.env}] New item saved"
+    content = "New item saved"
     embeds = [item.to_embed]
 
     DiscoPosterJob.perform_later(content:, embeds:)
