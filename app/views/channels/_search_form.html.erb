@@ -1,0 +1,4 @@
+  <%= search_form_for(q || Channel.ransack, url: channels_path) do |form| %>
+    <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont) %>
+    <%= form.submit("Search Channels") %>
+  <% end %>
