@@ -136,7 +136,10 @@ class Channel < ApplicationRecord
   end
 
   def favicon_url
-    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(site_url).host}"
+    url = site_url || items.order(id: :desc).first&.url
+    return "" if url.nil?
+
+    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(url).host}"
   end
 
   def image_url_or_placeholder

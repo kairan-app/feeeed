@@ -13,7 +13,9 @@
     <% end %>
 
     <ul>
+      <% if @channel.site_url %>
       <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
+      <% end %>
       <li>Feed: <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
     </ul>
 
