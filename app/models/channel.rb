@@ -17,6 +17,14 @@ class Channel < ApplicationRecord
   scope :not_stopped, -> { where.missing(:stopper) }
 
   class << self
+    def ransackable_attributes(auth_object = nil)
+      %w[title description site_url feed_url]
+    end
+
+    def ransackable_associations(auth_object = nil)
+      []
+    end
+
     def fetch_and_save_items
       not_stopped.find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
     end

@@ -2,8 +2,9 @@ class ChannelsController < ApplicationController
   before_action :login_required, only: %i[create]
 
   def index
+    @q = Channel.ransack(params[:q])
     page = (params[:page].presence || 1).to_i
-    @channels = Channel.order(id: :desc).page(page)
+    @channels = @q.result.order(updated_at: :desc).page(page)
 
     @title = page == 1 ? "Channels" : "Channels (Page #{page})"
   end
