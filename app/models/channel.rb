@@ -8,7 +8,7 @@ class Channel < ApplicationRecord
 
   validates :title, presence: true, length: { maximum: 256 }
   validates :description, length: { maximum: 1024 }
-  validates :site_url, presence: true, length: { maximum: 2083 }
+  validates :site_url, length: { maximum: 2083 }
   validates :feed_url, presence: true, length: { maximum: 2083 }, uniqueness: true
   validates :image_url, length: { maximum: 2083 }
 
