@@ -39,6 +39,7 @@ h1 {
 }
 
 h2, h3 {
+  width: 100%;
   margin: 1em 0 0.5em;
 }
 
@@ -330,6 +331,7 @@ aside nav ul li a:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
+  width: 100%;
 }
 
 .card {
