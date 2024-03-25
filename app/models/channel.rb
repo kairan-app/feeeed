@@ -8,7 +8,7 @@ class Channel < ApplicationRecord
 
   validates :title, presence: true, length: { maximum: 256 }
   validates :description, length: { maximum: 1024 }
-  validates :site_url, presence: true, length: { maximum: 2083 }
+  validates :site_url, length: { maximum: 2083 }
   validates :feed_url, presence: true, length: { maximum: 2083 }, uniqueness: true
   validates :image_url, length: { maximum: 2083 }
 
@@ -136,7 +136,10 @@ class Channel < ApplicationRecord
   end
 
   def favicon_url
-    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(site_url).host}"
+    url = site_url || items.order(id: :desc).first&.url
+    return "" if url.nil?
+
+    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(url).host}"
   end
 
   def image_url_or_placeholder

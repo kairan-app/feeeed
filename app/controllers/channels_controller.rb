@@ -20,13 +20,17 @@ class ChannelsController < ApplicationController
 
     DiscoPosterJob.perform_later(content: "@#{current_user.name} try to add #{url}")
 
-    if channel = Channel.add(url)
+    channel = Channel.add(url)
+
+    if channel.nil?
+      flash[:alert] = "Can't find feed from '#{url}'"
+      redirect_to root_path
+    elsif !channel.persisted?
+      flash[:alert] = "Can't save channel from '#{url}'"
+      redirect_to root_path
+    else
       flash[:notice] = "Channel added successfully"
       redirect_to channel
-    else
-      flash[:alert] = "Can't find feed from '#{url}'"
-
-      redirect_to root_path
     end
   end
 end
