@@ -331,6 +331,10 @@ aside nav ul li a:hover {
   }
 }
 
+.main>section {
+  width: 100%;
+}
+
 .cards {
   display: flex;
   flex-wrap: wrap;
