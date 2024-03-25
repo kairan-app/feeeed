@@ -219,6 +219,10 @@ aside nav ul li a:hover {
   content: "\e853";
 }
 
+.nav-icon-setting::before {
+  content: "\e8b8";
+}
+
 /* Hamburger Menu for Smatrphone */
 @media screen and (max-width: 768px) {
   .hamburger-menu-list {
