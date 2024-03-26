@@ -18,7 +18,7 @@
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons+Outlined);
 
 body {
-  background-color: #ECF2FA;
+  background-color: #ecf2fa;
   font-family:
     "Helvetica Neue",
     "Arial",
@@ -39,6 +39,7 @@ h1 {
 }
 
 h2, h3 {
+  width: 100%;
   margin: 1em 0 0.5em;
 }
 
@@ -87,7 +88,7 @@ a:hover {
   width: 100%;
   margin: 0;
   padding: 10px 20px;
-  background-color: #3D8BCD;
+  background-color: #3d8bcd;
 
   input[type="text"] {
     margin: 0 0 0 25%;
@@ -218,6 +219,10 @@ aside nav ul li a:hover {
   content: "\e853";
 }
 
+.nav-icon-setting::before {
+  content: "\e8b8";
+}
+
 /* Hamburger Menu for Smatrphone */
 @media screen and (max-width: 768px) {
   .hamburger-menu-list {
@@ -257,7 +262,7 @@ aside nav ul li a:hover {
   display: block;
   width: calc(100% + 40px);
   height: 100vh;
-  background-color: #000;
+  background-color: #000000;
   opacity: 0.4;
   z-index: 2;
 }
@@ -292,7 +297,7 @@ aside nav ul li a:hover {
   display: block;
   width: 20px;
   height: 1px;
-  background-color: #000;
+  background-color: #000000;
   transition: 0.3s;
 }
 
@@ -326,10 +331,15 @@ aside nav ul li a:hover {
   }
 }
 
+.main>section {
+  width: 100%;
+}
+
 .cards {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
+  width: 100%;
 }
 
 .card {
