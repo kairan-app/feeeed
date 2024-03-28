@@ -1,7 +1,21 @@
 <section>
   <h2>Settings</h2>
-  <ul>
-    <li><%= link_to("My Profile", my_profile_path) %></li>
-    <li><%= link_to("My Notification Webhooks", my_notification_webhooks_path) %></li>
-  </ul>
+
+<div class="cards">
+
+  <div class="card item-card setting-card">
+    <div class="card-image">
+      <%= link_to("", my_profile_path, class: 'nav-icon nav-setting nav-icon-profile-setting') %>
+    </div>
+    <h3 class="card-title"><%= link_to("My Profile", my_profile_path) %></h3>
+  </div>
+  <div class="card item-card setting-card">
+    <div class="card-image">
+      <%= link_to("", my_notification_webhooks_path, class: 'nav-icon nav-setting nav-icon-webhook-setting') %>
+    </div>
+    <h3 class="card-title"><%= link_to("My Notification Webhooks", my_notification_webhooks_path) %></h3>
+  </div>
+
+  </div>
+
 </section>

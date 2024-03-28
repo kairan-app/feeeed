@@ -223,6 +223,14 @@ aside nav ul li a:hover {
   content: "\e8b8";
 }
 
+.nav-icon-profile-setting::before {
+  content: "\ea67";
+}
+
+.nav-icon-webhook-setting::before {
+  content: "\eb92";
+}
+
 /* Hamburger Menu for Smatrphone */
 @media screen and (max-width: 768px) {
   .hamburger-menu-list {
@@ -659,4 +667,88 @@ img {
   .channel-profile-info {
     width: 100%;
   }
+}
+
+.setting-card {
+  width: calc(50% - 15px);
+  max-width: 360px;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-card {
+    width: 100%;
+    max-width: inherit;
+  }
+}
+
+.setting-card .card-image {
+  background-color: #ffffff;
+}
+
+
+@media screen and (max-width: 768px) {
+  .setting-card .card-image {
+    height: 66.66666vw;
+  }
+}
+
+.setting-card a:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.nav-setting {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.nav-setting::before {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  padding: 0 0 0 0;
+  font-size: 5em;
+  font-weight: 100;
+  color: #dddddd;
+}
+
+.setting-list {
+  margin: 0 20px 0.5em 0;
+  padding: 0.5em 0;
+  border-top: 1px solid #aaaaaa;
+  line-height: 1.5em;
+}
+
+.setting-list p {
+  margin: 0 0 0.25em;
+  padding: 0;
+}
+
+.setting-list input, .setting-list select {
+  margin: 0 0 1em;
+  padding: 0.25em 0.5em;
+}
+
+.setting-list input[type="text"i], .setting-list select {
+  width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-list input[type="text"i], .setting-list select {
+    width: 100%;
+  }
+}
+
+
+.setting-list input[type="submit"i] {
+  padding: 0.25em 1em;
+  background-color: #333333;
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
 }
