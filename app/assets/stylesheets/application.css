@@ -669,9 +669,27 @@ img {
   }
 }
 
+.setting-card {
+  width: calc(50% - 15px);
+  max-width: 360px;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-card {
+    width: 100%;
+    max-width: inherit;
+  }
+}
 
 .setting-card .card-image {
   background-color: #ffffff;
+}
+
+
+@media screen and (max-width: 768px) {
+  .setting-card .card-image {
+    height: 66.66666vw;
+  }
 }
 
 .setting-card a:hover {
