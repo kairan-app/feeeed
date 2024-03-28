@@ -697,3 +697,40 @@ img {
   font-weight: 100;
   color: #dddddd;
 }
+
+.setting-list {
+  margin: 0 20px 0.5em 0;
+  padding: 0.5em 0;
+  border-top: 1px solid #aaaaaa;
+  line-height: 1.5em;
+}
+
+.setting-list p {
+  margin: 0 0 0.25em;
+  padding: 0;
+}
+
+.setting-list input, .setting-list select {
+  margin: 0 0 1em;
+  padding: 0.25em 0.5em;
+}
+
+.setting-list input[type="text"i], .setting-list select {
+  width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-list input[type="text"i], .setting-list select {
+    width: 100%;
+  }
+}
+
+
+.setting-list input[type="submit"i] {
+  padding: 0.25em 1em;
+  background-color: #333333;
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+}

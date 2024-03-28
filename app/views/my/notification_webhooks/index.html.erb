@@ -1,16 +1,14 @@
 <section>
   <h2>My Notification Webhooks</h2>
   <%= form_for(@new_notification_webhook) do |form| %>
-    <div>
-      <%= form.label :mode %>
-      <%= form.select :mode, NotificationWebhook.modes.keys %>
-    </div>
-    <div>
-      <%= form.label :url %>
-      <%= form.text_field :url %>
-    </div>
-    <div>
-      <%= form.submit "Add" %>
+    <div class="setting-list">
+        <p><%= form.label :mode %></p>
+        <%= form.select :mode, NotificationWebhook.modes.keys %>
+        <p><%= form.label :url %></p>
+        <%= form.text_field :url %>
+      <div>
+        <%= form.submit "Add" %>
+      </div>
     </div>
   <% end %>
 

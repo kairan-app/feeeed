@@ -1,8 +1,12 @@
 <section>
   <h2>My Profile</h2>
   <%= form_tag(my_profile_path, method: :put) do |form| %>
-    <p>Username</p>
-    <%= text_field_tag(:name, @user.name) %>
-    <%= submit_tag("Update") %>
+    <div class="setting-list">
+      <p>Username</p>
+      <%= text_field_tag(:name, @user.name) %>
+      <div>
+        <%= submit_tag("Update") %>
+      </div>
+    </div>
   <% end %>
 </section>
