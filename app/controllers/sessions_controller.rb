@@ -9,9 +9,16 @@ class SessionsController < ApplicationController
       params[:credential],
       aud: Rails.application.credentials.google_auth_app.client_id
     )
+    email = payload["email"]
+
+    unless ENV["ALLOWED_EMAILS"].split(",").include?(email)
+      DiscoPosterJob.perform_later(content: "#{email} tried to log in")
+      return redirect_to root_path
+    end
+
     user = User.find_or_initialize_by(google_guid: payload["sub"])
-    user.email ||= payload["email"]
-    user.name ||= payload["email"].split("@").first
+    user.email ||= email
+    user.name ||= email.split("@").first
     user.icon_url = payload["picture"]
     user.save
 
