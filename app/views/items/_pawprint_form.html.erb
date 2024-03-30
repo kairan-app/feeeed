@@ -1,4 +1,4 @@
-<%= turbo_frame_tag(item) do %>
+<%= turbo_frame_tag(id_of_pawprint_form_for(item)) do %>
   <%= form_tag(item_pawprint_path(item), method: :post) do %>
     <%= hidden_field_tag(:form_mode, "pawprint_form") %>
     <%= text_field_tag(:memo, pawprint&.memo, placeholder: "Memo", style: "width: 80%; padding: 4px 8px;") %>

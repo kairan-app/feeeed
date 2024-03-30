@@ -26,9 +26,12 @@
               <h4 style="width: 80%;">
                 <%= link_to(item.title, item.url, target: "_blank") %>
               </h4>
-              <p style="margin-bottom: 6px; font-size: 90%; color: #666;">
-                <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
-              </p>
+              <div style="position: relative; width: 80%;">
+                <p style="margin-bottom: 6px; font-size: 90%; color: #666;">
+                  <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+                </p>
+                <span style="position: absolute; top: 0; right: 0;">Skip</span>
+              </div>
               <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
             </div>
           </li>
