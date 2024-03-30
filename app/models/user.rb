@@ -29,7 +29,9 @@ class User < ApplicationRecord
   end
 
   def paw(item, memo:)
-    pawprints.find_or_initialize_by(item: item).update(memo: memo.presence)
+    pawprint = pawprints.find_or_initialize_by(item: item)
+    pawprint.update(memo: memo.presence)
+    pawprint
   end
 
   def unpaw(item)

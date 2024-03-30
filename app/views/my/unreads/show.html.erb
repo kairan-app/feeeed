@@ -1,0 +1,44 @@
+<section>
+  <h2>Unreads</h2>
+  <p>Showing unreads from the last <%= @days_before %> days</p>
+  <p>
+    <%= link_to((@days_before - 1).to_s + " days", unreads_path(days_before: @days_before - 1)) %>
+    |
+    <%= link_to((@days_before + 1).to_s + " days", unreads_path(days_before: @days_before + 1)) %>
+  </p>
+  <% @channel_and_items.each do |channel, items| %>
+    <div style="margin-bottom: 20px; border-bottom: 1px solid #999;">
+      <h3>
+        <% if channel.image_url %>
+        <%= image_tag(channel.image_url, size: "64x64", style: "margin-right: 6px;") %>
+        <% end %>
+        <span style="display: inline-block; line-height: 64px; vertical-align: top;">
+          <%= link_to(channel.title, channel) %>
+        </span>
+      </h3>
+      <ul>
+        <% items.sort_by(&:published_at).reverse.take(6).each do |item| %>
+          <li style="position:relative; margin-bottom: 16px;">
+            <div style="position: absolute; top: 0; left: 0; width: 96px; height: 54px; display: inline-block; margin-right: 6px;">
+              <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%", style: "object-fit: cover;") %>
+            </div>
+            <div style="padding-left: 106px">
+              <h4 style="width: 80%;">
+                <%= link_to(item.title, item.url, target: "_blank") %>
+              </h4>
+              <p style="margin-bottom: 6px; font-size: 90%; color: #666;">
+                <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+              </p>
+              <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
+            </div>
+          </li>
+        <% end %>
+        <% if items.size > 6 %>
+          <p>
+            Check out more unreads on <%= link_to(channel.title, channel) %>
+          </p>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</section>
