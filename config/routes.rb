@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   get    "/items",                             to: "items#index"
   post   "/items/:item_id/pawprint",           to: "pawprints#create",               as: "item_pawprint"
   delete "/items/:item_id/pawprint",           to: "pawprints#destroy"
+  post   "/items/:item_id/skip",               to: "item_skips#create",              as: "item_skip"
+  delete "/items/:item_id/skip",               to: "item_skips#destroy"
   get    "/pawprints",                         to: "pawprints#index"
   post   "/notification_webhooks",             to: "notification_webhooks#create"
   delete "/notification_webhooks/:id",         to: "notification_webhooks#destroy",  as: "notification_webhook"

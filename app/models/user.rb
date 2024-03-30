@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :subscribed_items, through: :subscribed_channels, source: :items
   has_many :pawprints, dependent: :destroy
   has_many :pawed_items, through: :pawprints, source: :item
+  has_many :item_skips, dependent: :destroy
   has_many :notification_webhooks, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..15 }
@@ -40,5 +41,13 @@ class User < ApplicationRecord
 
   def pawed?(item)
     pawed_items.include?(item)
+  end
+
+  def skip(item)
+    item_skips.create(item: item)
+  end
+
+  def unskip(item)
+    item_skips.find_by(item: item).destroy
   end
 end

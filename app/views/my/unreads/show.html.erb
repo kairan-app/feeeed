@@ -18,6 +18,7 @@
       </h3>
       <ul>
         <% items.sort_by(&:published_at).reverse.take(6).each do |item| %>
+          <%= turbo_frame_tag(item) do %>
           <li style="position:relative; margin-bottom: 16px;">
             <div style="position: absolute; top: 0; left: 0; width: 96px; height: 54px; display: inline-block; margin-right: 6px;">
               <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%", style: "object-fit: cover;") %>
@@ -30,11 +31,12 @@
                 <p style="margin-bottom: 6px; font-size: 90%; color: #666;">
                   <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
                 </p>
-                <span style="position: absolute; top: 0; right: 0;">Skip</span>
+                <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }, style: "position: absolute; top: 0; right: 0;") %>
               </div>
               <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
             </div>
           </li>
+          <% end %>
         <% end %>
         <% if items.size > 6 %>
           <p>
