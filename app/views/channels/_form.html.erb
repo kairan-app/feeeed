@@ -1,8 +1,19 @@
 <% if logged_in? %>
-<div class="channel-form">
-  <%= form_tag(channels_path) do %>
-    <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
-    <%= submit_tag("Add") %>
-  <% end%>
-</div>
+<nav>
+  <input type="checkbox" name="channel-registration-form" id="channel-registration-form" class="channel-registration-form-wrap-input"/>
+  <label for="channel-registration-form" class="channel-registration-form-wrap-bg"></label>
+  <div class="channel-registration-form-wrap">
+    <div class="channel-form">
+      <p>Channel Registration Form</p>
+      <%= form_tag(channels_path) do %>
+        <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
+        <%= submit_tag("Add") %>
+      <% end%>
+    </div>
+  </div>
+  <label for="channel-registration-form" class="channel-registration-form-button">
+    <span class="channel-registration-form-button-mark"></span>
+    <span class="channel-registration-form-button-mark"></span>
+  </label>
+</nav>
 <% end %>
