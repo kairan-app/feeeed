@@ -1,5 +1,5 @@
 <% if logged_in? %>
-  <%= turbo_frame_tag(item) do %>
+  <%= turbo_frame_tag(id_of_pawprint_form_for(item)) do %>
     <% pawprint = item.pawprints.find_by(user: current_user) %>
 
     <%= form_tag(item_pawprint_path(item), method: :post) do %>

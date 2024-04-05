@@ -9,10 +9,12 @@ class PawprintsController < ApplicationController
   end
 
   def create
-    current_user.paw(@item, memo: params[:memo])
+    @form_mode = params[:form_mode]
+    @pawprint = current_user.paw(@item, memo: params[:memo])
   end
 
   def destroy
+    @form_mode = params[:form_mode]
     current_user.unpaw(@item)
   end
 
