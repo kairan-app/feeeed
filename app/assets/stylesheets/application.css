@@ -867,18 +867,18 @@ img {
   cursor: pointer;
 }
 
-.unreads-component {
+.channel-and-items-component {
   margin: 20px 20px 20px 0;
   border-top: 1px solid #999;
 }
 
 @media screen and (max-width: 768px) {
-  .unreads-component {
+  .channel-and-items-component {
     margin: 20px 0;
   }
 }
 
-.unreads-channel {
+.channel-and-items-component-channel {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
@@ -897,7 +897,7 @@ img {
   }
 }
 
-.unreads-item-list li {
+.channel-and-items-component-item-list li {
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -908,12 +908,12 @@ img {
 }
 
 @media screen and (max-width: 768px) {
-  .unreads-item-list li {
+  .channel-and-items-component-item-list li {
     padding: 1em 0em;
   }
 }
 
-.unreads-item-image {
+.channel-and-items-component-item-image {
   width: 96px;
   height: 64px;
   margin: 0 10px 0 0;
@@ -923,34 +923,34 @@ img {
   }
 }
 
-@media screen and (max-width: 768px) {
-  .unreads-item-image {
+@media screen and (max-width: 1200px) {
+  .channel-and-items-component-item-image {
     width: 96px;
     height: 64px;
     margin: 0 10px 8px 0;
   }
 }
 
-.unreads-item-info {
+.channel-and-items-component-item-info {
   width: calc(50% - 86px);
   margin: 0 20px 0 0;
 }
 
-@media screen and (max-width: 768px) {
-  .unreads-item-info {
+@media screen and (max-width: 1200px) {
+  .channel-and-items-component-item-info {
     width: calc(100% - 106px);
     margin: 0;
   }
 }
 
-.unreads-item-skip {
+.channel-and-items-component-item-skip {
   position: relative;
   top: 0px;
   right: 0px;
   width: 58px;
 }
 
-.unreads-item-skip a {
+.channel-and-items-component-item-skip a {
   display: inline-block;
   width: 50px;
   padding: 6px 0px;
@@ -960,17 +960,39 @@ img {
   border-radius: 2px;
 }
 
-.unreads-item-memo {
+.channel-and-items-component-item-memo {
   width: calc(50% - 100px);
 }
 
-@media screen and (max-width: 768px) {
-  .unreads-item-memo {
+@media screen and (max-width: 1200px) {
+  .channel-and-items-component-item-memo {
     width: calc(100% - 58px);
   }
 }
 
-.unreads-item-memo p {
+.channel-and-items-component-item-memo-welcome {
+  width: calc(50% - 40px);
+}
+
+@media screen and (max-width: 1200px) {
+  .channel-and-items-component-item-memo-welcome {
+    width: 100%;
+  }
+}
+
+.channel-and-items-component-item-memo p {
   background-color: #ffffff;
   padding: 0.75em 1em;
+}
+
+.channel-and-items-component-item-memo p.button-to-unpaw {
+  background-color: inherit;
+  text-align: right;
+  padding: 0.25em 0 0;
+}
+
+@media screen and (max-width: 1200px) {
+  .channel-and-items-component-item-memo p.button-to-unpaw {
+    padding: 0.25em 5px 0 0;
+  }
 }
