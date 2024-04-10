@@ -1,6 +1,6 @@
 <div class="main-column">
   <h2>Recent Channel & Items</h2>
-  <% @channel_and_items_for_welcome.each do |channel, items| %>
+  <% @channels.each do |channel| %>
     <div class="channel-and-items-component">
       <h3 class="channel-and-items-component-channel">
         <% if channel.image_url %>
@@ -11,7 +11,7 @@
         </span>
       </h3>
       <ul class="channel-and-items-component-item-list">
-        <% items.sort_by(&:published_at).reverse.take(3).each do |item| %>
+        <% channel.items.order(id: :desc).limit(3).each do |item| %>
           <%= turbo_frame_tag(item) do %>
           <li>
             <div class="channel-and-items-component-item-image">
@@ -23,24 +23,10 @@
             </h4>
             <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
           </div>
-          <div class="channel-and-items-component-item-memo channel-and-items-component-item-memo-welcome">
-            <%= render(partial: "items/pawprint", locals: { item: item }) %>
-          </div>
           </li>
           <% end %>
         <% end %>
       </ul>
     </div>
   <% end %>
-
-</div>
-
-<div class="sub-column">
-  <section>
-    <h2>Recent Pawprints</h2>
-    <p>
-      <%= link_to("All Pawprints", pawprints_path) %>
-    </p>
-    <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
-  </section>
 </div>
