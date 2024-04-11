@@ -12,17 +12,31 @@
   </head>
 
   <body>
+    <header>
+      <h1><%= link_to image_tag("logo.svg"), root_path %></h1>
+      <%= render(partial: "layouts/menu") %>
+      <%= render(partial: "layouts/google_login") %>
+    </header>
     <div class="wrapper">
-      <aside>
-        <h1><%= link_to image_tag("logo.svg"), root_path %></h1>
-        <%= render(partial: "layouts/menu") %>
-      </aside>
       <div class="main">
         <%= render(partial: "layouts/flash_messages") %>
         <%= yield %>
       </div>
     </div>
-    <%= render(partial: "layouts/google_login") %>
     <%= render(partial: "channels/form") %>
+    <footer>
+    <!-- 一時的に全ページのメニューを設置 -->
+    <ul>
+      <li><%= link_to("Channels", channels_path) %></li>
+      <li><%= link_to("Items", items_path) %></li>
+      <li><%= link_to("Pawprints", pawprints_path) %></li>
+      <li><%= link_to("Users", users_path) %></li>
+      <li><%= link_to("Inbox", inbox_path) %></li>
+      <li><%= link_to("Unreads", unreads_path) %></li>
+      <li><%= link_to("Settings", my_path) %></li>
+    </ul>
+
+    <p>© rururu</p>
+    </footer>
   </body>
 </html>
