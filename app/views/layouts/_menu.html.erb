@@ -1,25 +1,31 @@
 <nav>
+  <%= render(partial: "channels/search_form", locals: { q: @q }) %>
+
+  <% if logged_in? %>
+  <ul class="pc-menu">
+    <li><%= link_to("Unreads", unreads_path, class: 'nav-icon nav-icon-my-inbox') %></li>
+    <li><%= link_to("Settings", my_path, class: 'nav-icon nav-icon-setting') %></li>
+  </ul>
+
   <input type="checkbox" name="hamburger" id="hamburger" class="hamburger-menu-input"/>
   <label for="hamburger" class="hamburger-menu-bg"></label>
   <ul class="hamburger-menu-list">
-    <li><%= link_to("Channels", channels_path, class: 'nav-icon nav-icon-channels') %></li>
-    <li><%= link_to("Items", items_path, class: 'nav-icon nav-icon-items') %></li>
-    <li><%= link_to("Pawprints", pawprints_path, class: 'nav-icon nav-icon-pawprints') %></li>
-    <li><%= link_to("Users", users_path, class: 'nav-icon nav-icon-users') %></li>
-
-    <% if logged_in? %>
-    <li><%= link_to("Inbox", inbox_path, class: 'nav-icon nav-icon-my-inbox') %></li>
-    <li><%= link_to("Unreads", unreads_path, class: 'nav-icon nav-icon-my-inbox') %></li>
     <li><%= link_to("My Pawprints", my_pawprints_path, class: 'nav-icon nav-icon-my-pawprints') %></li>
-    <li><%= link_to("Settings", my_path, class: 'nav-icon nav-icon-setting') %></li>
-    <li><%= link_to("@#{current_user.name}", user_path(user_name: current_user.name), class: 'nav-icon nav-icon-my-profile') %></li>
-    <% end %>
-
-    <%= render(partial: "channels/search_form", locals: { q: @q }) %>
+    <li><%= link_to("My Page", user_path(user_name: current_user.name), class: 'nav-icon nav-icon-my-profile') %></li>
+    <li><%= link_to("Log out", session_path, data: { turbo_method: :delete }, class: 'nav-icon nav-icon-logout') %></li>
   </ul>
   <label for="hamburger" class="hamburger-menu-button">
-    <span class="hamburger-menu-button-mark"></span>
-    <span class="hamburger-menu-button-mark"></span>
-    <span class="hamburger-menu-button-mark"></span>
+    <%= image_tag(current_user.icon_url, size: "36x36") %>
   </label>
+  <% end %>
+</nav>
+
+<nav class="sp-tab">
+  <ul>
+    <li><%= link_to("Home", root_path, class: 'nav-icon nav-icon-home') %></li>
+    <% if logged_in? %>
+    <li><%= link_to("Unreads", unreads_path, class: 'nav-icon nav-icon-my-inbox') %></li>
+    <li><%= link_to("Settings", my_path, class: 'nav-icon nav-icon-setting') %></li>
+    <% end %>
+  </ul>
 </nav>
