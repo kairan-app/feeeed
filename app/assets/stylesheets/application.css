@@ -29,12 +29,12 @@ body {
 }
 
 h1 {
-  margin: 1.25em 0 0.5em 20px;
+  margin: 0 0 0 20px;
 }
 
 @media screen and (max-width: 768px) {
   h1 {
-    margin: 1.25em 0 0;
+    margin: 0.25em 0 0;
   }
 }
 
@@ -65,18 +65,16 @@ a:hover {
 }
 
 .google-login {
-  position: fixed;
-  bottom: 20px;
-  left: 15px;
-  background-color: #ffffff;
-  padding: 15px 20px;
-  border-radius: 30px;
-  box-shadow: 0px 0px 8px -6px #555555;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
   z-index: 1;
 }
 
 @media screen and (max-width: 768px) {
   .google-login {
+    bottom: 60px;
     box-shadow: 0px 0px 8px -4px #555555;
   }
 }
@@ -148,7 +146,7 @@ a:hover {
 
 @media screen and (max-width: 768px) {
   .channel-registration-form-button {
-    bottom: 90px;
+    bottom: 88px;
   }
 }
 
@@ -213,6 +211,7 @@ a:hover {
 
 .flash-messages {
   display: inline-block;
+  width: 100%;
   margin: 1em 0 0;
   padding: 20px;
   background-color: #ffffff;
@@ -226,25 +225,65 @@ a:hover {
   color: #cc0f35;
 }
 
-.wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 0 70px;
-  padding: 0;
+header {
+  position: relative;
   width: 100%;
+  max-width: 1440px;
+  display: flex;
+  margin: 0 auto;
+  z-index: 1;
 }
 
 @media screen and (max-width: 768px) {
-  .wrapper {
-    margin: 0 auto 70px;
-    padding: 0 0 50px;
+  header {
     width: calc(100% - 40px);
+    margin: 0 20px;
   }
 }
 
+header h1 {
+  width: 144px;
+  line-height: 72px;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+header nav {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+header nav ul {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 1em 72px 1em 0;
+  padding: 0;
+}
+
+header nav ul li a {
+  position: relative;
+  display: block;
+  margin: 0 1em 0 0;
+  padding: 0.5em 0 0.5em 2em;
+}
+
+header nav ul li a:hover {
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+
 aside {
   position: fixed;
-  width: 240px;
+  width: calc(100% - 240px);
 }
 
 @media screen and (max-width: 768px) {
@@ -306,6 +345,10 @@ aside nav ul li a:hover {
   font-weight: 100;
 }
 
+.nav-icon-home::before {
+  content: "\e88a";
+}
+
 .nav-icon-items::before {
   content: "\f009";
 }
@@ -346,28 +389,45 @@ aside nav ul li a:hover {
   content: "\eb92";
 }
 
-/* Hamburger Menu for Smatrphone */
-@media screen and (max-width: 768px) {
-  .hamburger-menu-list {
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    width: 100%;
-    margin: 0;
-    padding: 20px;
-    background-color: #ffffff;
-    transform: translateY(-100%);
-    transition: 0.3s;
-    z-index: 2;
-  }
+.nav-icon-logout::before {
+  content: "\e9ba";
+}
 
-  #hamburger:checked~.hamburger-menu-list {
-    transform: translateY(0%);
-    transition: 0.3s;
-  }
+/* Hamburger Menu for Setting */
+.hamburger-menu-list {
+  position: absolute;
+  top: 55px;
+  right: 10px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  transform: translateY(calc(-100% - 50px));
+  transition: 0s;
+  z-index: 0;
+  opacity: 0.2;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+#hamburger:checked~.hamburger-menu-list {
+  transform: translateY(0%);
+  transition: 0s;
+  z-index: 2;
+  opacity: 1;
+}
+
+.hamburger-menu-list li {
+  width: 100%;
+  padding: 5px;
+  border-bottom: solid 1px #cccccc;
+}
+
+.hamburger-menu-list li:last-child {
+  border-bottom: solid 0px #cccccc;
 }
 
 .hamburger-menu-input {
@@ -386,33 +446,37 @@ aside nav ul li a:hover {
   width: calc(100% + 40px);
   height: 100vh;
   background-color: #000000;
-  opacity: 0.4;
+  opacity: 0;
   z-index: 2;
 }
 
 .hamburger-menu-button {
-  display: none;
+  position: absolute;
+  top: 14pt;
+  right: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  appearance: none;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 8px -4px #555555;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+
+  img {
+    width: 36px;
+    height: auto;
+    border-radius: 24px;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .hamburger-menu-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 54px;
-    height: 54px;
-    gap: 5px;
-    appearance: none;
-    background-color: #ffffff;
-    box-shadow: 0px 0px 8px -4px #555555;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 2;
+    right: 0px;
   }
 }
 
@@ -424,27 +488,104 @@ aside nav ul li a:hover {
   transition: 0.3s;
 }
 
+#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(1) {
+  transform: translate(3px, -1px) rotate(45deg);
+  transform-origin: 0%;
+}
+
+#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(2) {
+  opacity: 0;
+}
+
+#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(3) {
+  transform: translate(3px, 1px) rotate(-45deg);
+  transform-origin: 0%;
+}
+
+/* Menu for PC */
 @media screen and (max-width: 768px) {
-  #hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(1) {
-    transform: translate(3px, -1px) rotate(45deg);
-    transform-origin: 0%;
+  .pc-menu {
+    display: none;
+  }
+}
+
+/* Tab for Smatrphone */
+.sp-tab {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .sp-tab {
+    position: fixed;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 72px;
+    margin: 0 0 0 -20px;
+    padding: 0;
+    background-color: #3d8bcd;
+    color: #ffffff;
+    z-index: 1;
   }
 
-  #hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(2) {
-    opacity: 0;
+  .sp-tab ul {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 72px;
+    margin: 0;
+    padding: 0;
   }
 
-  #hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(3) {
-    transform: translate(3px, 1px) rotate(-45deg);
-    transform-origin: 0%;
+  .sp-tab ul li {
+    width: 33.33333%;
+    text-align: center;
+  }
+
+  .sp-tab ul li .nav-icon {
+    display: block;
+    width: 100%;
+    height: 72px;
+    margin: 0;
+    padding: 48px 0 0;
+    font-size: 10px;
+    color: #ffffff;
+  }
+
+  .sp-tab ul li .nav-icon::before {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0 0 0 0;
+    font-size: 36px;
+    color: #ffffff;
+    font-weight: 100;
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto 70px;
+  padding: 0;
+  width: 100%;
+  max-width: 1440px;
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    margin: 0 auto 70px;
+    padding: 0 0 50px;
+    width: calc(100% - 40px);
   }
 }
 
 .main {
   display: flex;
   flex-wrap: wrap;
-  width: calc(100% - 240px);
-  margin: 0 0 0 240px;
+  width: calc(100% - 20px);
+  margin: 0 0 0 20px;
 }
 
 @media screen and (max-width: 768px) {
@@ -495,15 +636,6 @@ aside nav ul li a:hover {
 }
 
 .channel-card {
-  width: calc(16.66666% - 15px);
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.item-card {
   width: calc(20% - 15px);
 
   img {
@@ -512,13 +644,12 @@ aside nav ul li a:hover {
   }
 }
 
-@media screen and (max-width: 1440px) {
-  .channel-card {
-    width: calc(20% - 15px);
-  }
+.item-card {
+  width: calc(25% - 15px);
 
-  .item-card {
-    width: calc(25% - 15px);
+  img {
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -973,4 +1104,46 @@ img {
 .unreads-item-memo p {
   background-color: #ffffff;
   padding: 0.75em 1em;
+}
+
+.channel_search {
+  margin: 0 10px 0 30px;
+}
+
+.channel_search input {
+  padding: 0.25em 0.5em;
+  border: solid 1px #cccccc;
+}
+
+footer {
+  width: 100%;
+  padding: 2em 0;
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  footer {
+    padding: 2em 0 100px;
+  }
+}
+
+footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 1em;
+  padding: 0;
+}
+
+footer ul li {
+  margin: 0 1em;
+  padding: 0;
+}
+
+
+footer ul li a {
+  color: #ffffff;
 }
