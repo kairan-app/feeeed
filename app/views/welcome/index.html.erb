@@ -1,27 +1,30 @@
-<div class="main-column">
-  <section>
-    <h2>Recent Items</h2>
-    <p>
-      <%= link_to("All items", items_path) %>
-    </p>
-    <%= render(partial: "items/cards", locals: { items: @items, with_channel: true }) %>
-  </section>
-
-  <section>
-    <h2>Recent Channels</h2>
-    <p>
-      <%= link_to("All channels", channels_path) %>
-    </p>
-    <%= render(partial: "channels/cards", locals: { channels: @channels }) %>
-  </section>
-</div>
-
-<div class="sub-column">
-  <section>
-    <h2>Recent Pawprints</h2>
-    <p>
-      <%= link_to("All Pawprints", pawprints_path) %>
-    </p>
-    <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
-  </section>
-</div>
+<h2>Recent Channel & Items</h2>
+<% @channels.each do |channel| %>
+  <div class="channel-and-items-component">
+    <h3 class="channel-and-items-component-channel">
+      <% if channel.image_url %>
+      <%= image_tag(channel.image_url, size: "64x64",) %>
+      <% end %>
+      <span>
+        <%= link_to(channel.title, channel) %>
+      </span>
+    </h3>
+    <ul class="channel-and-items-component-item-list">
+      <% channel.items.order(id: :desc).limit(3).each do |item| %>
+        <%= turbo_frame_tag(item) do %>
+        <li>
+          <div class="channel-and-items-component-item-image">
+            <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%", style: "object-fit: cover;") %>
+          </div>
+        <div class="channel-and-items-component-item-info">
+          <h4>
+          <%= link_to(item.title, item.url, target: "_blank") %>
+          </h4>
+          <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+        </div>
+        </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
