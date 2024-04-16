@@ -835,7 +835,6 @@ img {
   background-color: #ffffff;
 }
 
-
 @media screen and (max-width: 768px) {
   .setting-card .card-image {
     height: 66.66666vw;
@@ -1129,4 +1128,68 @@ footer ul li a {
   .channel-and-items-component-item-memo p.button-to-unpaw {
     padding: 0.25em 5px 0 0;
   }
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1em 0;
+  padding: 0;
+}
+
+.page {
+  display: inline-block;
+}
+
+@media screen and (max-width: 768px) {
+  .page {
+    margin-bottom: 0.5em;
+  }
+}
+
+.pagination .gap {
+  margin: 0 0.25em 0 0;
+  padding: 0.5em 0;
+}
+
+.page a, .current {
+  display: block;
+  margin: 0 0.25em 0 0;
+  padding: 0.25em 0.75em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+}
+
+.page a:hover {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.current {
+  display: inline-block;
+  margin-bottom: 0.5em;
+  background-color: #3d8bcd;
+  color: #ffffff;
+}
+
+.first, .prev, .next, .last {
+  display: inline-block;
+}
+
+.first a, .prev a, .next a, .last a {
+  display: block;
+  margin: 0 0.25em 0 0;
+  padding: 0.25em 0.75em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+}
+
+.first a:hover, .prev a:hover, .next a:hover, .last a:hover {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
 }
