@@ -1,6 +1,6 @@
   <%= search_form_for(q || Channel.ransack, url: channels_path) do |form| %>
     <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels") %>
     <%= button_tag type: "submit" do %>
-      <span class="material-symbols-outlined">search</span>
+      <span class="material-symbols-outlined material-symbols-outlined-search">search</span>
     <% end %>
   <% end %>
