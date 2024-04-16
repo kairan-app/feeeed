@@ -7,6 +7,7 @@
     <%= csp_meta_tag %>
     <%= favicon_link_tag "square.png" %>
     <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -31,9 +32,11 @@
       <li><%= link_to("Items", items_path) %></li>
       <li><%= link_to("Pawprints", pawprints_path) %></li>
       <li><%= link_to("Users", users_path) %></li>
+      <% if logged_in? %>
       <li><%= link_to("Inbox", inbox_path) %></li>
       <li><%= link_to("Unreads", unreads_path) %></li>
       <li><%= link_to("Settings", my_path) %></li>
+      <% end %>
     </ul>
 
     <p>© rururu</p>

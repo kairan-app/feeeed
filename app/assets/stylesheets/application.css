@@ -14,9 +14,6 @@
  *= require_self
  */
 
-/* Google font Icon */
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons+Outlined);
-
 body {
   background-color: #ecf2fa;
   font-family:
@@ -146,7 +143,7 @@ a:hover {
 
 @media screen and (max-width: 768px) {
   .channel-registration-form-button {
-    bottom: 88px;
+    bottom: 80px;
   }
 }
 
@@ -228,8 +225,10 @@ a:hover {
 header {
   position: relative;
   width: 100%;
+  height: 72px;
   max-width: 1440px;
   display: flex;
+  flex-wrap: wrap;
   margin: 0 auto;
   z-index: 1;
 }
@@ -237,18 +236,30 @@ header {
 @media screen and (max-width: 768px) {
   header {
     width: calc(100% - 40px);
+    height: 60px;
     margin: 0 20px;
   }
 }
 
 header h1 {
   width: 144px;
-  line-height: 72px;
+  display: flex;
+  align-items: center;
 
   img {
     width: 100%;
     height: auto;
   }
+}
+
+@media screen and (max-width: 768px) {
+  header h1 {
+    width: 120px;
+  }
+}
+
+header h1 a {
+  line-height: 0;
 }
 
 header nav {
@@ -256,22 +267,29 @@ header nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 164px);
+}
+
+@media screen and (max-width: 768px) {
+  header nav {
+    width: calc(100% - 120px);
+  }
 }
 
 header nav ul {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 1em 72px 1em 0;
+  margin: 0 72px 0 0;
   padding: 0;
 }
 
 header nav ul li a {
   position: relative;
-  display: block;
-  margin: 0 1em 0 0;
-  padding: 0.5em 0 0.5em 2em;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.5em;
 }
 
 header nav ul li a:hover {
@@ -279,118 +297,33 @@ header nav ul li a:hover {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-
-
-aside {
-  position: fixed;
-  width: calc(100% - 240px);
+.material-symbols-outlined {
+  margin: 0 0.2em 0 0;
 }
 
 @media screen and (max-width: 768px) {
-  aside {
-    position: relative;
-    width: 100%;
+  .material-symbols-outlined {
+    margin: 0;
+    padding: 6px 0 0;
+    font-size: 32px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 }
 
-aside h1 {
-  width: 124px;
-
-  img {
-    width: 100%;
-    height: auto;
-  }
-}
-
-aside nav {
-  position: relative;
-}
-
-aside nav ul {
-  margin: 1em 15px;
-  padding: 0;
-}
-
-@media screen and (max-width: 768px) {
-  aside nav ul {
-    margin: 1em 0;
-  }
-}
-
-aside nav ul li a {
-  position: relative;
-  display: block;
+.material-symbols-outlined-search {
   margin: 0;
-  padding: 0.5em 0 0.5em 2.5em;
 }
 
 @media screen and (max-width: 768px) {
-  aside nav ul li a {
-    font-size: 1.2em;
+  .material-symbols-outlined-search {
+    position: relative;
+    padding: 0;
+    font-size: 24px;
   }
-}
-
-aside nav ul li a:hover {
-  text-decoration: none;
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.nav-icon::before {
-  position: absolute;
-  top: 4px;
-  left: 6px;
-  font-family: "Material Icons Outlined";
-  padding: 0 0 0 0;
-  font-size: 1.4em;
-  font-weight: 100;
-}
-
-.nav-icon-home::before {
-  content: "\e88a";
-}
-
-.nav-icon-items::before {
-  content: "\f009";
-}
-
-.nav-icon-channels::before {
-  content: "\e851";
-}
-
-.nav-icon-pawprints::before {
-  content: "\f8d7";
-}
-
-.nav-icon-users::before {
-  content: "\f233";
-}
-
-.nav-icon-my-inbox::before {
-  content: "\e156";
-}
-
-.nav-icon-my-pawprints::before {
-  content: "\e87d";
-}
-
-.nav-icon-my-profile::before {
-  content: "\e853";
-}
-
-.nav-icon-setting::before {
-  content: "\e8b8";
-}
-
-.nav-icon-profile-setting::before {
-  content: "\ea67";
-}
-
-.nav-icon-webhook-setting::before {
-  content: "\eb92";
-}
-
-.nav-icon-logout::before {
-  content: "\e9ba";
 }
 
 /* Hamburger Menu for Setting */
@@ -411,6 +344,12 @@ aside nav ul li a:hover {
   opacity: 0.2;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
+}
+
+@media screen and (max-width: 768px) {
+  .hamburger-menu-list {
+    right: -10px;
+  }
 }
 
 #hamburger:checked~.hamburger-menu-list {
@@ -520,7 +459,7 @@ aside nav ul li a:hover {
     bottom: 0;
     display: block;
     width: 100%;
-    height: 72px;
+    height: 64px;
     margin: 0 0 0 -20px;
     padding: 0;
     background-color: #3d8bcd;
@@ -532,7 +471,7 @@ aside nav ul li a:hover {
     display: flex;
     justify-content: space-evenly;
     width: 100%;
-    height: 72px;
+    height: 64px;
     margin: 0;
     padding: 0;
   }
@@ -542,25 +481,14 @@ aside nav ul li a:hover {
     text-align: center;
   }
 
-  .sp-tab ul li .nav-icon {
+  .sp-tab ul li a {
     display: block;
     width: 100%;
-    height: 72px;
+    height: 64px;
     margin: 0;
-    padding: 48px 0 0;
+    padding: 36px 0 0;
     font-size: 10px;
     color: #ffffff;
-  }
-
-  .sp-tab ul li .nav-icon::before {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 0 0 0 0;
-    font-size: 36px;
-    color: #ffffff;
-    font-weight: 100;
   }
 }
 
@@ -576,7 +504,7 @@ aside nav ul li a:hover {
 @media screen and (max-width: 768px) {
   .wrapper {
     margin: 0 auto 50px;
-    padding: 0 0 50px;
+    padding: 0;
     width: calc(100% - 40px);
   }
 }
@@ -907,7 +835,6 @@ img {
   background-color: #ffffff;
 }
 
-
 @media screen and (max-width: 768px) {
   .setting-card .card-image {
     height: 66.66666vw;
@@ -975,12 +902,29 @@ img {
 }
 
 .channel_search {
+  display: flex;
   margin: 0 10px 0 30px;
 }
 
+@media screen and (max-width: 768px) {
+  .channel_search {
+    width: calc(100% - 66px);
+    margin: 8px 10px 0 20px;
+  }
+}
+
 .channel_search input {
+  width: 100%;
   padding: 0.25em 0.5em;
   border: solid 1px #cccccc;
+}
+
+.channel_search button {
+  margin: 0 0 0 -1px;
+  padding: 0.25em 0.5em;
+  border: solid 1px #cccccc;
+  cursor: pointer;
+  line-height: 1em;
 }
 
 .channel-and-items-component {
@@ -1006,6 +950,12 @@ img {
 
 .channel-and-items-component-unreads {
   width: calc(100% - 20px);
+}
+
+@media screen and (max-width: 768px) {
+  .channel-and-items-component-unreads {
+    width: 100%;
+  }
 }
 
 .channel-and-items-component-channel {
@@ -1178,4 +1128,96 @@ footer ul li a {
   .channel-and-items-component-item-memo p.button-to-unpaw {
     padding: 0.25em 5px 0 0;
   }
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1em 0;
+  padding: 0;
+}
+
+.page {
+  display: inline-block;
+}
+
+@media screen and (max-width: 768px) {
+  .page {
+    margin-bottom: 0.5em;
+  }
+}
+
+.pagination .gap {
+  margin: 0 0.25em 0 0;
+  padding: 0.5em 0;
+}
+
+.page a, .current {
+  display: block;
+  margin: 0 0.25em 0 0;
+  padding: 0.25em 0.75em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+}
+
+.page a:hover {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.current {
+  display: inline-block;
+  margin-bottom: 0.5em;
+  background-color: #3d8bcd;
+  color: #ffffff;
+}
+
+.first, .prev, .next, .last {
+  display: inline-block;
+}
+
+.first a, .prev a, .next a, .last a {
+  display: block;
+  margin: 0 0.25em 0 0;
+  padding: 0.25em 0.75em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+}
+
+.first a:hover, .prev a:hover, .next a:hover, .last a:hover {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.unreads-nav {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 0 0.5em;
+  padding: 0;
+}
+
+.unreads-nav-button {
+  display: flex;
+  margin: 0 0 1em;
+}
+
+.unreads-nav-button a {
+  display: block;
+  margin: 0 0.25em 0 0;
+  padding: 0.25em 0.75em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+}
+
+.unreads-nav-button a:hover {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
 }
