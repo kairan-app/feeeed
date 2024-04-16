@@ -3,16 +3,41 @@
 
   <% if logged_in? %>
   <ul class="pc-menu">
-    <li><%= link_to("Unreads", unreads_path, class: 'nav-icon nav-icon-my-inbox') %></li>
-    <li><%= link_to("Settings", my_path, class: 'nav-icon nav-icon-setting') %></li>
+    <li>
+      <%= link_to(unreads_path) do %>
+        <span class="material-symbols-outlined">inbox</span>
+        <span>Unreads</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to(my_path) do %>
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      <% end %>
+    </li>
   </ul>
 
   <input type="checkbox" name="hamburger" id="hamburger" class="hamburger-menu-input"/>
   <label for="hamburger" class="hamburger-menu-bg"></label>
   <ul class="hamburger-menu-list">
-    <li><%= link_to("My Pawprints", my_pawprints_path, class: 'nav-icon nav-icon-my-pawprints') %></li>
-    <li><%= link_to("My Page", user_path(user_name: current_user.name), class: 'nav-icon nav-icon-my-profile') %></li>
-    <li><%= link_to("Log out", session_path, data: { turbo_method: :delete }, class: 'nav-icon nav-icon-logout') %></li>
+    <li>
+      <%= link_to(my_pawprints_path) do %>
+        <span class="material-symbols-outlined">favorite</span>
+        <span>My Pawprints</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to(user_path(user_name: current_user.name)) do %>
+        <span class="material-symbols-outlined">account_circle</span>
+        <span>My Page</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to(session_path, data: { turbo_method: :delete }) do %>
+        <span class="material-symbols-outlined">logout</span>
+        <span>Log out</span>
+      <% end %>
+    </li>
   </ul>
   <label for="hamburger" class="hamburger-menu-button">
     <%= image_tag(current_user.icon_url, size: "36x36") %>
@@ -22,10 +47,25 @@
 
 <nav class="sp-tab">
   <ul>
-    <li><%= link_to("Home", root_path, class: 'nav-icon nav-icon-home') %></li>
+    <li>
+      <%= link_to(root_path) do %>
+        <span class="material-symbols-outlined">home</span>
+        <span>Home</span>
+      <% end %>
+    </li>
     <% if logged_in? %>
-    <li><%= link_to("Unreads", unreads_path, class: 'nav-icon nav-icon-my-inbox') %></li>
-    <li><%= link_to("Settings", my_path, class: 'nav-icon nav-icon-setting') %></li>
+    <li>
+      <%= link_to(unreads_path) do %>
+        <span class="material-symbols-outlined">inbox</span>
+        <span>Unreads</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to(my_path) do %>
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      <% end %>
+    </li>
     <% end %>
   </ul>
 </nav>

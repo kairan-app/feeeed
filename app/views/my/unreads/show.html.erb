@@ -1,10 +1,9 @@
 <h2>Unreads</h2>
-<p>Showing unreads from the last <%= @days_before %> days</p>
-<p>
-  <%= link_to((@days_before - 1).to_s + " days", unreads_path(days_before: @days_before - 1)) %>
-  |
-  <%= link_to((@days_before + 1).to_s + " days", unreads_path(days_before: @days_before + 1)) %>
-</p>
+<p class="unreads-nav">Showing unreads from the last <%= @days_before %> days</p>
+<div class="unreads-nav-button">
+  <%= link_to("← " + (@days_before - 1).to_s + " days", unreads_path(days_before: @days_before - 1)) %>
+  <%= link_to((@days_before + 1).to_s + " days →", unreads_path(days_before: @days_before + 1)) %>
+</div>
 <% @channel_and_items.each do |channel, items| %>
   <div class="channel-and-items-component channel-and-items-component-unreads">
     <h3 class="channel-and-items-component-channel">
