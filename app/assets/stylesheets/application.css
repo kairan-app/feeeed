@@ -602,7 +602,7 @@ aside nav ul li a:hover {
 @media screen and (max-width: 768px) {
   .wrapper {
     margin: 0 auto 50px;
-    padding: 0 0 50px;
+    padding: 0;
     width: calc(100% - 40px);
   }
 }
