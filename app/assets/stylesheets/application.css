@@ -228,8 +228,10 @@ a:hover {
 header {
   position: relative;
   width: 100%;
+  height: 72px;
   max-width: 1440px;
   display: flex;
+  flex-wrap: wrap;
   margin: 0 auto;
   z-index: 1;
 }
@@ -237,13 +239,15 @@ header {
 @media screen and (max-width: 768px) {
   header {
     width: calc(100% - 40px);
+    height: 60px;
     margin: 0 20px;
   }
 }
 
 header h1 {
   width: 144px;
-  line-height: 72px;
+  display: flex;
+  align-items: center;
 
   img {
     width: 100%;
@@ -251,19 +255,35 @@ header h1 {
   }
 }
 
+@media screen and (max-width: 768px) {
+  header h1 {
+    width: 120px;
+  }
+}
+
+header h1 a {
+  line-height: 0;
+}
+
 header nav {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 164px);
+}
+
+@media screen and (max-width: 768px) {
+  header nav {
+    width: calc(100% - 120px);
+  }
 }
 
 header nav ul {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 1em 72px 1em 0;
+  margin: 0 72px 0 0;
   padding: 0;
 }
 
@@ -411,6 +431,12 @@ aside nav ul li a:hover {
   opacity: 0.2;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
+}
+
+@media screen and (max-width: 768px) {
+  .hamburger-menu-list {
+    right: -10px;
+  }
 }
 
 #hamburger:checked~.hamburger-menu-list {
@@ -975,12 +1001,29 @@ img {
 }
 
 .channel_search {
+  display: flex;
   margin: 0 10px 0 30px;
 }
 
+@media screen and (max-width: 768px) {
+  .channel_search {
+    width: calc(100% - 66px);
+    margin: 5px 10px 0 20px;
+  }
+}
+
 .channel_search input {
+  width: 100%;
   padding: 0.25em 0.5em;
   border: solid 1px #cccccc;
+}
+
+.channel_search button {
+  margin: 0 0 0 -1px;
+  padding: 0.25em 0.5em;
+  border: solid 1px #cccccc;
+  cursor: pointer;
+  line-height: 1em;
 }
 
 .channel-and-items-component {
