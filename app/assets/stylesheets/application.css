@@ -1051,6 +1051,12 @@ img {
   width: calc(100% - 20px);
 }
 
+@media screen and (max-width: 768px) {
+  .channel-and-items-component-unreads {
+    width: 100%;
+  }
+}
+
 .channel-and-items-component-channel {
   display: flex;
   flex-wrap: wrap;
