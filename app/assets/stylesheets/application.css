@@ -14,9 +14,6 @@
  *= require_self
  */
 
-/* Google font Icon */
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons+Outlined);
-
 body {
   background-color: #ecf2fa;
   font-family:
