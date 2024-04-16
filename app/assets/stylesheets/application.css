@@ -1193,3 +1193,31 @@ footer ul li a {
   color: #ffffff;
   text-decoration: none;
 }
+
+.unreads-nav {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 0 0.5em;
+  padding: 0;
+}
+
+.unreads-nav-button {
+  display: flex;
+  margin: 0 0 1em;
+}
+
+.unreads-nav-button a {
+  display: block;
+  margin: 0 0.25em 0 0;
+  padding: 0.25em 0.75em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+}
+
+.unreads-nav-button a:hover {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
+}
