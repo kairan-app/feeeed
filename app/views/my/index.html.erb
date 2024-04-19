@@ -4,18 +4,22 @@
 <div class="cards">
 
   <div class="card item-card setting-card">
-    <div class="card-image">
-      <%= link_to("", my_profile_path, class: 'nav-icon nav-setting nav-icon-profile-setting') %>
-    </div>
-    <h3 class="card-title"><%= link_to("My Profile", my_profile_path) %></h3>
+    <%= link_to(my_profile_path) do %>
+      <div class="card-image">
+        <span class="material-symbols-outlined">badge</span>
+      </div>
+      <h3 class="card-title">My Profile</h3>
+    <% end %>
   </div>
   <div class="card item-card setting-card">
-    <div class="card-image">
-      <%= link_to("", my_notification_webhooks_path, class: 'nav-icon nav-setting nav-icon-webhook-setting') %>
-    </div>
-    <h3 class="card-title"><%= link_to("My Notification Webhooks", my_notification_webhooks_path) %></h3>
+    <%= link_to(my_notification_webhooks_path) do %>
+      <div class="card-image">
+        <span class="material-symbols-outlined">webhook</span>
+      </div>
+      <h3 class="card-title">My Notification Webhooks</h3>
+    <% end %>
   </div>
 
-  </div>
+</div>
 
 </section>

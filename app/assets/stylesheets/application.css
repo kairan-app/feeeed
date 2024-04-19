@@ -831,6 +831,9 @@ img {
 }
 
 .setting-card .card-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #ffffff;
 }
 
@@ -840,9 +843,19 @@ img {
   }
 }
 
+.setting-card .card-image .material-symbols-outlined {
+  margin: 0;
+  font-size: 96px;
+  color: #ccc;
+}
+
+.setting-card a {
+  transition: 0.5s;
+}
+
 .setting-card a:hover {
   text-decoration: none;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 .nav-setting {
