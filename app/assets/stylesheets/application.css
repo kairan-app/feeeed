@@ -63,8 +63,8 @@ a:hover {
 
 .google-login {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 18px;
+  right: 15px;
   padding: 0;
   z-index: 1;
 }
@@ -242,8 +242,9 @@ header {
 }
 
 header h1 {
-  width: 144px;
   display: flex;
+  width: 144px;
+  height: 72px;
   align-items: center;
 
   img {
