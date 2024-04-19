@@ -31,7 +31,7 @@ h1 {
 
 @media screen and (max-width: 768px) {
   h1 {
-    margin: 0.25em 0 0;
+    margin: 0;
   }
 }
 
@@ -923,7 +923,7 @@ img {
 @media screen and (max-width: 768px) {
   .channel_search {
     width: calc(100% - 66px);
-    margin: 8px 10px 0 20px;
+    margin: 3px 10px 0 20px;
   }
 }
 
