@@ -16,13 +16,28 @@ class Item < ApplicationRecord
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
   end
 
-  def to_embed
+  def to_discord_embed
     {
       author: { name: [channel.title, URI.parse(self.url).host].join(" | "), url: channel.site_url },
       title: self.title,
       url: self.url,
       thumbnail: { url: self.image_url },
       timestamp: self.published_at.iso8601,
+    }
+  end
+
+  def to_slack_block
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "<#{url}|#{title}>\n#{published_at.strftime("%Y-%m-%d %H:%M")}"
+      },
+      accessory: {
+        type: "image",
+        image_url: image_url,
+        alt_text: title,
+      }
     }
   end
 end
