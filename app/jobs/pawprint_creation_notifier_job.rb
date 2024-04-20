@@ -4,7 +4,7 @@ class PawprintCreationNotifierJob < ApplicationJob
     user = pawprint.user
 
     content = "@#{user.name} pawed!"
-    embeds = [pawprint.to_embed]
+    embeds = [pawprint.to_discord_embed]
 
     DiscoPosterJob.perform_later(content:, embeds:)
   end

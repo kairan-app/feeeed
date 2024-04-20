@@ -16,7 +16,7 @@ class Item < ApplicationRecord
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
   end
 
-  def to_embed
+  def to_discord_embed
     {
       author: { name: [channel.title, URI.parse(self.url).host].join(" | "), url: channel.site_url },
       title: self.title,

@@ -8,7 +8,7 @@ class Pawprint < ApplicationRecord
 
   after_create_commit { PawprintCreationNotifierJob.perform_later(self.id) }
 
-  def to_embed
+  def to_discord_embed
     channel = item.channel
     {
       author: { name: [channel.title, URI.parse(item.url).host].join(" | "), url: channel.site_url },

@@ -36,7 +36,7 @@ class NotificationWebhook < ApplicationRecord
 
     pawprints.to_a.each_slice(3).with_index { |sub_pawprints, index|
       content = "@#{user.name}'s recent pawprints 🐾" if index == 0
-      embeds = sub_pawprints.map(&:to_embed)
+      embeds = sub_pawprints.map(&:to_discord_embed)
 
       sleep 2
       Faraday.post(
@@ -54,7 +54,7 @@ class NotificationWebhook < ApplicationRecord
 
     items.to_a.each_slice(3).with_index { |sub_items, index|
       content = "Recent items in @#{user.name}'s subscribed channels 📨" if index == 0
-      embeds = sub_items.map(&:to_embed)
+      embeds = sub_items.map(&:to_discord_embed)
 
       sleep 2
       Faraday.post(

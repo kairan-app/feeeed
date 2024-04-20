@@ -5,7 +5,7 @@ class ItemCreationNotifierJob < ApplicationJob
     return unless should_notify?(item)
 
     content = "New item saved"
-    embeds = [item.to_embed]
+    embeds = [item.to_discord_embed]
 
     DiscoPosterJob.perform_later(content:, embeds:)
   end
