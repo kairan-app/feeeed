@@ -52,9 +52,10 @@ class NotificationWebhook < ApplicationRecord
     items = user.subscribed_items.where("items.created_at >= ?", at).order("items.id")
     return if items.empty?
 
-    items.to_a.each_slice(3).with_index { |sub_items, index|
-      content = "Recent items in @#{user.name}'s subscribed channels 📨" if index == 0
-      embeds = sub_items.map(&:to_discord_embed)
+    items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|
+      content = "#{channel.title} 's recent items 📨"
+      embeds = sub_items.sort_by(&:id).reverse.take(4).map(&:to_discord_embed)
+      embeds.push(channel.to_discord_more_embed) if sub_items.size > 4
 
       sleep 2
       Faraday.post(
@@ -71,7 +72,7 @@ class NotificationWebhook < ApplicationRecord
     return if items.empty?
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|
-      blocks = build_blocks(channel, sub_items)
+      blocks = build_slack_blocks(channel, sub_items)
 
       sleep 2
       Faraday.post(
@@ -82,7 +83,7 @@ class NotificationWebhook < ApplicationRecord
     touch(:last_notified_at)
   end
 
-  def build_blocks(channel, items)
+  def build_slack_blocks(channel, items)
     items_blocks = items.sort_by(&:id).reverse.take(4).map(&:to_slack_block)
     items_blocks.push(channel.to_slack_more_block) if items.size > 4
 

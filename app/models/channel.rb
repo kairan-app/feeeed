@@ -156,6 +156,13 @@ class Channel < ApplicationRecord
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{self.title}"
   end
 
+  def to_discord_more_embed
+    {
+      title: "Check out more recent items in #{title}",
+      url: Rails.application.credentials.google_auth_app.host + channel_path(self),
+    }
+  end
+
   def to_slack_header_block
     {
       type: "section",
