@@ -1,4 +1,6 @@
 class Channel < ApplicationRecord
+  include Rails.application.routes.url_helpers
+
   has_many :items, dependent: :destroy
   has_many :ownerships, dependent: :destroy
   has_many :owners, through: :ownerships, source: :user
@@ -152,5 +154,29 @@ class Channel < ApplicationRecord
 
   def image_url_or_placeholder
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{self.title}"
+  end
+
+  def to_slack_header_block
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "<%s|#{title}> 's recent items 📨" % [
+          Rails.application.credentials.google_auth_app.host + channel_path(self)
+        ]
+      }
+    }
+  end
+
+  def to_slack_more_block
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "Check out more recent items in <%s|#{title}>" % [
+          Rails.application.credentials.google_auth_app.host + channel_path(self)
+        ]
+      }
+   }
   end
 end

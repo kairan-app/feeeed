@@ -25,4 +25,19 @@ class Item < ApplicationRecord
       timestamp: self.published_at.iso8601,
     }
   end
+
+  def to_slack_block
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "<#{url}|#{title}>\n#{published_at.strftime("%Y-%m-%d %H:%M")}"
+      },
+      accessory: {
+        type: "image",
+        image_url: image_url,
+        alt_text: title,
+      }
+    }
+  end
 end
