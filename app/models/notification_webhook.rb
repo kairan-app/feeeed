@@ -22,14 +22,14 @@ class NotificationWebhook < ApplicationRecord
       if URI(url).host == "hooks.slack.com"
         notify_subscribed_items_to_slack
       else
-        notify_subscribed_items
+        notify_subscribed_items_to_discord
       end
     when "my_pawprints"
-      notify_pawprints
+      notify_pawprints_to_discord
     end
   end
 
-  def notify_pawprints(since: nil)
+  def notify_pawprints_to_discord(since: nil)
     at = since || last_notified_at || 6.hours.ago
     pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
     return if pawprints.empty?
@@ -47,7 +47,7 @@ class NotificationWebhook < ApplicationRecord
     touch(:last_notified_at)
   end
 
-  def notify_subscribed_items(since: nil)
+  def notify_subscribed_items_to_discord(since: nil)
     at = since || last_notified_at || 6.hours.ago
     items = user.subscribed_items.where("items.created_at >= ?", at).order("items.id")
     return if items.empty?
