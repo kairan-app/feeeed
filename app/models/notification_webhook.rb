@@ -71,7 +71,7 @@ class NotificationWebhook < ApplicationRecord
     return if items.empty?
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|
-      blocks = build_blocks(channel, sub_items)
+      blocks = build_slack_blocks(channel, sub_items)
 
       sleep 2
       Faraday.post(
@@ -82,7 +82,7 @@ class NotificationWebhook < ApplicationRecord
     touch(:last_notified_at)
   end
 
-  def build_blocks(channel, items)
+  def build_slack_blocks(channel, items)
     items_blocks = items.sort_by(&:id).reverse.take(4).map(&:to_slack_block)
     items_blocks.push(channel.to_slack_more_block) if items.size > 4
 
