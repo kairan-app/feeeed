@@ -34,6 +34,7 @@ end
 
 group :development do
   gem "dotenv"
+  gem "letter_opener_web"
   gem "web-console"
 end
 
