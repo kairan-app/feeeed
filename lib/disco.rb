@@ -16,9 +16,9 @@ module Disco
     def handle_response(response)
       case response.status
       when 200..299
-        puts "[Diso] Message sent successfully"
+        puts "[Disco] Message sent successfully"
       else
-        puts "[Diso] Error sending message: #{response.body}"
+        puts "[Disco] Error sending message: #{response.body}"
       end
     end
   end
