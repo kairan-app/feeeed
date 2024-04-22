@@ -12,7 +12,7 @@ class NotificationWebhook < ApplicationRecord
 
   class << self
     def notify
-      find_each(&:notify)
+      find_each { NotificationWebhookNotifierJob.perform_later(_1.id) }
     end
   end
 
