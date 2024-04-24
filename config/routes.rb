@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get    "/channels",                          to: "channels#index"
   post   "/channels",                          to: "channels#create"
   get    "/channels/:channel_id",              to: "channels#show",                  as: "channel"
+  post   "/channels/:channel_id/fetch",        to: "channels/fetch#create",          as: "channel_fetch"
   post   "/channels/:channel_id/ownership",    to: "ownerships#create",              as: "channel_ownership"
   delete "/channels/:channel_id/ownership",    to: "ownerships#destroy"
   post   "/channels/:channel_id/subscription", to: "subscriptions#create",           as: "channel_subscription"
