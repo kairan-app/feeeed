@@ -19,4 +19,43 @@ class Pawprint < ApplicationRecord
       timestamp: self.created_at.iso8601,
     }
   end
+
+  def to_slack_block
+    channel = item.channel
+    [
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "image",
+            "image_url": channel.image_url,
+            "alt_text": channel.title,
+          },
+          {
+            "type": "mrkdwn",
+            "text": channel.site_url ? "<#{channel.site_url}|#{channel.title}>" : channel.title,
+          }
+        ]
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: [
+            "*<#{item.url}|#{item.title}>*",
+            memo.present? ? "💬 #{memo}" : nil,
+            self.created_at.strftime("%Y-%m-%d %H:%M"),
+          ].compact.join("\n"),
+        },
+        accessory: {
+          type: "image",
+          image_url: item.image_url,
+          alt_text: item.title,
+        },
+      }
+    ]
+  end
 end

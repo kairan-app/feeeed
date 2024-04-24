@@ -17,15 +17,13 @@ class NotificationWebhook < ApplicationRecord
   end
 
   def notify
+    is_slack = URI(url).host == "hooks.slack.com"
+
     case mode
     when "my_subscribed_items"
-      if URI(url).host == "hooks.slack.com"
-        notify_subscribed_items_to_slack
-      else
-        notify_subscribed_items_to_discord
-      end
+      is_slack ? notify_subscribed_items_to_slack : notify_subscribed_items_to_discord
     when "my_pawprints"
-      notify_pawprints_to_discord
+      is_slack ? notify_pawprints_to_slack : notify_pawprints_to_discord
     end
   end
 
@@ -41,6 +39,30 @@ class NotificationWebhook < ApplicationRecord
       sleep 2
       Faraday.post(
         url, { content:, embeds: }.to_json, "Content-Type" => "application/json"
+      )
+    }
+
+    touch(:last_notified_at)
+  end
+
+  def notify_pawprints_to_slack(since: nil)
+    at = since || last_notified_at || 6.hours.ago
+    pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
+    return if pawprints.empty?
+
+    pawprints.to_a.each_slice(5).with_index { |sub_pawprints, index|
+      blocks = sub_pawprints.map(&:to_slack_block).flatten
+      blocks.unshift({
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: "@#{user.name}'s recent pawprints 🐾",
+        }
+      }) if index == 0
+
+      sleep 2
+      Faraday.post(
+        url, { blocks:, unfurl_links: false }.to_json, "Content-Type" => "application/json"
       )
     }
 
