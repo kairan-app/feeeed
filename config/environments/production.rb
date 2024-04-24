@@ -84,7 +84,7 @@ Rails.application.configure do
     port:           ENV["MAIL_SMTP_PORT"],
     user_name:      ENV["MAIL_SMTP_USER"],
     password:       ENV["MAIL_SMTP_PASSWORD"],
-    domain:         ENV["MAIL_DOMAIN"]
+    domain:         ENV["MAIL_DOMAIN"],
     authentication: :plain,
   }
 
