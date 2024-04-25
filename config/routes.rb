@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   get    "/my/profile",                        to: "my/profile#show"
   put    "/my/profile",                        to: "my/profile#update"
   get    "/my/notification_webhooks",          to: "my/notification_webhooks#index"
+  get    "/about",                             to: "about#index",                    as: "about"
 
   root "welcome#index"
 end
