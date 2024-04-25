@@ -16,6 +16,7 @@ gem "importmap-rails"
 gem "jbuilder"
 gem "kaminari"
 gem "pg", "~> 1.5"
+gem "postmark-rails"
 gem "puma", ">= 5.0"
 gem "ransack"
 gem "redis"
@@ -34,6 +35,7 @@ end
 
 group :development do
   gem "dotenv"
+  gem "letter_opener_web"
   gem "web-console"
 end
 

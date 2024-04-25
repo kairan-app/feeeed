@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   require "sidekiq/web"
   mount Sidekiq::Web => "/sidekiq"
 
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine => "/letter_opener"
+  end
+
   post   "/google_auth_callback",              to: "sessions#create"
   delete "/session",                           to: "sessions#destroy"
   get    "/channels",                          to: "channels#index"
