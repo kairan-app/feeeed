@@ -1,25 +1,5 @@
 <% unless logged_in? %>
-<div class="hero-area">
-  <div class="hero-area-image">
-    <%= image_tag("hero.png", alt: "rururu", loading: "lazy", width: 720, height: 400) %>
-  </div>
-  <div class="hero-area-text">
-    <h1>
-      みんなの登録フィード閲覧や<br/>
-      感想メモのシェアができる<br/>
-      新しいRSSフィードリーダー
-    </h1>
-    <p>
-      rururu は、あなたや友達が見ているサイトの最新情報がわかったり<br class="br-pc"/>
-      自身の登録フィードの未読管理や感想のメモもできる、<br class="br-pc"/>
-      ポスト・SNS時代に向けた新しいRSSフィードリーダーです。
-    </p>
-    <div class="hero-area-button">
-      <!-- <a class="hero-area-button-primary" href="">ユーザー登録<span> (無料)</span></a> -->
-      <%= link_to "rururu について", "about", class: "hero-area-button-secondary", method: :get %>
-    </div>
-  </div>
-</div>
+<%= render(partial: "layouts/hero", locals: { show_buttons: true }) %>
 <% end %>
 <h2>Recent Channel & Items</h2>
 <% @channels.each do |channel| %>
