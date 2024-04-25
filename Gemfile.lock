@@ -164,6 +164,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    json (2.7.2)
     jwt (2.7.1)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -227,6 +228,11 @@ GEM
       racc (~> 1.4)
     os (1.1.4)
     pg (1.5.6)
+    postmark (1.25.0)
+      json
+    postmark-rails (0.22.1)
+      actionmailer (>= 3.0.0)
+      postmark (>= 1.21.3, < 2.0)
     psych (5.1.2)
       stringio
     public_suffix (5.0.4)
@@ -368,6 +374,7 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   pg (~> 1.5)
+  postmark-rails
   puma (>= 5.0)
   rails (~> 7.1.3)
   ransack

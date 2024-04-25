@@ -78,14 +78,9 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   config.action_mailer.raise_delivery_errors = false
 
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address:        ENV["MAIL_SMTP_SERVER"],
-    port:           ENV["MAIL_SMTP_PORT"],
-    user_name:      ENV["MAIL_SMTP_USER"],
-    password:       ENV["MAIL_SMTP_PASSWORD"],
-    domain:         ENV["MAIL_DOMAIN"],
-    authentication: :plain,
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {
+    api_key: ENV["POSTMARK_API_KEY"],
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
