@@ -1,0 +1,22 @@
+<div class="hero-area">
+  <div class="hero-area-image">
+    <%= image_tag("hero.png", alt: "rururu", loading: "lazy", width: 720, height: 400) %>
+  </div>
+  <div class="hero-area-text">
+    <h1>
+      みんなの登録フィード閲覧や<br/>
+      感想メモのシェアができる<br/>
+      新しいRSSフィードリーダー
+    </h1>
+    <p>
+      rururu は、あなたや友達が見ているサイトの最新情報がわかったり<br class="br-pc"/>
+      自身の登録フィードの未読管理や感想のメモもできる、<br class="br-pc"/>
+      ポスト・SNS時代に向けた新しいRSSフィードリーダーです。
+    </p>
+    <% if show_buttons %>
+    <div class="hero-area-button">
+      <%= link_to("rururu について", about_path, class: "hero-area-button-secondary") %>
+    </div>
+    <% end %>
+  </div>
+</div>

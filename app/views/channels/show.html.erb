@@ -26,6 +26,10 @@
       <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
     </p>
 
+    <p>
+      <%= link_to("Update and fetch items", channel_fetch_path(@channel), data: { turbo_method: :post }) %>
+    </p>
+
     <% if @channel.stopper %>
       <p style="padding: 20px; background-color: #ffdf89; color: #946c00;">
         This channel has stopped updating

@@ -25,6 +25,22 @@ body {
   word-break: break-all;
 }
 
+.br-sp {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .br-sp {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .br-pc {
+    display: none;
+  }
+}
+
 h1 {
   margin: 0 0 0 20px;
 }
@@ -1175,7 +1191,6 @@ footer ul li {
   padding: 0;
 }
 
-
 footer ul li a {
   color: #ffffff;
 }
@@ -1282,4 +1297,222 @@ footer ul li a {
   background-color: #3d8bcd;
   color: #ffffff;
   text-decoration: none;
+}
+
+/* About */
+.hero-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row-reverse;
+  width: 100vw;
+  height: auto;
+  min-height: 500px;
+  margin: 0;
+  margin-left: calc(50% - 50vw - 10px);
+  margin-right: calc(50% - 50vw);
+  padding: 0;
+  background-color: #ffffff;
+}
+
+@media screen and (max-width: 768px) {
+  .hero-area {
+    margin-left: calc(50% - 50vw);
+    min-width: auto;
+    min-height: auto;
+  }
+}
+
+.hero-area-text {
+  max-width: calc(50% - 60px);
+  margin: 0 30px;
+}
+
+@media screen and (max-width: 768px) {
+  .hero-area-text {
+    max-width: calc(100% - 60px);
+    margin: 0 30px;
+  }
+}
+
+.hero-area-text h1 {
+  margin: 0 0 0.75em;
+}
+
+@media screen and (max-width: 960px) {
+  .hero-area-text h1 {
+    font-size: 1.45em;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hero-area-text h1 {
+    font-size: 1.25em;
+    line-height: 1.75em;
+  }
+}
+
+.hero-area-text p {
+  margin: 0 0 2em;
+  line-height: 1.8em;
+}
+
+@media screen and (max-width: 768px) {
+  .hero-area-text p {
+    margin: 0 0 1.5em;
+  }
+}
+
+.hero-area-button {
+  display: flex;
+  margin: 1em 0 0;
+}
+
+@media screen and (max-width: 768px) {
+  .hero-area-button {
+    margin: 1em 0 2em;
+  }
+}
+
+.hero-area-button a {
+  display: block;
+  margin: 0 1em 0 0;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 4px;
+}
+
+.hero-area-button a span {
+  font-size: 0.8em;
+}
+
+.hero-area-button a:hover {
+  text-decoration: none;
+}
+
+.hero-area-button a.hero-area-button-primary {
+  background-color: #3d8bcd;
+  color: #ffffff;
+}
+
+.hero-area-button a.hero-area-button-primary:hover {
+  background-color: #296fa8;
+}
+
+.hero-area-button a.hero-area-button-secondary {
+  background-color: #eeeeee;
+  color: #777777;
+  border: solid 1px #cccccc;
+}
+
+.hero-area-button a.hero-area-button-secondary:hover {
+  background-color: #dddddd;
+}
+
+.hero-area-image {
+  width: 50%;
+  max-width: 720px;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hero-area-image {
+    width: 80%;
+    margin: 10% 0 5%;
+  }
+}
+
+.about-contents {
+  width: calc(100% - 20px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .about-contents {
+    width: 100%;
+  }
+}
+
+.about-contents h2 {
+  margin: 3em 0 3em;
+  padding: 0;
+  color: #3d8bcd;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .about-contents h2 {
+    font-size: 1.25em;
+    margin: 2em 0 2em;
+  }
+}
+
+.about-contents section {
+  width: 100%;
+  margin: 0 0 50px;
+  padding: 0 0 50px;
+  border-bottom: solid 4px #ffffff;
+}
+
+@media screen and (max-width: 768px) {
+  .about-contents section {
+    margin: 0 0 30px;
+    padding: 0 0 30px;
+  }
+}
+
+.about-contents section h2 {
+  margin: 0 0 1em;
+  padding: 0;
+  color: #000000;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .about-contents section h2 {
+    font-size: 1.25em;
+  }
+}
+
+.about-contents section p {
+  line-height: 2em;
+}
+
+@media screen and (max-width: 768px) {
+  .about-contents section p {
+    line-height: 1.8em;
+  }
+}
+
+.about-conversion-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: calc(100% - 20px);
+  max-width: 1200px;
+  margin: 0 auto 50px;
+  padding: 0;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .about-conversion-area {
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .about-conversion-area h2 {
+    font-size: 1.25em;
+  }
 }
