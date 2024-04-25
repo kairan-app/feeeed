@@ -1,3 +1,6 @@
+<% unless logged_in? %>
+<%= render(partial: "layouts/hero", locals: { show_buttons: true }) %>
+<% end %>
 <h2>Recent Channel & Items</h2>
 <% @channels.each do |channel| %>
   <div class="channel-and-items-component">
