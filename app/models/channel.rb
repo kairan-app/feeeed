@@ -1,5 +1,6 @@
 class Channel < ApplicationRecord
   include Rails.application.routes.url_helpers
+  include Stripable
 
   has_many :items, dependent: :destroy
   has_many :ownerships, dependent: :destroy
@@ -14,6 +15,7 @@ class Channel < ApplicationRecord
   validates :feed_url, presence: true, length: { maximum: 2083 }, uniqueness: true
   validates :image_url, length: { maximum: 2083 }
 
+  strip_before_save :title, :description
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   scope :not_stopped, -> { where.missing(:stopper) }
