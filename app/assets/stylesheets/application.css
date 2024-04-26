@@ -1165,8 +1165,14 @@ img {
 }
 
 .channel-and-items-component-item-more {
-  padding: 0.75em 0;
+  padding: 0.75em 10px;
   border-top: 0.5px solid #dddddd;
+}
+
+@media screen and (max-width: 768px) {
+  .channel-and-items-component-item-more {
+    padding: 0.75em 0;
+  }
 }
 
 footer {
