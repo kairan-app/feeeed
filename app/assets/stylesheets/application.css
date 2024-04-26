@@ -211,7 +211,7 @@ a:hover {
 @media screen and (max-width: 768px) {
   .channel-form {
     input[type="text"] {
-      margin: 0 0 0 0;
+      margin: 0;
       width: calc(100% - 50px);
     }
   }
@@ -713,7 +713,7 @@ img {
   display: flex;
   flex-wrap: wrap;
   margin: 0 20px 0.5em 0;
-  padding: 0.5em 0em;
+  padding: 0.5em 0;
   border-top: 1px solid #aaaaaa;
   line-height: 1.5em;
 }
@@ -769,7 +769,7 @@ img {
 
   span {
     display: inline-block;
-    margin: 0 0 0em;
+    margin: 0;
   }
 }
 
@@ -784,7 +784,7 @@ img {
   flex-wrap: wrap;
   width: calc(100% - 15px);
   margin: 2em 0 0;
-  padding: 0 0 20px 0;
+  padding: 0 0 20px;
   border-bottom: solid 1px #aaaaaa;
 }
 
@@ -889,7 +889,7 @@ img {
   position: relative;
   top: 0px;
   left: 0px;
-  padding: 0 0 0 0;
+  padding: 0;
   font-size: 5em;
   font-weight: 100;
   color: #dddddd;
@@ -960,9 +960,13 @@ img {
 .channel-and-items-component {
   width: calc(33.33333% - 20px);
   margin: 0 20px 20px 0;
-  padding: 0 20px;
+  padding: 0 10px;
   background-color: #ffffff;
   border-radius: 8px;
+}
+
+.channel-and-items-component h3 {
+  margin: 0.5em 0 0;
 }
 
 @media screen and (max-width: 1200px) {
@@ -975,6 +979,7 @@ img {
   .channel-and-items-component {
     width: 100%;
     margin: 0 0 20px;
+    padding: 0 20px;
   }
 }
 
@@ -993,7 +998,9 @@ img {
   flex-wrap: wrap;
   justify-content: left;
   align-items: center;
-  height: 64px;
+  height: 84px;
+  padding: 10px;
+  transition: 0.25s;
 
   img {
     width: 64px;
@@ -1009,20 +1016,19 @@ img {
   }
 }
 
+@media screen and (max-width: 768px) {
+  .channel-and-items-component-channel a {
+    padding: 10px 0;
+  }
+}
+
 .channel-and-items-component-channel a:hover {
   text-decoration: none;
-}
-
-.channel-and-items-component-channel a img {
-  transition: 0.5s;
-}
-
-.channel-and-items-component-channel a:hover img {
-  opacity: 0.5;
+  background-color: #eeeeee;
 }
 
 .channel-and-items-component-item-list {
-  margin: 1em 0 0.5em;
+  margin: 0.5em 0 0.5em;
 }
 
 .channel-and-items-component-item-list li a {
@@ -1030,27 +1036,21 @@ img {
   display: flex;
   flex-wrap: wrap;
   margin: 0;
-  padding: 0.75em 0em;
+  padding: 0.75em 10px;
   border-top: 0.5px solid #dddddd;
   line-height: 1.5em;
+  transition: 0.25s;
 }
 
 @media screen and (max-width: 768px) {
   .channel-and-items-component-item-list li a {
-    padding: 1em 0em;
+    padding: 1em 0;
   }
 }
 
 .channel-and-items-component-item-list li a:hover {
   text-decoration: none;
-}
-
-.channel-and-items-component-item-list li a img {
-  transition: 0.5s;
-}
-
-.channel-and-items-component-item-list li a:hover img {
-  opacity: 0.5;
+  background-color: #eeeeee;
 }
 
 .unreads-list {
@@ -1116,13 +1116,14 @@ img {
 
 .channel-and-items-component-item-paw {
   display: flex;
-  width: 50%;
+  width: calc(50% - 20px);
+  margin: 0 0 0 20px;
 }
 
 @media screen and (max-width: 768px) {
   .channel-and-items-component-item-paw {
     width: 100%;
-    margin: -0.5em 0 1em;
+    margin: 0 0 1em;
   }
 }
 
@@ -1136,11 +1137,16 @@ img {
 .channel-and-items-component-item-skip a {
   display: inline-block !important;
   width: 50px;
-  padding: 6px 0px !important;
+  margin: 0 !important;
+  padding: 6px 0 !important;
   text-align: center;
   background-color: #999999;
   color: #ffffff;
   border-radius: 2px;
+}
+
+.channel-and-items-component-item-skip a:hover {
+  background-color: #aaaaaa !important;
 }
 
 .channel-and-items-component-item-memo {
@@ -1159,8 +1165,14 @@ img {
 }
 
 .channel-and-items-component-item-more {
-  padding: 0.75em 0;
+  padding: 0.75em 10px;
   border-top: 0.5px solid #dddddd;
+}
+
+@media screen and (max-width: 768px) {
+  .channel-and-items-component-item-more {
+    padding: 0.75em 0;
+  }
 }
 
 footer {
@@ -1318,6 +1330,7 @@ footer ul li a {
 
 @media screen and (max-width: 768px) {
   .hero-area {
+    margin-top: 15px;
     margin-left: calc(50% - 50vw);
     min-width: auto;
     min-height: auto;

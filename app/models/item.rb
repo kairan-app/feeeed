@@ -1,4 +1,6 @@
 class Item < ApplicationRecord
+  include Stripable
+
   belongs_to :channel
   has_many :pawprints, dependent: :destroy
   has_many :pawed_users, through: :pawprints, source: :user
@@ -10,6 +12,7 @@ class Item < ApplicationRecord
   validates :image_url, length: { maximum: 2083 }
   validates :published_at, presence: true
 
+  strip_before_save :title
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
   def image_url_or_placeholder
