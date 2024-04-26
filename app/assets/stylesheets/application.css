@@ -1330,6 +1330,7 @@ footer ul li a {
 
 @media screen and (max-width: 768px) {
   .hero-area {
+    margin-top: 15px;
     margin-left: calc(50% - 50vw);
     min-width: auto;
     min-height: auto;
