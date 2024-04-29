@@ -7,7 +7,7 @@ class NotificationEmail < ApplicationRecord
   validates :verification_token, presence: true, uniqueness: true
 
   before_validation :set_verification_token
-  after_create_commit { NotificationEmailVerificationJob.perform_later(self.id) }
+  after_create_commit { NotificationEmailMailer.please_verify(self).deliver_later }
 
   enum mode: {
     my_subscribed_items: 0,
