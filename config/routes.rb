@@ -33,6 +33,9 @@ Rails.application.routes.draw do
   post   "/notification_webhooks",             to: "notification_webhooks#create"
   delete "/notification_webhooks/:id",         to: "notification_webhooks#destroy",
                                                as: "notification_webhook"
+  post   "/notification_emails",               to: "notification_emails#create"
+  delete "/notification_emails/:id",           to: "notification_emails#destroy",
+                                               as: "notification_email"
   get    "/notification_emails/:token",        to: "notification_emails/verifications#create",
                                                as: "notification_email_verification"
   get    "/users",                             to: "users#index"
@@ -47,7 +50,7 @@ Rails.application.routes.draw do
   get    "/my/pawprints",                      to: "my/pawprints#index"
   get    "/my/profile",                        to: "my/profile#show"
   put    "/my/profile",                        to: "my/profile#update"
-  get    "/my/notification_webhooks",          to: "my/notification_webhooks#index"
+  get    "/my/notification_settings",          to: "my/notification_settings#index"
   get    "/about",                             to: "about#index",
                                                as: "about"
 

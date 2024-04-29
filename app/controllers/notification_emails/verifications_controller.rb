@@ -4,6 +4,6 @@ class NotificationEmails::VerificationsController < ApplicationController
     raise ActiveRecord::RecordNotFound if notification_email.nil?
 
     notification_email.touch(:verified_at)
-    redirect_to root_path, notice: "Email #{notification_email.email} verified."
+    redirect_to my_notification_settings_path, notice: "Email #{notification_email.email} verified."
   end
 end
