@@ -161,7 +161,7 @@ class Channel < ApplicationRecord
   def to_discord_more_embed
     {
       title: "Check out more recent items in #{title}",
-      url: Rails.application.credentials.host + channel_path(self),
+      url: channel_url(self),
     }
   end
 
@@ -171,7 +171,7 @@ class Channel < ApplicationRecord
       text: {
         type: "mrkdwn",
         text: "<%s|#{title}> 's recent items 📨" % [
-          Rails.application.credentials.host + channel_path(self)
+          channel_url(self)
         ]
       }
     }
@@ -183,7 +183,7 @@ class Channel < ApplicationRecord
       text: {
         type: "mrkdwn",
         text: "Check out more recent items in <%s|#{title}>" % [
-          Rails.application.credentials.host + channel_path(self)
+          channel_url(self)
         ]
       }
    }
