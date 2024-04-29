@@ -102,7 +102,6 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   url_options = { host: URI.parse(Rails.application.credentials.host).host, protocol: "https" }
-  config.routes.default_url_options = url_options
   config.action_controller.default_url_options = url_options
   config.action_mailer.default_url_options = url_options
   Rails.application.routes.default_url_options = url_options
