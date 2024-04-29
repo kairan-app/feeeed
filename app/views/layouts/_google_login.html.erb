@@ -1,9 +1,9 @@
-<% unless logged_in? %>　　　　　　　　
+<% unless logged_in? %>
 <div class="google-login">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <div id="g_id_onload"
      data-client_id="<%= Rails.application.credentials.google_auth_app.client_id %>"
-     data-login_uri="<%= Rails.application.credentials.google_auth_app.host %>/google_auth_callback"
+     data-login_uri="<%= Rails.application.credentials.host %>/google_auth_callback"
      data-auto_prompt="false">
   </div>
   <div class="g_id_signin button p-0"

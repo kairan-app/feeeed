@@ -8,7 +8,7 @@ class NotificationWebhooksController < ApplicationController
       DiscoPosterJob.perform_later(content: "@#{current_user.name} added a notification webhook (mode: #{nw.mode})")
       redirect_to my_notification_webhooks_path, notice: "Notification webhook was successfully created."
     else
-      redirect_to my_notification_webhooks_path, alert: nw.errors.full_messages.join(", ")
+      redirect_to my_notification_settings_path, alert: nw.errors.full_messages.join(", ")
     end
   end
 
@@ -16,7 +16,7 @@ class NotificationWebhooksController < ApplicationController
     nw = current_user.notification_webhooks.find(params[:id])
     nw.destroy
 
-    redirect_to my_notification_webhooks_path, notice: "Notification webhook was successfully destroyed."
+    redirect_to my_notification_settings_path, notice: "Notification webhook was successfully destroyed."
   end
 
   def notification_webhook_params

@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :pawed_items, through: :pawprints, source: :item
   has_many :item_skips, dependent: :destroy
   has_many :notification_webhooks, dependent: :destroy
+  has_many :notification_emails, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..15 }
   validates :email, presence: true, length: { maximum: 254 }
