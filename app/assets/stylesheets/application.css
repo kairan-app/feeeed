@@ -507,6 +507,10 @@ header nav ul li a:hover {
     bottom: 0;
     left: 0;
   }
+
+  .material-symbols-outlined-sp-tab img svg {
+    fill: #ffffff;
+  }
 }
 
 .wrapper {
