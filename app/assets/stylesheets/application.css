@@ -507,6 +507,10 @@ header nav ul li a:hover {
     bottom: 0;
     left: 0;
   }
+
+  .material-symbols-outlined-sp-tab img svg {
+    fill: #ffffff;
+  }
 }
 
 .wrapper {
@@ -895,11 +899,64 @@ img {
   color: #dddddd;
 }
 
+.setting-description {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 20px 0.5em 0;
+  padding: 0;
+  line-height: 1.5em;
+
+  img {
+    width: 40%;
+    height: auto;
+    margin: 10px 20px 0 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .setting-description {
+    margin: 0 0 0.5em;
+
+    img {
+      width: 100%;
+      height: auto;
+      margin: 0 0 1em;
+    }
+  }
+}
+
+.setting-description p {
+  margin: 0.5em 0 0.5em;
+  padding: 0;
+}
+
 .setting-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
   margin: 0 20px 0.5em 0;
   padding: 0.5em 0;
-  border-top: 1px solid #aaaaaa;
   line-height: 1.5em;
+}
+
+@media screen and (max-width: 768px) {
+  .setting-list {
+    margin: 0 0 0.5em;
+  }
+}
+
+.setting-mode, .setting-url-or-email {
+  width: calc(50% - 40px);
+}
+
+@media screen and (max-width: 768px) {
+  .setting-mode, .setting-url-or-email {
+    width: 100%;
+  }
+}
+
+.setting-submit {
+  width: 80px;
 }
 
 .setting-list p {
@@ -908,12 +965,13 @@ img {
 }
 
 .setting-list input, .setting-list select {
+  height: 2em;
   margin: 0 0 1em;
   padding: 0.25em 0.5em;
 }
 
 .setting-list input[type="text"i], .setting-list select {
-  width: 50%;
+  width: calc(100% - 20px);
 }
 
 @media screen and (max-width: 768px) {
@@ -929,6 +987,40 @@ img {
   border: none;
   border-radius: 16px;
   cursor: pointer;
+}
+
+.setting-table-scroll {
+  overflow-x: auto;
+}
+
+.setting-table {
+  width: calc(100% - 20px);
+  min-width: 768px;
+  margin: 0 0 2em;
+  border-collapse: collapse;
+}
+
+.setting-table tr {
+  display: flex;
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.setting-table tr:last-child {
+  border-bottom: none;
+}
+
+.setting-table th {
+  text-align: left;
+}
+
+.setting-table th, .setting-table td {
+  display: block;
+  width: 25%;
+  padding: 0.5em 0.5em 0.5em 0;
+}
+
+.setting-table th:last-child, .setting-table td:last-child {
+  width: 80px;
 }
 
 .channel_search {

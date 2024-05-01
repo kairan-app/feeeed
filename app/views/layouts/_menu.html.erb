@@ -4,6 +4,12 @@
   <% if logged_in? %>
   <ul class="pc-menu">
     <li>
+      <%= link_to(pawprints_path) do %>
+        <span class="material-symbols-outlined"><%= image_tag("icon-pawprints-b.svg", alt: "pawprints", loading: "lazy", width: 24, height: 24) %></span>
+        <span>Pawprints</span>
+      <% end %>
+    </li>
+    <li>
       <%= link_to(unreads_path) do %>
         <span class="material-symbols-outlined">inbox</span>
         <span>Unreads</span>
@@ -54,6 +60,12 @@
       <% end %>
     </li>
     <% if logged_in? %>
+    <li>
+      <%= link_to(pawprints_path) do %>
+        <span class="material-symbols-outlined material-symbols-outlined-sp-tab"><%= image_tag("icon-pawprints-w.svg", alt: "pawprints", loading: "lazy", width: 32, height: 32) %></span>
+        <span>Pawprints</span>
+      <% end %>
+    </li>
     <li>
       <%= link_to(unreads_path) do %>
         <span class="material-symbols-outlined material-symbols-outlined-sp-tab">inbox</span>

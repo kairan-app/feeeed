@@ -1,77 +1,103 @@
 <section>
   <h2>My Notification Webhooks</h2>
+  <div class="setting-description">
+    <%= image_tag("notification-webhooks-discord.png", alt: "Discord", loading: "lazy", width: 430, height: 240) %>
+    <%= image_tag("notification-webhooks-slack.png", alt: "Discord", loading: "lazy", width: 430, height: 240) %>
+    <p>
+      Webhook を活用して、rururu からの通知を Slack / Discord で受け取ることができます。<br/>
+      Mode を選択し、Slack / Discord で生成した Url を入力してください。
+    </p>
+  </div>
   <%= form_for(@new_notification_webhook) do |form| %>
     <div class="setting-list">
+      <div class="setting-mode">
         <p><%= form.label :mode %></p>
         <%= form.select :mode, NotificationWebhook.modes.keys %>
+      </div>
+      <div class="setting-url-or-email">
         <p><%= form.label :url %></p>
         <%= form.text_field :url %>
-      <div>
+      </div>
+      <div class="setting-submit">
         <%= form.submit "Add" %>
       </div>
     </div>
   <% end %>
 
   <% if @notification_webhooks.count > 0 %>
-  <table>
-    <tbody>
-      <tr>
-        <th>Mode</th>
-        <th>Webhook URL</th>
-        <th>Created</th>
-        <th>Last Notified</th>
-        <th>Action</th>
-      </tr>
-      <% @notification_webhooks.each do |nw| %>
-      <tr>
-        <td><%= nw.mode %></td>
-        <td><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
-        <td><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-        <td><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
-        <td><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="setting-table-scroll">
+    <table class="setting-table">
+      <tbody>
+        <tr>
+          <th>Mode</th>
+          <th>Webhook URL</th>
+          <th>Created</th>
+          <th>Last Notified</th>
+          <th>Action</th>
+        </tr>
+        <% @notification_webhooks.each do |nw| %>
+        <tr>
+          <td><%= nw.mode %></td>
+          <td><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
+          <td><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
   <% end %>
 </section>
 
 <section>
   <h2>My Notification Emails</h2>
+  <div class="setting-description">
+    <p>
+      rururu からの通知を E-mail で受け取ることができます。<br/>
+      Mode を選択し、受信したいメールアドレスを入力してください。
+    </p>
+  </div>
   <%= form_for(@new_notification_email) do |form| %>
     <div class="setting-list">
+      <div class="setting-mode">
         <p><%= form.label :mode %></p>
         <%= form.select :mode, NotificationEmail.modes.keys %>
+      </div>
+      <div class="setting-url-or-email">
         <p><%= form.label :email %></p>
         <%= form.text_field :email %>
-      <div>
+      </div>
+      <div class="setting-submit">
         <%= form.submit "Add" %>
       </div>
     </div>
   <% end %>
 
   <% if @notification_emails.count > 0 %>
-  <table>
-    <tbody>
-      <tr>
-        <th>Mode</th>
-        <th>Email</th>
-        <th>Created</th>
-        <th>Verified</th>
-        <th>Last Notified</th>
-        <th>Action</th>
-      </tr>
-      <% @notification_emails.each do |ne| %>
-      <tr>
-        <td><%= ne.mode %></td>
-        <td><%= ne.email %></td>
-        <td><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-        <td><%= ne.verified_at.nil? ? "No" : "Yes" %></td>
-        <td><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
-        <td><%= link_to("Delete", notification_email_path(ne), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="setting-table-scroll">
+    <table class="setting-table">
+      <tbody>
+        <tr>
+          <th>Mode</th>
+          <th>Email</th>
+          <th>Created</th>
+          <th>Verified</th>
+          <th>Last Notified</th>
+          <th>Action</th>
+        </tr>
+        <% @notification_emails.each do |ne| %>
+        <tr>
+          <td><%= ne.mode %></td>
+          <td><%= ne.email %></td>
+          <td><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= ne.verified_at.nil? ? "No" : "Yes" %></td>
+          <td><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= link_to("Delete", notification_email_path(ne), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
   <% end %>
 </section>
