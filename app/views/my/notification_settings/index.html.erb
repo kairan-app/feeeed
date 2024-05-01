@@ -1,12 +1,24 @@
 <section>
   <h2>My Notification Webhooks</h2>
+  <div class="setting-description">
+    <%= image_tag("notification-webhooks-discord.png", alt: "Discord", loading: "lazy", width: 430, height: 240) %>
+    <%= image_tag("notification-webhooks-slack.png", alt: "Discord", loading: "lazy", width: 430, height: 240) %>
+    <p>
+      Webhook を活用して、rururu からの通知を Slack / Discord で受け取ることができます。<br/>
+      Mode を選択し、Slack / Discord で生成した Url を入力してください。
+    </p>
+  </div>
   <%= form_for(@new_notification_webhook) do |form| %>
     <div class="setting-list">
+      <div class="setting-mode">
         <p><%= form.label :mode %></p>
         <%= form.select :mode, NotificationWebhook.modes.keys %>
+      </div>
+      <div class="setting-url-or-email">
         <p><%= form.label :url %></p>
         <%= form.text_field :url %>
-      <div>
+      </div>
+      <div class="setting-submit">
         <%= form.submit "Add" %>
       </div>
     </div>
@@ -40,13 +52,23 @@
 
 <section>
   <h2>My Notification Emails</h2>
+  <div class="setting-description">
+    <p>
+      rururu からの通知を E-mail で受け取ることができます。<br/>
+      Mode を選択し、受信したいメールアドレスを入力してください。
+    </p>
+  </div>
   <%= form_for(@new_notification_email) do |form| %>
     <div class="setting-list">
+      <div class="setting-mode">
         <p><%= form.label :mode %></p>
         <%= form.select :mode, NotificationEmail.modes.keys %>
+      </div>
+      <div class="setting-url-or-email">
         <p><%= form.label :email %></p>
         <%= form.text_field :email %>
-      <div>
+      </div>
+      <div class="setting-submit">
         <%= form.submit "Add" %>
       </div>
     </div>
