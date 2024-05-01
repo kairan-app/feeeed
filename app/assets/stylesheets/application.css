@@ -931,6 +931,40 @@ img {
   cursor: pointer;
 }
 
+.setting-table-scroll {
+  overflow-x: auto;
+}
+
+.setting-table {
+  width: 100%;
+  min-width: 768px;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+
+.setting-table tr {
+  display: flex;
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.setting-table tr:last-child {
+  border-bottom: none;
+}
+
+.setting-table th {
+  text-align: left;
+}
+
+.setting-table th, .setting-table td {
+  display: block;
+  width: 25%;
+  padding: 0.5em 0.5em 0.5em 0;
+}
+
+.setting-table th:last-child, .setting-table td:last-child {
+  width: 80px;
+}
+
 .channel_search {
   display: flex;
   margin: 0 10px 0 30px;
