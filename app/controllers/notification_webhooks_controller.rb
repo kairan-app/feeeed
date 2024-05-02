@@ -6,7 +6,7 @@ class NotificationWebhooksController < ApplicationController
 
     if nw.save
       DiscoPosterJob.perform_later(content: "@#{current_user.name} added a notification webhook (mode: #{nw.mode})")
-      redirect_to my_notification_webhooks_path, notice: "Notification webhook was successfully created."
+      redirect_to my_notification_settings_path, notice: "Notification webhook was successfully created."
     else
       redirect_to my_notification_settings_path, alert: nw.errors.full_messages.join(", ")
     end
