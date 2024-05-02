@@ -31,6 +31,15 @@ class NotificationEmail < ApplicationRecord
     end
   end
 
+  def notify_pawprints(since: nil)
+    at = since || last_notified_at || 6.hours.ago
+    pawprints = user.pawprints.where("created_at >= ?", at).to_a
+    return if pawprints.empty?
+
+    NotificationEmailMailer.pawprints(notification_email: self, pawprints:).deliver_later
+    touch(:last_notified_at)
+  end
+
   def notify_subscribed_items(since: nil)
     at = since || last_notified_at || 6.hours.ago
     items = user.subscribed_items.preload(:channel).where("items.created_at >= ?", at).order("items.id")
@@ -53,6 +62,7 @@ class NotificationEmail < ApplicationRecord
     channel_and_items = items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }
 
     NotificationEmailMailer.subscribed_items(notification_email: self, channel_and_items:, subject:).deliver_later
+    touch(:last_notified_at)
   end
 
   def verified?
