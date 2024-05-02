@@ -91,7 +91,7 @@
           <td><%= ne.mode %></td>
           <td><%= ne.email %></td>
           <td><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= ne.verified_at.nil? ? "No" : "Yes" %></td>
+          <td><%= ne.verified? ? "Yes" : "No" %></td>
           <td><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
           <td><%= link_to("Delete", notification_email_path(ne), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
         </tr>
