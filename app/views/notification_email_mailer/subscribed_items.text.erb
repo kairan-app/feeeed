@@ -1,0 +1,15 @@
+# New arrival items!
+
+Hi, @<%= @user.name %>!
+
+<% @channel_and_items.each do |channel, items| %>
+
+
+## <%= channel.title %> - <%= channel.site_url %>
+<% items.sort_by(&:id).reverse.each do |item| %>
+
+<%= item.title %>
+<%= item.url %>
+(<%= item.published_at.strftime("%Y-%m-%d %H:%M") %>)
+<% end %>
+<% end %>

@@ -1,6 +1,5 @@
 class NotificationWebhookNotifierJob < ApplicationJob
   def perform(nw_id)
-    nw = NotificationWebhook.find(nw_id)
-    nw.notify
+    NotificationWebhook.find(nw_id).notify
   end
 end

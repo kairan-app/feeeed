@@ -1,0 +1,13 @@
+# Your recent pawprints!
+
+Hi, @<%= @user.name %>!
+
+<% @pawprints.sort_by(&:id).each do |pawprint| %>
+
+<%= pawprint.item.title %>
+<%= pawprint.item.url %>
+<% if pawprint.memo.present? %>
+💬 <%= pawprint.memo %>
+<% end %>
+(<%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %>)
+<% end %>
