@@ -4,6 +4,7 @@ class NotificationEmails::VerificationsController < ApplicationController
     raise ActiveRecord::RecordNotFound if notification_email.nil?
 
     notification_email.touch(:verified_at)
+    DiscoPosterJob.perform_later(content: "@#{notification_email.user.name} verified notification email (id:#{notification_email.id})")
     redirect_to my_notification_settings_path, notice: "Email #{notification_email.email} verified."
   end
 end
