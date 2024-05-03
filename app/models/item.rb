@@ -13,6 +13,7 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
 
   strip_before_save :title
+  after_validation :notify_validation_errors
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
   def image_url_or_placeholder
@@ -42,5 +43,15 @@ class Item < ApplicationRecord
         alt_text: title,
       }
     }
+  end
+
+  def notify_validation_errors
+    return if errors.empty?
+
+    content = [
+      "#{self.class} save failed: #{errors.full_messages.join(", ")}",
+      "```#{attributes.to_yaml}```",
+    ].join("\n")
+    DiscoPosterJob.perform_later(content: content)
   end
 end

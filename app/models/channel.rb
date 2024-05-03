@@ -135,16 +135,7 @@ class Channel < ApplicationRecord
         image_url: image_url,
         published_at: entry.published,
       }
-      item = self.items.find_or_initialize_by(guid: guid)
-      successed = item.update(parameters)
-
-      unless successed
-        content = [
-          "Channel id:#{self.id}, item save failed: #{item.errors.full_messages.join(", ")}",
-          "```", parameters.to_yaml, "```",
-        ].join("\n")
-        DiscoPosterJob.perform_later(content: content)
-      end
+      self.items.find_or_initialize_by(guid: guid).update(parameters)
     end
   end
 
