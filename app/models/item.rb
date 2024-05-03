@@ -1,5 +1,6 @@
 class Item < ApplicationRecord
   include Stripable
+  include EmptyStringsAreAlignedToNil
   include ValidationErrorsNotifiable
 
   belongs_to :channel
@@ -14,6 +15,7 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
 
   strip_before_save :title
+  empty_strings_are_aligned_to_nil :image_url
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
   def image_url_or_placeholder
