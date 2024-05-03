@@ -1,5 +1,6 @@
 class Item < ApplicationRecord
   include Stripable
+  include ValidationErrorsNotifiable
 
   belongs_to :channel
   has_many :pawprints, dependent: :destroy
@@ -43,15 +44,5 @@ class Item < ApplicationRecord
         alt_text: title,
       }
     }
-  end
-
-  def notify_validation_errors
-    return if errors.empty?
-
-    content = [
-      "#{self.class} save failed: #{errors.full_messages.join(", ")}",
-      "```#{attributes.to_yaml}```",
-    ].join("\n")
-    DiscoPosterJob.perform_later(content: content)
   end
 end
