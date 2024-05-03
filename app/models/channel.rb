@@ -116,6 +116,7 @@ class Channel < ApplicationRecord
       sleep 2
 
       p ["Fetching", entry.published, entry.title, entry.url]
+      next if entry.title.blank?
 
       url = entry.url || self.site_url
       encoded_url = url.chars.map { |c| c.bytesize > 1 ? URI.encode_www_form_component(c) : c }.join
