@@ -1,4 +1,10 @@
 module ValidationErrorsNotifiable
+  extend ActiveSupport::Concern
+
+  included do
+    after_validation :notify_validation_errors
+  end
+
   def notify_validation_errors
     return if errors.empty?
 

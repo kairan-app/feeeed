@@ -14,7 +14,6 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
 
   strip_before_save :title
-  after_validation :notify_validation_errors
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
   def image_url_or_placeholder
