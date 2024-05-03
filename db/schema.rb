@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_25_143230) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_03_013247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,7 +46,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_143230) do
 
   create_table "items", force: :cascade do |t|
     t.bigint "channel_id", null: false
-    t.string "guid", limit: 256, null: false
+    t.string "guid", limit: 2083, null: false
     t.string "title", limit: 256, null: false
     t.string "url", limit: 2083, null: false
     t.string "image_url", limit: 2083
