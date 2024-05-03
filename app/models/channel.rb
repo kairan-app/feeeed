@@ -1,6 +1,7 @@
 class Channel < ApplicationRecord
   include Rails.application.routes.url_helpers
   include Stripable
+  include EmptyStringsAreAlignedToNil
   include ValidationErrorsNotifiable
 
   has_many :items, dependent: :destroy
@@ -17,6 +18,7 @@ class Channel < ApplicationRecord
   validates :image_url, length: { maximum: 2083 }
 
   strip_before_save :title, :description
+  empty_strings_are_aligned_to_nil :description, :site_url, :image_url
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   scope :not_stopped, -> { where.missing(:stopper) }
