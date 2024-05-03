@@ -1,5 +1,6 @@
 class Item < ApplicationRecord
   include Stripable
+  include ValidationErrorsNotifiable
 
   belongs_to :channel
   has_many :pawprints, dependent: :destroy

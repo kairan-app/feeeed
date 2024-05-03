@@ -1,6 +1,7 @@
 class Channel < ApplicationRecord
   include Rails.application.routes.url_helpers
   include Stripable
+  include ValidationErrorsNotifiable
 
   has_many :items, dependent: :destroy
   has_many :ownerships, dependent: :destroy
@@ -135,7 +136,7 @@ class Channel < ApplicationRecord
         image_url: image_url,
         published_at: entry.published,
       }
-      self.items.find_or_initialize_by(guid: parameters[:guid]).update(parameters)
+      self.items.find_or_initialize_by(guid: guid).update(parameters)
     end
   end
 
