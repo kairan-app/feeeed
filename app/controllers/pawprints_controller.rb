@@ -1,5 +1,5 @@
 class PawprintsController < ApplicationController
-  before_action :login_required, only: %i[create destroy]
+  before_action :login_required
   before_action :set_item, only: %i[create destroy]
 
   def index
