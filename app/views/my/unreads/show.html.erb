@@ -1,8 +1,8 @@
 <h2>Unreads</h2>
-<p class="unreads-nav">Showing unreads from the last <%= @days_before %> days</p>
+<p class="unreads-nav">Showing unreads from the last <%= @range_days %> days</p>
 <div class="unreads-nav-button">
-  <%= link_to("← " + (@days_before - 1).to_s + " days", unreads_path(days_before: @days_before - 1)) %>
-  <%= link_to((@days_before + 1).to_s + " days →", unreads_path(days_before: @days_before + 1)) %>
+  <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(range_days: @range_days - 1)) %>
+  <%= link_to((@range_days + 1).to_s + " days →", unreads_path(range_days: @range_days + 1)) %>
 </div>
 <% @channel_and_items.each do |channel, items| %>
   <div class="channel-and-items-component channel-and-items-component-unreads">
