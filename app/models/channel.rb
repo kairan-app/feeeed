@@ -44,6 +44,27 @@ class Channel < ApplicationRecord
       save_from(feed_url)
     end
 
+    def preview(url)
+      feed_url = Feedbag.find(url).first
+      return nil if feed_url.nil?
+
+      feed = Feedjira.parse(Faraday.get(feed_url).body)
+
+      parameters =
+        case feed
+        when Feedjira::Parser::RSS
+          build_from_rss(feed)
+        when Feedjira::Parser::Atom
+          build_from_atom(feed)
+        when Feedjira::Parser::ITunesRSS
+          build_from_itunes_rss(feed)
+        when Feedjira::Parser::AtomYoutube
+          build_from_atom_youtube(feed)
+        end
+
+      Channel.new(parameters.merge(feed_url: feed_url))
+    end
+
     def save_from(feed_url)
       feed = Feedjira.parse(Faraday.get(feed_url).body)
 
@@ -101,6 +122,12 @@ class Channel < ApplicationRecord
         site_url: feed.url,
         image_url: og.image,
       }
+    end
+
+    def similar_to(channel)
+      Channel.ransack({
+        g: { "0" => { m: "or", title_cont: channel.title, site_url_cont: channel.site_url }}
+      }).result
     end
   end
 

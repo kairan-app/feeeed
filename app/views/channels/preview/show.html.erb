@@ -1,0 +1,46 @@
+<h2>Channel Preview</h2>
+<div class="channel-profile">
+  <% if @channel.image_url %>
+  <div class="channel-profile-image">
+    <%= image_tag(@channel.image_url, style: "max-height: 240px;") %>
+  </div>
+  <% end %>
+
+  <div class="channel-profile-info">
+    <h2><%= @channel.title %></h2>
+
+    <% if @channel.description %>
+      <p><%= @channel.description %></p>
+    <% end %>
+
+    <ul>
+      <% if @channel.site_url %>
+      <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
+      <% end %>
+      <li>Feed: <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
+    </ul>
+  </div>
+</div>
+<% if @similar_channels.count > 0 %>
+<section>
+  <h3>Did you mean...?</h3>
+  <ul>
+    <% @similar_channels.each do |channel| %>
+      <li><%= link_to(channel.title, channel) %></li>
+      <ul>
+        <% if channel.site_url %>
+        <li>Site: <%= link_to(channel.site_url, channel.site_url, target: "_blank") %></li>
+        <% end %>
+        <li>Feed: <%= link_to(channel.feed_url, channel.feed_url, target: "_blank") %></li>
+      </ul>
+    <% end %>
+  </ul>
+</section>
+<% end %>
+<section>
+  <%= form_tag(channels_path, style: "margin-top: 20px;") do %>
+    <%= text_field_tag(:url, @channel.feed_url, style: "width: 80%;") %>
+    <%= submit_tag("Save") %>
+  <% end %>
+  <p>※ここに注意事項を書くとよさそう</p>
+</section>

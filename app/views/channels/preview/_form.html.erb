@@ -5,7 +5,7 @@
   <div class="channel-registration-form-wrap">
     <div class="channel-form">
       <p>Channel Registration Form</p>
-      <%= form_tag(channels_path) do %>
+      <%= form_tag(channel_preview_path, method: :get) do %>
         <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
         <%= submit_tag("Add") %>
       <% end%>

@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
   post   "/google_auth_callback",              to: "sessions#create"
   delete "/session",                           to: "sessions#destroy"
+  get    "/channels/preview",                  to: "channels/preview#show",
+                                               as: "channel_preview"
   get    "/channels",                          to: "channels#index"
   post   "/channels",                          to: "channels#create"
   get    "/channels/:channel_id",              to: "channels#show",
