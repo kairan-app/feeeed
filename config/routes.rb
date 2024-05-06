@@ -53,6 +53,8 @@ Rails.application.routes.draw do
   get    "/my/notification_settings",          to: "my/notification_settings#index"
   get    "/about",                             to: "about#index",
                                                as: "about"
+  get    "/info",                              to: "info#index",
+                                               as: "info"
 
   root "welcome#index"
 end
