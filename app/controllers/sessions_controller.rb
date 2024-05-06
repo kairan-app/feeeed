@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
 
     unless ENV["ALLOWED_USERS"].split(",").include?(local_part)
       DiscoPosterJob.perform_later(content: "#{email} tried to log in")
-      return redirect_to root_path
+      return redirect_to info_path
     end
 
     user = User.find_or_initialize_by(google_guid: payload["sub"])
