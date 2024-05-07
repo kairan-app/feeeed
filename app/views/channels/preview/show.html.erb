@@ -24,18 +24,35 @@
 <% if @similar_channels.count > 0 %>
 <section>
   <h3>Did you mean...?</h3>
-  <p>既に同一のフィードが登録されているか、同じコンテンツを提供する別フィードが先に登録されている可能性があります。<br/>以下に表示されているChannelをご覧ください</p>
-  <ul>
+  <ul class="similar-channels">
     <% @similar_channels.each do |channel| %>
-      <li><%= link_to(channel.title, channel) %></li>
-      <ul>
-        <% if channel.site_url %>
-        <li>Site: <%= link_to(channel.site_url, channel.site_url, target: "_blank") %></li>
+      <li>
+        <% if channel.image_url %>
+        <%= link_to channel_path(channel) do %>
+        <div class="similar-channel-image">
+          <%= image_tag(channel.image_url, style: "max-height: 100px;") %>
+        </div>
         <% end %>
-        <li>Feed: <%= link_to(channel.feed_url, channel.feed_url, target: "_blank") %></li>
-      </ul>
+        <% end %>
+        <div class="similar-channel-info">
+          <div class="similar-channel-title">
+            <%= link_to(channel.title, channel) %>
+          </div>
+          <div class="similar-channel-urls">
+            <% if channel.site_url %>
+            Site: <%= link_to(channel.site_url, channel.site_url, target: "_blank") %><br/>
+            <% end %>
+            Feed: <%= link_to(channel.feed_url, channel.feed_url, target: "_blank") %>
+          </div>
+        </div>
+      </li>
     <% end %>
   </ul>
+  <p>
+    既に該当するフィードが登録済みか、同じコンテンツを提供する別フィードが先に登録されている可能性があります。<br/>
+    上に表示されているChannelをご確認ください。<br/>
+    問題ないようでしたら、以下より登録をお願いいたします。
+  </p>
 </section>
 <% end %>
 <section>
