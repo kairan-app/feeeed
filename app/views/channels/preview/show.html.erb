@@ -24,6 +24,7 @@
 <% if @similar_channels.count > 0 %>
 <section>
   <h3>Did you mean...?</h3>
+  <p>既に同一のフィードが登録されているか、同じコンテンツを提供する別フィードが先に登録されている可能性があります。<br/>以下に表示されているChannelをご覧ください</p>
   <ul>
     <% @similar_channels.each do |channel| %>
       <li><%= link_to(channel.title, channel) %></li>
@@ -38,9 +39,25 @@
 </section>
 <% end %>
 <section>
-  <%= form_tag(channels_path, style: "margin-top: 20px;") do %>
+  <%= form_tag(channels_path, style: "margin: 20px 0;") do %>
     <%= text_field_tag(:url, @channel.feed_url, style: "width: 80%;") %>
     <%= submit_tag("Save") %>
   <% end %>
-  <p>※ここに注意事項を書くとよさそう</p>
+  <div class="preview-notice">
+  <ul>
+    <li>
+      ニュースサイトなど、フィードによっては利用規約や注意事項が設けられている場合があります。<br/>フィード登録の際には、配信元の利用規約や注意事項をご確認ください。
+    </li>
+    <li>
+      フィードの利用に注意事項が設けられている例：<br/>
+      <ul>
+        <li><a href="https://news.yahoo.co.jp/rss" target="_blank">RSS一覧 - Yahoo!ニュース</a></li>
+        <li><a href="https://www.nhk.or.jp/toppage/rss/" target="_blank">NHKオンライン｜RSSについて</a></li>
+      </ul>
+    </li>
+    <li>
+      現在rururuには自動で規約違反を検知する機能はありません。<br/>規約違反が発覚した場合は、運営者が手動で削除することがありますのでご了承ください。
+    </li>
+  </ul>
+  </div>
 </section>
