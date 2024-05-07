@@ -1597,27 +1597,3 @@ footer ul li a {
     line-height: 1.8em;
   }
 }
-
-.about-conversion-area {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  width: calc(100% - 20px);
-  max-width: 1200px;
-  margin: 0 auto 50px;
-  padding: 0;
-  text-align: center;
-}
-
-@media screen and (max-width: 768px) {
-  .about-conversion-area {
-    margin: 0 auto;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .about-conversion-area h2 {
-    font-size: 1.25em;
-  }
-}
