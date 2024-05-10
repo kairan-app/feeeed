@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many :notification_webhooks, dependent: :destroy
   has_many :notification_emails, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: true, length: { in: 2..15 }
+  validates :name, presence: true, uniqueness: true, length: { in: 2..30 }
   validates :email, presence: true, length: { maximum: 254 }
   validates :icon_url, presence: true, length: { maximum: 2083 }
 
