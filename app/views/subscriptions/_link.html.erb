@@ -1,7 +1,7 @@
 <% if logged_in? %>
   <% if channel.subscribed_by?(current_user) %>
-    <%= link_to("Subscribed", channel_subscription_path(channel), data: { turbo_method: :delete }) %>
+    <%= link_to("Subscribed", channel_subscription_path(channel), data: { turbo_method: :delete }, class: "remove-subscription") %>
   <% else %>
-    <%= link_to("Subscribe", channel_subscription_path(channel), data: { turbo_method: :post }) %>
+    <%= link_to("Subscribe", channel_subscription_path(channel), data: { turbo_method: :post }, class: "add-subscription") %>
   <% end %>
 <% end %>

@@ -8,6 +8,10 @@
   <div class="channel-profile-info">
     <h2><%= @channel.title %></h2>
 
+    <div class="channel-buttons">
+      <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
+    </div>
+
     <% if @channel.description %>
       <p><%= @channel.description %></p>
     <% end %>
@@ -22,10 +26,6 @@
     <p>
       <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
     </p>
-    <p>
-      <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
-    </p>
-
     <p>
       <%= link_to("Update and fetch items", channel_fetch_path(@channel), data: { turbo_method: :post }) %>
     </p>
