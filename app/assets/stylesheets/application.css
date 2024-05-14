@@ -840,6 +840,46 @@ img {
   }
 }
 
+.channel-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5em 0 1em;
+}
+
+.channel-buttons a {
+  display: block;
+  margin: 0 0.5em 0 0;
+  padding: 0.5em 1em;
+  background-color: #ffffff;
+  color: #333333;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .channel-buttons a {
+    width: 100%;
+    margin: 0 0 0.5em;
+    text-align: center;
+  }
+}
+
+.channel-buttons a:hover {
+  background-color: #fafafa;
+  border: solid 1px #999999;
+  text-decoration: none;
+}
+
+a.remove-subscription {
+  background-color: #555555;
+  color: #ffffff;
+}
+
+a.remove-subscription:hover {
+  background-color: #777777;
+}
+
 .setting-card {
   width: calc(50% - 15px);
   max-width: 360px;
