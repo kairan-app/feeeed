@@ -16,19 +16,20 @@
       <p><%= @channel.description %></p>
     <% end %>
 
-    <ul>
+    <ul class="channel-links">
       <% if @channel.site_url %>
-      <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
+      <li><span class="material-symbols-outlined">language</span> <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
       <% end %>
-      <li>Feed: <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
+      <li><span class="material-symbols-outlined">rss_feed</span> <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
     </ul>
 
-    <p>
+    <div class="channel-control-buttons">
       <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
-    </p>
-    <p>
-      <%= link_to("Update and fetch items", channel_fetch_path(@channel), data: { turbo_method: :post }) %>
-    </p>
+      <%= link_to(channel_fetch_path(@channel), data: { turbo_method: :post }) do %>
+        <span class="material-symbols-outlined">refresh</span>
+        Update and fetch items
+      <% end %>
+    </div>
 
     <% if @channel.stopper %>
       <p style="padding: 20px; background-color: #ffdf89; color: #946c00;">
