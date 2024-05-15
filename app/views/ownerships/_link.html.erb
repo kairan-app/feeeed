@@ -1,7 +1,13 @@
 <% if logged_in? %>
   <% if channel.owned_by?(current_user) %>
-    <%= link_to("Remove from my own", channel_ownership_path(channel), data: { turbo_method: :delete }) %>
+    <%= link_to(channel_ownership_path(channel), data: { turbo_method: :delete }, class: "remove-from-my-own") do %>
+      <span class="material-symbols-outlined">remove_circle_outline</span>
+      Remove from my own
+    <% end %>
   <% else %>
-    <%= link_to("Add to my own", channel_ownership_path(channel), data: { turbo_method: :post }) %>
+    <%= link_to(channel_ownership_path(channel), data: { turbo_method: :post }) do %>
+      <span class="material-symbols-outlined">add_circle_outline</span>
+      Add to my own
+    <% end %>
   <% end %>
 <% end %>
