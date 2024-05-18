@@ -1,0 +1,58 @@
+<h2>活用ガイド</h2>
+
+<h3>Usernameの設定</h3>
+<p>
+  あなたの現在のUsernameは@<%= current_user.name %>です。変更したい場合は<%= link_to("設定ページ", my_profile_path) %>からお願いします。
+</p>
+
+<h3>チャンネルの購読</h3>
+<p>
+  <% if @channel_subscribed%>
+    ✅️
+  <% else %>
+    購読したいチャンネルを見つけ、チャンネルページで「Subscribe」ボタンをクリックしてください。<br>
+    好きなフィードをrururuに登録することもできます。
+  <% end %>
+</p>
+
+<h3>マイ・チャンネルの登録</h3>
+<p>
+  <% if @channel_owned %>
+    ✅️
+  <% else %>
+    あなたのブログやポッドキャストなどがあれば「マイ・チャンネル」として登録しましょう。<br>
+    チャンネルページで「Add to my own」ボタンをクリックしてください。<br>
+    登録したチャンネルは、あなたのプロフィールページに表示されます。
+  <% end%>
+</p>
+
+<h3>Pawprintの登録</h3>
+<p>
+  <% if @item_pawed %>
+    ✅️
+  <% else %>
+    あなたの商品やサービスがあればPawprintを登録しましょう。<br>
+    チャンネルページで「Add to my own」ボタンをクリックしてください。<br>
+    登録した商品は、あなたのプロフィールページに表示されます。
+  <% end %>
+</p>
+
+<h3>通知ウェブフックの設定</h3>
+<p>
+  <% if @notification_webhook_created %>
+    ✅️
+  <% else %>
+    購読チャンネルの新着情報をDiscordやSlackに通知しましょう。<br>
+    <%= link_to("通知設定ページ", my_notification_settings_path) %>で設定してください。
+  <% end %>
+</p>
+
+<h3>通知メールアドレスの設定</h3>
+<p>
+  <% if @notification_email_created %>
+    ✅️
+  <% else %>
+    購読チャンネルの新着情報をメールで受け取りましょう。<br>
+    <%= link_to("通知設定ページ", my_notification_settings_path) %>で設定してください。
+  <% end %>
+</p>
