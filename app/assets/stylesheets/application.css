@@ -1776,3 +1776,16 @@ footer ul li a {
     padding: 0;
   }
 }
+
+table.guides {
+  tr {
+    td {
+      padding: 20px;
+      border: 1px solid #dddddd;
+
+      h3 {
+        margin: 0 0 0.5em;
+      }
+    }
+  }
+}

@@ -14,6 +14,10 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 254 }
   validates :icon_url, presence: true, length: { maximum: 2083 }
 
+  def username_changed?
+    email.split('@').first != name
+  end
+
   def add_channel(channel)
     owned_channels << channel
   end
