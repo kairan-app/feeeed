@@ -27,6 +27,12 @@
   <label for="hamburger" class="hamburger-menu-bg"></label>
   <ul class="hamburger-menu-list">
     <li>
+      <%= link_to(guides_path) do %>
+        <span class="material-symbols-outlined">info</span>
+        <span>Guides</span>
+      <% end %>
+    </li>
+    <li>
       <%= link_to(my_pawprints_path) do %>
         <span class="material-symbols-outlined">favorite</span>
         <span>My Pawprints</span>
