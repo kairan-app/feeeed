@@ -1,0 +1,92 @@
+<h2>活用ガイド</h2>
+
+<table class="guides">
+  <tr>
+    <td>
+      <%= @username_changed ? "✅️" : nil %>
+    </td>
+    <td>
+      <h3>Usernameの設定</h3>
+      <p>
+        あなたの現在のUsernameは@<%= current_user.name %>です。
+      </p>
+    </td>
+    <td class="guides-action">
+      <%= link_to("Usernameを変える", my_profile_path) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= @channel_subscribed ? "✅️" : nil %>
+    </td>
+    <td>
+      <h3>チャンネルの購読</h3>
+      <p>
+        購読したいチャンネルを見つけ、チャンネルページで「Subscribe」ボタンをクリックしてください。<br>
+        好きなフィードをrururuに登録することもできます。
+      </p>
+    </td>
+    <td class="guides-action">
+      <%= link_to("チャンネルを探す", channels_path) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= @channel_owned ? "✅️" : nil %>
+    </td>
+    <td>
+      <h3>マイ・チャンネルの登録</h3>
+      <p>
+        あなたのブログやポッドキャストなどがあれば「マイ・チャンネル」として登録しましょう。<br>
+        チャンネルページで「Add to my own」ボタンをクリックしてください。<br>
+        登録したチャンネルは、あなたのプロフィールページに表示されます。
+      </p>
+    </td>
+    <td class="guides-action">
+      <%= link_to("チャンネルを探す", channels_path) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= @item_pawed ? "✅️" : nil %>
+    </td>
+    <td>
+      <h3>Pawprintの登録</h3>
+      <p>
+        チャンネルを購読するとUnreadsページに新着アイテムが表示されるようになります。<br>
+        新着アイテムを「読んだ」「聴いた」ときには🐾ボタンで記録を残しましょう。
+      </p>
+    </td>
+    <td class="guides-action">
+      <%= link_to("Unreadsを使う", unreads_path) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= @notification_webhook_created ? "✅️" : nil %>
+    </td>
+    <td>
+      <h3>通知ウェブフックの設定</h3>
+      <p>
+        購読チャンネルの新着情報をDiscordやSlackに通知しましょう。
+      </p>
+    </td>
+    <td class="guides-action">
+      <%= link_to("ウェブフックを設定する", my_notification_settings_path) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= @notification_email_created ? "✅️" : nil %>
+    </td>
+    <td>
+      <h3>通知メールアドレスの設定</h3>
+      <p>
+        購読チャンネルの新着情報をメールで受け取りましょう。
+      </p>
+    </td>
+    <td class="guides-action">
+      <%= link_to("メールアドレスを設定する", my_notification_settings_path) %>
+    </td>
+  </tr>
+</table>

@@ -45,6 +45,8 @@ Rails.application.routes.draw do
                                                as: "user",
                                                constraints: { user_name: /[^\/]+/ }
   get    "/my",                                to: "my#index"
+  get    "/my/guides",                         to: "my/guides#show",
+                                               as: "guides"
   get    "/my/inbox",                          to: "my/inbox#show",
                                                as: "inbox"
   get    "/my/unreads",                        to: "my/unreads#show",
