@@ -165,6 +165,7 @@ class Channel < ApplicationRecord
         url: encoded_url,
         image_url: image_url,
         published_at: entry.published,
+        data: entry.to_h,
       }
       self.items.find_or_initialize_by(guid: guid).update(parameters)
     end
