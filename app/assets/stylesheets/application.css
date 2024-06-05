@@ -1511,7 +1511,7 @@ footer ul li a {
   border-radius: 4px;
 }
 
-.unreads-nav-button a:hover {
+.unreads-nav-button a:hover, .unreads-nav-button a.active {
   background-color: #3d8bcd;
   color: #ffffff;
   text-decoration: none;
