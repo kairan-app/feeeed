@@ -4,6 +4,12 @@
   <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(range_days: @range_days - 1)) %>
   <%= link_to((@range_days + 1).to_s + " days →", unreads_path(range_days: @range_days + 1)) %>
 </div>
+<div class="unreads-nav-button">
+  <%= link_to("All", unreads_path) %>
+  <%= link_to("Text", unreads_path(mode: "text")) %>
+  <%= link_to("Audio", unreads_path(mode: "audio")) %>
+  <%= link_to("Video", unreads_path(mode: "video")) %>
+</div>
 <% @channel_and_items.each do |channel, items| %>
   <div class="channel-and-items-component channel-and-items-component-unreads">
     <h3 class="channel-and-items-component-channel">
@@ -28,7 +34,14 @@
               <h4>
                 <%= item.title %>
               </h4>
-              <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+              <p>
+                <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+              </p>
+              <% if item.audio_enclosure_url %>
+              <p>
+                <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls></audio>
+              </p>
+              <% end %>
             </div>
           <% end %>
           <div class="channel-and-items-component-item-paw">
