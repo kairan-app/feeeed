@@ -1,34 +1,36 @@
-<ul class="pawprint-list">
+<ul>
   <% pawprints.each do |pawprint| %>
     <% user = pawprint.user %>
     <% item = pawprint.item %>
-    <li>
-      <div class="pawprint-user">
+    <li style="margin-bottom: 20px; padding-top: 20px; border-top: 1px solid #ccc;">
+      <div class="pawprint-item">
+        <%= link_to(item.url, target: "_blank") do %>
+          <%= image_tag(item.image_url_or_placeholder, height: "100") %>
+        <% end %>
+        <h3>
+          <%= link_to(item.title, item.url, target: "_blank") %>
+        </h3>
+        <p>
+          <%= image_tag(item.channel.favicon_url, size: "16x16") %>
+          <%= link_to(item.channel.title, item.channel) %>
+        </p>
+      </div>
+      <div class="pawprint-paw">
         <%= image_tag(user.icon_url, size: "24x24") %>
-      </div>
-      <div class="pawprint-info">
-        <div class="pawprint-info-image">
-          <%= link_to(item.url, target: "_blank") do %>
-            <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%") %>
+        <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
+        <span>pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+        <% if user == current_user%>
+          <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: pawprint }) %>
+        <% else %>
+          <% if pawprint.memo.present? %>
+          <div class="pawprint-memo" style="padding: 10px; background-color: #fff;"><%= pawprint.memo %></div>
           <% end %>
-        </div>
-        <div class="pawprint-info-text">
-          <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
-          <span>pawed on <br class="br-sp"/><%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span><br>
-          <h3>
-            <%= link_to(item.title, item.url, target: "_blank") %>
-          </h3>
-          <span class="card-channel">
-            <%= image_tag(item.channel.favicon_url, size: "16x16") %>
-            <%= link_to(item.channel.title, item.channel) %>
-          </span>
-        </div>
+          <% unless current_user.pawed?(item) %>
+            <%= image_tag(current_user.icon_url, size: "24x24") %>
+            <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
+          <% end %>
+        <% end %>
       </div>
-      <% if pawprint.memo.present? %>
-      <div class="pawprint-memo">
-        <p><%= pawprint.memo %></p>
-      </div>
-      <% end %>
     </li>
   <% end %>
 </ul>
