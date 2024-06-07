@@ -22,6 +22,28 @@ class Item < ApplicationRecord
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
   end
 
+  def enclosure_type
+    self.data&.dig("enclosure_type")
+  end
+
+  def enclosure_url
+    self.data&.dig("enclosure_url")
+  end
+
+  def audio_enclosure_url
+    return nil if enclosure_type.nil?
+    return nil unless enclosure_type.start_with?("audio/")
+
+    enclosure_url
+  end
+
+  def video_enclosure_url
+    return nil if enclosure_type.nil?
+    return nil unless enclosure_type.start_with?("video/")
+
+    enclosure_url
+  end
+
   def to_discord_embed
     {
       author: { name: [channel.title, URI.parse(self.url).host].join(" | "), url: channel.site_url },

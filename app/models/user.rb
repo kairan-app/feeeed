@@ -55,4 +55,27 @@ class User < ApplicationRecord
   def unskip(item)
     item_skips.find_by(item: item).destroy
   end
+
+  def unread_items_grouped_by_channel(range_days: 7, mode: :all)
+    self.
+    subscribed_items.
+    preload(:channel).
+    where("NOT EXISTS (SELECT 1 FROM pawprints WHERE pawprints.item_id = items.id AND pawprints.user_id = ?)", self.id).
+    where("NOT EXISTS (SELECT 1 FROM item_skips WHERE item_skips.item_id = items.id AND item_skips.user_id = ?)", self.id).
+    where("items.created_at > ?", range_days.days.ago).
+    select {
+      if mode == :audio
+        _1.audio_enclosure_url.present?
+      elsif mode == :video
+        _1.video_enclosure_url.present?
+      elsif mode == :text
+        _1.audio_enclosure_url.nil? && _1.video_enclosure_url.nil?
+      else
+        true
+      end
+    }.
+    group_by(&:channel).
+    sort_by { |_, items| items.map(&:created_at).max }.
+    reverse
+  end
 end

@@ -4,6 +4,12 @@
   <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(range_days: @range_days - 1)) %>
   <%= link_to((@range_days + 1).to_s + " days →", unreads_path(range_days: @range_days + 1)) %>
 </div>
+
+<div class="unreads-tab">
+  <%= link_to("All", unreads_path, class: @mode.nil? ? "active" : nil) %>
+  <%= link_to("Text", unreads_path(mode: "text"), class: @mode == :text ? "active" : nil) %>
+  <%= link_to("Audio", unreads_path(mode: "audio"), class: @mode == :audio ? "active" : nil) %>
+</div>
 <% @channel_and_items.each do |channel, items| %>
   <div class="channel-and-items-component channel-and-items-component-unreads">
     <h3 class="channel-and-items-component-channel">
@@ -28,15 +34,24 @@
               <h4>
                 <%= item.title %>
               </h4>
-              <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+              <p>
+                <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+              </p>
             </div>
           <% end %>
-          <div class="channel-and-items-component-item-paw">
-            <div class="channel-and-items-component-item-skip">
-              <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
-            </div>
-            <div class="channel-and-items-component-item-memo">
-              <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
+          <div class="channel-and-items-component-item-player-and-paw">
+            <% if item.audio_enclosure_url %>
+              <div class="channel-and-items-component-item-player">
+                <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+              </div>
+            <% end %>
+            <div class="channel-and-items-component-item-paw">
+              <div class="channel-and-items-component-item-skip">
+                <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
+              </div>
+              <div class="channel-and-items-component-item-memo">
+                <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
+              </div>
             </div>
           </div>
         </li>
