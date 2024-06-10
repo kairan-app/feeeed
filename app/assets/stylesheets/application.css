@@ -716,29 +716,21 @@ img {
 .pawprint-list li {
   display: flex;
   flex-wrap: wrap;
+  width: calc(100% - 20px);
   margin: 0 20px 0 0;
-  padding: 0.75em 0;
+  padding: 1em 0;
   border-top: 1px solid #aaaaaa;
   line-height: 1.5em;
 }
 
 @media screen and (max-width: 768px) {
   .pawprint-list li {
-    margin: 0 0 0.5em 0;
+    width: 100%;
+    margin: 0;
   }
 }
 
-.pawprint-user {
-  width: 24px;
-  margin: 0 10px 0 0;
-
-  img {
-    object-fit: cover;
-    border-radius: 50%;
-  }
-}
-
-.pawprint-info {
+.pawprint-item {
   display: flex;
   flex-wrap: wrap;
   width: 50%;
@@ -746,13 +738,13 @@ img {
 }
 
 @media screen and (max-width: 768px) {
-  .pawprint-info {
-    width: calc(100% - 34px);
-    margin: 0;
+  .pawprint-item {
+    width: 100%;
+    margin: 0 0 0.5em;
   }
 }
 
-.pawprint-info-image {
+.pawprint-item-image {
   width: 96px;
   height: 64px;
   margin: 0 10px 0 0;
@@ -764,30 +756,83 @@ img {
   }
 }
 
-.pawprint-info-text {
+.pawprint-item-text {
   width: calc(100% - 106px);
   margin: -4px 0 0;
 }
 
-.pawprint-info-text h3 {
+.pawprint-item-text h3 {
   margin: 0;
   font-size: 1em;
 }
 
+.pawprint-item-text p {
+  display: flex;
+}
+
+.pawprint-item-text p img {
+  margin: 4px 5px 0 0;
+}
+
+.pawprint-paw {
+  width: calc(50% - 20px);
+}
+
+@media screen and (max-width: 768px) {
+  .pawprint-paw {
+    width: 100%;
+  }
+}
+
+.pawprint-user {
+  display: flex;
+  margin: 0 0 0.5em;
+
+  img {
+    margin: 0 10px 0 0;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+}
+
+.pawprint-user span {
+  margin: 0 0 0 0.25em;
+}
+
 .pawprint-memo {
-  width: calc(50% - 54px);
+  width: 100%;
+  padding: 0.5em 0.75em;
+  background-color: #ffffff;
 }
 
 @media screen and (max-width: 768px) {
   .pawprint-memo {
-    width: 100%;
-    margin: 0.5em 0 0 34px;
+    margin: 0.5em 0 0 0;
   }
 }
 
-.pawprint-memo p {
-  background-color: #ffffff;
-  padding: 0.75em 1em;
+.chase-paw {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 1em 0 0;
+}
+
+.chase-paw-user {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 0 0 0.5em;
+
+  img {
+    margin: 0 10px 0 0;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+}
+
+.chase-paw-form {
+  width: 100%;
 }
 
 .sub-column .pawprint-info {
