@@ -20,7 +20,15 @@ class SessionsController < ApplicationController
     user = User.find_or_initialize_by(google_guid: payload["sub"])
     user.email ||= email
     user.name ||= local_part
-    user.icon_url = payload["picture"]
+
+    if user.icon_url
+      if user.icon_url.include?("googleusercontent.com")
+        user.icon_url = payload["picture"]
+      end
+    else
+      user.icon_url = payload["picture"]
+    end
+
     user.save
 
     log_in(user)
