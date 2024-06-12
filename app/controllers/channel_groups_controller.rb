@@ -4,6 +4,8 @@ class ChannelGroupsController < ApplicationController
   def index
     page = (params[:page].presence || 1).to_i
     @channel_groups = ChannelGroup.order(id: :desc).page(page).per(60)
+
+    @title = "Channel Groups"
   end
 
   def show
@@ -19,6 +21,7 @@ class ChannelGroupsController < ApplicationController
   def create
     @channel_group = ChannelGroup.new(channel_group_params)
     if @channel_group.save
+      DiscoPosterJob.perform_later(content: "@#{current_user.name} created a new channel group: #{@channel_group.name}")
       redirect_to(channel_group_path(@channel_group), notice: "Channel Group created")
     else
       render(:new, status: :unprocessable_entity)
