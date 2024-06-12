@@ -46,7 +46,9 @@
     <% end %>
 
     <% if logged_in? %>
+    <% if ChannelGroup.count > 0 %>
       <%= render(partial: "channel_groupings/form", locals: { channel: @channel }) %>
+    <% end %>
     <% end %>
   </div>
 </div>
