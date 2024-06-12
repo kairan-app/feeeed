@@ -9,6 +9,8 @@ class Channel < ApplicationRecord
   has_many :owners, through: :ownerships, source: :user
   has_many :subscriptions, dependent: :destroy
   has_many :subscribers, through: :subscriptions, source: :user
+  has_many :channel_groupings, dependent: :destroy
+  has_many :groups, through: :channel_groupings, source: :channel_group
   has_one :stopper, class_name: "ChannelStopper", dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 256 }
