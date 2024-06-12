@@ -1,0 +1,5 @@
+<%= form_tag(channel_groupings_path, method: :post) do |form| %>
+  <%= hidden_field_tag(:channel_id, channel.id) %>
+  <%= select_tag(:channel_group_id, options_from_collection_for_select(ChannelGroup.order(id: :desc), :id, :name)) %>
+  <%= submit_tag("Add to group") %>
+<% end %>

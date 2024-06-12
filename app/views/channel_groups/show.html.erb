@@ -1,0 +1,4 @@
+<h2><%= @channel_group.name %></h2>
+<p><%= @channel_group.channels.count %> channels</p>
+
+<%= render(partial: "channels/cards", locals: { channels: @channel_group.channels }) %>

@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_03_083752) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_12_084547) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "channel_groupings", force: :cascade do |t|
+    t.bigint "channel_id", null: false
+    t.bigint "channel_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_group_id"], name: "index_channel_groupings_on_channel_group_id"
+    t.index ["channel_id", "channel_group_id"], name: "index_channel_groupings_on_channel_id_and_channel_group_id", unique: true
+    t.index ["channel_id"], name: "index_channel_groupings_on_channel_id"
+  end
+
+  create_table "channel_groups", force: :cascade do |t|
+    t.string "name", limit: 64, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "channel_stoppers", force: :cascade do |t|
     t.bigint "channel_id", null: false
@@ -123,6 +139,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_03_083752) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "channel_groupings", "channel_groups"
+  add_foreign_key "channel_groupings", "channels"
   add_foreign_key "channel_stoppers", "channels"
   add_foreign_key "item_skips", "items"
   add_foreign_key "item_skips", "users"

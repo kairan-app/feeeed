@@ -36,6 +36,20 @@
         This channel has stopped updating
       </p>
     <% end %>
+
+    <% if @channel.groups.count > 0 %>
+    <ul>
+      <% @channel.groups.each do |group| %>
+        <li><%= link_to(group.name, channel_group_path(group)) %></li>
+      <% end %>
+    </ul>
+    <% end %>
+
+    <% if logged_in? %>
+    <% if ChannelGroup.count > 0 %>
+      <%= render(partial: "channel_groupings/form", locals: { channel: @channel }) %>
+    <% end %>
+    <% end %>
   </div>
 </div>
 
