@@ -1,0 +1,11 @@
+<section>
+  <h2>Channel Groups</h2>
+  <%= link_to("New Channel Group", new_channel_group_path) %>
+  <%= paginate(@channel_groups) %>
+  <ul>
+    <% @channel_groups.each do |channel_group| %>
+      <li><%= link_to(channel_group.name, channel_group_path(channel_group)) %></li>
+  <% end %>
+  </ul>
+  <%= paginate(@channel_groups) %>
+</section>

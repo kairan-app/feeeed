@@ -1,0 +1,7 @@
+<section>
+  <h2>New Channel Group</h2>
+  <%= form_for(@channel_group, url: channel_groups_path) do |form| %>
+    <%= form.text_field(:name, placeholder: "Name") %>
+    <%= form.submit("Create") %>
+  <% end %>
+</section>
