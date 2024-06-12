@@ -1,4 +1,6 @@
 class ChannelGroupsController < ApplicationController
+  before_action :login_required, only: %i[new create]
+
   def index
     page = (params[:page].presence || 1).to_i
     @channel_groups = ChannelGroup.order(id: :desc).page(page).per(60)
@@ -6,6 +8,8 @@ class ChannelGroupsController < ApplicationController
 
   def show
     @channel_group = ChannelGroup.find(params[:id])
+
+    @title = @channel_group.name
   end
 
   def new

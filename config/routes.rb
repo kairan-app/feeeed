@@ -38,6 +38,7 @@ Rails.application.routes.draw do
                                                constraints: { id: /\d+/ }
   get    "/channel_groups/new",                to: "channel_groups#new",
                                                as: "new_channel_group"
+  post   "/channel_groupings",                 to: "channel_groupings#create"
   get    "/pawprints",                         to: "pawprints#index"
   post   "/notification_webhooks",             to: "notification_webhooks#create"
   delete "/notification_webhooks/:id",         to: "notification_webhooks#destroy",
