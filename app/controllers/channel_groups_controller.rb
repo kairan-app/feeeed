@@ -20,6 +20,7 @@ class ChannelGroupsController < ApplicationController
 
   def create
     @channel_group = ChannelGroup.new(channel_group_params)
+
     if @channel_group.save
       DiscoPosterJob.perform_later(content: "@#{current_user.name} created a new channel group: #{@channel_group.name}")
       redirect_to(channel_group_path(@channel_group), notice: "Channel Group created")
@@ -29,11 +30,12 @@ class ChannelGroupsController < ApplicationController
   end
 
   def update
-    @channel_group = ChannelGroup.find(params[:id])
-    if @channel_group.update(channel_group_params)
-      redirect_to channel_group_path(@channel_group), notice: "Channel Group updated"
+    channel_group = ChannelGroup.find(params[:id])
+
+    if channel_group.update(channel_group_params)
+      redirect_to channel_group_path(channel_group), notice: "Channel Group updated"
     else
-      redirect_to channel_group_path(@channel_group), alert: "Channel Group update failed"
+      redirect_to channel_group_path(channel_group), alert: "Channel Group update failed"
     end
   end
 
