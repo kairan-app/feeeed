@@ -31,6 +31,9 @@ class ChannelGroupsController < ApplicationController
 
   def update
     channel_group = ChannelGroup.find(params[:id])
+    DiscoPosterJob.perform_later(
+      content: "@#{current_user.name} try to update the channel group (id:#{channel_group.id}) to #{params[:channel_group][:name]}"
+    )
 
     if channel_group.update(channel_group_params)
       redirect_to channel_group_path(channel_group), notice: "Channel Group updated"
