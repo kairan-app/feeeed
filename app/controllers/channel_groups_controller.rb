@@ -1,5 +1,5 @@
 class ChannelGroupsController < ApplicationController
-  before_action :login_required, only: %i[new create]
+  before_action :login_required, only: %i[new create update]
 
   def index
     page = (params[:page].presence || 1).to_i
@@ -25,6 +25,15 @@ class ChannelGroupsController < ApplicationController
       redirect_to(channel_group_path(@channel_group), notice: "Channel Group created")
     else
       render(:new, status: :unprocessable_entity)
+    end
+  end
+
+  def update
+    @channel_group = ChannelGroup.find(params[:id])
+    if @channel_group.update(channel_group_params)
+      redirect_to channel_group_path(@channel_group), notice: "Channel Group updated"
+    else
+      redirect_to channel_group_path(@channel_group), alert: "Channel Group update failed"
     end
   end
 
