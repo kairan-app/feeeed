@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get    "/channel_groups/:id",                to: "channel_groups#show",
                                                as: "channel_group",
                                                constraints: { id: /\d+/ }
+  put    "/channel_groups/:id",                to: "channel_groups#update"
   get    "/channel_groups/new",                to: "channel_groups#new",
                                                as: "new_channel_group"
   post   "/channel_groupings",                 to: "channel_groupings#create"

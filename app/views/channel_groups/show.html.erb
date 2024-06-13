@@ -1,4 +1,14 @@
-<h2><%= @channel_group.name %></h2>
-<p><%= @channel_group.channels.count %> channels</p>
-
-<%= render(partial: "channels/cards", locals: { channels: @channel_group.channels }) %>
+<section>
+  <h2><%= @channel_group.name %></h2>
+  <%= form_tag(channel_group_path(@channel_group), method: :put) do %>
+    <div class="setting-list">
+      <p>Channel Group Name</p>
+      <%= text_field_tag('channel_group[name]', @channel_group.name) %>
+      <div>
+        <%= submit_tag("Update") %>
+      </div>
+    </div>
+  <% end %>
+  <p><%= @channel_group.channels.count %> channels</p>
+  <%= render(partial: "channels/cards", locals: { channels: @channel_group.channels }) %>
+</section>
