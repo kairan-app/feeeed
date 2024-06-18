@@ -18,6 +18,11 @@
             <%= link_to(item.channel.title, item.channel) %>
           </p>
         </div>
+        <% if item.audio_enclosure_url %>
+          <div class="audio-player">
+            <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+          </div>
+        <% end %>
       </div>
       <div class="pawprint-paw">
         <div class="pawprint-user">

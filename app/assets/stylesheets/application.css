@@ -1208,10 +1208,14 @@ a.remove-from-my-own:hover {
 
 .channel-and-items-component {
   width: calc(33.33333% - 20px);
-  margin: 0 20px 20px 0;
+  margin: 0 20px 0 0;
   padding: 0 10px;
   background-color: #ffffff;
-  border-radius: 0 8px 8px 8px;
+  border-bottom: solid 6px #dddddd;
+}
+
+.channel-and-items-component:last-of-type {
+  border-bottom: none;
 }
 
 .channel-and-items-component h3 {
@@ -1377,12 +1381,12 @@ a.remove-from-my-own:hover {
   }
 }
 
-.channel-and-items-component-item-player {
+.audio-player {
   width: 100%;
-  margin: 0 0 0.25em;
+  margin: 0.5em 0 -0.5em;
 }
 
-.channel-and-items-component-item-player audio {
+.audio-player audio {
   height: 36px;
 }
 
