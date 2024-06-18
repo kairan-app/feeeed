@@ -1379,7 +1379,7 @@ a.remove-from-my-own:hover {
 
 .channel-and-items-component-item-player {
   width: 100%;
-  margin: 0 0 0.25em;
+  margin: 0.5em 0 -0.5em;
 }
 
 .channel-and-items-component-item-player audio {

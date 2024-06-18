@@ -38,13 +38,13 @@
                 <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
               </p>
             </div>
-          <% end %>
-          <div class="channel-and-items-component-item-player-and-paw">
             <% if item.audio_enclosure_url %>
               <div class="channel-and-items-component-item-player">
                 <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
               </div>
             <% end %>
+          <% end %>
+          <div class="channel-and-items-component-item-player-and-paw">
             <div class="channel-and-items-component-item-paw">
               <div class="channel-and-items-component-item-skip">
                 <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
