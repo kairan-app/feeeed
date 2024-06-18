@@ -1208,10 +1208,14 @@ a.remove-from-my-own:hover {
 
 .channel-and-items-component {
   width: calc(33.33333% - 20px);
-  margin: 0 20px 20px 0;
+  margin: 0 20px 0 0;
   padding: 0 10px;
   background-color: #ffffff;
-  border-radius: 0 8px 8px 8px;
+  border-bottom: solid 6px #dddddd;
+}
+
+.channel-and-items-component:last-of-type {
+  border-bottom: none;
 }
 
 .channel-and-items-component h3 {
