@@ -51,6 +51,7 @@ class Channel < ApplicationRecord
       return nil if feed_url.nil?
 
       feed = Feedjira.parse(Faraday.get(feed_url).body)
+      feed.url = feed_url
 
       parameters =
         case feed
@@ -69,6 +70,7 @@ class Channel < ApplicationRecord
 
     def save_from(feed_url)
       feed = Feedjira.parse(Faraday.get(feed_url).body)
+      feed.url = feed_url
 
       parameters =
         case feed
@@ -149,7 +151,7 @@ class Channel < ApplicationRecord
       p ["Fetching", entry.published, entry.title, entry.url]
       next if entry.title.blank?
 
-      url = entry.url || self.site_url
+      url = (entry.url || self.site_url).strip
       encoded_url = url.chars.map { |c| c.bytesize > 1 ? URI.encode_www_form_component(c) : c }.join
 
       guid = entry.entry_id || entry.url
