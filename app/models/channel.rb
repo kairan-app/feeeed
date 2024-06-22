@@ -51,7 +51,7 @@ class Channel < ApplicationRecord
       return nil if feed_url.nil?
 
       feed = Feedjira.parse(Faraday.get(feed_url).body)
-      feed.url = feed_url
+      feed.url = feed.url.strip if feed.url
 
       parameters =
         case feed
@@ -70,7 +70,7 @@ class Channel < ApplicationRecord
 
     def save_from(feed_url)
       feed = Feedjira.parse(Faraday.get(feed_url).body)
-      feed.url = feed_url
+      feed.url = feed.url.strip if feed.url
 
       parameters =
         case feed
