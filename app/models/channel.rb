@@ -152,7 +152,15 @@ class Channel < ApplicationRecord
       next if entry.title.blank?
 
       url = (entry.url || self.site_url).strip
-      encoded_url = url.chars.map { |c| c.bytesize > 1 ? URI.encode_www_form_component(c) : c }.join
+      encoded_url = url.chars.map { |c|
+        if c.bytesize > 1
+          URI.encode_www_form_component(c)
+        elsif c == '"'
+          "%22"
+        else
+          c
+        end
+      }.join
 
       guid = entry.entry_id || entry.url
 
