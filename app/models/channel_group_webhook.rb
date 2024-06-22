@@ -4,6 +4,16 @@ class ChannelGroupWebhook < ApplicationRecord
   validates :channel_group_id, presence: true
   validates :url, presence: true, length: { maximum: 2083 }, format: { with: URI.regexp }
 
+  class << self
+    def notify
+      find_each { ChannelGroupWebhookNotifierJob.perform_later(_1.id) }
+    end
+  end
+
+  def notify
+    notify_items_to_discord
+  end
+
   def notify_items_to_discord(since: nil)
     at = since || last_notified_at || 6.hours.ago
     items = channel_group.items.where("items.created_at >= ?", at)
