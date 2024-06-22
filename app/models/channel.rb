@@ -151,7 +151,7 @@ class Channel < ApplicationRecord
       p ["Fetching", entry.published, entry.title, entry.url]
       next if entry.title.blank?
 
-      url = entry.url || self.site_url
+      url = (entry.url || self.site_url).strip
       encoded_url = url.chars.map { |c| c.bytesize > 1 ? URI.encode_www_form_component(c) : c }.join
 
       guid = entry.entry_id || entry.url
