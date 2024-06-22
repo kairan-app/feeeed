@@ -7,6 +7,8 @@ class OpenGraph
   end
 
   def fetch_and_parse
+    return if @url.nil?
+
     uri = URI.parse(@url)
     connection = Faraday.new(uri) do |builder|
       builder.response :follow_redirects
