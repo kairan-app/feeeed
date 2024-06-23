@@ -40,6 +40,9 @@ Rails.application.routes.draw do
   get    "/channel_groups/new",                to: "channel_groups#new",
                                                as: "new_channel_group"
   post   "/channel_groupings",                 to: "channel_groupings#create"
+  post   "/channel_groups/:id/membership",     to: "memberships#create",
+                                               as: "channel_group_membership"
+  delete "/channel_groups/:id/membership",     to: "memberships#destroy"
   get    "/pawprints",                         to: "pawprints#index"
   post   "/notification_webhooks",             to: "notification_webhooks#create"
   delete "/notification_webhooks/:id",         to: "notification_webhooks#destroy",

@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :subscribed_channels, through: :subscriptions, source: :channel
   has_many :subscribed_items, through: :subscribed_channels, source: :items
+  has_many :memberships, dependent: :destroy
+  has_many :channel_groups, through: :memberships
   has_many :pawprints, dependent: :destroy
   has_many :pawed_items, through: :pawprints, source: :item
   has_many :item_skips, dependent: :destroy
@@ -46,6 +48,14 @@ class User < ApplicationRecord
 
   def pawed?(item)
     pawed_items.include?(item)
+  end
+
+  def join(channel_group)
+    memberships.create(channel_group: channel_group)
+  end
+
+  def leave(channel_group)
+    memberships.find_by(channel_group: channel_group)&.destroy
   end
 
   def skip(item)

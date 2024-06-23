@@ -9,6 +9,13 @@
       </div>
     </div>
   <% end %>
+  <% if logged_in? %>
+    <% if @channel_group.users.include?(current_user) %>
+      <p><%= link_to("Leave this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :delete }) %></p>
+    <% else %>
+      <p><%= link_to("Join to this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :post }) %></p>
+    <% end %>
+  <% end %>
   <p><%= @channel_group.channels.count %> channels</p>
   <%= render(partial: "channels/cards", locals: { channels: @channel_group.channels }) %>
 </section>

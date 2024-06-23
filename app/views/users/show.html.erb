@@ -8,6 +8,15 @@
   </div>
 </div>
 
+<% if @channel_groups.exists? %>
+<h3>Channel Groups</h3>
+<ul>
+  <% @channel_groups.each do |channel_group| %>
+    <li><%= link_to(channel_group.name, channel_group) %></li>
+  <% end %>
+</ul>
+<% end %>
+
 <% if @owned_channels.exists? %>
 <h3>Owned Channels</h3>
 <%= render(partial: "channels/cards", locals: { channels: @owned_channels }) %>
