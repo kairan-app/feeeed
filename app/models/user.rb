@@ -50,7 +50,7 @@ class User < ApplicationRecord
     pawed_items.include?(item)
   end
 
-  def join_to(channel_group)
+  def join(channel_group)
     memberships.create(channel_group: channel_group)
   end
 

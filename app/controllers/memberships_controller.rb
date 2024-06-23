@@ -3,7 +3,8 @@ class MembershipsController < ApplicationController
 
   def create
     channel_group = ChannelGroup.find(params[:id])
-    current_user.join_to(channel_group)
+    current_user.join(channel_group)
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} joined the channel group: #{channel_group.name}")
 
     redirect_to channel_group
   end
@@ -11,6 +12,7 @@ class MembershipsController < ApplicationController
   def destroy
     channel_group = ChannelGroup.find(params[:id])
     current_user.leave(channel_group)
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} left the channel group: #{channel_group.name}")
 
     redirect_to channel_group
   end
