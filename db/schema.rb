@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_18_235702) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_23_123827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -84,6 +84,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_235702) do
     t.index ["published_at"], name: "index_items_on_published_at"
   end
 
+  create_table "memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "channel_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_group_id"], name: "index_memberships_on_channel_group_id"
+    t.index ["user_id", "channel_group_id"], name: "index_memberships_on_user_id_and_channel_group_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
   create_table "notification_emails", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "email", null: false
@@ -155,6 +165,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_235702) do
   add_foreign_key "item_skips", "items"
   add_foreign_key "item_skips", "users"
   add_foreign_key "items", "channels"
+  add_foreign_key "memberships", "channel_groups"
+  add_foreign_key "memberships", "users"
   add_foreign_key "notification_emails", "users"
   add_foreign_key "notification_webhooks", "users"
   add_foreign_key "ownerships", "channels"
