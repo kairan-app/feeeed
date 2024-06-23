@@ -1,14 +1,23 @@
 <h2>Unreads</h2>
+
+<% if @channel_groups.exists? %>
+<div>
+  <% @channel_groups.each do |channel_group| %>
+    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id))) %>
+  <% end %>
+</div>
+<% end %>
+
 <p class="unreads-nav">Showing unreads from the last <%= @range_days %> days</p>
 <div class="unreads-nav-button">
-  <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(range_days: @range_days - 1)) %>
-  <%= link_to((@range_days + 1).to_s + " days →", unreads_path(range_days: @range_days + 1)) %>
+  <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(@unreads_params.merge(range_days: @range_days - 1))) %>
+  <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1))) %>
 </div>
 
 <div class="unreads-tab">
-  <%= link_to("All", unreads_path, class: @mode.nil? ? "active" : nil) %>
-  <%= link_to("Text", unreads_path(mode: "text"), class: @mode == :text ? "active" : nil) %>
-  <%= link_to("Audio", unreads_path(mode: "audio"), class: @mode == :audio ? "active" : nil) %>
+  <%= link_to("All", unreads_path(@unreads_params.merge(mode: nil)), class: @mode.nil? ? "active" : nil) %>
+  <%= link_to("Text", unreads_path(@unreads_params.merge(mode: "text")), class: @mode == :text ? "active" : nil) %>
+  <%= link_to("Audio", unreads_path(@unreads_params.merge(mode: "audio")), class: @mode == :audio ? "active" : nil) %>
 </div>
 <% @channel_and_items.each do |channel, items| %>
   <div class="channel-and-items-component channel-and-items-component-unreads">
