@@ -1,18 +1,18 @@
 <h2>Unreads</h2>
 
-<% if @channel_groups.exists? %>
-<div>
-  <% @channel_groups.each do |channel_group| %>
-    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id))) %>
-  <% end %>
-</div>
-<% end %>
-
 <p class="unreads-nav">Showing unreads from the last <%= @range_days %> days</p>
 <div class="unreads-nav-button">
   <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(@unreads_params.merge(range_days: @range_days - 1))) %>
   <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1))) %>
 </div>
+
+<% if @channel_groups.exists? %>
+<div class="unreads-channel-group-tab">
+  <% @channel_groups.each do |channel_group| %>
+    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id))) %>
+  <% end %>
+</div>
+<% end %>
 
 <div class="unreads-tab">
   <%= link_to("All", unreads_path(@unreads_params.merge(mode: nil)), class: @mode.nil? ? "active" : nil) %>
