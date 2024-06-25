@@ -1214,6 +1214,11 @@ a.remove-from-my-own:hover {
   border-bottom: solid 6px #dddddd;
 }
 
+.channel-and-items-component-welcome {
+  margin: 0 20px 20px 0;
+  border-bottom: none;
+}
+
 .channel-and-items-component:last-of-type {
   border-bottom: none;
 }
@@ -1231,8 +1236,12 @@ a.remove-from-my-own:hover {
 @media screen and (max-width: 768px) {
   .channel-and-items-component {
     width: 100%;
-    margin: 0 0 20px;
+    margin: 0;
     padding: 0 20px;
+  }
+
+  .channel-and-items-component-welcome {
+    margin: 0 0 20px;
   }
 }
 
@@ -1577,6 +1586,51 @@ footer ul li a {
 }
 
 .unreads-nav-button a:hover, .unreads-nav-button a.active {
+  background-color: #3d8bcd;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.unreads-channel-group-tab {
+  width: calc(100% - 20px);
+  margin: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-size: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .unreads-channel-group-tab {
+    width: 100%;
+  }
+}
+
+.unreads-channel-group-tab a {
+  display: inline-block;
+  margin: 0 -1px 1em 0;
+  padding: 1em 1.5em;
+  background-color: #ffffff;
+  border: solid 1px #cccccc;
+  text-align: center;
+  font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .unreads-channel-group-tab a {
+    padding: 1em 1em;
+    font-size: 13px;
+  }
+}
+
+.unreads-channel-group-tab a:first-of-type {
+  border-radius: 6px 0 0 6px;
+}
+
+.unreads-channel-group-tab a:last-of-type {
+  border-radius: 0 6px 6px 0;
+}
+
+.unreads-channel-group-tab a.active, .unreads-channel-group-tab a:hover {
   background-color: #3d8bcd;
   color: #ffffff;
   text-decoration: none;
