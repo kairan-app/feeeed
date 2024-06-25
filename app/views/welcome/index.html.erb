@@ -3,7 +3,7 @@
 <% end %>
 <h2>Recent Channel & Items</h2>
 <% @channels.each do |channel| %>
-  <div class="channel-and-items-component">
+  <div class="channel-and-items-component channel-and-items-component-welcome">
     <h3 class="channel-and-items-component-channel">
       <%= link_to channel_path(channel) do %>
         <% if channel.image_url %>
