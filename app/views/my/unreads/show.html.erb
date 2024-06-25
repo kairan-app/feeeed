@@ -8,8 +8,9 @@
 
 <% if @channel_groups.exists? %>
 <div class="unreads-channel-group-tab">
+  <%= link_to("指定なし", unreads_path(@unreads_params.merge(channel_group_id: nil))) %>
   <% @channel_groups.each do |channel_group| %>
-    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id))) %>
+    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id)), class: @channel_group == channel_group ? "active" : nil) %>
   <% end %>
 </div>
 <% end %>
