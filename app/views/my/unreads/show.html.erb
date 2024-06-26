@@ -15,11 +15,6 @@
 </div>
 <% end %>
 
-<div class="unreads-tab">
-  <%= link_to("All", unreads_path(@unreads_params.merge(mode: nil)), class: @mode.nil? ? "active" : nil) %>
-  <%= link_to("Text", unreads_path(@unreads_params.merge(mode: "text")), class: @mode == :text ? "active" : nil) %>
-  <%= link_to("Audio", unreads_path(@unreads_params.merge(mode: "audio")), class: @mode == :audio ? "active" : nil) %>
-</div>
 <% @channel_and_items.each do |channel, items| %>
   <div class="channel-and-items-component channel-and-items-component-unreads">
     <h3 class="channel-and-items-component-channel">

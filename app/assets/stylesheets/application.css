@@ -1636,39 +1636,6 @@ footer ul li a {
   text-decoration: none;
 }
 
-.unreads-tab {
-  display: flex;
-  width: 100%;
-  margin: 0.5em 0 0;
-}
-
-.unreads-tab a {
-  width: 120px;
-  margin: 0 0.5em 0 0;
-  padding: 0.5em 0;
-  background-color: #cccccc;
-  color: #555555;
-  border-radius: 6px 6px 0px 0px;
-  text-align: center;
-}
-
-@media screen and (max-width: 768px) {
-  .unreads-tab a {
-    width: 80px;
-  }
-}
-
-.unreads-tab a.active, .unreads-tab a.active:hover {
-  background-color: #ffffff;
-  color: #000000;
-}
-
-.unreads-tab a:hover {
-  background-color: #dddddd;
-  color: #000000;
-  text-decoration: none;
-}
-
 /* About */
 .hero-area {
   display: flex;
