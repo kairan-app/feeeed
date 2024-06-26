@@ -9,13 +9,7 @@ class OpenGraph
   def fetch_and_parse
     return if @url.nil?
 
-    uri = URI.parse(@url)
-    connection = Faraday.new(uri) do |builder|
-      builder.response :follow_redirects
-      builder.use :cookie_jar
-    end
-
-    @html = Nokogiri::HTML(connection.get(uri.path).body.force_encoding("UTF-8"))
+    @html = Nokogiri::HTML(Httpc.get(@url).force_encoding("UTF-8"))
     @title = @html.css("title").text
 
     metas = @html.css("meta")

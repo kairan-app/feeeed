@@ -50,7 +50,7 @@ class Channel < ApplicationRecord
       feed_url = Feedbag.find(url).first
       return nil if feed_url.nil?
 
-      feed = Feedjira.parse(Faraday.get(feed_url).body)
+      feed = Feedjira.parse(Httpc.get(feed_url))
       feed.url = feed.url.strip if feed.url
 
       parameters =
@@ -69,7 +69,7 @@ class Channel < ApplicationRecord
     end
 
     def save_from(feed_url)
-      feed = Feedjira.parse(Faraday.get(feed_url).body)
+      feed = Feedjira.parse(Httpc.get(feed_url))
       feed.url = feed.url.strip if feed.url
 
       parameters =
@@ -136,7 +136,7 @@ class Channel < ApplicationRecord
   end
 
   def fetch_and_save_items(mode = :only_new)
-    feed = Feedjira.parse(Faraday.get(feed_url).body)
+    feed = Feedjira.parse(Httpc.get(feed_url))
 
     entries =
       if mode == :only_new
