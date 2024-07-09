@@ -1400,14 +1400,14 @@ a.remove-from-my-own:hover {
   height: 36px;
 }
 
-.audio-player-ont-the-image {
+.audio-player-on-the-image {
   position: absolute;
   bottom: 0;
   width: 96%;
   margin: 0.25em 2% 0.25em;
 }
 
-.audio-player-ont-the-image audio {
+.audio-player-on-the-image audio {
   height: 30px;
 }
 
