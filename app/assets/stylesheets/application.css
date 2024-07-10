@@ -629,6 +629,7 @@ header nav ul li a:hover {
 }
 
 .card-image {
+  position: relative;
   width: 100%;
   line-height: 0;
 }
@@ -1397,6 +1398,17 @@ a.remove-from-my-own:hover {
 
 .audio-player audio {
   height: 36px;
+}
+
+.audio-player-on-the-image {
+  position: absolute;
+  bottom: 0;
+  width: 96%;
+  margin: 0.25em 2% 0.25em;
+}
+
+.audio-player-on-the-image audio {
+  height: 30px;
 }
 
 .channel-and-items-component-item-paw {
