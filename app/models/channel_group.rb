@@ -1,4 +1,5 @@
 class ChannelGroup < ApplicationRecord
+  belongs_to :owner, class_name: "User"
   has_many :channel_groupings, dependent: :destroy
   has_many :channels, through: :channel_groupings
   has_many :items, through: :channels
