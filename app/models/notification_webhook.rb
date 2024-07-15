@@ -32,6 +32,10 @@ class NotificationWebhook < ApplicationRecord
     pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
     return if pawprints.empty?
 
+    DiscoPosterJob.perform_later(content:
+      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_discord, #{pawprints.count} pawprints)"
+    )
+
     pawprints.to_a.each_slice(3).with_index { |sub_pawprints, index|
       content = "@#{user.name}'s recent pawprints 🐾" if index == 0
       embeds = sub_pawprints.map(&:to_discord_embed)
@@ -49,6 +53,10 @@ class NotificationWebhook < ApplicationRecord
     at = since || last_notified_at || 6.hours.ago
     pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
     return if pawprints.empty?
+
+    DiscoPosterJob.perform_later(content:
+      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_slack, #{pawprints.count} pawprints)"
+    )
 
     pawprints.to_a.each_slice(5).with_index { |sub_pawprints, index|
       blocks = sub_pawprints.map(&:to_slack_block).flatten
@@ -74,6 +82,10 @@ class NotificationWebhook < ApplicationRecord
     items = user.subscribed_items.where("items.created_at >= ?", at).order("items.id")
     return if items.empty?
 
+    DiscoPosterJob.perform_later(content:
+      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_discord, #{items.count} items)"
+    )
+
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|
       content = "#{channel.title} 's recent items 📨"
       embeds = sub_items.sort_by(&:id).reverse.take(4).map(&:to_discord_embed)
@@ -92,6 +104,10 @@ class NotificationWebhook < ApplicationRecord
     at = since || last_notified_at || 6.hours.ago
     items = user.subscribed_items.preload(:channel).where("items.created_at >= ?", at)
     return if items.empty?
+
+    DiscoPosterJob.perform_later(content:
+      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_slack, #{items.count} items)"
+    )
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|
       blocks = build_slack_blocks(channel, sub_items)

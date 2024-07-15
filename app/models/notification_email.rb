@@ -36,6 +36,10 @@ class NotificationEmail < ApplicationRecord
     pawprints = user.pawprints.where("created_at >= ?", at).to_a
     return if pawprints.empty?
 
+    DiscoPosterJob.perform_later(content:
+      "NotificationEmail performed (id: #{id}, user: @#{user.name}, mode: pawprints, #{pawprints.count} pawprints)"
+    )
+
     NotificationEmailMailer.pawprints(notification_email: self, pawprints:).deliver_later
     touch(:last_notified_at)
   end
@@ -43,10 +47,13 @@ class NotificationEmail < ApplicationRecord
   def notify_subscribed_items(since: nil)
     at = since || last_notified_at || 6.hours.ago
     items = user.subscribed_items.preload(:channel).where("items.created_at >= ?", at).order("items.id")
-
     return if items.empty?
 
     channels = items.map(&:channel).uniq
+
+    DiscoPosterJob.perform_later(content:
+      "NotificationEmail performed (id: #{id}, user: @#{user.name}, mode: subscribed_items, #{channels.count} channels, #{items.count} items)"
+    )
 
     subject =
       if channels.count == 1
