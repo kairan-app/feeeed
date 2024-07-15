@@ -165,7 +165,7 @@ class Channel < ApplicationRecord
       guid = entry.entry_id || entry.url
 
       image_url =
-        if entry.itunes_image
+        if entry.respond_to?(:itunes_image)
           entry.itunes_image
         elsif guid.start_with?("yt:video:")
           "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
