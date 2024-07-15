@@ -19,7 +19,7 @@ class ChannelGroupsController < ApplicationController
   end
 
   def create
-    @channel_group = ChannelGroup.new(channel_group_params)
+    @channel_group = ChannelGroup.new(channel_group_params.merge(owner: current_user))
 
     if @channel_group.save
       DiscoPosterJob.perform_later(content: "@#{current_user.name} created a new channel group: #{@channel_group.name}")

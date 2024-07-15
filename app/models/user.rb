@@ -4,8 +4,7 @@ class User < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :subscribed_channels, through: :subscriptions, source: :channel
   has_many :subscribed_items, through: :subscribed_channels, source: :items
-  has_many :memberships, dependent: :destroy
-  has_many :channel_groups, through: :memberships
+  has_many :channel_groups, foreign_key: :owner_id, dependent: :destroy
   has_many :pawprints, dependent: :destroy
   has_many :pawed_items, through: :pawprints, source: :item
   has_many :item_skips, dependent: :destroy
