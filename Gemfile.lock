@@ -402,7 +402,7 @@ DEPENDENCIES
   sidekiq-limit_fetch
   sprockets-rails
   stimulus-rails
-  tailwindcss-rails (~> 2.6)
+  tailwindcss-rails
   turbo-rails
   tzinfo-data
   web-console
