@@ -1,9 +1,9 @@
-<h2>活用ガイド</h2>
+<h2 class="text-2xl font-bold mt-6 mb-4">活用ガイド</h2>
 <div class="guides">
   <div class="guides-item">
     <div class="guides-item-check"><%= @username_changed ? "✅️" : nil %></div>
     <div class="guides-item-detail">
-      <h3>Usernameの設定</h3>
+      <h3 class="text-lg font-bold">Usernameの設定</h3>
       <p>
         あなたの現在のUsernameは@<%= current_user.name %>です。
       </p>
@@ -18,7 +18,7 @@
   <div class="guides-item">
     <div class="guides-item-check"><%= @channel_subscribed ? "✅️" : nil %></div>
     <div class="guides-item-detail">
-      <h3>チャンネルの購読</h3>
+      <h3 class="text-lg font-bold">チャンネルの購読</h3>
       <p>
         購読したいチャンネルを見つけ、チャンネルページで「Subscribe」ボタンをクリックしてください。<br>
         好きなフィードをrururuに登録することもできます。
@@ -34,7 +34,7 @@
   <div class="guides-item">
     <div class="guides-item-check"><%= @channel_owned ? "✅️" : nil %></div>
     <div class="guides-item-detail">
-      <h3>マイ・チャンネルの登録</h3>
+      <h3 class="text-lg font-bold">マイ・チャンネルの登録</h3>
       <p>
         あなたのブログやポッドキャストなどがあれば「マイ・チャンネル」として登録しましょう。<br>
         チャンネルページで「Add to my own」ボタンをクリックしてください。<br>
@@ -51,7 +51,7 @@
   <div class="guides-item">
     <div class="guides-item-check"><%= @item_pawed ? "✅️" : nil %></div>
     <div class="guides-item-detail">
-      <h3>Pawprintの登録</h3>
+      <h3 class="text-lg font-bold">Pawprintの登録</h3>
       <p>
         チャンネルを購読するとUnreadsページに新着アイテムが表示されるようになります。<br>
         新着アイテムを「読んだ」「聴いた」ときには🐾ボタンで記録を残しましょう。
@@ -67,7 +67,7 @@
   <div class="guides-item">
     <div class="guides-item-check"><%= @notification_webhook_created ? "✅️" : nil %></div>
     <div class="guides-item-detail">
-      <h3>通知ウェブフックの設定</h3>
+      <h3 class="text-lg font-bold">通知ウェブフックの設定</h3>
       <p>
         購読チャンネルの新着情報をDiscordやSlackに通知しましょう。
       </p>
@@ -82,7 +82,7 @@
   <div class="guides-item">
     <div class="guides-item-check"><%= @notification_email_created ? "✅️" : nil %></div>
     <div class="guides-item-detail">
-      <h3>通知メールアドレスの設定</h3>
+      <h3 class="text-lg font-bold">通知メールアドレスの設定</h3>
       <p>
         購読チャンネルの新着情報をメールで受け取りましょう。
       </p>

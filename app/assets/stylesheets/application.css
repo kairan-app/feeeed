@@ -1224,10 +1224,6 @@ a.remove-from-my-own:hover {
   border-bottom: none;
 }
 
-.channel-and-items-component h3 {
-  margin: 0.5em 0 0;
-}
-
 @media screen and (max-width: 1200px) {
   .channel-and-items-component {
     width: calc(50% - 20px);
