@@ -25,6 +25,7 @@ gem "sidekiq", "7.3.0"
 gem "sidekiq-limit_fetch"
 gem "sprockets-rails"
 gem "stimulus-rails"
+gem "tailwindcss-rails"
 gem "turbo-rails"
 
 gem "tzinfo-data", platforms: %i[ windows jruby ]

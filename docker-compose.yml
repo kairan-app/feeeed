@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    command: bin/rails s -p 3000 -b '0.0.0.0'
     volumes:
       - .:/app
       - bundle:/usr/local/bundle
@@ -35,6 +35,11 @@ services:
       - database
       - redis
     command: bundle exec sidekiq
+  tailwindcss:
+    build: .
+    volumes:
+      - .:/app
+    command: bin/rails tailwindcss:watch[always]
 volumes:
   redis:
   bundle:
