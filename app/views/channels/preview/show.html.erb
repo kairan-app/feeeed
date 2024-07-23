@@ -1,4 +1,4 @@
-<h2>Channel Preview</h2>
+<h2 class="text-2xl font-bold mt-6">Channel Preview</h2>
 <div class="channel-profile">
   <% if @channel.image_url %>
   <div class="channel-profile-image">
@@ -7,7 +7,7 @@
   <% end %>
 
   <div class="channel-profile-info">
-    <h2><%= @channel.title %></h2>
+    <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel.title %></h2>
 
     <% if @channel.description %>
       <p><%= @channel.description %></p>
@@ -23,7 +23,7 @@
 </div>
 <% if @similar_channels.count > 0 %>
 <section>
-  <h3>Did you mean...?</h3>
+  <h3 class="text-lg font-bold mt-6">Did you mean...?</h3>
   <ul class="similar-channels">
     <% @similar_channels.each do |channel| %>
       <li>
@@ -58,7 +58,8 @@
 <section>
   <%= form_tag(channels_path, style: "margin: 20px 0;") do %>
     <%= text_field_tag(:url, @channel.feed_url, style: "width: 80%;") %>
-    <%= submit_tag("Save") %>
+    <%= submit_tag("Save", class: "p-2 border border-slate-500 rounded-sm bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
+
   <% end %>
   <div class="preview-notice">
   <ul>
