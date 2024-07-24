@@ -39,6 +39,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - bundle:/usr/local/bundle
     command: bin/rails tailwindcss:watch[always]
 volumes:
   redis:
