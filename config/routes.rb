@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   post   "/channels/:channel_id/subscription", to: "subscriptions#create",
                                                as: "channel_subscription"
   delete "/channels/:channel_id/subscription", to: "subscriptions#destroy"
+  post   "/channels/:channel_id/skip",         to: "channel_skips#create",
+                                               as: "channel_skips"
   get    "/items",                             to: "items#index"
   post   "/items/:item_id/pawprint",           to: "pawprints#create",
                                                as: "item_pawprint"

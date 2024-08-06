@@ -1,3 +1,5 @@
+<% item_count_threshold = 3 %>
+
 <h2 class="text-2xl font-bold mt-6 mb-4">Unreads</h2>
 
 <p class="unreads-nav">Showing unreads from the last <%= @range_days %> days</p>
@@ -28,7 +30,7 @@
       <% end %>
     </h3>
     <ul class="channel-and-items-component-item-list">
-      <% items.sort_by(&:published_at).reverse.take(6).each do |item| %>
+      <% items.sort_by(&:published_at).reverse.take(item_count_threshold).each do |item| %>
         <%= turbo_frame_tag(item) do %>
         <li class="unreads-list">
           <%= link_to(item.url, target: "_blank") do %>
@@ -62,9 +64,9 @@
         </li>
         <% end %>
       <% end %>
-      <% if items.size > 6 %>
-        <p class="channel-and-items-component-item-more">
-          Check out more unreads on <%= link_to(channel.title, channel) %>
+      <% if items.size > item_count_threshold %>
+        <p id= "item-skipper-<%= channel.id %>" class="channel-and-items-component-item-skipper text-center">
+          <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded hover:text-white hover:bg-[#aaaaaa]") %>
         </p>
       <% end %>
     </ul>

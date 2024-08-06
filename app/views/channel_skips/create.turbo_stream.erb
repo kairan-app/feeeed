@@ -1,0 +1,4 @@
+<% @items_to_skip.each do |item| %>
+  <%= turbo_stream.remove(item) %>
+<% end %>
+<%= turbo_stream.remove("item-skipper-#{@channel.id}") %>
