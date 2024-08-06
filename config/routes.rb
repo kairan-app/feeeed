@@ -59,8 +59,6 @@ Rails.application.routes.draw do
   get    "/my",                                to: "my#index"
   get    "/my/guides",                         to: "my/guides#show",
                                                as: "guides"
-  get    "/my/inbox",                          to: "my/inbox#show",
-                                               as: "inbox"
   get    "/my/unreads",                        to: "my/unreads#show",
                                                as: "unreads"
   get    "/my/pawprints",                      to: "my/pawprints#index"
