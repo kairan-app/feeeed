@@ -466,31 +466,16 @@ header nav ul li a:hover {
   display: flex;
   flex-wrap: wrap;
   margin: 0 auto 50px;
-  padding: 0;
+  padding: 0 20px;
   width: 100%;
   max-width: 1440px;
-}
-
-@media screen and (max-width: 768px) {
-  .wrapper {
-    margin: 0 auto 50px;
-    padding: 0;
-    width: calc(100% - 40px);
-  }
 }
 
 .main {
   display: flex;
   flex-wrap: wrap;
-  width: calc(100% - 20px);
-  margin: 0 0 0 20px;
-}
-
-@media screen and (max-width: 768px) {
-  .main {
-    width: 100%;
-    margin: 0;
-  }
+  width: 100%;
+  margin: 0;
 }
 
 .main>section {
