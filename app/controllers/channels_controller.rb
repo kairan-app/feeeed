@@ -2,16 +2,17 @@ class ChannelsController < ApplicationController
   before_action :login_required, only: %i[create]
 
   def index
-    @q = Channel.ransack(params[:q])
     page = (params[:page].presence || 1).to_i
+    @q = Channel.ransack(params[:q])
     @channels = @q.result.order(updated_at: :desc).page(page).per(60)
 
     @title = page == 1 ? "Channels" : "Channels (Page #{page})"
   end
 
   def show
+    page = (params[:page].presence || 1).to_i
     @channel = Channel.find(params[:channel_id])
-    @items = @channel.items.order(published_at: :desc, title: :desc)
+    @items = @channel.items.preload(:pawprints).order(published_at: :desc, title: :desc).page(page).per(48)
 
     @title = @channel.title
   end
