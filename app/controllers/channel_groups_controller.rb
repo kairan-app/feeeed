@@ -18,6 +18,14 @@ class ChannelGroupsController < ApplicationController
 
   def new
     @channel_group = ChannelGroup.new
+
+    @title = "New Channel Group"
+  end
+
+  def edit
+    @channel_group = ChannelGroup.find(params[:id])
+
+    @title = "Edit: #{@channel_group.name}"
   end
 
   def create

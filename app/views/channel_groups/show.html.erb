@@ -1,14 +1,8 @@
 <section>
   <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel_group.name %></h2>
-  <%= form_tag(channel_group_path(@channel_group), method: :put) do %>
-    <div class="setting-list">
-      <p>Channel Group Name</p>
-      <%= text_field_tag('channel_group[name]', @channel_group.name) %>
-      <div>
-        <%= submit_tag("Update") %>
-      </div>
-    </div>
-  <% end %>
+  <p>
+    <%= link_to("Edit", edit_channel_group_path(@channel_group)) %>
+  </p>
   <% if logged_in? %>
     <% if @channel_group.users.include?(current_user) %>
       <p><%= link_to("Leave this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :delete }) %></p>
