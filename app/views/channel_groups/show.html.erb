@@ -16,6 +16,16 @@
       <p><%= link_to("Join to this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :post }) %></p>
     <% end %>
   <% end %>
-  <p><%= @channel_group.channels.count %> channels</p>
-  <%= render(partial: "channels/cards", locals: { channels: @channel_group.channels }) %>
+</section>
+
+<section>
+  <h2 class="text-2xl font-bold mt-6 mb-2">Channels</h2>
+  <p class="mb-4"><%= @channels.count %> channels</p>
+  <%= render(partial: "channels/cards", locals: { channels: @channels }) %>
+</section>
+
+<section>
+  <h2 class="text-2xl font-bold mt-6 mb-2">Items</h2>
+  <p class="mb-4"><%= @items.count %> items</p>
+  <%= render(partial: "items/cards", locals: { items: @items, with_channel: true }) %>
 </section>

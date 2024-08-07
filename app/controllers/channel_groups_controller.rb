@@ -10,6 +10,8 @@ class ChannelGroupsController < ApplicationController
 
   def show
     @channel_group = ChannelGroup.find(params[:id])
+    @channels = @channel_group.channels.order("channel_groupings.id DESC").limit(20)
+    @items = @channel_group.items.order(published_at: :desc, title: :desc).limit(48)
 
     @title = @channel_group.name
   end
