@@ -1431,40 +1431,6 @@ a.remove-from-my-own:hover {
   }
 }
 
-footer {
-  position: sticky;
-  top: 100vh;
-  width: 100%;
-  padding: 2em 0;
-  background-color: #3d8bcd;
-  color: #ffffff;
-  text-align: center;
-}
-
-@media screen and (max-width: 768px) {
-  footer {
-    padding: 2em 0 100px;
-  }
-}
-
-footer ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  margin: 0 0 1em;
-  padding: 0;
-}
-
-footer ul li {
-  margin: 0 1em;
-  padding: 0;
-}
-
-footer ul li a {
-  color: #ffffff;
-}
-
 .channel-and-items-component-item-memo p.button-to-unpaw {
   background-color: inherit;
   text-align: right;
