@@ -58,8 +58,8 @@ class NotificationWebhook < ApplicationRecord
       "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_slack, #{pawprints.count} pawprints)"
     )
 
-    pawprints.to_a.each_slice(5).with_index { |sub_pawprints, index|
-      blocks = sub_pawprints.map(&:to_slack_block).flatten
+    pawprints.each.with_index { |pawprint, index|
+      blocks = pawprint.to_slack_block
       blocks.unshift({
         type: "header",
         text: {
@@ -68,7 +68,7 @@ class NotificationWebhook < ApplicationRecord
         }
       }) if index == 0
 
-      sleep 2
+      sleep 1
       Faraday.post(
         url, { blocks:, unfurl_links: false }.to_json, "Content-Type" => "application/json"
       )
