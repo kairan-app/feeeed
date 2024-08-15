@@ -22,23 +22,20 @@ class Pawprint < ApplicationRecord
 
   def to_slack_block
     channel = item.channel
-    [
+
+    block = [
       {
         "type": "divider"
       },
       {
         "type": "context",
         "elements": [
-          {
-            "type": "image",
-            "image_url": channel.image_url,
-            "alt_text": channel.title,
-          },
+          channel.image_url.present? ? { "type": "image", "image_url": channel.image_url, "alt_text": channel.title } : nil,
           {
             "type": "mrkdwn",
             "text": channel.site_url ? "<#{channel.site_url}|#{channel.title}>" : channel.title,
           }
-        ]
+        ].compact
       },
       {
         type: "section",
@@ -50,12 +47,17 @@ class Pawprint < ApplicationRecord
             self.created_at.strftime("%Y-%m-%d %H:%M"),
           ].compact.join("\n"),
         },
-        accessory: {
-          type: "image",
-          image_url: item.image_url,
-          alt_text: item.title,
-        },
       }
     ]
+
+    if item.image_url.present?
+      block.last[:accessory] = {
+        type: "image",
+        image_url: item.image_url,
+        alt_text: item.title,
+      }
+    end
+
+    block
   end
 end
