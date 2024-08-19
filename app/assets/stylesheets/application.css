@@ -446,26 +446,6 @@ header nav ul li a:hover {
   }
 }
 
-.wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 auto 50px;
-  padding: 0 20px;
-  width: 100%;
-  max-width: 1440px;
-}
-
-.main {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  margin: 0;
-}
-
-.main>section {
-  width: 100%;
-}
-
 .cards {
   display: flex;
   flex-wrap: wrap;
