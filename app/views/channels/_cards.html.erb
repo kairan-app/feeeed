@@ -1,8 +1,8 @@
-<div class="cards">
+<div class="cards channel-cards">
   <% channels.each do |channel| %>
   <div class="card channel-card">
     <div class="card-image">
-      <%= image_tag(channel.image_url_or_placeholder, width: "100%", height: "100%") %>
+      <%= image_tag(channel.image_url_or_placeholder, class: "w-full h-full object-cover") %>
     </div>
     <h3 class="card-title">
       <%= image_tag(channel.favicon_url, size: "16x16") %>
