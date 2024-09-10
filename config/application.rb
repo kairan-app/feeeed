@@ -24,6 +24,6 @@ module Feeeed
     config.time_zone = "Tokyo"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_adapter = :solid_queue
   end
 end
