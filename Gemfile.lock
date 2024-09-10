@@ -224,7 +224,7 @@ GEM
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     os (1.1.4)
-    pg (1.5.7)
+    pg (1.5.8)
     postmark (1.25.1)
       json
     postmark-rails (0.22.1)
