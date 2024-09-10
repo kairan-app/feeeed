@@ -185,7 +185,7 @@ GEM
       letter_opener (~> 1.9)
       railties (>= 6.1)
       rexml
-    logger (1.6.0)
+    logger (1.6.1)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -305,7 +305,7 @@ GEM
     sentry-ruby (5.19.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
-    sidekiq (7.3.1)
+    sidekiq (7.3.2)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       logger
@@ -396,7 +396,7 @@ DEPENDENCIES
   redis
   selenium-webdriver
   sentry-rails
-  sidekiq (= 7.3.1)
+  sidekiq (= 7.3.2)
   sidekiq-limit_fetch
   sprockets-rails
   stimulus-rails
