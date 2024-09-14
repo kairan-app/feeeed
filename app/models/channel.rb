@@ -135,17 +135,20 @@ class Channel < ApplicationRecord
     end
   end
 
-  def fetch_and_save_items(mode = :only_new)
+  def fetch_and_save_items(mode = :only_recent)
     feed = Feedjira.parse(Httpc.get(feed_url))
 
     entries =
-      if mode == :only_new
+      if mode == :all
+        feed.entries
+      elsif mode == :only_non_existing
         feed.entries.reject {
           self.items.exists?(guid: _1.entry_id) ||
           self.items.exists?(guid: _1.url)
         }
       else
-        feed.entries
+        # only_recent
+        feed.entries.sort_by(&:published).reverse.take(20)
       end
 
     entries.sort_by(&:published).each do |entry|
