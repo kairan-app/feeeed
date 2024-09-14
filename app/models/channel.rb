@@ -152,7 +152,6 @@ class Channel < ApplicationRecord
       end
 
     entries.sort_by(&:published).each do |entry|
-      p ["Fetching", entry.published, entry.title, entry.url]
       next if entry.title.blank?
 
       url = (entry.url || self.site_url).strip
@@ -188,7 +187,10 @@ class Channel < ApplicationRecord
         published_at: entry.published,
         data: entry.to_h,
       }
-      self.items.find_or_initialize_by(guid: guid).update(parameters)
+      item = self.items.find_or_initialize_by(guid: guid)
+      p ["Saving item", item.title, item.url, item.published_at] if item.new_record?
+
+      item.update(parameters)
     end
   end
 
