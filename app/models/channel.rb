@@ -135,20 +135,23 @@ class Channel < ApplicationRecord
     end
   end
 
-  def fetch_and_save_items(mode = :only_new)
+  def fetch_and_save_items(mode = :only_recent)
     feed = Feedjira.parse(Httpc.get(feed_url))
 
     entries =
-      if mode == :only_new
-        feed.entries.reject { self.items.exists?(guid: _1.entry_id) }
-      else
+      if mode == :all
         feed.entries
+      elsif mode == :only_non_existing
+        feed.entries.reject {
+          self.items.exists?(guid: _1.entry_id) ||
+          self.items.exists?(guid: _1.url)
+        }
+      else
+        # only_recent
+        feed.entries.sort_by(&:published).reverse.take(20)
       end
 
     entries.sort_by(&:published).each do |entry|
-      sleep 2
-
-      p ["Fetching", entry.published, entry.title, entry.url]
       next if entry.title.blank?
 
       url = (entry.url || self.site_url).strip
@@ -173,6 +176,7 @@ class Channel < ApplicationRecord
           "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
         else
           OpenGraph.new(encoded_url).image rescue nil
+          sleep 2
         end
 
       parameters = {
@@ -183,7 +187,10 @@ class Channel < ApplicationRecord
         published_at: entry.published,
         data: entry.to_h,
       }
-      self.items.find_or_initialize_by(guid: guid).update(parameters)
+      item = self.items.find_or_initialize_by(guid: guid)
+      p ["Saving item", item.title, item.url, item.published_at] if item.new_record?
+
+      item.update(parameters)
     end
   end
 
