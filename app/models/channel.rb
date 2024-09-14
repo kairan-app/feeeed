@@ -152,8 +152,6 @@ class Channel < ApplicationRecord
       end
 
     entries.sort_by(&:published).each do |entry|
-      sleep 2
-
       p ["Fetching", entry.published, entry.title, entry.url]
       next if entry.title.blank?
 
@@ -179,6 +177,7 @@ class Channel < ApplicationRecord
           "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
         else
           OpenGraph.new(encoded_url).image rescue nil
+          sleep 2
         end
 
       parameters = {
