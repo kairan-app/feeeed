@@ -140,7 +140,10 @@ class Channel < ApplicationRecord
 
     entries =
       if mode == :only_new
-        feed.entries.reject { self.items.exists?(guid: _1.entry_id) }
+        feed.entries.reject {
+          self.items.exists?(guid: _1.entry_id) ||
+          self.items.exists?(guid: _1.url)
+        }
       else
         feed.entries
       end
