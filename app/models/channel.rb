@@ -175,8 +175,8 @@ class Channel < ApplicationRecord
         elsif guid.start_with?("yt:video:")
           "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
         else
-          OpenGraph.new(encoded_url).image rescue nil
           sleep 2
+          OpenGraph.new(encoded_url).image rescue nil
         end
 
       parameters = {
