@@ -13,7 +13,7 @@ class ItemCreationNotifierJob < ApplicationJob
   end
 
   def should_notify?(item)
-    # 新しい方から見て3件以内のItemのみ通知する
+    # 新しい方から見て2件以内のItemのみ通知する
     feed = Feedjira.parse(Httpc.get(item.channel.feed_url))
     return true if item.guid.in?(feed.entries.sort_by(&:published).reverse.take(2).map(&:entry_id))
 
