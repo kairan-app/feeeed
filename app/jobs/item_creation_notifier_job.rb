@@ -1,4 +1,6 @@
 class ItemCreationNotifierJob < ApplicationJob
+  queue_as :disco
+
   def perform(item_id)
     item = Item.find(item_id)
 
