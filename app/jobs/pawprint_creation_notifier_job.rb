@@ -1,4 +1,6 @@
 class PawprintCreationNotifierJob < ApplicationJob
+  queue_as :disco
+
   def perform(pawprint_id)
     pawprint = Pawprint.find(pawprint_id)
     user = pawprint.user
