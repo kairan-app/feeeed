@@ -188,7 +188,7 @@ class Channel < ApplicationRecord
         data: entry.to_h,
       }
       item = self.items.find_or_initialize_by(guid: guid)
-      p ["Saving item", item.title, item.url, item.published_at] if item.new_record?
+      p ["Saving item", entry.title, encoded_url, entry.published] if item.new_record?
 
       item.update(parameters)
     end
