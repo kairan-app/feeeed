@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_10_122300) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_17_151846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +20,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_10_122300) do
     t.datetime "last_notified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", default: 1, null: false
     t.index ["channel_group_id"], name: "index_channel_group_webhooks_on_channel_group_id"
+    t.index ["user_id"], name: "index_channel_group_webhooks_on_user_id"
   end
 
   create_table "channel_groupings", force: :cascade do |t|
@@ -282,6 +284,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_10_122300) do
   end
 
   add_foreign_key "channel_group_webhooks", "channel_groups"
+  add_foreign_key "channel_group_webhooks", "users"
   add_foreign_key "channel_groupings", "channel_groups"
   add_foreign_key "channel_groupings", "channels"
   add_foreign_key "channel_groups", "users", column: "owner_id"
