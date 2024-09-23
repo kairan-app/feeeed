@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   has_many :ownerships, dependent: :destroy
   has_many :owned_channels, through: :ownerships, source: :channel
+  has_many :memberships, dependent: :destroy
+  has_many :joined_channel_groups, through: :memberships, source: :channel_group
   has_many :subscriptions, dependent: :destroy
   has_many :subscribed_channels, through: :subscriptions, source: :channel
   has_many :subscribed_items, through: :subscribed_channels, source: :items
@@ -10,6 +12,7 @@ class User < ApplicationRecord
   has_many :item_skips, dependent: :destroy
   has_many :notification_webhooks, dependent: :destroy
   has_many :notification_emails, dependent: :destroy
+  has_many :channel_group_webhooks, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..30 }
   validates :email, presence: true, length: { maximum: 254 }

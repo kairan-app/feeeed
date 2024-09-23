@@ -1,14 +1,16 @@
 <section>
   <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel_group.name %></h2>
-  <p>
-    <%= link_to("Edit", edit_channel_group_path(@channel_group)) %>
-  </p>
   <% if logged_in? %>
+    <p>
+      <%= link_to("Edit channel group", edit_channel_group_path(@channel_group)) %>
+    </p>
+    <p>
     <% if @channel_group.users.include?(current_user) %>
-      <p><%= link_to("Leave this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :delete }) %></p>
+      <%= link_to("Leave this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :delete }) %>
     <% else %>
-      <p><%= link_to("Join to this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :post }) %></p>
+      <%= link_to("Join to this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :post }) %>
     <% end %>
+    </p>
   <% end %>
 </section>
 
