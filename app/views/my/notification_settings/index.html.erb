@@ -113,7 +113,7 @@
     <div class="setting-list">
       <div class="setting-channel-group">
         <p><%= form.label :channel_group_id %></p>
-        <%= form.select :channel_group_id, ChannelGroup.all.map { |cg| [cg.name, cg.id] } %>
+        <%= form.select :channel_group_id, ChannelGroup.order(id: :desc).map { |cg| [cg.name, cg.id] } %>
       </div>
       <div class="setting-url-or-email">
         <p><%= form.label :url %></p>
