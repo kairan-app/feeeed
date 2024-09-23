@@ -72,6 +72,9 @@ Rails.application.routes.draw do
                                                as: "about"
   get    "/info",                              to: "info#index",
                                                as: "info"
+  post   "/channel_group_webhooks",            to: "channel_group_webhooks#create"
+  delete "/channel_group_webhooks/:id",        to: "channel_group_webhooks#destroy",
+                                               as: "channel_group_webhook"
 
   root "welcome#index"
 end
