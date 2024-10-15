@@ -2,10 +2,17 @@
   <h2 class="text-2xl font-bold mt-6 mb-4">Channel Groups</h2>
   <%= link_to("New Channel Group", new_channel_group_path) %>
   <%= paginate(@channel_groups) %>
-  <ul class="my-4">
+  <div class="cards channel-cards">
     <% @channel_groups.each do |channel_group| %>
-      <li><%= link_to(channel_group.name, channel_group_path(channel_group)) %></li>
-  <% end %>
-  </ul>
+    <div class="card channel-card">
+      <div class="card-image">
+        <%= image_tag("https://placehold.jp/300x300.png", class: "w-full h-full object-cover") %>
+      </div>
+      <h3 class="card-title">
+        <%= link_to(channel_group.name, channel_group_path(channel_group)) %>
+      </h3>
+    </div>
+    <% end %>
+  </div>
   <%= paginate(@channel_groups) %>
 </section>
