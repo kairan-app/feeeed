@@ -6,7 +6,16 @@
     <% @channel_groups.each do |channel_group| %>
     <div class="card channel-card">
       <div class="card-image">
-        <%= image_tag("https://placehold.jp/300x300.png", class: "w-full h-full object-cover") %>
+        <% images = channel_group.thumbnail_images(4) %>
+        <% if images.length >= 4 %>
+          <div class="grid grid-cols-2 gap-0">
+            <% images.each do |image_url| %>
+              <%= image_tag(image_url, class: "w-full h-full object-cover") %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= image_tag("https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{channel_group.name}", class: "w-full h-full object-cover") %>
+        <% end %>
       </div>
       <h3 class="card-title">
         <%= link_to(channel_group.name, channel_group_path(channel_group)) %>

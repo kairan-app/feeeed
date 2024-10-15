@@ -8,4 +8,9 @@ class ChannelGroup < ApplicationRecord
   has_many :channel_group_webhooks, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 64 }
+
+  def thumbnail_images(limit = nil)
+    images = channels.map(&:image_url_or_placeholder).compact
+    limit ? images.take(limit) : images
+  end
 end
