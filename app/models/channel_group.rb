@@ -8,4 +8,17 @@ class ChannelGroup < ApplicationRecord
   has_many :channel_group_webhooks, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 64 }
+
+  def channel_image_urls
+    channels.where.not(image_url: nil).pluck(:image_url)
+  end
+
+  def channel_image_urls_in_today
+    generator = Random.new(Date.today.to_time.to_i)
+    channel_image_urls.sample(4, random: generator)
+  end
+
+  def placeholder_url
+    "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{name}"
+  end
 end
