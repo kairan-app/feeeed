@@ -10,7 +10,7 @@
         <% if image_urls.length == 4 %>
           <div class="grid grid-cols-2 gap-0">
             <% image_urls.each do |image_url| %>
-              <%= image_tag(image_url, class: "w-full h-full object-cover") %>
+              <%= image_tag(image_url, class: "w-full h-full object-cover aspect-square") %>
             <% end %>
           </div>
         <% else %>
