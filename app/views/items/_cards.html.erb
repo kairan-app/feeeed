@@ -2,7 +2,7 @@
   <% items.each do |item| %>
   <div class="card item-card">
     <div class="card-image">
-      <%= image_tag(item.image_url_or_placeholder, class: "w-full h-full object-cover") %>
+      <%= link_to(image_tag(item.image_url_or_placeholder, class: "w-full h-full object-cover"), item.url, target: "_blank") %>
       <% if item.audio_enclosure_url %>
         <div class="audio-player audio-player-on-the-image">
           <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
