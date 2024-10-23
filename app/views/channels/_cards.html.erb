@@ -2,7 +2,7 @@
   <% channels.each do |channel| %>
   <div class="card channel-card">
     <div class="card-image">
-      <%= image_tag(channel.image_url_or_placeholder, class: "w-full h-full object-cover") %>
+      <%= link_to(image_tag(channel.image_url_or_placeholder, class: "w-full h-full object-cover"), channel) %>
     </div>
     <h3 class="card-title">
       <%= image_tag(channel.favicon_url, size: "16x16") %>
