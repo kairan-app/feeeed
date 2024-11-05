@@ -2,26 +2,6 @@
   <h2 class="text-2xl font-bold mt-6 mb-4">Channel Groups</h2>
   <%= link_to("New Channel Group", new_channel_group_path) %>
   <%= paginate(@channel_groups) %>
-  <div class="cards channel-cards">
-    <% @channel_groups.each do |channel_group| %>
-    <div class="card channel-card">
-      <div class="card-image">
-        <% image_urls = channel_group.channel_image_urls_in_today %>
-        <% if image_urls.length == 4 %>
-          <div class="grid grid-cols-2 gap-0">
-            <% image_urls.each do |image_url| %>
-              <%= image_tag(image_url, class: "w-full h-full object-cover aspect-square") %>
-            <% end %>
-          </div>
-        <% else %>
-          <%= image_tag(channel_group.placeholder_url, class: "w-full h-full object-cover") %>
-        <% end %>
-      </div>
-      <h3 class="card-title">
-        <%= link_to(channel_group.name, channel_group) %>
-      </h3>
-    </div>
-    <% end %>
-  </div>
+  <%= render(partial: "channel_groups/cards", locals: { channel_groups: @channel_groups }) %>
   <%= paginate(@channel_groups) %>
 </section>
