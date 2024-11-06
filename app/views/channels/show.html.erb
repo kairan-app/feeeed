@@ -40,15 +40,21 @@
     <% if @channel.groups.count > 0 %>
     <ul class="my-4">
       <% @channel.groups.each do |group| %>
-        <li><%= link_to(group.name, channel_group_path(group)) %></li>
+        <li>
+          <%= link_to(group.name, channel_group_path(group)) %>
+          <% grouping = @channel.channel_groupings.find_by(channel_group_id: group.id) %>
+          <%= link_to(channel_grouping_path(grouping), data: { turbo_method: :delete }) do %>
+            <span class="material-symbols-outlined">delete</span>
+          <% end %>
+        </li>
       <% end %>
     </ul>
     <% end %>
 
     <% if logged_in? %>
-    <% if current_user.channel_groups.count > 0 %>
-      <%= render(partial: "channel_groupings/form", locals: { channel: @channel, channel_groups: current_user.channel_groups }) %>
-    <% end %>
+      <% if current_user.channel_groups.count > 0 %>
+        <%= render(partial: "channel_groupings/form", locals: { channel: @channel, channel_groups: current_user.channel_groups }) %>
+      <% end %>
     <% end %>
   </div>
 </div>
