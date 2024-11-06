@@ -1062,7 +1062,7 @@ a.remove-from-my-own:hover {
 }
 
 .channel-and-items-component {
-  width: calc(100% / 3 - 40px / 3);
+  min-width: 400px;
   margin: 0;
   padding: 0 10px;
   background-color: #ffffff;
@@ -1072,10 +1072,6 @@ a.remove-from-my-own:hover {
 .channel-and-items-component-welcome {
   margin: 0 20px 20px 0;
   border-bottom: none;
-}
-
-.channel-and-items-component-welcome:nth-of-type(3n) {
-  margin: 0 0 20px;
 }
 
 .channel-and-items-component:last-of-type {
@@ -1090,13 +1086,7 @@ a.remove-from-my-own:hover {
 
 @media screen and (max-width: 768px) {
   .channel-and-items-component {
-    width: 100%;
-    margin: 0;
-    padding: 0 20px;
-  }
-
-  .channel-and-items-component-welcome {
-    margin: 0 0 20px;
+    min-width: 270px;
   }
 }
 

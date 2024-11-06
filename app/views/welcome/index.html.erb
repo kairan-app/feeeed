@@ -10,7 +10,7 @@
 
 <section>
   <h2 class="text-2xl font-bold mt-6 mb-4">Recent Channel & Items</h2>
-  <div class="w-full flex flex-wrap">
+  <div class="w-full flex overflow-scroll">
     <%= render(partial: "channels/with3items", collection: @channels, as: :channel) %>
   </div>
 </section>

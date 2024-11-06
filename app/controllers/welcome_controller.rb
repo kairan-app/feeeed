@@ -11,7 +11,7 @@ class WelcomeController < ApplicationController
         select("channels.*, MAX(items.id) AS max_item_id").
         group("channels.id").
         order("max_item_id DESC").
-        limit(5)
+        limit(12)
 
     @title = "Enjoy feeds!"
   end
