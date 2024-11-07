@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   get    "/channel_groups/:id/edit",           to: "channel_groups#edit",
                                                as: "edit_channel_group"
   post   "/channel_groupings",                 to: "channel_groupings#create"
+  delete "/channel_groupings/:id",             to: "channel_groupings#destroy",
+                                               as: "channel_grouping"
   post   "/channel_groups/:id/membership",     to: "memberships#create",
                                                as: "channel_group_membership"
   delete "/channel_groups/:id/membership",     to: "memberships#destroy"

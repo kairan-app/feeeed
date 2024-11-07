@@ -7,4 +7,12 @@ class ChannelGroupingsController < ApplicationController
     DiscoPosterJob.perform_later(content: "@#{current_user.name} added #{grouping.channel.title} to #{grouping.channel_group.name}")
     redirect_to grouping.channel, notice: "Channel added to group"
   end
+
+  def destroy
+    grouping = ChannelGrouping.find(params[:id])
+    channel = grouping.channel
+    grouping.destroy
+
+    redirect_to channel, notice: "Channel removed from group"
+  end
 end
