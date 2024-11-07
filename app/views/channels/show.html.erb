@@ -38,13 +38,16 @@
     <% end %>
 
     <% if @channel.groups.count > 0 %>
-    <ul class="my-4">
+    <ul class="my-4 flex flex-wrap gap-6">
       <% @channel.groups.each do |group| %>
-        <li>
-          <%= link_to(group.name, channel_group_path(group)) %>
+        <li class="flex items-center gap-2">
+          <%= link_to(channel_group_path(group), class: "inline-block px-4 py-2 bg-white rounded-md border border-white hover:border hover:border-gray-300 hover:no-underline") do %>
+            <%= group.name %>
+          <% end %>
+
           <% grouping = @channel.channel_groupings.find_by(channel_group_id: group.id) %>
-          <%= link_to(channel_grouping_path(grouping), data: { turbo_method: :delete }) do %>
-            <span class="material-symbols-outlined">delete</span>
+          <%= link_to(channel_grouping_path(grouping), data: { turbo_method: :delete, turbo_confirm: "Remove from this group?" }) do %>
+            ✕
           <% end %>
         </li>
       <% end %>
