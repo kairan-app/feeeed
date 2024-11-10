@@ -1,5 +1,9 @@
 class WelcomeController < ApplicationController
   def index
+    @pawprints =
+      Pawprint.
+        order(created_at: :desc).
+        limit(3)
     @channel_groups =
       ChannelGroup.
       all.
