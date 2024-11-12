@@ -3,7 +3,7 @@ class WelcomeController < ApplicationController
     @pawprints =
       Pawprint.
         order(created_at: :desc).
-        limit(3)
+        limit(12)
     @channel_groups =
       ChannelGroup.
       all.
