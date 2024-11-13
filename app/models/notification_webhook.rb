@@ -7,7 +7,7 @@ class NotificationWebhook < ApplicationRecord
   validates :url, presence: true, length: { maximum: 2083 }, format: { with: URI.regexp }
   validates :mode, presence: true
 
-  enum mode: {
+  enum :mode, {
     my_subscribed_items: 0,
     my_pawprints: 1,
   }

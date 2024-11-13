@@ -11,7 +11,7 @@ class NotificationEmail < ApplicationRecord
 
   scope :only_verified, -> { where.not(verified_at: nil) }
 
-  enum mode: {
+  enum :mode, {
     my_subscribed_items: 0,
     my_pawprints: 1,
   }
