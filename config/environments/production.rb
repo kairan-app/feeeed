@@ -57,7 +57,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  # config.action_mailer.default_url_options = { host: "example.com" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -67,6 +67,11 @@ Rails.application.configure do
   #   port: 587,
   #   authentication: :plain
   # }
+
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {
+    api_key: ENV["POSTMARK_API_KEY"],
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -86,4 +91,9 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  url_options = { host: URI.parse(Rails.application.credentials.host).host, protocol: "https" }
+  config.action_controller.default_url_options = url_options
+  config.action_mailer.default_url_options = url_options
+  Rails.application.routes.default_url_options = url_options
 end

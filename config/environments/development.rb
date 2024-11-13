@@ -38,7 +38,9 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  # config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
+  config.action_mailer.delivery_method = :letter_opener_web
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -66,4 +68,10 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  uri = URI.parse(Rails.application.credentials.host)
+  url_options = { host: uri.host, port: uri.port, protocol: uri.scheme }
+  config.action_controller.default_url_options = url_options
+  config.action_mailer.default_url_options = url_options
+  Rails.application.routes.default_url_options = url_options
 end
