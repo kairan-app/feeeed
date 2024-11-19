@@ -25,7 +25,7 @@
 
 <section>
   <h2 class="text-2xl font-bold mt-6 mb-4">Recent Channel Groups</h2>
-  <div class="w-full flex flex-wrap">
-    <%= render(partial: "channel_groups/cards", locals: { channel_groups: @channel_groups }) %>
+  <div class="w-full flex overflow-scroll">
+    <%= render(partial: "channel_groups/flex_cards", locals: { channel_groups: @channel_groups }) %>
   </div>
 </section>

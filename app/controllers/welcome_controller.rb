@@ -8,7 +8,7 @@ class WelcomeController < ApplicationController
       ChannelGroup.
       all.
       order(created_at: :desc).
-      limit(5)
+      limit(12)
     @channels =
       Channel.
         joins(:items).
