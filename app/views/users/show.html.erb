@@ -19,10 +19,10 @@
 
 <% if @owned_channels.exists? %>
 <h3 class="text-lg font-bold">Owned Channels</h3>
-<%= render(partial: "channels/cards", locals: { channels: @owned_channels }) %>
+<%= render(partial: "channels/grid_cards", locals: { channels: @owned_channels }) %>
 <% end %>
 
 <% if @subscribed_channels.exists? %>
 <h3 class="text-lg font-bold">Subscribed Channels</h3>
-<%= render(partial: "channels/cards", locals: { channels: @subscribed_channels }) %>
+<%= render(partial: "channels/grid_cards", locals: { channels: @subscribed_channels }) %>
 <% end %>

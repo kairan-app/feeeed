@@ -17,7 +17,7 @@
 <% if @channels.count > 0 %>
 <section>
   <h3 class="text-xl font-bold mt-6 mb-4"><%= @channels.count %> Channels</h3>
-  <%= render(partial: "channels/cards", locals: { channels: @channels }) %>
+  <%= render(partial: "channels/grid_cards", locals: { channels: @channels }) %>
 </section>
 <% end %>
 
