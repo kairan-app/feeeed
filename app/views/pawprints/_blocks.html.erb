@@ -36,7 +36,7 @@
           <% if pawprint.memo.present? %>
           <div class="pawprint-memo"><%= pawprint.memo %></div>
           <% end %>
-          <% unless current_user.pawed?(item) %>
+          <% unless current_user.nil? || current_user.pawed?(item) %>
             <div class="chase-paw">
               <div class="chase-paw-user">
                 <%= image_tag(current_user.icon_url, size: "24x24") %>
