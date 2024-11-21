@@ -68,6 +68,10 @@ class User < ApplicationRecord
     item_skips.find_by(item: item).destroy
   end
 
+  def own_and_joined_channel_groups
+    ChannelGroup.where(id: joined_channel_groups.pluck(:id)).or(ChannelGroup.where(owner_id: self.id))
+  end
+
   def unread_items_grouped_by_channel(range_days: 7, channel_group: nil)
     items = channel_group ? channel_group.items : subscribed_items
 
