@@ -30,13 +30,13 @@
           <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
           <span class="ml-1">pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
         </div>
-        <% if user == current_user%>
+        <% if user == current_user %>
           <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: pawprint }) %>
         <% else %>
           <% if pawprint.memo.present? %>
           <div class="pawprint-memo"><%= pawprint.memo %></div>
           <% end %>
-          <% unless current_user.nil? || current_user.pawed?(item) %>
+          <% if current_user&.not_pawed?(item) %>
             <div class="chase-paw">
               <div class="chase-paw-user">
                 <%= image_tag(current_user.icon_url, size: "24x24") %>
