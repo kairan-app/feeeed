@@ -52,6 +52,10 @@ class User < ApplicationRecord
     pawed_items.include?(item)
   end
 
+  def not_pawed?(item)
+    !pawed?(item)
+  end
+
   def join(channel_group)
     memberships.create(channel_group: channel_group)
   end

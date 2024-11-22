@@ -1,0 +1,54 @@
+<ul class="flex w-full">
+  <% pawprints.each do |pawprint| %>
+    <% user = pawprint.user %>
+    <% item = pawprint.item %>
+    <li class="overflow-scroll min-w-[270px] h-[300px] mr-[20px] p-4 bg-white sm:min-w-[400px] sm:h-[240px]">
+      <div class="flex flex-wrap w-full">
+        <div class="w-[96px] h-[64px] mr-2">
+          <%= link_to(item.url, target: "_blank") do %>
+            <%= image_tag(item.image_url_or_placeholder, height: "100", class: "w-full h-full object-cover") %>
+          <% end %>
+        </div>
+        <div class="w-[calc(100%-106px)] -mt-0.75">
+          <h3 class="m-0 font-bold">
+            <%= link_to(item.title, item.url, target: "_blank") %>
+          </h3>
+          <span class="flex">
+            <%= image_tag(item.channel.favicon_url, size: "16x16", class: "mt-1 mr-1 w-[16px] h-[16px]") %>
+            <%= link_to(item.channel.title, item.channel) %>
+          </span>
+        </div>
+        <% if item.audio_enclosure_url %>
+          <div class="w-full mt-2">
+            <audio class="h-[36px]" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+          </div>
+        <% end %>
+      </div>
+      <div class="w-full">
+        <div class="flex items-center my-2">
+          <%= image_tag(user.icon_url, size: "24x24", class: "mr-2 object-cover rounded-full") %>
+          <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
+          <span class="ml-1">pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+        </div>
+        <% if user == current_user %>
+          <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: pawprint }) %>
+        <% else %>
+          <% if pawprint.memo.present? %>
+          <div class="pawprint-memo"><%= pawprint.memo %></div>
+          <% end %>
+          <% if current_user&.not_pawed?(item) %>
+            <div class="chase-paw">
+              <div class="chase-paw-user">
+                <%= image_tag(current_user.icon_url, size: "24x24") %>
+                <%= link_to("@" + current_user.name, user_path(user_name: current_user.name)) %>
+              </div>
+              <div class="chase-paw-form">
+                <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </li>
+  <% end %>
+</ul>

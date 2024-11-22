@@ -1,0 +1,14 @@
+<% channels.each do |channel| %>
+<div class="min-w-[160px] mr-[20px] sm:min-w-[240px]">
+  <div class="w-[160px] h-[160px] sm:w-[240px] sm:h-[240px]">
+    <%= link_to(image_tag(channel.image_url_or_placeholder, class: "w-full h-full object-cover"), channel) %>
+  </div>
+  <h3 class="card-title">
+    <%= image_tag(channel.favicon_url, size: "16x16") %>
+    <%= link_to(channel.title, channel) %>
+  </h3>
+  <span class="card-description">
+    <%= channel.description.to_s[0..64] %><br/>
+  </span>
+</div>
+<% end %>

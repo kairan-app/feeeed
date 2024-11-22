@@ -1,0 +1,36 @@
+<div class="channel-and-items-component channel-and-items-component-welcome overflow-scroll h-[420px] sm:h-[400px]">
+  <h3 class="text-lg font-bold mt-2 channel-and-items-component-channel">
+    <%= link_to channel_path(channel) do %>
+      <% if channel.image_url %>
+      <%= image_tag(channel.image_url, size: "64x64",) %>
+      <% end %>
+      <span>
+        <%= channel.title %>
+      </span>
+    <% end %>
+  </h3>
+  <ul class="channel-and-items-component-item-list">
+    <% channel.items.order(id: :desc).limit(3).each do |item| %>
+      <%= turbo_frame_tag(item) do %>
+      <li>
+      <%= link_to(item.url, target: "_blank") do %>
+        <div class="channel-and-items-component-item-image">
+          <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%", style: "object-fit: cover;") %>
+        </div>
+        <div class="channel-and-items-component-item-info">
+          <h4 class="font-bold">
+            <%= item.title %>
+          </h4>
+          <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+        </div>
+        <% if item.audio_enclosure_url %>
+          <div class="audio-player">
+            <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+          </div>
+        <% end %>
+      <% end %>
+      </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
