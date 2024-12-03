@@ -2,7 +2,7 @@
   <% pawprints.each do |pawprint| %>
     <% user = pawprint.user %>
     <% item = pawprint.item %>
-    <li class="overflow-scroll min-w-[270px] h-[300px] mr-[20px] p-4 bg-white sm:min-w-[400px] sm:h-[240px]">
+    <li class="min-w-[270px] mr-[20px] p-4 sm:min-w-[400px]">
       <div class="flex flex-wrap w-full">
         <div class="w-[96px] h-[64px] mr-2">
           <%= link_to(item.url, target: "_blank") do %>
