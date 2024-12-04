@@ -11,7 +11,7 @@ class Item < ApplicationRecord
   validates :guid, presence: true, length: { maximum: 2083 }, uniqueness: { scope: :channel_id }
   validates :title, presence: true, length: { maximum: 256 }
   validates :url, presence: true, length: { maximum: 2083 }
-  validates :image_url, length: { maximum: 2083 }
+  validates :image_url, length: { maximum: 2083 }, format: { with: URI::regexp(%w[http https]), message: "must be a valid URL" }
   validates :published_at, presence: true
 
   strip_before_save :title
