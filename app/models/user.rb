@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include UrlHttpValidator
+
   has_many :ownerships, dependent: :destroy
   has_many :owned_channels, through: :ownerships, source: :channel
   has_many :memberships, dependent: :destroy
@@ -16,7 +18,8 @@ class User < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..30 }
   validates :email, presence: true, length: { maximum: 254 }
-  validates :icon_url, presence: true, length: { maximum: 2083 }
+  validates :icon_url, presence: true
+  validates_url_http_format_of :icon_url
 
   def username_changed?
     email.split('@').first != name

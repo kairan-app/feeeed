@@ -1,11 +1,13 @@
 class NotificationWebhook < ApplicationRecord
   include SlackBlockBuilder
+  include UrlHttpValidator
 
   belongs_to :user
 
   validates :user_id, presence: true
-  validates :url, presence: true, length: { maximum: 2083 }, format: { with: URI.regexp }
+  validates :url, presence: true
   validates :mode, presence: true
+  validates_url_http_format_of :url
 
   enum :mode, {
     my_subscribed_items: 0,
