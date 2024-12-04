@@ -30,7 +30,8 @@
   }
 }
 
-h2, h3 {
+h2,
+h3 {
   width: 100%;
   margin: 1em 0 0.5em;
 }
@@ -91,7 +92,7 @@ a:hover {
   z-index: -1;
 }
 
-#channel-registration-form:checked~.channel-registration-form-wrap {
+#channel-registration-form:checked ~ .channel-registration-form-wrap {
   transform: translateY(0%);
   opacity: 1;
   transition: 0.2s;
@@ -106,7 +107,7 @@ a:hover {
   display: none;
 }
 
-#channel-registration-form:checked~.channel-registration-form-wrap-bg {
+#channel-registration-form:checked ~ .channel-registration-form-wrap-bg {
   position: fixed;
   top: 0;
   left: -20px;
@@ -162,12 +163,16 @@ a:hover {
   transform-origin: 0%;
 }
 
-#channel-registration-form:checked~.channel-registration-form-button .channel-registration-form-button-mark:nth-of-type(1) {
+#channel-registration-form:checked
+  ~ .channel-registration-form-button
+  .channel-registration-form-button-mark:nth-of-type(1) {
   transform: translate(3px, -3px) rotate(45deg);
   transform-origin: 0%;
 }
 
-#channel-registration-form:checked~.channel-registration-form-button .channel-registration-form-button-mark:nth-of-type(2) {
+#channel-registration-form:checked
+  ~ .channel-registration-form-button
+  .channel-registration-form-button-mark:nth-of-type(2) {
   transform: translate(3px, 2px) rotate(-45deg);
   transform-origin: 0%;
 }
@@ -287,7 +292,7 @@ header nav ul li a:hover {
   }
 }
 
-#hamburger:checked~.hamburger-menu-list {
+#hamburger:checked ~ .hamburger-menu-list {
   transform: translateY(0%);
   transition: 0s;
   z-index: 2;
@@ -312,7 +317,7 @@ header nav ul li a:hover {
   display: none;
 }
 
-#hamburger:checked~.hamburger-menu-bg {
+#hamburger:checked ~ .hamburger-menu-bg {
   position: fixed;
   top: 0;
   left: -20px;
@@ -362,16 +367,22 @@ header nav ul li a:hover {
   transition: 0.3s;
 }
 
-#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(1) {
+#hamburger:checked
+  ~ .hamburger-menu-button
+  .hamburger-menu-button-mark:nth-of-type(1) {
   transform: translate(3px, -1px) rotate(45deg);
   transform-origin: 0%;
 }
 
-#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(2) {
+#hamburger:checked
+  ~ .hamburger-menu-button
+  .hamburger-menu-button-mark:nth-of-type(2) {
   opacity: 0;
 }
 
-#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(3) {
+#hamburger:checked
+  ~ .hamburger-menu-button
+  .hamburger-menu-button-mark:nth-of-type(3) {
   transform: translate(3px, 1px) rotate(-45deg);
   transform-origin: 0%;
 }
@@ -521,14 +532,17 @@ h3.card-title {
   font-weight: bold;
 }
 
-.card-title, .card-channel {
+.card-title,
+.card-channel {
   img {
     width: 14px;
     height: auto;
   }
 }
 
-.card-description, .card-channel, .card-publish {
+.card-description,
+.card-channel,
+.card-publish {
   display: block;
   margin: 0 0 0.1em;
   font-size: 0.9em;
@@ -878,7 +892,7 @@ a.remove-from-my-own:hover {
 
 @media screen and (max-width: 768px) {
   .setting-card .card-image {
-    height: calc(100vw * 2/ 3 - 30px);
+    height: calc(100vw * 2 / 3 - 30px);
   }
 }
 
@@ -963,12 +977,14 @@ a.remove-from-my-own:hover {
   }
 }
 
-.setting-mode, .setting-url-or-email {
+.setting-mode,
+.setting-url-or-email {
   width: calc(50% - 50px);
 }
 
 @media screen and (max-width: 768px) {
-  .setting-mode, .setting-url-or-email {
+  .setting-mode,
+  .setting-url-or-email {
     width: 100%;
   }
 }
@@ -982,13 +998,15 @@ a.remove-from-my-own:hover {
   padding: 0;
 }
 
-.setting-list input, .setting-list select {
+.setting-list input,
+.setting-list select {
   height: 2em;
   margin: 0 0 1em;
   padding: 0.25em 0.5em;
 }
 
-.setting-list input[type="text"i], .setting-list select {
+.setting-list input[type="text"i],
+.setting-list select {
   width: 100%;
 }
 
@@ -1025,13 +1043,15 @@ a.remove-from-my-own:hover {
   text-align: left;
 }
 
-.setting-table th, .setting-table td {
+.setting-table th,
+.setting-table td {
   display: block;
   width: 25%;
   padding: 0.5em 0.5em 0.5em 0;
 }
 
-.setting-table th:last-child, .setting-table td:last-child {
+.setting-table th:last-child,
+.setting-table td:last-child {
   width: 80px;
 }
 
@@ -1064,8 +1084,7 @@ a.remove-from-my-own:hover {
 .channel-and-items-component {
   min-width: 400px;
   margin: 0;
-  padding: 0 10px;
-  background-color: #ffffff;
+  padding: 0;
   border-bottom: solid 6px #dddddd;
 }
 
@@ -1125,7 +1144,7 @@ a.remove-from-my-own:hover {
 
 .channel-and-items-component-channel a:hover {
   text-decoration: none;
-  background-color: #eeeeee;
+  background-color: rgba(255, 255, 255, 0.75);
 }
 
 .channel-and-items-component-item-list {
@@ -1151,7 +1170,7 @@ a.remove-from-my-own:hover {
 
 .channel-and-items-component-item-list li a:hover {
   text-decoration: none;
-  background-color: #eeeeee;
+  background-color: rgba(255, 255, 255, 0.75);
 }
 
 .unreads-list {
@@ -1340,7 +1359,8 @@ a.remove-from-my-own:hover {
   padding: 0.5em 0;
 }
 
-.page a, .current {
+.page a,
+.current {
   display: block;
   margin: 0 0.25em 0 0;
   padding: 0.25em 0.75em;
@@ -1362,11 +1382,17 @@ a.remove-from-my-own:hover {
   color: #ffffff;
 }
 
-.first, .prev, .next, .last {
+.first,
+.prev,
+.next,
+.last {
   display: inline-block;
 }
 
-.first a, .prev a, .next a, .last a {
+.first a,
+.prev a,
+.next a,
+.last a {
   display: block;
   margin: 0 0.25em 0 0;
   padding: 0.25em 0.75em;
@@ -1375,7 +1401,10 @@ a.remove-from-my-own:hover {
   border-radius: 4px;
 }
 
-.first a:hover, .prev a:hover, .next a:hover, .last a:hover {
+.first a:hover,
+.prev a:hover,
+.next a:hover,
+.last a:hover {
   background-color: #3d8bcd;
   color: #ffffff;
   text-decoration: none;
@@ -1403,7 +1432,8 @@ a.remove-from-my-own:hover {
   border-radius: 4px;
 }
 
-.unreads-nav-button a:hover, .unreads-nav-button a.active {
+.unreads-nav-button a:hover,
+.unreads-nav-button a.active {
   background-color: #3d8bcd;
   color: #ffffff;
   text-decoration: none;
@@ -1442,7 +1472,8 @@ a.remove-from-my-own:hover {
   border-radius: 0 6px 6px 0;
 }
 
-.unreads-channel-group-tab a.active, .unreads-channel-group-tab a:hover {
+.unreads-channel-group-tab a.active,
+.unreads-channel-group-tab a:hover {
   background-color: #3d8bcd;
   color: #ffffff;
   text-decoration: none;
@@ -1577,21 +1608,25 @@ a.remove-from-my-own:hover {
   }
 }
 
-.about-contents, .info-contents {
+.about-contents,
+.info-contents {
   width: calc(100% - 20px);
 }
 
 @media screen and (max-width: 768px) {
-  .about-contents, .info-contents {
+  .about-contents,
+  .info-contents {
     width: 100%;
   }
 }
 
-.about-contents h2, .info-contents h2 {
+.about-contents h2,
+.info-contents h2 {
   color: #3d8bcd;
 }
 
-.about-contents section h2, .info-contents article h2 {
+.about-contents section h2,
+.info-contents article h2 {
   color: #000000;
 }
 
