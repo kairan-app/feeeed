@@ -4,6 +4,7 @@ class Channel < ApplicationRecord
   include EmptyStringsAreAlignedToNil
   include ValidationErrorsNotifiable
   include UrlHttpValidator
+
   has_many :items, dependent: :destroy
   has_many :ownerships, dependent: :destroy
   has_many :owners, through: :ownerships, source: :user
