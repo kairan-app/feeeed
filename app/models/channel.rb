@@ -3,6 +3,7 @@ class Channel < ApplicationRecord
   include Stripable
   include EmptyStringsAreAlignedToNil
   include ValidationErrorsNotifiable
+  include UrlHttpValidator
 
   has_many :items, dependent: :destroy
   has_many :ownerships, dependent: :destroy
@@ -15,9 +16,8 @@ class Channel < ApplicationRecord
 
   validates :title, presence: true, length: { maximum: 256 }
   validates :description, length: { maximum: 1024 }
-  validates :site_url, length: { maximum: 2083 }
-  validates :feed_url, presence: true, length: { maximum: 2083 }, uniqueness: true
-  validates :image_url, length: { maximum: 2083 }
+  validates :feed_url, presence: true, uniqueness: true
+  validates_url_http_format_of :feed_url, :site_url, :image_url
 
   strip_before_save :title, :description
   empty_strings_are_aligned_to_nil :description, :site_url, :image_url

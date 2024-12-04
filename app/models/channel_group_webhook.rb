@@ -1,12 +1,14 @@
 class ChannelGroupWebhook < ApplicationRecord
   include SlackBlockBuilder
+  include UrlHttpValidator
 
   belongs_to :user
   belongs_to :channel_group
 
   validates :user_id, presence: true
   validates :channel_group_id, presence: true
-  validates :url, presence: true, length: { maximum: 2083 }, format: { with: URI.regexp }
+  validates :url, presence: true
+  validates_url_http_format_of :url
 
   class << self
     def notify

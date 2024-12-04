@@ -2,6 +2,7 @@ class Item < ApplicationRecord
   include Stripable
   include EmptyStringsAreAlignedToNil
   include ValidationErrorsNotifiable
+  include UrlHttpValidator
 
   belongs_to :channel
   has_many :pawprints, dependent: :destroy
@@ -10,9 +11,9 @@ class Item < ApplicationRecord
   validates :channel_id, presence: true
   validates :guid, presence: true, length: { maximum: 2083 }, uniqueness: { scope: :channel_id }
   validates :title, presence: true, length: { maximum: 256 }
-  validates :url, presence: true, length: { maximum: 2083 }
-  validates :image_url, length: { maximum: 2083 }
+  validates :url, presence: true
   validates :published_at, presence: true
+  validates_url_http_format_of :url, :image_url
 
   strip_before_save :title
   empty_strings_are_aligned_to_nil :image_url
