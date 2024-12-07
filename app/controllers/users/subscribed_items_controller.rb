@@ -5,6 +5,7 @@ class Users::SubscribedItemsController < ApplicationController
 
     respond_to do |format|
       format.atom
+      format.json
     end
   end
 end
