@@ -61,6 +61,9 @@ Rails.application.routes.draw do
   get    "/@:user_name",                       to: "users#show",
                                                as: "user",
                                                constraints: { user_name: /[^\/]+/ }
+  get    "/@:user_name/pawprints",             to: "users/pawprints#index",
+                                               as: "user_pawprints",
+                                               constraints: { user_name: /[^\/]+/ }
   get    "/my",                                to: "my#index"
   get    "/my/guides",                         to: "my/guides#show",
                                                as: "guides"
