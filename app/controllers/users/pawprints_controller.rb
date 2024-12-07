@@ -5,6 +5,7 @@ class Users::PawprintsController < ApplicationController
 
     respond_to do |format|
       format.atom
+      format.json
     end
   end
 end
