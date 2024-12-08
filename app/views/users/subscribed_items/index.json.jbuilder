@@ -9,5 +9,6 @@ json.subscribed_items @subscribed_items do |item|
     json.title item.channel.title
     json.feed_url item.channel.feed_url
     json.site_url item.channel.site_url
+    json.image_url item.channel.image_url
   end
 end
