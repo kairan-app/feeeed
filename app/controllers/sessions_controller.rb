@@ -9,15 +9,15 @@ class SessionsController < ApplicationController
       params[:credential],
       aud: Rails.application.credentials.google_auth_app.client_id
     )
+    user = User.find_or_initialize_by(google_guid: payload["sub"])
     email = payload["email"]
     local_part = email.split("@").first
 
-    unless ENV["ALLOWED_USERS"].split(",").include?(local_part)
+    if user.new_record? && !ENV["ALLOWED_USERS"].split(",").include?(local_part)
       DiscoPosterJob.perform_later(content: "#{email} tried to log in")
       return redirect_to info_path
     end
 
-    user = User.find_or_initialize_by(google_guid: payload["sub"])
     user.email ||= email
     user.name ||= local_part
 
