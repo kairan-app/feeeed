@@ -11,7 +11,8 @@ module UrlHttpValidator
       columns.each do |column|
         validates column,
           format: { with: URI.regexp(%w[http https]), message: "is not a valid URL" },
-          length: { maximum: 2083 }
+          length: { maximum: 2083 },
+          allow_nil: true
       end
     end
   end
