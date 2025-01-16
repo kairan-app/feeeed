@@ -1,16 +1,6 @@
 <% if logged_in? %>
   <%= turbo_frame_tag(id_of_pawprint_form_for(item)) do %>
     <% pawprint = item.pawprints.find_by(user: current_user) %>
-
-    <%= form_tag(item_pawprint_path(item), method: :post) do %>
-      <%= text_area_tag(:memo, pawprint&.memo, placeholder: "Memo", style: "width: calc(100% - 58px); padding: 4px 8px;") %>
-      <%= submit_tag("Paw!", class: "p-1 border border-slate-500 rounded-sm bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
-    <% end %>
-
-    <% if pawprint %>
-      <p class="button-to-unpaw">
-        <%= link_to("Unpaw!", item_pawprint_path(item), data: { turbo_method: :delete }) %>
-      </p>
-    <% end %>
+    <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: pawprint }) %>
   <% end %>
 <% end %>
