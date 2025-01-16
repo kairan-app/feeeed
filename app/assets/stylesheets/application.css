@@ -96,7 +96,7 @@ a:hover {
   z-index: -1;
 }
 
-#channel-registration-form:checked ~ .channel-registration-form-wrap {
+#channel-registration-form:checked~.channel-registration-form-wrap {
   transform: translateY(0%);
   opacity: 1;
   transition: 0.2s;
@@ -111,7 +111,7 @@ a:hover {
   display: none;
 }
 
-#channel-registration-form:checked ~ .channel-registration-form-wrap-bg {
+#channel-registration-form:checked~.channel-registration-form-wrap-bg {
   position: fixed;
   top: 0;
   left: -20px;
@@ -167,16 +167,12 @@ a:hover {
   transform-origin: 0%;
 }
 
-#channel-registration-form:checked
-  ~ .channel-registration-form-button
-  .channel-registration-form-button-mark:nth-of-type(1) {
+#channel-registration-form:checked~.channel-registration-form-button .channel-registration-form-button-mark:nth-of-type(1) {
   transform: translate(3px, -3px) rotate(45deg);
   transform-origin: 0%;
 }
 
-#channel-registration-form:checked
-  ~ .channel-registration-form-button
-  .channel-registration-form-button-mark:nth-of-type(2) {
+#channel-registration-form:checked~.channel-registration-form-button .channel-registration-form-button-mark:nth-of-type(2) {
   transform: translate(3px, 2px) rotate(-45deg);
   transform-origin: 0%;
 }
@@ -296,7 +292,7 @@ header nav ul li a:hover {
   }
 }
 
-#hamburger:checked ~ .hamburger-menu-list {
+#hamburger:checked~.hamburger-menu-list {
   transform: translateY(0%);
   transition: 0s;
   z-index: 2;
@@ -321,7 +317,7 @@ header nav ul li a:hover {
   display: none;
 }
 
-#hamburger:checked ~ .hamburger-menu-bg {
+#hamburger:checked~.hamburger-menu-bg {
   position: fixed;
   top: 0;
   left: -20px;
@@ -371,22 +367,16 @@ header nav ul li a:hover {
   transition: 0.3s;
 }
 
-#hamburger:checked
-  ~ .hamburger-menu-button
-  .hamburger-menu-button-mark:nth-of-type(1) {
+#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(1) {
   transform: translate(3px, -1px) rotate(45deg);
   transform-origin: 0%;
 }
 
-#hamburger:checked
-  ~ .hamburger-menu-button
-  .hamburger-menu-button-mark:nth-of-type(2) {
+#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(2) {
   opacity: 0;
 }
 
-#hamburger:checked
-  ~ .hamburger-menu-button
-  .hamburger-menu-button-mark:nth-of-type(3) {
+#hamburger:checked~.hamburger-menu-button .hamburger-menu-button-mark:nth-of-type(3) {
   transform: translate(3px, 1px) rotate(-45deg);
   transform-origin: 0%;
 }
@@ -987,6 +977,7 @@ a.remove-from-my-own:hover {
 }
 
 @media screen and (max-width: 768px) {
+
   .setting-mode,
   .setting-url-or-email {
     width: 100%;
@@ -1180,7 +1171,7 @@ a.remove-from-my-own:hover {
 .unreads-list {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   border-top: 0.5px solid #dddddd;
 }
 
@@ -1618,6 +1609,7 @@ a.remove-from-my-own:hover {
 }
 
 @media screen and (max-width: 768px) {
+
   .about-contents,
   .info-contents {
     width: 100%;
