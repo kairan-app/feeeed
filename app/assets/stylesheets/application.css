@@ -1171,7 +1171,7 @@ a.remove-from-my-own:hover {
 .unreads-list {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: top;
   border-top: 0.5px solid #dddddd;
 }
 
