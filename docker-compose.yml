@@ -25,11 +25,5 @@ services:
     depends_on:
       - database
     command: bin/jobs
-  tailwindcss:
-    build: .
-    volumes:
-      - .:/app
-      - bundle:/usr/local/bundle
-    command: bin/rails tailwindcss:watch[always]
 volumes:
   bundle:
