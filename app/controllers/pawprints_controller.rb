@@ -13,6 +13,7 @@ class PawprintsController < ApplicationController
   end
 
   def destroy
+    @prev_memo = params[:memo]
     current_user.unpaw(@item)
   end
 
