@@ -57,7 +57,7 @@
                 <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
               </div>
               <div class="channel-and-items-component-item-memo">
-                <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: nil }) %>
+                <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
               </div>
             </div>
           </div>
