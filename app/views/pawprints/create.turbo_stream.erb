@@ -1,7 +1,3 @@
 <%= turbo_stream.replace(id_of_pawprint_form_for(@item)) do %>
-  <% if @form_mode == "pawprint_form" %>
-    <%= render(partial: "items/pawprint_form", locals: { item: @item, pawprint: @pawprint }) %>
-  <% else %>
-    <%= render(partial: "items/pawprint", locals: { item: @item }) %>
-  <% end %>
+  <%= render(partial: "items/pawprint", locals: { item: @item, pawprint: @pawprint }) %>
 <% end %>
