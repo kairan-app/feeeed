@@ -1,6 +1,4 @@
 <% if logged_in? %>
-  <%= turbo_frame_tag(id_of_pawprint_form_for(item)) do %>
-    <% pawprint = item.pawprints.find_by(user: current_user) %>
-    <%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: pawprint }) %>
-  <% end %>
+<% pawprint = item.pawprints.find_by(user: current_user) %>
+<%= render(partial: "items/pawprint_form", locals: { item: item, pawprint: pawprint }) %>
 <% end %>
