@@ -18,9 +18,9 @@
 
     <ul class="my-4 channel-links">
       <% if @channel.site_url %>
-      <li><span class="material-symbols-outlined">language</span> <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
+      <li class="break-all"><span class="material-symbols-outlined">language</span> <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
       <% end %>
-      <li><span class="material-symbols-outlined">rss_feed</span> <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
+      <li class="break-all"><span class="material-symbols-outlined">rss_feed</span> <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
     </ul>
 
     <div class="channel-control-buttons">

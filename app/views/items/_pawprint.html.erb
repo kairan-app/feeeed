@@ -4,12 +4,12 @@
   <%= turbo_frame_tag(id_of_pawprint_form_for(item)) do %>
     <% if pawprint %>
       <%= form_tag(item_pawprint_path(item), method: :delete) do %>
-        <%= text_area_tag(:memo, memo, placeholder: "Memo", style: "width: calc(100% - 41px); padding: 4px 8px;") %>
+        <%= text_area_tag(:memo, memo, placeholder: "Memo", class: "break-all", style: "width: calc(100% - 41px); padding: 4px 8px;") %>
         <%= image_submit_tag("paw-on.png", width: "36px", height: "36px", style: "vertical-align: top;") %>
       <% end %>
     <% else %>
       <%= form_tag(item_pawprint_path(item), method: :post) do %>
-        <%= text_area_tag(:memo, memo, placeholder: "Memo", style: "width: calc(100% - 41px); padding: 4px 8px;") %>
+        <%= text_area_tag(:memo, memo, placeholder: "Memo", class: "break-all", style: "width: calc(100% - 41px); padding: 4px 8px;") %>
         <%= image_submit_tag("paw-off.png", width: "36px", height: "36px", style: "vertical-align: top;") %>
       <% end %>
     <% end %>
