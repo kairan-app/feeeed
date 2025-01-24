@@ -39,18 +39,37 @@ class Channel < ApplicationRecord
     end
 
     def add(url)
-      feed_url = Feedbag.find(url).first
+      feed = nil
+      feed_url = nil
 
+      begin
+        feed = Feedjira.parse(Httpc.get(url))
+        feed_url = url
+      rescue Feedjira::NoParserAvailable
+        feed_url = Feedbag.find(url).first
+        feed = Feedjira.parse(Httpc.get(feed_url)) if feed_url
+      end
+
+      return nil if feed.nil?
       return nil if feed_url.nil?
-
       save_from(feed_url)
     end
 
     def preview(url)
-      feed_url = Feedbag.find(url).first
+      feed = nil
+      feed_url = nil
+
+      begin
+        feed = Feedjira.parse(Httpc.get(url))
+        feed_url = url
+      rescue Feedjira::NoParserAvailable
+        feed_url = Feedbag.find(url).first
+        feed = Feedjira.parse(Httpc.get(feed_url)) if feed_url
+      end
+
+      return nil if feed.nil?
       return nil if feed_url.nil?
 
-      feed = Feedjira.parse(Httpc.get(feed_url))
       feed.url = feed.url.strip if feed.url
 
       parameters =
