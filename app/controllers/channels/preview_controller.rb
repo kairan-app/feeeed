@@ -3,7 +3,12 @@ class Channels::PreviewController < ApplicationController
 
   def show
     url = params[:url]
-    @channel = Channel.preview(url)
+    begin
+      @channel = Channel.preview(url)
+    rescue Feedjira::NoParserAvailable
+      return redirect_to(root_path, alert: "Can't find feed from '#{url}'")
+    end
+
     return redirect_to(root_path, alert: "Can't find feed from '#{url}'") if @channel.nil?
 
     @similar_channels = Channel.similar_to(@channel)
