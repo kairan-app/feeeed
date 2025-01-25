@@ -40,9 +40,17 @@ jobs:
         run: |
           bin/rails db:test:prepare
 
+      - name: Run Rubocop
+        run: |
+          bundle exec rubocop
+  
+      - name: Run Brakeman
+        run: |
+          bundle exec brakeman -q -w2 
+  
       - name: Run tests
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/feeeed_test
         run: |
-          bin/rails test 
+          bin/rails test
