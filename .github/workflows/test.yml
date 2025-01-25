@@ -60,7 +60,7 @@ jobs:
 
       - name: Run Rubocop
         run: |
-          bin/rubocop
+          bin/rubocop -f github
 
   scan_ruby:
     runs-on: ubuntu-latest
