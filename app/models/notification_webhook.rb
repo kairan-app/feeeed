@@ -11,7 +11,7 @@ class NotificationWebhook < ApplicationRecord
 
   enum :mode, {
     my_subscribed_items: 0,
-    my_pawprints: 1,
+    my_pawprints: 1
   }
 
   class << self
@@ -68,7 +68,7 @@ class NotificationWebhook < ApplicationRecord
         type: "header",
         text: {
           type: "plain_text",
-          text: "@#{user.name}'s recent pawprints 🐾",
+          text: "@#{user.name}'s recent pawprints 🐾"
         }
       }) if index == 0
 

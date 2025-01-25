@@ -31,7 +31,9 @@ gem "turbo-rails"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development, :test do
+  gem "brakeman", require: false
   gem "debug", platforms: %i[ mri windows ]
+  gem "rubocop-rails-omakase", require: false
 end
 
 group :development do

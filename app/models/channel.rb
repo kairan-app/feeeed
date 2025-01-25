@@ -114,7 +114,7 @@ class Channel < ApplicationRecord
         title: feed.title,
         description: feed.description,
         site_url: feed.url,
-        image_url: og.image,
+        image_url: og.image
       }
     end
 
@@ -124,7 +124,7 @@ class Channel < ApplicationRecord
         title: feed.title,
         description: feed.description,
         site_url: feed.links.first,
-        image_url: og.image,
+        image_url: og.image
       }
     end
 
@@ -133,7 +133,7 @@ class Channel < ApplicationRecord
         title: feed.title,
         description: feed.description,
         site_url: feed.url,
-        image_url: feed.itunes_image,
+        image_url: feed.itunes_image
       }
     end
 
@@ -143,13 +143,13 @@ class Channel < ApplicationRecord
         title: feed.title,
         description: og.description,
         site_url: feed.url,
-        image_url: og.image,
+        image_url: og.image
       }
     end
 
     def similar_to(channel)
       Channel.ransack({
-        g: { "0" => { m: "or", title_cont: channel.title, site_url_cont: channel.site_url }}
+        g: { "0" => { m: "or", title_cont: channel.title, site_url_cont: channel.site_url } }
       }).result
     end
   end
@@ -204,10 +204,10 @@ class Channel < ApplicationRecord
         url: encoded_url,
         image_url: image_url,
         published_at: entry.published,
-        data: entry.to_h,
+        data: entry.to_h
       }
       item = self.items.find_or_initialize_by(guid: guid)
-      p ["Saving item", entry.title, encoded_url, entry.published] if item.new_record?
+      p [ "Saving item", entry.title, encoded_url, entry.published ] if item.new_record?
 
       item.update(parameters)
     end
@@ -235,7 +235,7 @@ class Channel < ApplicationRecord
   def to_discord_more_embed
     {
       title: "Check out more recent items in #{title}",
-      url: channel_url(self),
+      url: channel_url(self)
     }
   end
 

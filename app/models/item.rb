@@ -47,11 +47,11 @@ class Item < ApplicationRecord
 
   def to_discord_embed
     {
-      author: { name: [channel.title, URI.parse(self.url).host].join(" | "), url: channel.site_url },
+      author: { name: [ channel.title, URI.parse(self.url).host ].join(" | "), url: channel.site_url },
       title: self.title,
       url: self.url,
       thumbnail: { url: self.image_url },
-      timestamp: self.published_at.iso8601,
+      timestamp: self.published_at.iso8601
     }
   end
 
@@ -65,7 +65,7 @@ class Item < ApplicationRecord
       accessory: {
         type: "image",
         image_url: image_url,
-        alt_text: title,
+        alt_text: title
       }
     }
   end

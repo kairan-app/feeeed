@@ -11,12 +11,12 @@ class Pawprint < ApplicationRecord
   def to_discord_embed
     channel = item.channel
     {
-      author: { name: [channel.title, URI.parse(item.url).host].join(" | "), url: channel.site_url },
+      author: { name: [ channel.title, URI.parse(item.url).host ].join(" | "), url: channel.site_url },
       title: item.title,
       description: memo.present? ? "💬 #{memo}" : nil,
       url: item.url,
       thumbnail: { url: item.image_url },
-      timestamp: self.created_at.iso8601,
+      timestamp: self.created_at.iso8601
     }
   end
 
@@ -33,7 +33,7 @@ class Pawprint < ApplicationRecord
           channel.image_url.present? ? { "type": "image", "image_url": channel.image_url, "alt_text": channel.title } : nil,
           {
             "type": "mrkdwn",
-            "text": channel.site_url ? "<#{channel.site_url}|#{channel.title}>" : channel.title,
+            "text": channel.site_url ? "<#{channel.site_url}|#{channel.title}>" : channel.title
           }
         ].compact
       },
@@ -44,9 +44,9 @@ class Pawprint < ApplicationRecord
           text: [
             "*<#{item.url}|#{item.title}>*",
             memo.present? ? "💬 #{memo}" : nil,
-            self.created_at.strftime("%Y-%m-%d %H:%M"),
-          ].compact.join("\n"),
-        },
+            self.created_at.strftime("%Y-%m-%d %H:%M")
+          ].compact.join("\n")
+        }
       }
     ]
 
@@ -54,7 +54,7 @@ class Pawprint < ApplicationRecord
       block.last[:accessory] = {
         type: "image",
         image_url: item.image_url,
-        alt_text: item.title,
+        alt_text: item.title
       }
     end
 

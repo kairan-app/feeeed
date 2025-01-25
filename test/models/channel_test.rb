@@ -5,4 +5,4 @@ class ChannelTest < ActiveSupport::TestCase
     channel = Channel.new
     assert_not(channel.save, "保存に失敗する")
   end
-end 
+end

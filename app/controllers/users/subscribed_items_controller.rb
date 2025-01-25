@@ -1,7 +1,7 @@
 class Users::SubscribedItemsController < ApplicationController
   def index
     @user = User.find_by(name: params[:user_name])
-    @subscribed_items = Item.find_by_sql([<<~SQL, @user.subscribed_channels.ids])
+    @subscribed_items = Item.find_by_sql([ <<~SQL, @user.subscribed_channels.ids ])
       SELECT * FROM (
         SELECT items.*, ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY items.id DESC) AS row_number
         FROM items

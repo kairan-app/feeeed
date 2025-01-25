@@ -11,7 +11,7 @@ class CreateItems < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :items, [:channel_id, :guid], unique: true
+    add_index :items, [ :channel_id, :guid ], unique: true
     add_index :items, :published_at
   end
 end

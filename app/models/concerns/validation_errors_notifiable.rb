@@ -10,7 +10,7 @@ module ValidationErrorsNotifiable
 
     content = [
       "#{self.class} save failed: #{errors.full_messages.join(", ")}",
-      "```#{attributes.to_yaml}```",
+      "```#{attributes.to_yaml}```"
     ].join("\n")
     DiscoPosterJob.perform_later(content: content)
   end

@@ -70,7 +70,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = {
-    api_key: ENV["POSTMARK_API_KEY"],
+    api_key: ENV["POSTMARK_API_KEY"]
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
