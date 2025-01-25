@@ -22,7 +22,7 @@ class User < ApplicationRecord
   validates_url_http_format_of :icon_url
 
   def username_changed?
-    email.split('@').first != name
+    email.split("@").first != name
   end
 
   def add_channel(channel)

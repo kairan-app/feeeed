@@ -3,4 +3,3 @@ class NotificationEmailNotifierJob < ApplicationJob
     NotificationEmail.find(ne_id).notify
   end
 end
-

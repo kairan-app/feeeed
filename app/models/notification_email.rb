@@ -13,7 +13,7 @@ class NotificationEmail < ApplicationRecord
 
   enum :mode, {
     my_subscribed_items: 0,
-    my_pawprints: 1,
+    my_pawprints: 1
   }
 
   class << self
