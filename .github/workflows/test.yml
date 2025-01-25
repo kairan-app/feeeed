@@ -40,17 +40,39 @@ jobs:
         run: |
           bin/rails db:test:prepare
 
-      - name: Run Rubocop
-        run: |
-          bundle exec rubocop
-  
-      - name: Run Brakeman
-        run: |
-          bundle exec brakeman -q -w2 
-  
       - name: Run tests
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/feeeed_test
         run: |
           bin/rails test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.1'
+          bundler-cache: true
+
+      - name: Run Rubocop
+        run: |
+          bin/rubocop
+
+  scan_ruby:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.1'
+          bundler-cache: true
+
+      - name: Run Brakeman
+        run: |
+          bin/brakeman -q -w2
