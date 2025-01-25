@@ -1,0 +1,161 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "881e0806bfaec98d476f00d976beb861ed46a1660e9310a8c98eee1d4d01b616",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/channels/show.html.erb",
+      "line": 21,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(Channel.find(params[:channel_id]).site_url, Channel.find(params[:channel_id]).site_url, :target => \"_blank\")",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ChannelsController",
+          "method": "show",
+          "line": 18,
+          "file": "app/controllers/channels_controller.rb",
+          "rendered": {
+            "name": "channels/show",
+            "file": "app/views/channels/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "channels/show"
+      },
+      "user_input": "Channel.find(params[:channel_id]).site_url",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "8ccf91762dfb636896865a4c2eb94642e8a2ffe6efa68f9e1b8026d5653275ad",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/items/_cards.html.erb",
+      "line": 5,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(image_tag((Unresolved Model).new.image_url_or_placeholder, :class => \"w-full h-full object-cover\"), (Unresolved Model).new.url, :target => \"_blank\")",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ChannelGroupsController",
+          "method": "show",
+          "line": 17,
+          "file": "app/controllers/channel_groups_controller.rb",
+          "rendered": {
+            "name": "channel_groups/show",
+            "file": "app/views/channel_groups/show.html.erb"
+          }
+        },
+        {
+          "type": "template",
+          "name": "channel_groups/show",
+          "line": 27,
+          "file": "app/views/channel_groups/show.html.erb",
+          "rendered": {
+            "name": "items/_cards",
+            "file": "app/views/items/_cards.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "items/_cards"
+      },
+      "user_input": "(Unresolved Model).new.url",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "c64372a456e9b96b03036a2bed2058bbb11f040c96a5d34d67235ffd5487bf84",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/items/_cards.html.erb",
+      "line": 12,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to((Unresolved Model).new.title, (Unresolved Model).new.url, :target => \"_blank\")",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ChannelGroupsController",
+          "method": "show",
+          "line": 17,
+          "file": "app/controllers/channel_groups_controller.rb",
+          "rendered": {
+            "name": "channel_groups/show",
+            "file": "app/views/channel_groups/show.html.erb"
+          }
+        },
+        {
+          "type": "template",
+          "name": "channel_groups/show",
+          "line": 27,
+          "file": "app/views/channel_groups/show.html.erb",
+          "rendered": {
+            "name": "items/_cards",
+            "file": "app/views/items/_cards.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "items/_cards"
+      },
+      "user_input": "(Unresolved Model).new.url",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "e96a6444dfb63db8b16d7a43dc7befb6c7e77bd0779f7232ae346c3e36b4d56c",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/channels/show.html.erb",
+      "line": 23,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(Channel.find(params[:channel_id]).feed_url, Channel.find(params[:channel_id]).feed_url, :target => \"_blank\")",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ChannelsController",
+          "method": "show",
+          "line": 18,
+          "file": "app/controllers/channels_controller.rb",
+          "rendered": {
+            "name": "channels/show",
+            "file": "app/views/channels/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "channels/show"
+      },
+      "user_input": "Channel.find(params[:channel_id]).feed_url",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    }
+  ],
+  "brakeman_version": "7.0.0"
+}
