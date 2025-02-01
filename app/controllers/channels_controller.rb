@@ -13,6 +13,7 @@ class ChannelsController < ApplicationController
     page = (params[:page].presence || 1).to_i
     @channel = Channel.find(params[:channel_id])
     @items = @channel.items.preload(:pawprints).order(published_at: :desc, title: :desc).page(page).per(48)
+    @noindex = true
 
     @title = @channel.title
   end
