@@ -44,6 +44,9 @@
               <p>
                 <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
               </p>
+              <p class="text-sm text-gray-500">
+                <%= item.summary %>
+              </p>
             </div>
             <% if item.audio_enclosure_url %>
               <div class="audio-player">
