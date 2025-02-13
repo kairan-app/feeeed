@@ -24,7 +24,7 @@ class Item < ApplicationRecord
   end
 
   def summary
-    text = self.data&.dig("summary")
+    text = self.data&.dig("itunes_subtitle") || self.data&.dig("summary")
     return nil if text.nil?
 
     sanitized_text = ActionView::Base.full_sanitizer.sanitize(text)
