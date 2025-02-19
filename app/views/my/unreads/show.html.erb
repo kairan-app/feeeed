@@ -44,9 +44,27 @@
               <p>
                 <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
               </p>
-              <p class="text-sm text-gray-500">
-                <%= item.summary(length: @item_summary_length) %>
+              <% if @item_summary_line_clamp == 1 %>
+              <p class="text-sm text-gray-500 line-clamp-1">
+                <%= item.summary(length: 1000) %>
               </p>
+              <% elsif @item_summary_line_clamp == 2 %>
+              <p class="text-sm text-gray-500 line-clamp-2">
+                <%= item.summary(length: 1000) %>
+              </p>
+              <% elsif @item_summary_line_clamp == 3 %>
+              <p class="text-sm text-gray-500 line-clamp-3">
+                <%= item.summary(length: 1000) %>
+              </p>
+              <% elsif @item_summary_line_clamp == 4 %>
+              <p class="text-sm text-gray-500 line-clamp-4">
+                <%= item.summary(length: 1000) %>
+              </p>
+              <% else %>
+              <p class="text-sm text-gray-500 line-clamp-3">
+                <%= item.summary(length: 1000) %>
+              </p>
+              <% end %>
             </div>
             <% if item.audio_enclosure_url %>
               <div class="audio-player">
