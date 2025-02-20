@@ -23,7 +23,7 @@ class Item < ApplicationRecord
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
   end
 
-  def summary(length: 100)
+  def summary(length: 1000)
     text = self.data&.dig("itunes_subtitle") || self.data&.dig("summary")
     return nil if text.nil?
 
