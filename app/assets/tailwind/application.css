@@ -10,6 +10,7 @@
 
 */
 
+/*
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/container-queries';
@@ -19,6 +20,7 @@
     'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans',
     sans-serif;
 }
+*/
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
