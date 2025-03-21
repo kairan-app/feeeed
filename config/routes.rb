@@ -83,9 +83,9 @@ Rails.application.routes.draw do
   post   "/channel_group_webhooks",            to: "channel_group_webhooks#create"
   delete "/channel_group_webhooks/:id",        to: "channel_group_webhooks#destroy",
                                                as: "channel_group_webhook"
-
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
+  get    "/my/owned_channels/pawprints",       to: "my/owned_channels/pawprints#index"
 
   root "welcome#index"
 end
