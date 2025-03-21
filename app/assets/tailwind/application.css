@@ -10,8 +10,9 @@
 
 */
 
-/*
 @plugin '@tailwindcss/forms';
+
+/*
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/container-queries';
 
@@ -31,6 +32,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
