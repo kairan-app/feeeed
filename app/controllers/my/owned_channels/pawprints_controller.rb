@@ -8,6 +8,6 @@ class My::OwnedChannels::PawprintsController < MyController
       .order(id: :desc)
       .page(params[:page])
 
-    @title = "Owned Channels Pawprints"
+    @title = "Pawprints to Your Items"
   end
 end
