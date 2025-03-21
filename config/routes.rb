@@ -84,5 +84,8 @@ Rails.application.routes.draw do
   delete "/channel_group_webhooks/:id",        to: "channel_group_webhooks#destroy",
                                                as: "channel_group_webhook"
 
+  get    "/terms",                             to: "legal#terms", as: :terms
+  get    "/privacy",                           to: "legal#privacy", as: :privacy
+
   root "welcome#index"
 end
