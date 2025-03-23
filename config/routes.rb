@@ -73,6 +73,7 @@ Rails.application.routes.draw do
   get    "/my/unreads",                        to: "my/unreads#show",
                                                as: "unreads"
   get    "/my/pawprints",                      to: "my/pawprints#index"
+  get    "/my/owned_channels/pawprints",       to: "my/owned_channels/pawprints#index"
   get    "/my/profile",                        to: "my/profile#show"
   put    "/my/profile",                        to: "my/profile#update"
   get    "/my/notification_settings",          to: "my/notification_settings#index"
@@ -83,7 +84,6 @@ Rails.application.routes.draw do
   post   "/channel_group_webhooks",            to: "channel_group_webhooks#create"
   delete "/channel_group_webhooks/:id",        to: "channel_group_webhooks#destroy",
                                                as: "channel_group_webhook"
-
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
 

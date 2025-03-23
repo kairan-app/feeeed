@@ -39,6 +39,12 @@
       <% end %>
     </li>
     <li>
+      <%= link_to(my_owned_channels_pawprints_path) do %>
+        <span class="material-symbols-outlined">pets</span>
+        <span>Pawprints to Your Items</span>
+      <% end %>
+    </li>
+    <li>
       <%= link_to(user_path(user_name: current_user.name)) do %>
         <span class="material-symbols-outlined">account_circle</span>
         <span>My Page</span>
@@ -82,6 +88,12 @@
       <%= link_to(my_path) do %>
         <span class="material-symbols-outlined material-symbols-outlined-sp-tab">settings</span>
         <span>Settings</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to(my_owned_channels_pawprints_path) do %>
+        <span class="material-symbols-outlined material-symbols-outlined-sp-tab">pets</span>
+        <span>Pawprints to Your Items</span>
       <% end %>
     </li>
     <% end %>
