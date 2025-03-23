@@ -58,7 +58,7 @@
 <section>
   <%= form_tag(channels_path, style: "margin: 20px 0;") do %>
     <%= text_field_tag(:url, @channel.feed_url, style: "width: 80%;") %>
-    <%= submit_tag("Save", class: "p-2 border border-slate-500 rounded-sm bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
+    <%= submit_tag("Save", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
 
   <% end %>
   <div class="preview-notice">

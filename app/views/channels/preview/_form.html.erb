@@ -7,7 +7,7 @@
       <p>Channel Registration Form</p>
       <%= form_tag(channel_preview_path, method: :get) do %>
         <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
-        <%= submit_tag("Add", class: "p-2 border border-slate-500 rounded-sm bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
+        <%= submit_tag("Add", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
       <% end%>
     </div>
   </div>

@@ -70,7 +70,7 @@
       <% end %>
       <% if items.size > item_count_threshold %>
         <p id= "item-skipper-<%= channel.id %>" class="channel-and-items-component-item-skipper text-center">
-          <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded hover:text-white hover:bg-[#aaaaaa]") %>
+          <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded-sm hover:text-white hover:bg-[#aaaaaa]") %>
         </p>
       <% end %>
     </ul>

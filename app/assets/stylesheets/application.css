@@ -52,12 +52,10 @@ ul {
 }
 
 a {
-  color: #111111;
   text-decoration: none;
 }
 
 a:hover {
-  color: #111111;
   text-decoration: underline;
 }
 
