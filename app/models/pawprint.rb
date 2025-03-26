@@ -8,6 +8,14 @@ class Pawprint < ApplicationRecord
 
   after_create_commit { PawprintCreationNotifierJob.perform_later(self.id) }
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "id", "item_id", "memo", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["item", "user"]
+  end
+
   def to_discord_embed
     channel = item.channel
     {

@@ -77,4 +77,12 @@ class Item < ApplicationRecord
       }
     }
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[title url audio_enclosure_url data]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[]
+  end
 end
