@@ -21,7 +21,7 @@ class Item < ApplicationRecord
 
   class << self
     def ransackable_attributes(auth_object = nil)
-      %w[title url audio_enclosure_url data]
+      %w[title url data]
     end
 
     def ransackable_associations(auth_object = nil)
