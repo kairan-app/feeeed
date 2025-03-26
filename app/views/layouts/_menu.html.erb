@@ -1,5 +1,5 @@
 <nav>
-  <%= render(partial: "channels/search_form", locals: { q: @q }) %>
+  <%= render(partial: "channels/search_form", locals: { channel_q: @channel_q }) %>
 
   <% if logged_in? %>
   <ul class="pc-menu">

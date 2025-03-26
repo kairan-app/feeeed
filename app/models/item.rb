@@ -19,6 +19,16 @@ class Item < ApplicationRecord
   empty_strings_are_aligned_to_nil :image_url
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
+  class << self
+    def ransackable_attributes(auth_object = nil)
+      %w[title]
+    end
+
+    def ransackable_associations(auth_object = nil)
+      %w[channel]
+    end
+  end
+
   def image_url_or_placeholder
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
   end

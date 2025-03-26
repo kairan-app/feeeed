@@ -1,5 +1,15 @@
 <section>
   <h2 class="text-2xl font-bold mt-6 mb-4">My Pawprints</h2>
+
+  <div class="mb-4">
+    <%= search_form_for @pawprint_q, url: my_pawprints_path, as: :pawprint_q, class: "flex" do |f| %>
+      <%= f.search_field :memo_or_item_title_or_item_channel_title_cont, placeholder: "Search by memo, item title, or channel title...", class: "flex-grow p-2 border border-[#cccccc] rounded-l" %>
+      <%= button_tag type: "submit", class: "-ml-px px-2 py-1 border border-[#cccccc] cursor-pointer leading-none" do %>
+        <span class="material-symbols-outlined material-symbols-outlined-search">search</span>
+      <% end %>
+    <% end %>
+  </div>
+
   <%= paginate(@pawprints) %>
   <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
   <%= paginate(@pawprints) %>
