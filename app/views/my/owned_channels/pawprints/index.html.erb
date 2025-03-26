@@ -1,5 +1,5 @@
 <section>
-  <h2 class="text-2xl font-bold mt-6 mb-4">Pawprints to Your Items</h2>
+  <%= render(partial: "shared/pawprints_header", locals: { title: "Pawprints to Me" }) %>
   <%= paginate(@pawprints) %>
   <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
   <%= paginate(@pawprints) %>
