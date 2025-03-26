@@ -2,8 +2,8 @@
   <h2 class="text-2xl font-bold mt-6 mb-4">My Pawprints</h2>
 
   <div class="mb-4">
-    <%= search_form_for @q, url: my_pawprints_path, class: "flex" do |f| %>
-      <%= f.search_field :item_title_or_memo_cont, placeholder: "タイトルやメモで検索...", class: "flex-grow p-2 border rounded-l" %>
+    <%= search_form_for @pawprint_q, url: my_pawprints_path, as: :pawprint_q, class: "flex" do |f| %>
+      <%= f.search_field :item_title_or_memo_or_item_channel_title_cont, placeholder: "タイトルやメモ、チャンネル名で検索...", class: "flex-grow p-2 border rounded-l" %>
       <%= f.submit "検索", class: "px-4 py-2 bg-blue-500 text-white rounded-r hover:bg-blue-600" %>
     <% end %>
   </div>
