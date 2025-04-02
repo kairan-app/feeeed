@@ -2,7 +2,7 @@ class Channels::PreviewController < ApplicationController
   before_action :login_required
 
   def show
-    url = params[:url]
+    url = params[:url].to_s.strip
     begin
       @channel = Channel.preview(url)
     rescue Feedjira::NoParserAvailable
