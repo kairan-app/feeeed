@@ -198,9 +198,6 @@ class Channel < ApplicationRecord
           OpenGraph.new(encoded_url).image rescue nil
         end
 
-      # og:imageに相対URLが指定されている場合は、site_urlを基準に絶対URLに変換する
-      image_url = URI.join(site_url, image_url).to_s if image_url&.start_with?("/")
-
       parameters = {
         guid: guid,
         title: entry.title,

@@ -15,5 +15,8 @@ class OpenGraph
     metas = @html.css("meta")
     @description = metas.find { |m| m.attributes.find { |a| a[1].value == "og:description" } }&.attributes&.dig("content")&.value
     @image = metas.find { |m| m.attributes.find { |a| a[1].value == "og:image" } }&.attributes&.dig("content")&.value
+
+    # og:imageに相対URLが指定されている場合は、@urlを基準に絶対URLに変換する
+    @image = URI.join(@url, @image).to_s if @image&.start_with?("/")
   end
 end
