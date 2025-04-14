@@ -147,6 +147,10 @@ class Channel < ApplicationRecord
     end
   end
 
+  def update_info
+    Channel.save_from(feed_url)
+  end
+
   def fetch_and_save_items(mode = :only_non_existing)
     feed = Feedjira.parse(Httpc.get(feed_url))
 
