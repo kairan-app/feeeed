@@ -72,17 +72,7 @@ class Channel < ApplicationRecord
 
       feed.url = feed.url.strip if feed.url
 
-      parameters =
-        case feed
-        when Feedjira::Parser::RSS
-          build_from_rss(feed)
-        when Feedjira::Parser::Atom
-          build_from_atom(feed)
-        when Feedjira::Parser::ITunesRSS
-          build_from_itunes_rss(feed)
-        when Feedjira::Parser::AtomYoutube
-          build_from_atom_youtube(feed)
-        end
+      parameters = build_from(feed)
 
       Channel.new(parameters.merge(feed_url: feed_url))
     end
@@ -91,21 +81,24 @@ class Channel < ApplicationRecord
       feed = Feedjira.parse(Httpc.get(feed_url))
       feed.url = feed.url.strip if feed.url
 
-      parameters =
-        case feed
-        when Feedjira::Parser::RSS
-          build_from_rss(feed)
-        when Feedjira::Parser::Atom
-          build_from_atom(feed)
-        when Feedjira::Parser::ITunesRSS
-          build_from_itunes_rss(feed)
-        when Feedjira::Parser::AtomYoutube
-          build_from_atom_youtube(feed)
-        end
+      parameters = build_from(feed)
 
       channel = Channel.find_or_initialize_by(feed_url: feed_url)
       channel.update(parameters)
       channel
+    end
+
+    def build_from(feed)
+      case feed
+      when Feedjira::Parser::RSS
+        build_from_rss(feed)
+      when Feedjira::Parser::Atom
+        build_from_atom(feed)
+      when Feedjira::Parser::ITunesRSS
+        build_from_itunes_rss(feed)
+      when Feedjira::Parser::AtomYoutube
+        build_from_atom_youtube(feed)
+      end
     end
 
     def build_from_rss(feed)
