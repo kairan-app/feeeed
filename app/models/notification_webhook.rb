@@ -38,7 +38,11 @@ class NotificationWebhook < ApplicationRecord
   def notify_pawprints_to_discord(since: nil)
     at = since || default_since_time
     pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
-    return if pawprints.empty?
+
+    if pawprints.empty?
+      touch(:last_notified_at)
+      return
+    end
 
     DiscoPosterJob.perform_later(content:
       "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_discord, #{pawprints.count} pawprints)"
@@ -60,7 +64,11 @@ class NotificationWebhook < ApplicationRecord
   def notify_pawprints_to_slack(since: nil)
     at = since || default_since_time
     pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
-    return if pawprints.empty?
+
+    if pawprints.empty?
+      touch(:last_notified_at)
+      return
+    end
 
     DiscoPosterJob.perform_later(content:
       "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_slack, #{pawprints.count} pawprints)"
@@ -88,7 +96,11 @@ class NotificationWebhook < ApplicationRecord
   def notify_subscribed_items_to_discord(since: nil)
     at = since || default_since_time
     items = user.subscribed_items.where("items.created_at >= ?", at).order("items.id")
-    return if items.empty?
+
+    if items.empty?
+      touch(:last_notified_at)
+      return
+    end
 
     DiscoPosterJob.perform_later(content:
       "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_discord, #{items.count} items)"
@@ -111,7 +123,11 @@ class NotificationWebhook < ApplicationRecord
   def notify_subscribed_items_to_slack(since: nil)
     at = since || default_since_time
     items = user.subscribed_items.preload(:channel).where("items.created_at >= ?", at)
-    return if items.empty?
+
+    if items.empty?
+      touch(:last_notified_at)
+      return
+    end
 
     DiscoPosterJob.perform_later(content:
       "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_slack, #{items.count} items)"
