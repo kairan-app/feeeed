@@ -21,6 +21,7 @@ class Channel < ApplicationRecord
 
   strip_before_save :title, :description
   empty_strings_are_aligned_to_nil :description, :site_url, :image_url
+  after_commit :notify_channel_change, on: [:create, :update]
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   scope :not_stopped, -> { where.missing(:stopper) }
@@ -257,6 +258,21 @@ class Channel < ApplicationRecord
           channel_url(self)
         ]
       }
-   }
+    }
+  end
+
+  def notify_channel_change
+    prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
+    changed_fields = previous_changes.keys.map { |field| "# #{field}\n- [Old] #{previous_changes[field].first}\n- [New] #{previous_changes[field].last}" }
+    return if changed_fields.empty?
+
+    content = [
+      "[#{prefix}] #{title}",
+      "```",
+      changed_fields.join("\n\n"),
+      "```"
+    ].join("\n")
+
+    DiscoPosterJob.perform_later(content: content)
   end
 end
