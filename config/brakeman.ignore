@@ -7,7 +7,7 @@
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in `link_to` href",
       "file": "app/views/channels/show.html.erb",
-      "line": 21,
+      "line": 23,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to(Channel.find(params[:channel_id]).site_url, Channel.find(params[:channel_id]).site_url, :target => \"_blank\")",
       "render_path": [
@@ -15,7 +15,7 @@
           "type": "controller",
           "class": "ChannelsController",
           "method": "show",
-          "line": 18,
+          "line": 19,
           "file": "app/controllers/channels_controller.rb",
           "rendered": {
             "name": "channels/show",
@@ -37,19 +37,19 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 4,
-      "fingerprint": "8ccf91762dfb636896865a4c2eb94642e8a2ffe6efa68f9e1b8026d5653275ad",
+      "fingerprint": "b04d82875176f2ad1b82372fd47e0f71a8211c0536503543d357159d3dc763c7",
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in `link_to` href",
       "file": "app/views/items/_cards.html.erb",
       "line": 5,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
-      "code": "link_to(image_tag((Unresolved Model).new.image_url_or_placeholder, :class => \"w-full h-full object-cover\"), (Unresolved Model).new.url, :target => \"_blank\")",
+      "code": "link_to((Unresolved Model).new.url, :target => \"_blank\")",
       "render_path": [
         {
           "type": "controller",
           "class": "ChannelGroupsController",
           "method": "show",
-          "line": 17,
+          "line": 18,
           "file": "app/controllers/channel_groups_controller.rb",
           "rendered": {
             "name": "channel_groups/show",
@@ -85,7 +85,7 @@
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in `link_to` href",
       "file": "app/views/items/_cards.html.erb",
-      "line": 12,
+      "line": 16,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to((Unresolved Model).new.title, (Unresolved Model).new.url, :target => \"_blank\")",
       "render_path": [
@@ -93,7 +93,7 @@
           "type": "controller",
           "class": "ChannelGroupsController",
           "method": "show",
-          "line": 17,
+          "line": 18,
           "file": "app/controllers/channel_groups_controller.rb",
           "rendered": {
             "name": "channel_groups/show",
@@ -129,7 +129,7 @@
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in `link_to` href",
       "file": "app/views/channels/show.html.erb",
-      "line": 23,
+      "line": 25,
       "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
       "code": "link_to(Channel.find(params[:channel_id]).feed_url, Channel.find(params[:channel_id]).feed_url, :target => \"_blank\")",
       "render_path": [
@@ -137,7 +137,7 @@
           "type": "controller",
           "class": "ChannelsController",
           "method": "show",
-          "line": 18,
+          "line": 19,
           "file": "app/controllers/channels_controller.rb",
           "rendered": {
             "name": "channels/show",
