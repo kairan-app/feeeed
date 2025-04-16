@@ -1210,36 +1210,26 @@ a.remove-from-my-own:hover {
 
 .channel-and-items-component-channel a {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: left;
   align-items: center;
-  height: 84px;
+  gap: 10px;
   padding: 10px;
   transition: 0.25s;
-
-  img {
-    width: 64px;
-    height: 64px;
-    object-fit: cover;
-    margin-right: 10px;
-    outline: solid 1px #eeeeee;
-  }
-
-  span {
-    display: inline-block;
-    width: calc(100% - 74px);
-  }
 }
 
-@media screen and (max-width: 768px) {
-  .channel-and-items-component-channel a {
-    padding: 10px 0;
-  }
+.channel-and-items-component-channel a span {
+  flex: 1;
 }
 
-.channel-and-items-component-channel a:hover {
-  text-decoration: none;
-  background-color: rgba(255, 255, 255, 0.75);
+/* Channel component image styles */
+.channel-component-image {
+  position: relative;
+  height: 64px;
+  overflow: hidden;
+}
+
+.channel-component-image img {
+  height: 100%;
+  object-fit: contain;
 }
 
 .channel-and-items-component-item-list {
@@ -1287,16 +1277,45 @@ a.remove-from-my-own:hover {
 }
 
 .channel-and-items-component-item-image {
+  position: relative;
   width: 96px;
   height: 64px;
   margin: 0 10px 0 0;
+  overflow: hidden;
+}
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    outline: solid 1px #eeeeee;
-  }
+.item-component-image-background,
+.item-component-image-foreground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.item-component-image-background {
+  z-index: 1;
+}
+
+.item-component-image-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(10px);
+  transform: scale(1.1);
+}
+
+.item-component-image-foreground {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-component-image-foreground img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 @media screen and (max-width: 1200px) {
@@ -1906,4 +1925,39 @@ a.remove-from-my-own:hover {
 
 .guides-button .material-symbols-outlined {
   font-size: 18px;
+}
+
+/* Item component image styles */
+.item-component-image-background,
+.item-component-image-foreground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.item-component-image-background {
+  z-index: 1;
+}
+
+.item-component-image-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(10px);
+  transform: scale(1.1);
+}
+
+.item-component-image-foreground {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-component-image-foreground img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
