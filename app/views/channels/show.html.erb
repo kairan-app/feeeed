@@ -1,10 +1,7 @@
 <div class="channel-profile">
   <% if @channel.image_url %>
   <div class="channel-profile-image">
-    <div class="channel-profile-image-background">
-      <%= image_tag(@channel.image_url, class: "blurred") %>
-    </div>
-    <div class="channel-profile-image-foreground">
+    <div class="channel-profile-image-container" style="background-image: url('<%= @channel.image_url %>')">
       <%= image_tag(@channel.image_url) %>
     </div>
   </div>

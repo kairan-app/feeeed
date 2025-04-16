@@ -37,11 +37,8 @@
         <li class="unreads-list">
           <%= link_to(item.url, target: "_blank") do %>
             <div class="channel-and-items-component-item-image">
-              <div class="item-component-image-background">
-                <%= image_tag(item.image_url_or_placeholder, class: "blurred") %>
-              </div>
-              <div class="item-component-image-foreground">
-                <%= image_tag(item.image_url_or_placeholder) %>
+              <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+                <%= image_tag(item.image_url_or_placeholder, style: "object-fit: contain;") %>
               </div>
             </div>
             <div class="channel-and-items-component-item-info channel-and-items-component-item-info-unreads">

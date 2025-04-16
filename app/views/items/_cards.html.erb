@@ -3,10 +3,7 @@
   <div class="card item-card">
     <div class="card-image">
       <%= link_to item.url, target: "_blank" do %>
-        <div class="item-card-image-background">
-          <%= image_tag(item.image_url_or_placeholder, class: "blurred") %>
-        </div>
-        <div class="item-card-image-foreground">
+        <div class="item-card-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
           <%= image_tag(item.image_url_or_placeholder) %>
         </div>
       <% end %>

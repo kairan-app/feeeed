@@ -3,10 +3,7 @@
   <div class="card channel-card">
     <div class="card-image">
       <%= link_to channel do %>
-        <div class="channel-card-image-background">
-          <%= image_tag(channel.image_url_or_placeholder, class: "blurred") %>
-        </div>
-        <div class="channel-card-image-foreground">
+        <div class="channel-card-image" style="background-image: url('<%= channel.image_url_or_placeholder %>')">
           <%= image_tag(channel.image_url_or_placeholder) %>
         </div>
       <% end %>
