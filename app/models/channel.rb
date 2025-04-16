@@ -21,7 +21,7 @@ class Channel < ApplicationRecord
 
   strip_before_save :title, :description
   empty_strings_are_aligned_to_nil :description, :site_url, :image_url
-  after_commit :notify_channel_change, on: [:create, :update]
+  after_commit :notify_channel_change, on: %i[ create update ]
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   scope :not_stopped, -> { where.missing(:stopper) }
