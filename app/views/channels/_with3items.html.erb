@@ -2,7 +2,9 @@
   <h3 class="text-lg font-bold mt-2 channel-and-items-component-channel">
     <%= link_to channel_path(channel) do %>
       <% if channel.image_url %>
-      <%= image_tag(channel.image_url, size: "64x64",) %>
+        <div class="channel-component-image">
+          <%= image_tag(channel.image_url) %>
+        </div>
       <% end %>
       <span>
         <%= channel.title %>
@@ -15,7 +17,9 @@
       <li>
       <%= link_to(item.url, target: "_blank") do %>
         <div class="channel-and-items-component-item-image">
-          <%= image_tag(item.image_url_or_placeholder, width: "100%", height: "100%", style: "object-fit: cover;") %>
+          <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+            <%= image_tag(item.image_url_or_placeholder) %>
+          </div>
         </div>
         <div class="channel-and-items-component-item-info">
           <h4 class="font-bold">

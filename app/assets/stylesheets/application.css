@@ -526,6 +526,7 @@ header nav ul li a:hover {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .channel-card-image::before {
@@ -1290,6 +1291,7 @@ a.remove-from-my-own:hover {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .component-item-image::before {
