@@ -511,6 +511,11 @@ header nav ul li a:hover {
   aspect-ratio: 1 / 1;
 }
 
+.item-card .card-image {
+  aspect-ratio: 3 / 2;
+}
+
+/* Channel card image styles */
 .channel-card-image-background,
 .channel-card-image-foreground {
   position: absolute;
@@ -540,6 +545,41 @@ header nav ul li a:hover {
 }
 
 .channel-card-image-foreground img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Item card image styles */
+.item-card-image-background,
+.item-card-image-foreground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.item-card-image-background {
+  z-index: 1;
+}
+
+.item-card-image-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(10px);
+  transform: scale(1.1);
+}
+
+.item-card-image-foreground {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-card-image-foreground img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
