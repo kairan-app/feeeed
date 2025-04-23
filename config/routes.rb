@@ -87,5 +87,10 @@ Rails.application.routes.draw do
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
 
+  namespace :my do
+    get 'account/delete', to: 'account#delete'
+    delete 'account', to: 'account#destroy'
+  end
+
   root "welcome#index"
 end

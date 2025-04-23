@@ -19,3 +19,17 @@
     </div>
   </div>
 </section>
+
+<section class="mt-8">
+  <h2 class="text-2xl font-bold text-red-600 mb-4">Danger Zone</h2>
+  <div class="cards setting-cards">
+    <div class="card item-card setting-card">
+      <%= link_to(my_account_delete_path) do %>
+        <div class="card-image text-red-600">
+          <span class="material-symbols-outlined">delete_forever</span>
+        </div>
+        <h3 class="card-title text-red-600">Delete Account</h3>
+      <% end %>
+    </div>
+  </div>
+</section>
