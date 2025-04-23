@@ -1,23 +1,23 @@
-<div class="max-w-2xl mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">アカウントの削除</h1>
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8">Delete Account</h1>
 
-  <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
-    <h2 class="text-xl font-semibold text-red-800 mb-4">退会すると以下のデータが削除されます：</h2>
-    <ul class="list-disc list-inside text-red-700 space-y-2">
-      <li>プロフィール情報</li>
-      <li>所有しているチャンネル</li>
-      <li>参加しているチャンネルグループ</li>
-      <li>購読しているチャンネル</li>
-      <li>パウプリント（保存したアイテム）</li>
-      <li>通知設定</li>
+  <div class="border border-red-200 rounded-lg p-6 mb-8">
+    <h4 class="text-xl font-semibold mt-0 mb-4">When you delete your account, the following data will be deleted:</h4>
+    <ul class="text-red-700 space-y-2">
+      <li>Profile information</li>
+      <li>Channel ownerships</li>
+      <li>Channel groups</li>
+      <li>Channel subscriptions</li>
+      <li>Pawprints</li>
+      <li>Notification settings</li>
     </ul>
-    <p class="mt-4 text-red-800 font-medium">※ 一度削除したアカウントは復元できません。</p>
+    <p class="mt-4 font-medium">※ Once deleted, the account cannot be restored.</p>
   </div>
 
   <div class="flex justify-center">
-    <%= button_to "アカウントを削除する", my_path,
+    <%= button_to "Delete Account", my_path,
         method: :delete,
         class: "bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg",
-        data: { confirm: "本当にアカウントを削除しますか？この操作は取り消せません。" } %>
+        data: { confirm: "Are you sure you want to delete your account? This action cannot be undone." } %>
   </div>
 </div>
