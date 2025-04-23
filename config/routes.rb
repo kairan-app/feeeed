@@ -68,6 +68,7 @@ Rails.application.routes.draw do
                                                as: "user_subscribed_items",
                                                constraints: { user_name: /[^\/]+/ }
   get    "/my",                                to: "my#index"
+  delete "/my",                                to: "my#destroy"
   get    "/my/guides",                         to: "my/guides#show",
                                                as: "guides"
   get    "/my/unreads",                        to: "my/unreads#show",
@@ -77,6 +78,7 @@ Rails.application.routes.draw do
   get    "/my/profile",                        to: "my/profile#show"
   put    "/my/profile",                        to: "my/profile#update"
   get    "/my/notification_settings",          to: "my/notification_settings#index"
+  get    "/my/graduation",                     to: "my/graduation#show"
   get    "/about",                             to: "about#index",
                                                as: "about"
   get    "/info",                              to: "info#index",
@@ -86,11 +88,6 @@ Rails.application.routes.draw do
                                                as: "channel_group_webhook"
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
-
-  namespace :my do
-    get 'account/delete', to: 'account#delete'
-    delete 'account', to: 'account#destroy'
-  end
 
   root "welcome#index"
 end
