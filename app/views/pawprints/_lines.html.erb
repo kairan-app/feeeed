@@ -6,7 +6,9 @@
       <div class="pawprint-item">
         <div class="pawprint-item-image">
           <%= link_to(item.url, target: "_blank") do %>
-            <%= image_tag(item.image_url_or_placeholder, height: "100") %>
+            <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+              <%= image_tag(item.image_url_or_placeholder) %>
+            </div>
           <% end %>
         </div>
         <div class="pawprint-item-text">
