@@ -1,12 +1,12 @@
 <section>
-  <h2 class="text-2xl font-bold mt-6 mb-4">Settings</h2>
+  <h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold">Settings</h2>
   <div class="cards setting-cards">
     <div class="card item-card setting-card">
       <%= link_to(my_profile_path) do %>
         <div class="card-image">
           <span class="material-symbols-outlined">badge</span>
         </div>
-        <h3 class="card-title">My Profile</h3>
+        <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">My Profile</h3>
       <% end %>
     </div>
     <div class="card item-card setting-card">
@@ -14,21 +14,21 @@
         <div class="card-image">
           <span class="material-symbols-outlined">notifications_active</span>
         </div>
-        <h3 class="card-title">My Notification Settings</h3>
+        <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">My Notification Settings</h3>
       <% end %>
     </div>
   </div>
 </section>
 
 <section class="mt-8">
-  <h2 class="text-2xl font-bold text-gray-600 mb-4">Danger Zone</h2>
+  <h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold text-gray-600">Danger Zone</h2>
   <div class="cards setting-cards">
     <div class="card item-card setting-card">
       <%= link_to(my_graduation_path) do %>
         <div class="card-image text-gray-600">
           <span class="material-symbols-outlined">waving_hand</span>
         </div>
-        <h3 class="card-title text-gray-600">Delete Account</h3>
+        <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold text-gray-600">Delete Account</h3>
       <% end %>
     </div>
   </div>

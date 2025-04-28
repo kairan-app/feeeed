@@ -13,10 +13,10 @@
         </div>
       <% end %>
     </div>
-    <h3 class="card-title"><%= link_to(item.title, item.url, target: "_blank") %></h3>
+    <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold"><%= link_to(item.title, item.url, target: "_blank") %></h3>
     <% if with_channel %>
       <span class="card-channel">
-        <%= image_tag(item.channel.favicon_url, size: "16x16") %>
+        <%= image_tag(item.channel.favicon_url, size: "16x16", class: "w-[14px] h-auto") %>
         <%= link_to(item.channel.title, item.channel) %>
       </span>
     <% end %>

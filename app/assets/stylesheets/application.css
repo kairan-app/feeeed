@@ -34,12 +34,6 @@ textarea {
   }
 }
 
-h2,
-h3 {
-  width: 100%;
-  margin: 1em 0 0.5em;
-}
-
 ul {
   list-style: none;
   padding: 0;
@@ -587,14 +581,6 @@ header nav ul li a:hover {
   }
 }
 
-h3.card-title {
-  margin: 0.5em 0 0.3em;
-  font-size: 1em;
-  line-height: 1.4em;
-  font-weight: bold;
-}
-
-.card-title,
 .card-channel {
   img {
     width: 14px;
