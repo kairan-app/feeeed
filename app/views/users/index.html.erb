@@ -1,5 +1,5 @@
 <section>
-  <h2 class="text-2xl font-bold mt-6 mb-4">Users</h2>
+  <h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold">Users</h2>
   <ul>
     <% @users.each do |user| %>
       <li><%= link_to("@" + user.name, user_path(user_name: user.name)) %></li>

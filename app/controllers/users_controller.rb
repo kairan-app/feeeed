@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
   def index
     @users = User.order("users.id DESC")
+
+    @title = "Users"
   end
 
   def show
