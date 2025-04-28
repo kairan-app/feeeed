@@ -7,8 +7,8 @@
       </div>
     <% end %>
   </div>
-  <h3 class="card-title">
-    <%= image_tag(channel.favicon_url, size: "16x16") %>
+  <h3 class="w-full my-4 mb-2 font-bold text-base leading-[1.4em]">
+    <%= image_tag(channel.favicon_url, size: "16x16", class: "w-[14px] h-auto") %>
     <%= link_to(channel.title, channel) %>
   </h3>
   <span class="card-description">
