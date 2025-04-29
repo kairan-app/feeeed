@@ -39,7 +39,7 @@ class Channel < ApplicationRecord
       not_stopped.find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
     end
 
-    def add_by_url(url)
+    def add(url)
       feed = nil
       feed_url = nil
 

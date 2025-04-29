@@ -23,7 +23,7 @@ class ChannelsController < ApplicationController
 
     DiscoPosterJob.perform_later(content: "@#{current_user.name} try to add #{url}")
 
-    channel = Channel.add_by_url(url)
+    channel = Channel.add(url)
 
     if channel.nil?
       flash[:alert] = "Can't find feed from '#{url}'"
