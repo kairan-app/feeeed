@@ -39,6 +39,13 @@ class Channel < ApplicationRecord
       not_stopped.find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
     end
 
+    def add_by_xml(xml_string)
+      feed = Feedjira.parse(xml_string)
+      return nil if feed.nil?
+
+      save_from_feed(feed)
+    end
+
     def add_by_url(url)
       feed = nil
       feed_url = nil
@@ -53,7 +60,8 @@ class Channel < ApplicationRecord
 
       return nil if feed.nil?
       return nil if feed_url.nil?
-      save_from(feed_url)
+
+      save_from_feed(feed)
     end
 
     def preview(url)
@@ -80,11 +88,14 @@ class Channel < ApplicationRecord
 
     def save_from(feed_url)
       feed = Feedjira.parse(Httpc.get(feed_url))
-      feed.url = feed.url.strip if feed.url
+      save_from_feed(feed)
+    end
 
+    def save_from_feed(feed)
+      feed.url = feed.url.strip if feed.url
       parameters = build_from(feed)
 
-      channel = Channel.find_or_initialize_by(feed_url: feed_url)
+      channel = Channel.find_or_initialize_by(feed_url: feed.url)
       channel.update(parameters)
       channel
     end
