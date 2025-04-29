@@ -23,4 +23,22 @@ class ChannelTest < ActiveSupport::TestCase
       assert_equal @og_image_url, channel.image_url
     end
   end
+
+  describe "Add channel by youtube_hana.xml" do
+    setup do
+      @feed_xml = File.read(Rails.root.join("test/fixtures/youtube_hana.xml"))
+      @og_image_url = "https://example.com/image.jpg"
+      @description = "HANA official YouTube channel"
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: @og_image_url, description: @description))
+    end
+
+    test "Channelが期待通りに保存される" do
+      channel = Channel.add_by_xml(@feed_xml)
+      assert_equal "HANA official", channel.title
+      assert_equal @description, channel.description
+      assert_equal "https://www.youtube.com/feeds/videos.xml?channel_id=UCJqWKSEmDP9ph3iVYCKyl3Q", channel.feed_url
+      assert_equal "https://www.youtube.com/channel/UCJqWKSEmDP9ph3iVYCKyl3Q", channel.site_url
+      assert_equal @og_image_url, channel.image_url
+    end
+  end
 end
