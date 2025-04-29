@@ -226,6 +226,8 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
+    mocha (2.7.1)
+      ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
     multi_json (1.15.0)
     multipart-post (2.4.1)
@@ -256,6 +258,7 @@ GEM
     nokogiri (1.18.7-x86_64-linux-musl)
       racc (~> 1.4)
     os (1.1.4)
+    ostruct (0.6.1)
     parallel (1.26.3)
     parser (3.3.7.2)
       ast (~> 2.4.1)
@@ -460,6 +463,8 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   mission_control-jobs
+  mocha
+  ostruct
   pg (~> 1.5)
   postmark-rails
   puma (>= 5.0)
