@@ -95,7 +95,7 @@ class Channel < ApplicationRecord
       feed.url = feed.url.strip if feed.url
       parameters = build_from(feed)
 
-      channel = Channel.find_or_initialize_by(feed_url: feed.url)
+      channel = Channel.find_or_initialize_by(feed_url: feed.feed_url)
       channel.update(parameters)
       channel
     end
