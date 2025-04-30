@@ -1229,6 +1229,10 @@ a.remove-from-my-own:hover {
 }
 
 @media screen and (max-width: 768px) {
+  .channel-and-items-component-channel a {
+    padding: 10px 0;
+  }
+
   .channel-and-items-component-item-list li a {
     padding: 1em 0;
   }
