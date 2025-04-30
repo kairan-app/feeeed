@@ -13,7 +13,7 @@
       <p><%= @channel.description %></p>
     <% end %>
 
-    <ul>
+    <ul class="list-none p-0">
       <% if @channel.site_url %>
       <li>Site: <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
       <% end %>
