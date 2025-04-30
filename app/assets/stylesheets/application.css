@@ -34,11 +34,6 @@ textarea {
   }
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
 @media screen and (max-width: 768px) {
   body {
     font-size: 90%;

@@ -10,7 +10,7 @@
 
 <% if @channel_groups.exists? %>
 <h3 class="text-lg font-bold">Channel Groups</h3>
-<ul>
+<ul class="list-none p-0">
   <% @channel_groups.each do |channel_group| %>
     <li><%= link_to(channel_group.name, channel_group) %></li>
   <% end %>
