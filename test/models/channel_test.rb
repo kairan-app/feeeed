@@ -10,11 +10,35 @@ class ChannelTest < ActiveSupport::TestCase
   end
 
   describe "Add" do
+    describe "Add Site (Auto discovery)" do
+      describe "june29_jp.html" do
+        setup do
+          @site_url = "https://june29.jp/"
+          @site_html = File.read(Rails.root.join("test/fixtures/files/june29_jp.html"))
+          @feed_url = "https://june29.jp/feed.xml"
+          @feed_xml = File.read(Rails.root.join("test/fixtures/files/june29_jp.xml"))
+
+          Feedbag.stubs(:find).with(@site_url).returns([@feed_url])
+          Httpc.stubs(:get).with(@site_url).returns(@site_html)
+          Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
+          OpenGraph.stubs(:new).returns(OpenStruct.new())
+        end
+
+        test "サイトURLからフィードURLを自動検出してChannelが保存される" do
+          channel = Channel.add(@site_url)
+          assert_equal "#june29jp", channel.title
+          assert_equal "Recent content on #june29jp", channel.description
+          assert_equal @feed_url, channel.feed_url
+          assert_equal @site_url, channel.site_url
+        end
+      end
+    end
+
     describe "Add Feed" do
       describe "juneboku_nikki.xml" do
         setup do
           @feed_url = "https://junebako.github.io/sff/juneboku/nikki.xml"
-          @feed_xml = File.read(Rails.root.join("test/fixtures/juneboku_nikki.xml"))
+          @feed_xml = File.read(Rails.root.join("test/fixtures/files/juneboku_nikki.xml"))
           @og_image_url = "https://example.com/image.jpg"
 
           OpenGraph.stubs(:new).returns(OpenStruct.new(image: @og_image_url))
@@ -34,7 +58,7 @@ class ChannelTest < ActiveSupport::TestCase
       describe "youtube_hana.xml" do
         setup do
           @feed_url = "https://www.youtube.com/feeds/videos.xml?channel_id=UCJqWKSEmDP9ph3iVYCKyl3Q"
-          @feed_xml = File.read(Rails.root.join("test/fixtures/youtube_hana.xml"))
+          @feed_xml = File.read(Rails.root.join("test/fixtures/files/youtube_hana.xml"))
           @og_image_url = "https://example.com/image.jpg"
           @description = "HANA official YouTube channel"
 
@@ -55,7 +79,7 @@ class ChannelTest < ActiveSupport::TestCase
       describe "juneboku_life.xml" do
         setup do
           @feed_url = "https://rss.listen.style/p/juneboku-life/rss"
-          @feed_xml = File.read(Rails.root.join("test/fixtures/juneboku_life.xml"))
+          @feed_xml = File.read(Rails.root.join("test/fixtures/files/juneboku_life.xml"))
 
           Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
         end
