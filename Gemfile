@@ -16,6 +16,7 @@ gem "importmap-rails"
 gem "jbuilder"
 gem "kaminari"
 gem "mission_control-jobs"
+gem "ostruct"
 gem "pg", "~> 1.5"
 gem "postmark-rails"
 gem "puma", ">= 5.0"
@@ -44,5 +45,7 @@ end
 
 group :test do
   gem "capybara"
+  gem "minitest-rails"
+  gem "mocha"
   gem "selenium-webdriver"
 end

@@ -1,0 +1,11 @@
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://scrapbox.io/juneboku</id>
+  <title>純朴日記</title>
+  <subtitle>junebokuが2019年8月23日から書き続けている毎日更新の日記です</subtitle>
+  <author>
+    <name>juneboku</name>
+  </author>
+  <link href="https://scrapbox.io/juneboku"/>
+  <link href="https://junebako.github.io/sff/juneboku/nikki.xml" rel="self"/>
+  <updated>2025-04-29T07:22:09+00:00</updated>
+</feed>

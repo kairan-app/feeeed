@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+ <link rel="self" href="https://www.youtube.com/feeds/videos.xml?channel_id=UCJqWKSEmDP9ph3iVYCKyl3Q"/>
+ <id>yt:channel:JqWKSEmDP9ph3iVYCKyl3Q</id>
+ <yt:channelId>JqWKSEmDP9ph3iVYCKyl3Q</yt:channelId>
+ <title>HANA official</title>
+ <link rel="alternate" href="https://www.youtube.com/channel/UCJqWKSEmDP9ph3iVYCKyl3Q"/>
+ <author>
+  <name>HANA official</name>
+  <uri>https://www.youtube.com/channel/UCJqWKSEmDP9ph3iVYCKyl3Q</uri>
+ </author>
+ <published>2025-01-07T07:13:25+00:00</published>
+</feed>

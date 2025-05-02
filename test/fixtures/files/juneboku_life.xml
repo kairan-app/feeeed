@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0">
+  <channel>
+    <title><![CDATA[純朴声活]]></title>
+    <description><![CDATA[純朴の生活の様子を声と音でお届けします
+]]></description>
+    <link>https://listen.style/p/juneboku-life</link>
+    <image>
+      <url>https://image.listen.style/p/01hk4fekbzqwpdqf67597t3t78/images/DIhZaWQc2o2ny8FUQfNfzzOizf5OpTMdEogiSSv0.png</url>
+      <title>純朴声活</title>
+      <link>https://listen.style/p/juneboku-life</link>
+    </image>
+    <generator>LISTEN</generator>
+    <lastBuildDate>Wed, 09 Apr 2025 14:38:44 +0000</lastBuildDate>
+    <atom:link href="https://rss.listen.style/p/juneboku-life/rss" rel="self" type="application/rss+xml"/>
+    <copyright><![CDATA[juneboku]]></copyright>
+    <language><![CDATA[ja]]></language>
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+    <itunes:author>juneboku</itunes:author>
+    <itunes:summary>純朴の生活の様子を声と音でお届けします
+</itunes:summary>
+    <itunes:type>episodic</itunes:type>
+    <itunes:owner>
+      <itunes:name>juneboku</itunes:name>
+      <itunes:email>juneboku@gmail.com</itunes:email>
+    </itunes:owner>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:category text="Society &amp; Culture">
+      <itunes:category text="Personal Journals"/>
+    </itunes:category>
+    <itunes:image href="https://image.listen.style/p/01hk4fekbzqwpdqf67597t3t78/images/DIhZaWQc2o2ny8FUQfNfzzOizf5OpTMdEogiSSv0.png"/>
+    <podcast:locked>no</podcast:locked>
+    <podcast:guid>108ee35a-658b-504f-8c2f-1dd0b0081c8d</podcast:guid>
+  </channel>
+</rss>
