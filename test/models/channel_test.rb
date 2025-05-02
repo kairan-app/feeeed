@@ -18,7 +18,7 @@ class ChannelTest < ActiveSupport::TestCase
           @feed_url = "https://june29.jp/feed.xml"
           @feed_xml = File.read(Rails.root.join("test/fixtures/files/june29_jp.xml"))
 
-          Feedbag.stubs(:find).with(@site_url).returns([@feed_url])
+          Feedbag.stubs(:find).with(@site_url).returns([ @feed_url ])
           Httpc.stubs(:get).with(@site_url).returns(@site_html)
           Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
           OpenGraph.stubs(:new).returns(OpenStruct.new())
