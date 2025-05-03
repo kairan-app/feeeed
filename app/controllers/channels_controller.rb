@@ -4,7 +4,7 @@ class ChannelsController < ApplicationController
   def index
     page = (params[:page].presence || 1).to_i
     @channel_q = Channel.ransack(params[:channel_q])
-    @channels = @channel_q.result.order(updated_at: :desc).page(page).per(60)
+    @channels = @channel_q.result.order(id: :desc).page(page).per(60)
 
     @title = page == 1 ? "Channels" : "Channels (Page #{page})"
   end

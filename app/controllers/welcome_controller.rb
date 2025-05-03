@@ -20,7 +20,7 @@ class WelcomeController < ApplicationController
 
     @channels =
       Channel.
-        order(id: :desc).
+        order(updated_at: :desc).
         limit(12)
 
     @title = "Enjoy feeds!"
