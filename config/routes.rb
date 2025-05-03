@@ -67,6 +67,8 @@ Rails.application.routes.draw do
   get    "/@:user_name/subscribed_items",      to: "users/subscribed_items#index",
                                                as: "user_subscribed_items",
                                                constraints: { user_name: /[^\/]+/ }
+  get    "/feeds/channels",                    to: "feeds/channels#index",
+                                               defaults: { format: :atom }
   get    "/my",                                to: "my#index"
   delete "/my",                                to: "my#destroy"
   get    "/my/guides",                         to: "my/guides#show",
