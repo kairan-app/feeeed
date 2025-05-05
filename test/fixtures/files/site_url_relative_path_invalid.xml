@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Invalid Site URL Test</title>
+    <description>This is a test feed with invalid site URL</description>
+    <link>/invalid/path</link>
+    <item>
+      <title>Test Item</title>
+      <description>Test item description</description>
+      <link>https://example.com/item1</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

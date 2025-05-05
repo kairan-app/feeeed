@@ -90,54 +90,57 @@ class Channel < ApplicationRecord
     end
 
     def build_from(feed)
+      site_url = feed.url || feed.links.first
+      site_url = nil unless site_url.start_with?("http")
+
       case feed
       when Feedjira::Parser::RSS
-        build_from_rss(feed)
+        build_from_rss(feed, site_url)
       when Feedjira::Parser::Atom
-        build_from_atom(feed)
+        build_from_atom(feed, site_url)
       when Feedjira::Parser::ITunesRSS
-        build_from_itunes_rss(feed)
+        build_from_itunes_rss(feed, site_url)
       when Feedjira::Parser::AtomYoutube
-        build_from_atom_youtube(feed)
+        build_from_atom_youtube(feed, site_url)
       end
     end
 
-    def build_from_rss(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_rss(feed, site_url)
+      og = OpenGraph.new(site_url) if site_url
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.url,
-        image_url: og.image
+        site_url: site_url,
+        image_url: og&.image
       }
     end
 
-    def build_from_atom(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_atom(feed, site_url)
+      og = OpenGraph.new(site_url) if site_url
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.links.first,
-        image_url: og.image
+        site_url: site_url,
+        image_url: og&.image
       }
     end
 
-    def build_from_itunes_rss(feed)
+    def build_from_itunes_rss(feed, site_url)
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.url,
+        site_url: site_url,
         image_url: feed.itunes_image
       }
     end
 
-    def build_from_atom_youtube(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_atom_youtube(feed, site_url)
+      og = OpenGraph.new(site_url) if site_url
       {
         title: feed.title,
-        description: og.description,
-        site_url: feed.url,
-        image_url: og.image
+        description: og&.description,
+        site_url: site_url,
+        image_url: og&.image
       }
     end
 

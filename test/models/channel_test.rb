@@ -93,6 +93,23 @@ class ChannelTest < ActiveSupport::TestCase
           assert_equal "https://image.listen.style/p/01hk4fekbzqwpdqf67597t3t78/images/DIhZaWQc2o2ny8FUQfNfzzOizf5OpTMdEogiSSv0.png", channel.image_url
         end
       end
+
+      describe "site_urlが相対パスでinvalidな場合" do
+        setup do
+          @feed_url = "https://example.com/feed.xml"
+          @feed_xml = File.read(Rails.root.join("test/fixtures/files/site_url_relative_path_invalid.xml"))
+
+          Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
+        end
+
+        test "Channelが保存されるが、site_urlは無視される" do
+          channel = Channel.add(@feed_url)
+          assert_equal @feed_url, channel.feed_url
+          assert_equal "Invalid Site URL Test", channel.title
+          assert_equal "This is a test feed with invalid site URL", channel.description
+          assert_nil channel.site_url
+        end
+      end
     end
   end
 end
