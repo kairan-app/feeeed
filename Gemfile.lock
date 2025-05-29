@@ -275,6 +275,7 @@ GEM
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
+    prosopite (2.1.0)
     psych (5.2.6)
       date
       stringio
@@ -471,6 +472,7 @@ DEPENDENCIES
   ostruct
   pg (~> 1.5)
   postmark-rails
+  prosopite
   puma (>= 5.0)
   rails (~> 8.0.2)
   ransack
