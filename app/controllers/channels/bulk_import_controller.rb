@@ -10,31 +10,38 @@ class Channels::BulkImportController < ApplicationController
 
     if urls.empty?
       redirect_back(fallback_location: new_channels_bulk_import_path,
-                    alert: "URLが見つかりませんでした")
+                    alert: "No URLs found")
       return
     end
 
-    if urls.size > 100
-      redirect_back(fallback_location: new_channels_bulk_import_path,
-                    alert: "一度に登録できるのは100件までです")
-      return
-    end
+    # 既存チャンネルと新規チャンネルに分類
+    existing_urls, new_urls = Channel.classify_urls(urls)
 
-    # ジョブをキューに追加
-    BulkChannelImportJob.perform_later(current_user.id, urls)
+    # 新規チャンネルのみ100件制限を適用
+    processed_new_urls = new_urls.first(100)
+    skipped_count = new_urls.size - processed_new_urls.size
 
-    redirect_to my_path, notice: "フィードの一括登録を開始しました。完了後メールでお知らせします。"
+    # ジョブをキューに追加（既存URLは全て処理、新規URLは100件まで）
+    BulkChannelImportJob.perform_later(current_user.id, existing_urls, processed_new_urls, skipped_count)
+
+    redirect_to root_path, notice: "Bulk feed import started. You will be notified by email when completed."
   end
 
   private
 
   def extract_urls(params)
+    urls = []
+
+    # OPMLファイルからURL抽出
     if params[:opml_file].present?
-      FeedUrlExtractor.extract(params[:opml_file])
-    elsif params[:urls].present?
-      FeedUrlExtractor.extract(params[:urls])
-    else
-      []
+      urls += FeedUrlExtractor.extract(params[:opml_file])
     end
+
+    # テキストからURL抽出
+    if params[:urls].present?
+      urls += FeedUrlExtractor.extract(params[:urls])
+    end
+
+    urls.uniq
   end
 end

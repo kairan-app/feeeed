@@ -1,30 +1,36 @@
 class BulkChannelImportJob < ApplicationJob
   queue_as :default
 
-  def perform(user_id, urls)
+  def perform(user_id, existing_urls, new_urls, skipped_count = 0)
     user = User.find(user_id)
-    results = { success: [], failed: [], duplicate: [] }
+    results = { success: [], failed: [], skipped_count: skipped_count }
 
-    urls.each do |url|
+    # 既存チャンネルの処理（外部アクセスなし）
+    existing_urls.each do |url|
+      existing = Channel.find_by(feed_url: url)
+      if existing
+        # 既存チャンネルをサブスクライブ
+        subscribe_channel(user, existing)
+        results[:success] << { url: url, channel: existing }
+      end
+    end
+
+    # 新規チャンネルの処理（外部アクセスあり、100件制限適用済み）
+    new_urls.each do |url|
       begin
-        # 既存チャンネルのチェック
-        existing = Channel.find_by(feed_url: url)
-        if existing
-          results[:duplicate] << { url: url, channel: existing }
-          next
-        end
-
         # 新規チャンネルの追加
         channel = Channel.add(url)
         if channel&.persisted?
+          # 新規チャンネルをサブスクライブ
+          subscribe_channel(user, channel)
           results[:success] << { url: url, channel: channel }
         else
-          results[:failed] << { url: url, reason: "フィードの保存に失敗しました" }
+          results[:failed] << { url: url, reason: "Failed to save feed" }
         end
       rescue Feedjira::NoParserAvailable => e
-        results[:failed] << { url: url, reason: "フィードが見つかりませんでした" }
+        results[:failed] << { url: url, reason: "Feed not found" }
       rescue StandardError => e
-        results[:failed] << { url: url, reason: "エラー: #{e.message}" }
+        results[:failed] << { url: url, reason: "Error: #{e.message}" }
       end
     end
 
@@ -39,13 +45,28 @@ class BulkChannelImportJob < ApplicationJob
 
   private
 
+  def subscribe_channel(user, channel)
+    return false if user.subscriptions.exists?(channel: channel)
+
+    user.subscriptions.create!(channel: channel)
+    true
+  rescue StandardError => e
+    Rails.logger.error "Subscription failed: #{e.message}"
+    false
+  end
+
   def notify_discord(user, results)
     content = [
-      "@#{user.name} のフィード一括登録が完了しました",
-      "成功: #{results[:success].size}件",
-      "重複: #{results[:duplicate].size}件",
-      "失敗: #{results[:failed].size}件"
-    ].join("\n")
+      "@#{user.name} bulk feed import completed",
+      "Success: #{results[:success].size}",
+      "Failed: #{results[:failed].size}"
+    ]
+
+    if results[:skipped_count] > 0
+      content << "Skipped: #{results[:skipped_count]} (new feeds over 100 limit)"
+    end
+
+    content = content.join("\n")
 
     DiscoPosterJob.perform_later(content: content)
   end

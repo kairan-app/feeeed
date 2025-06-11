@@ -3,7 +3,7 @@ class BulkImportMailer < ApplicationMailer
     @user = user
     @results = results
 
-    subject = "フィード一括登録結果: 成功#{results[:success].size}件"
+    subject = "Bulk Feed Import Results: #{results[:success].size} successful"
 
     mail(
       to: user.email,

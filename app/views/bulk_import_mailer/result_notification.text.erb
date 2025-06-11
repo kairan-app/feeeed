@@ -1,24 +1,21 @@
-<%= @user.name %> 様
+@<%= @user.name %>,
 
-フィードの一括登録が完了しました。
+Bulk feed import has been completed.
 
-【成功】<%= @results[:success].size %>件
+<% if @results[:skipped_count] > 0 %>
+Note: <%= @results[:skipped_count] %> new feeds were skipped due to the 100 new feed limit.
+
+<% end %>
+[Success] <%= @results[:success].size %> feeds
 <% @results[:success].each do |result| %>
 - <%= result[:channel].title %> (<%= result[:url] %>)
 <% end %>
 
-<% if @results[:duplicate].any? %>
-【重複】<%= @results[:duplicate].size %>件
-<% @results[:duplicate].each do |result| %>
-- <%= result[:channel].title %> (既に登録済み)
-<% end %>
-<% end %>
-
 <% if @results[:failed].any? %>
-【失敗】<%= @results[:failed].size %>件
+[Failed] <%= @results[:failed].size %> feeds
 <% @results[:failed].each do |result| %>
 - <%= result[:url] %>
-  理由: <%= result[:reason] %>
+  Reason: <%= result[:reason] %>
 <% end %>
 <% end %>
 
