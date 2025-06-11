@@ -159,7 +159,7 @@ class Channel < ApplicationRecord
         end
       end
 
-      [existing_urls, new_urls]
+      [ existing_urls, new_urls ]
     end
   end
 

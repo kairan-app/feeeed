@@ -19,14 +19,14 @@ class FeedUrlExtractor
   end
 
   def self.extract_from_opml(file)
-    require 'nokogiri'
+    require "nokogiri"
 
     content = file.read
     doc = Nokogiri::XML(content)
 
     # OPMLのoutline要素からxmlUrl属性を抽出
-    outlines = doc.xpath('//outline[@xmlUrl]')
-    urls = outlines.map { |outline| outline['xmlUrl'] }.compact.uniq
+    outlines = doc.xpath("//outline[@xmlUrl]")
+    urls = outlines.map { |outline| outline["xmlUrl"] }.compact.uniq
 
     urls
   rescue => e
