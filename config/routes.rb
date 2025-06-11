@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   delete "/session",                           to: "sessions#destroy"
   get    "/channels/preview",                  to: "channels/preview#show",
                                                as: "channel_preview"
+  get    "/channels/bulk_import/new",          to: "channels/bulk_import#new",
+                                               as: "new_channels_bulk_import"
+  post   "/channels/bulk_import",              to: "channels/bulk_import#create",
+                                               as: "channels_bulk_import"
   get    "/channels",                          to: "channels#index"
   post   "/channels",                          to: "channels#create"
   get    "/channels/:channel_id",              to: "channels#show",

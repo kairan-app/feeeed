@@ -1,0 +1,32 @@
+<h2 class="text-2xl font-bold mt-6">フィードの一括追加</h2>
+
+<%= form_with url: channels_bulk_import_path, local: true do |f| %>
+  <div class="mb-4">
+    <h3 class="text-lg font-semibold mb-2">方法1: URLリストを入力</h3>
+    <p class="text-sm text-gray-600 mb-2">フィードのURLを改行区切りで入力してください（最大100件）</p>
+    <%= f.text_area :urls, rows: 10, class: "w-full p-2 border rounded",
+        placeholder: "https://example.com/feed.xml\nhttps://blog.example.com/rss\n..." %>
+  </div>
+
+  <div class="mb-4">
+    <h3 class="text-lg font-semibold mb-2">方法2: OPMLファイルをアップロード</h3>
+    <p class="text-sm text-gray-600 mb-2">他のフィードリーダーからエクスポートしたOPMLファイルを選択してください</p>
+    <%= f.file_field :opml_file, accept: ".opml,.xml", class: "w-full p-2 border rounded" %>
+  </div>
+
+  <%= f.submit "一括登録を開始", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer" %>
+<% end %>
+
+<p class="mt-4">
+  <%= link_to "← 通常の追加に戻る", root_path, class: "text-blue-600 hover:underline" %>
+</p>
+
+<div class="mt-6 p-4 bg-gray-100 rounded">
+  <h4 class="font-semibold mb-2">注意事項</h4>
+  <ul class="list-disc list-inside text-sm">
+    <li>一度に登録できるのは100件までです</li>
+    <li>処理には時間がかかる場合があります</li>
+    <li>登録結果はメールでお知らせします</li>
+    <li>重複するフィードは自動的にスキップされます</li>
+  </ul>
+</div>

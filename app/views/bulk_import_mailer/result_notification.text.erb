@@ -1,0 +1,27 @@
+<%= @user.name %> 様
+
+フィードの一括登録が完了しました。
+
+【成功】<%= @results[:success].size %>件
+<% @results[:success].each do |result| %>
+- <%= result[:channel].title %> (<%= result[:url] %>)
+<% end %>
+
+<% if @results[:duplicate].any? %>
+【重複】<%= @results[:duplicate].size %>件
+<% @results[:duplicate].each do |result| %>
+- <%= result[:channel].title %> (既に登録済み)
+<% end %>
+<% end %>
+
+<% if @results[:failed].any? %>
+【失敗】<%= @results[:failed].size %>件
+<% @results[:failed].each do |result| %>
+- <%= result[:url] %>
+  理由: <%= result[:reason] %>
+<% end %>
+<% end %>
+
+--
+rururu
+<%= root_url %>
