@@ -8,7 +8,9 @@ Note: <%= @results[:skipped_count] %> new feeds were skipped due to the 100 new 
 <% end %>
 [Success] <%= @results[:success].size %> feeds
 <% @results[:success].each do |result| %>
-- <%= result[:channel].title %> (<%= result[:url] %>)
+
+<%= result[:channel].title %>
+<%= result[:url] %>
 <% end %>
 
 <% if @results[:failed].any? %>
