@@ -146,6 +146,21 @@ class Channel < ApplicationRecord
         g: { "0" => { m: "or", title_cont: channel.title, site_url_cont: channel.site_url } }
       }).result
     end
+
+    def classify_urls(urls)
+      existing_urls = []
+      new_urls = []
+
+      urls.each do |url|
+        if exists?(feed_url: url)
+          existing_urls << url
+        else
+          new_urls << url
+        end
+      end
+
+      [ existing_urls, new_urls ]
+    end
   end
 
   def update_info

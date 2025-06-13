@@ -1,0 +1,26 @@
+@<%= @user.name %>,
+
+Bulk feed import has been completed.
+
+<% if @results[:skipped_count] > 0 %>
+Note: <%= @results[:skipped_count] %> new feeds were skipped due to the 100 new feed limit.
+
+<% end %>
+[Success] <%= @results[:success].size %> feeds
+<% @results[:success].each do |result| %>
+
+<%= result[:channel].title %>
+<%= result[:url] %>
+<% end %>
+
+<% if @results[:failed].any? %>
+[Failed] <%= @results[:failed].size %> feeds
+<% @results[:failed].each do |result| %>
+- <%= result[:url] %>
+  Reason: <%= result[:reason] %>
+<% end %>
+<% end %>
+
+--
+rururu
+<%= root_url %>
