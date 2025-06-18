@@ -81,6 +81,8 @@ Rails.application.routes.draw do
                                                as: "guides"
   get    "/my/unreads",                        to: "my/unreads#show",
                                                as: "unreads"
+  get    "/my/unreads/load_more",              to: "my/unreads#load_more",
+                                               as: "unreads_load_more"
   get    "/my/pawprints",                      to: "my/pawprints#index"
   get    "/my/owned_channels/pawprints",       to: "my/owned_channels/pawprints#index"
   get    "/my/profile",                        to: "my/profile#show"
