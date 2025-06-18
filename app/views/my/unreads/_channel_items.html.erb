@@ -1,0 +1,65 @@
+<% item_count_threshold = 3 %>
+
+<% channel_and_items.each do |channel, items| %>
+  <div class="channel-and-items-component channel-and-items-component-unreads">
+    <h3 class="text-lg font-bold mt-2 channel-and-items-component-channel">
+      <%= link_to channel_path(channel) do %>
+        <% if channel.image_url %>
+          <div class="channel-component-image">
+            <%= image_tag(channel.image_url) %>
+          </div>
+        <% end %>
+        <span>
+          <%= channel.title %>
+        </span>
+      <% end %>
+    </h3>
+    <ul class="channel-and-items-component-item-list">
+      <% items.sort_by(&:published_at).reverse.take(item_count_threshold).each do |item| %>
+        <%= turbo_frame_tag(item) do %>
+        <li class="unreads-list">
+          <%= link_to(item.url, target: "_blank") do %>
+            <div class="channel-and-items-component-item-image">
+              <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+                <%= image_tag(item.image_url_or_placeholder, style: "object-fit: contain;") %>
+              </div>
+            </div>
+            <div class="channel-and-items-component-item-info channel-and-items-component-item-info-unreads">
+              <h4 class="font-bold">
+                <%= item.title %>
+              </h4>
+              <p>
+                <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+              </p>
+              <p class="hidden line-clamp-1 line-clamp-2 line-clamp-3 line-clamp-4 line-clamp-5 line-clamp-6"></p>
+              <p class="text-sm text-gray-500 line-clamp-<%= item_summary_line_clamp %>">
+                <%= item.summary %>
+              </p>
+            </div>
+            <% if item.audio_enclosure_url %>
+              <div class="audio-player">
+                <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+              </div>
+            <% end %>
+          <% end %>
+          <div class="channel-and-items-component-item-player-and-paw">
+            <div class="channel-and-items-component-item-paw">
+              <div class="channel-and-items-component-item-skip">
+                <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
+              </div>
+              <div class="channel-and-items-component-item-memo">
+                <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
+              </div>
+            </div>
+          </div>
+        </li>
+        <% end %>
+      <% end %>
+      <% if items.size > item_count_threshold %>
+        <p id= "item-skipper-<%= channel.id %>" class="channel-and-items-component-item-skipper text-center">
+          <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded-sm hover:text-white hover:bg-[#aaaaaa]") %>
+        </p>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

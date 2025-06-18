@@ -91,4 +91,17 @@ class User < ApplicationRecord
     sort_by { |_, items| items.map(&:created_at).max }.
     reverse
   end
+
+  def unread_items_grouped_by_channel_for_date_range(from_days_ago:, to_days_ago:, channel_group: nil)
+    items = channel_group ? channel_group.items : subscribed_items
+
+    items.
+    preload(:channel).
+    where("NOT EXISTS (SELECT 1 FROM pawprints WHERE pawprints.item_id = items.id AND pawprints.user_id = ?)", self.id).
+    where("NOT EXISTS (SELECT 1 FROM item_skips WHERE item_skips.item_id = items.id AND item_skips.user_id = ?)", self.id).
+    where("items.created_at <= ? AND items.created_at > ?", from_days_ago.days.ago, to_days_ago.days.ago).
+    group_by(&:channel).
+    sort_by { |_, items| items.map(&:created_at).max }.
+    reverse
+  end
 end
