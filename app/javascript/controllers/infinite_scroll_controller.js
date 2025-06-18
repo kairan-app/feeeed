@@ -68,7 +68,7 @@ export default class extends Controller {
         this.showNoMoreContent()
       }
     } catch (error) {
-      console.error('無限スクロールでエラーが発生しました:', error)
+      console.error('Error loading more content:', error)
     } finally {
       this.isLoading = false
       this.hideLoadingIndicator()
