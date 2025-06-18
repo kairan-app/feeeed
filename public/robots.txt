@@ -1,1 +1,26 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+User-agent: *
+# 深いページネーションを制限
+Disallow: /items?page=
+Disallow: /channels?page=
+Disallow: /channels/*
+Disallow: /channel_groupings/
+
+# 検索エンジンには許可
+User-agent: Googlebot
+Allow: /
+Disallow: /items?page=
+Disallow: /channels?page=
+Disallow: /channels/*
+Disallow: /channel_groupings/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /items?page=
+Disallow: /channels?page=
+Disallow: /channels/*
+Disallow: /channel_groupings/
+
+# クロール間隔を制限
+Crawl-delay: 10
