@@ -2,11 +2,13 @@
 
 <h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold">Unreads</h2>
 
+<% unless @infinite_scroll %>
 <p class="unreads-nav">Showing unreads from the last <%= @range_days %> days</p>
 <div class="unreads-nav-button">
   <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(@unreads_params.merge(range_days: @range_days - 1))) %>
   <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1))) %>
 </div>
+<% end %>
 
 <% if @channel_groups.exists? %>
 <div class="unreads-channel-group-tab">
@@ -18,16 +20,19 @@
 <% end %>
 
 <div id="unreads-container"
+     <% if @infinite_scroll %>
      data-controller="infinite-scroll"
      data-infinite-scroll-url-value="<%= unreads_load_more_path %>"
-     data-infinite-scroll-current-days-value="3"
-     data-infinite-scroll-channel-group-id-value="<%= @channel_group&.id %>">
+     data-infinite-scroll-current-days-value="1"
+     data-infinite-scroll-channel-group-id-value="<%= @channel_group&.id %>"
+     <% end %>>
 
   <%= render partial: 'channel_items', locals: {
     channel_and_items: @channel_and_items,
     item_summary_line_clamp: @item_summary_line_clamp
   } %>
 
+  <% if @infinite_scroll %>
   <div id="loading-indicator" class="text-center py-4 hidden">
     <p>Loading...</p>
   </div>
@@ -35,4 +40,5 @@
   <div id="no-more-content" class="text-center py-4 hidden">
     <p>No more items to load</p>
   </div>
+  <% end %>
 </div>

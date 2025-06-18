@@ -6,10 +6,21 @@ class My::UnreadsController < MyController
     @channel_group = ChannelGroup.find_by(id: params[:channel_group_id])
     @channel_groups = current_user.own_and_joined_channel_groups.order(id: :desc)
 
-    initial_days = 1
-    @channel_and_items = current_user.unread_items_grouped_by_channel(
-      range_days: initial_days, channel_group: @channel_group
-    )
+    @infinite_scroll = params[:infinite_scroll] == "1"
+
+    # infinite_scroll=1パラメータがある場合は新しい実装（1日分の初期表示）を使用
+    if @infinite_scroll
+      initial_days = 1
+      @channel_and_items = current_user.unread_items_grouped_by_channel(
+        range_days: initial_days, channel_group: @channel_group
+      )
+    else
+      # 元の実装（指定した日数分を表示）
+      @channel_and_items = current_user.unread_items_grouped_by_channel(
+        range_days: @range_days, channel_group: @channel_group
+      )
+    end
+
     @unreads_params = {
       range_days: @range_days,
       channel_group_id: @channel_group&.id
