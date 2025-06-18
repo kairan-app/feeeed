@@ -46,7 +46,7 @@ class My::UnreadsController < MyController
     @next_days = @current_days + 1
 
     render json: {
-      html: render_to_string(partial: 'channel_items', locals: {
+      html: render_to_string(partial: "channel_items", locals: {
         channel_and_items: @channel_and_items,
         item_summary_line_clamp: @item_summary_line_clamp
       }),
