@@ -33,7 +33,7 @@ class BotBlocker
       /PetalBot/i,
       /BLEXBot/i,
       /YandexBot/i,
-      /python-requests/i,
+      /python-requests/i
     ]
 
     blocked_patterns.any? { |pattern| user_agent.match?(pattern) }
@@ -57,6 +57,6 @@ class BotBlocker
 
   def blocked_response(reason)
     Rails.logger.info "Bot blocked: #{reason}"
-    [403, { 'Content-Type' => 'text/plain' }, ["Access denied: #{reason}"]]
+    [ 403, { "Content-Type" => "text/plain" }, [ "Access denied: #{reason}" ] ]
   end
 end
