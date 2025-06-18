@@ -6,8 +6,7 @@ class My::UnreadsController < MyController
     @channel_group = ChannelGroup.find_by(id: params[:channel_group_id])
     @channel_groups = current_user.own_and_joined_channel_groups.order(id: :desc)
 
-    # 段階的読み込みの場合は初期表示は3日分に固定
-    initial_days = 3
+    initial_days = 1
     @channel_and_items = current_user.unread_items_grouped_by_channel(
       range_days: initial_days, channel_group: @channel_group
     )
