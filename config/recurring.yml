@@ -1,0 +1,3 @@
+channel_interval_adjustment:
+  class: ChannelIntervalAdjustmentJob
+  schedule: every day at 3am
