@@ -95,4 +95,142 @@ class ChannelTest < ActiveSupport::TestCase
       end
     end
   end
+
+  describe "Check intervals" do
+    test "needs_check_now scope includes channels never checked" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed",
+        last_items_checked_at: nil,
+        check_interval_hours: 1
+      )
+
+      assert_includes Channel.needs_check_now, channel
+    end
+
+    test "needs_check_now scope includes channels past their interval" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed2",
+        last_items_checked_at: 2.hours.ago,
+        check_interval_hours: 1
+      )
+
+      assert_includes Channel.needs_check_now, channel
+    end
+
+    test "needs_check_now scope excludes channels within their interval" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed3",
+        last_items_checked_at: 30.minutes.ago,
+        check_interval_hours: 1
+      )
+
+      assert_not_includes Channel.needs_check_now, channel
+    end
+
+    test "by_check_priority orders by interval then by last check time" do
+      channel1 = Channel.create!(
+        title: "Channel 1",
+        feed_url: "http://example.com/feed4",
+        check_interval_hours: 4,
+        last_items_checked_at: 1.hour.ago
+      )
+      channel2 = Channel.create!(
+        title: "Channel 2",
+        feed_url: "http://example.com/feed5",
+        check_interval_hours: 1,
+        last_items_checked_at: 2.hours.ago
+      )
+
+      ordered = Channel.by_check_priority.limit(2)
+      assert_equal channel2, ordered.first
+    end
+
+    test "mark_items_checked! updates last_items_checked_at" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed6"
+      )
+      old_time = channel.last_items_checked_at
+
+      channel.mark_items_checked!
+
+      assert_not_equal old_time, channel.last_items_checked_at
+      assert channel.last_items_checked_at > 1.minute.ago
+    end
+
+    test "set_check_interval! sets correct intervals based on item frequency" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed7"
+      )
+
+      # 1週間以内に3つ以上のアイテム：1時間間隔
+      3.times do |i|
+        channel.items.create!(
+          title: "Recent item #{i}",
+          url: "http://example.com/recent#{i}",
+          guid: "recent-guid-#{i}",
+          published_at: (i + 1).days.ago
+        )
+      end
+
+      channel.set_check_interval!
+      assert_equal 1, channel.check_interval_hours
+
+      # 2週間以内に2つのアイテム（1週間以内に3つ未満）：3時間間隔
+      channel.items.destroy_all
+      2.times do |i|
+        channel.items.create!(
+          title: "Item #{i}",
+          url: "http://example.com/item#{i}",
+          guid: "guid-#{i}",
+          published_at: (i + 8).days.ago
+        )
+      end
+
+      channel.set_check_interval!
+      assert_equal 3, channel.check_interval_hours
+
+      # 1ヶ月以内に2つのアイテム：4時間間隔
+      channel.items.destroy_all
+      2.times do |i|
+        channel.items.create!(
+          title: "Item #{i}",
+          url: "http://example.com/item#{i}",
+          guid: "guid-#{i}",
+          published_at: (i + 20).days.ago
+        )
+      end
+
+      channel.set_check_interval!
+      assert_equal 4, channel.check_interval_hours
+
+      # 2ヶ月以内に1つのアイテム：12時間間隔
+      channel.items.destroy_all
+      channel.items.create!(
+        title: "Old item",
+        url: "http://example.com/old",
+        guid: "old-guid",
+        published_at: 45.days.ago
+      )
+
+      channel.set_check_interval!
+      assert_equal 12, channel.check_interval_hours
+
+      # アイテムがない、または2ヶ月以上古い：24時間間隔
+      channel.items.destroy_all
+      channel.items.create!(
+        title: "Very old item",
+        url: "http://example.com/very-old",
+        guid: "very-old-guid",
+        published_at: 3.months.ago
+      )
+
+      channel.set_check_interval!
+      assert_equal 24, channel.check_interval_hours
+    end
+  end
 end

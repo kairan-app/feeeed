@@ -25,6 +25,13 @@ class Channel < ApplicationRecord
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   scope :not_stopped, -> { where.missing(:stopper) }
+  scope :needs_check_now, -> {
+    where(last_items_checked_at: nil)
+      .or(where("last_items_checked_at < NOW() - ((check_interval_hours || ' hours')::interval - interval '10 minutes')"))
+  }
+  scope :by_check_priority, -> {
+    order(:check_interval_hours, :last_items_checked_at)
+  }
 
   class << self
     def ransackable_attributes(auth_object = nil)
@@ -36,8 +43,25 @@ class Channel < ApplicationRecord
     end
 
     def fetch_and_save_items
-      not_stopped.find_each { ChannelItemsUpdaterJob.perform_later(channel_id: _1.id) }
+      not_stopped.needs_check_now.by_check_priority.find_each do |channel|
+        ChannelItemsUpdaterJob.perform_later(channel_id: channel.id)
+      end
     end
+
+    def adjust_all_check_intervals
+      total = not_stopped.count
+      updated = 0
+
+      not_stopped.find_each do |channel|
+        channel.set_check_interval!
+        updated += 1
+        Rails.logger.info "Channel #{channel.id} interval adjusted to #{channel.check_interval_hours} hours"
+      end
+
+      Rails.logger.info "Auto-adjusted check intervals for #{updated}/#{total} channels"
+      updated
+    end
+
 
     def add(url)
       feed = nil
@@ -276,9 +300,40 @@ class Channel < ApplicationRecord
     }
   end
 
+  def mark_items_checked!
+    update!(last_items_checked_at: Time.current)
+  end
+
+  def set_check_interval!
+    # 各期間内のアイテム数をカウント
+    items_1_week = items.where("published_at > ?", 1.week.ago).count
+    items_2_weeks = items.where("published_at > ?", 2.weeks.ago).count
+    items_1_month = items.where("published_at > ?", 1.month.ago).count
+    items_2_months = items.where("published_at > ?", 2.months.ago).count
+
+    interval = if items_1_week >= 3
+                 1   # 1時間毎
+    elsif items_2_weeks >= 2
+                 3   # 3時間毎
+    elsif items_1_month >= 2
+                 4   # 4時間毎
+    elsif items_2_months >= 1
+                 12  # 12時間毎
+    else
+                 24  # 24時間毎（デフォルト）
+    end
+
+    update!(check_interval_hours: interval)
+  end
+
   def notify_channel_change
     prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
-    changed_fields = previous_changes.keys.map { |field| "# #{field}\n- [Old] #{previous_changes[field].first}\n- [New] #{previous_changes[field].last}" }
+
+    # check_interval_hoursとlast_items_checked_atの変更は通知しない
+    ignored_fields = %w[check_interval_hours last_items_checked_at]
+    relevant_changes = previous_changes.except(*ignored_fields)
+
+    changed_fields = relevant_changes.keys.map { |field| "# #{field}\n- [Old] #{relevant_changes[field].first}\n- [New] #{relevant_changes[field].last}" }
     return if changed_fields.empty?
 
     content = [

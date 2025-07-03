@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_17_151846) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_01_112401) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "channel_group_webhooks", force: :cascade do |t|
     t.bigint "channel_group_id", null: false
@@ -59,7 +59,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_17_151846) do
     t.string "image_url", limit: 2083
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "check_interval_hours", default: 1
+    t.datetime "last_items_checked_at"
+    t.index ["check_interval_hours"], name: "index_channels_on_check_interval_hours"
     t.index ["feed_url"], name: "index_channels_on_feed_url", unique: true
+    t.index ["last_items_checked_at"], name: "index_channels_on_last_items_checked_at"
     t.index ["site_url"], name: "index_channels_on_site_url"
   end
 
@@ -85,6 +89,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_17_151846) do
     t.jsonb "data"
     t.index ["channel_id", "guid"], name: "index_items_on_channel_id_and_guid", unique: true
     t.index ["channel_id"], name: "index_items_on_channel_id"
+    t.index ["created_at", "channel_id"], name: "index_items_on_created_at_and_channel_id"
     t.index ["published_at"], name: "index_items_on_published_at"
   end
 
@@ -136,6 +141,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_17_151846) do
     t.string "memo", limit: 300
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["item_id", "user_id"], name: "index_pawprints_on_item_id_and_user_id"
     t.index ["item_id"], name: "index_pawprints_on_item_id"
     t.index ["user_id", "item_id"], name: "index_pawprints_on_user_id_and_item_id", unique: true
     t.index ["user_id"], name: "index_pawprints_on_user_id"
