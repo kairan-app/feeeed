@@ -27,7 +27,7 @@ class Channel < ApplicationRecord
   scope :not_stopped, -> { where.missing(:stopper) }
   scope :needs_check_now, -> {
     where(last_items_checked_at: nil)
-      .or(where('last_items_checked_at < NOW() - ((check_interval_hours || \' hours\')::interval - interval \'10 minutes\')'))
+      .or(where("last_items_checked_at < NOW() - ((check_interval_hours || ' hours')::interval - interval '10 minutes')"))
   }
   scope :by_check_priority, -> {
     order(:check_interval_hours, :last_items_checked_at)
@@ -306,22 +306,22 @@ class Channel < ApplicationRecord
 
   def set_check_interval!
     # 各期間内のアイテム数をカウント
-    items_1_week = items.where('published_at > ?', 1.week.ago).count
-    items_2_weeks = items.where('published_at > ?', 2.weeks.ago).count
-    items_1_month = items.where('published_at > ?', 1.month.ago).count
-    items_2_months = items.where('published_at > ?', 2.months.ago).count
+    items_1_week = items.where("published_at > ?", 1.week.ago).count
+    items_2_weeks = items.where("published_at > ?", 2.weeks.ago).count
+    items_1_month = items.where("published_at > ?", 1.month.ago).count
+    items_2_months = items.where("published_at > ?", 2.months.ago).count
 
     interval = if items_1_week >= 3
                  1   # 1時間毎
-               elsif items_2_weeks >= 2
+    elsif items_2_weeks >= 2
                  3   # 3時間毎
-               elsif items_1_month >= 2
+    elsif items_1_month >= 2
                  4   # 4時間毎
-               elsif items_2_months >= 1
+    elsif items_2_months >= 1
                  12  # 12時間毎
-               else
+    else
                  24  # 24時間毎（デフォルト）
-               end
+    end
 
     update!(check_interval_hours: interval)
   end
