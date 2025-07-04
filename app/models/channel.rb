@@ -328,7 +328,11 @@ class Channel < ApplicationRecord
 
   def notify_channel_change
     prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
-    changed_fields = previous_changes.keys.map { |field| "# #{field}\n- [Old] #{previous_changes[field].first}\n- [New] #{previous_changes[field].last}" }
+    # last_items_checked_atとupdated_atの変更は無視する
+    ignored_fields = %w[last_items_checked_at updated_at created_at]
+    significant_changes = previous_changes.except(*ignored_fields)
+
+    changed_fields = significant_changes.keys.map { |field| "# #{field}\n- [Old] #{significant_changes[field].first}\n- [New] #{significant_changes[field].last}" }
     return if changed_fields.empty?
 
     content = [
