@@ -1,20 +1,17 @@
 class WelcomeController < ApplicationController
   def index
-    # Pawprintsセクション - user, item, channelを事前読み込み
     @pawprints =
       Pawprint.
         includes(:user, item: :channel).
         order(id: :desc).
         limit(12)
 
-    # Channel Groupsセクション - channelsを事前読み込み
     @channel_groups =
       ChannelGroup.
         includes(:channels).
         order(id: :desc).
         limit(12)
 
-    # Channel and Itemsセクション
     @channel_and_items =
       Channel.
         joins(:items).
