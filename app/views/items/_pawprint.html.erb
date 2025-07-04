@@ -1,5 +1,12 @@
 <% if logged_in? %>
-  <% pawprint = item.pawprints.find_by(user: current_user) %>
+  <% # pawprintが明示的に渡されている場合はそれを使い、nilの場合は未読なのでDBクエリをスキップ %>
+  <% if local_assigns[:pawprint] == false %>
+    <% # pawprint変数が明示的にfalseで渡された場合のみDBクエリを実行 %>
+    <% pawprint = item.pawprints.find_by(user: current_user) %>
+  <% else %>
+    <% # それ以外（nilや値が渡された場合）は渡された値を使用 %>
+    <% pawprint = local_assigns[:pawprint] %>
+  <% end %>
   <% memo = pawprint&.memo || @prev_memo %>
   <%= turbo_frame_tag(id_of_pawprint_form_for(item)) do %>
     <% if pawprint %>

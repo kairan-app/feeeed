@@ -21,7 +21,7 @@
       </span>
     <% end %>
     <span class="card-publish"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
-    <%= render(partial: "items/pawprint", locals: { item: item }) %>
+    <%= render(partial: "items/pawprint", locals: { item: item, pawprint: false }) %>
   </div>
   <% end %>
 </div>
