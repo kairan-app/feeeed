@@ -12,7 +12,7 @@
     <% end %>
   </h3>
   <ul class="channel-and-items-component-item-list">
-    <% channel.items.order(id: :desc).limit(3).each do |item| %>
+    <% channel.recent_items.each do |item| %>
       <%= turbo_frame_tag(item) do %>
       <li>
       <%= link_to(item.url, target: "_blank") do %>
