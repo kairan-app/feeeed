@@ -1,0 +1,10 @@
+# docker-compose.override.yml
+# このファイルをコピーして各worktreeで使用
+# cp docker-compose.override.yml.example docker-compose.override.yml
+
+services:
+  web:
+    ports:
+      - "${RAILS_PORT:-3000}:3000"
+    environment:
+      PORT: "${RAILS_PORT:-3000}"
