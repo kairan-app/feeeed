@@ -15,7 +15,6 @@ class ChannelNotificationTest < ActiveSupport::TestCase
   end
 
   test "notify_channel_change ignores last_items_checked_at changes" do
-    # 最初の作成通知をクリア
     clear_enqueued_jobs
 
     # last_items_checked_atのみを変更
@@ -26,7 +25,6 @@ class ChannelNotificationTest < ActiveSupport::TestCase
   end
 
   test "notify_channel_change ignores updated_at changes" do
-    # 最初の作成通知をクリア
     clear_enqueued_jobs
 
     # touch を使ってupdated_atのみを更新
@@ -37,7 +35,6 @@ class ChannelNotificationTest < ActiveSupport::TestCase
   end
 
   test "notify_channel_change sends notification for meaningful changes" do
-    # 最初の作成通知をクリア
     clear_enqueued_jobs
 
     # titleを変更
@@ -47,7 +44,6 @@ class ChannelNotificationTest < ActiveSupport::TestCase
   end
 
   test "notify_channel_change sends notification for description changes" do
-    # 最初の作成通知をクリア
     clear_enqueued_jobs
 
     # descriptionを変更
@@ -57,7 +53,6 @@ class ChannelNotificationTest < ActiveSupport::TestCase
   end
 
   test "notify_channel_change ignores combined changes with only ignored fields" do
-    # 最初の作成通知をクリア
     clear_enqueued_jobs
 
     # last_items_checked_atとupdated_atを同時に変更
@@ -71,7 +66,6 @@ class ChannelNotificationTest < ActiveSupport::TestCase
   end
 
   test "notify_channel_change sends notification when meaningful fields change with ignored fields" do
-    # 最初の作成通知をクリア
     clear_enqueued_jobs
 
     # titleとlast_items_checked_atを同時に変更
