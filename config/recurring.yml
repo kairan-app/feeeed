@@ -9,3 +9,7 @@ channel_interval_adjustment:
 channel_schedule_adjustment:
   class: ChannelScheduleAdjustmentJob
   schedule: every day at 4am
+
+solid_queue_cleanup:
+  class: SolidQueueCleanupJob
+  schedule: every day at 3am
