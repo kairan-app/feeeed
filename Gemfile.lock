@@ -109,6 +109,11 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    factory_bot (6.5.4)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.5.0)
+      factory_bot (~> 6.5)
+      railties (>= 6.1.0)
     faraday (1.10.4)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -456,6 +461,7 @@ DEPENDENCIES
   capybara
   debug
   dotenv
+  factory_bot_rails
   faraday
   faraday-cookie_jar
   faraday_middleware
