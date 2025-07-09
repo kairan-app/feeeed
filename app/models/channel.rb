@@ -13,6 +13,7 @@ class Channel < ApplicationRecord
   has_many :channel_groupings, dependent: :destroy
   has_many :groups, through: :channel_groupings, source: :channel_group
   has_one :stopper, class_name: "ChannelStopper", dependent: :destroy
+  has_many :fixed_schedules, class_name: "ChannelFixedSchedule", dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 256 }
   validates :description, length: { maximum: 1024 }
@@ -25,9 +26,21 @@ class Channel < ApplicationRecord
   after_create_commit { ChannelItemsUpdaterJob.perform_later(channel_id: self.id, mode: :all) }
 
   scope :not_stopped, -> { where.missing(:stopper) }
+  scope :scheduled_for_current_hour, -> {
+    joins(:fixed_schedules)
+      .merge(ChannelFixedSchedule.for_current_hour)
+      .distinct
+  }
   scope :needs_check_now, -> {
-    where(last_items_checked_at: nil)
+    # 通常の間隔ベースのチェック
+    interval_check = where(last_items_checked_at: nil)
       .or(where("last_items_checked_at < NOW() - ((check_interval_hours || ' hours')::interval - interval '10 minutes')"))
+
+    # スケジュールベースのチェック（現在の時間帯に設定されているもの）
+    schedule_check = scheduled_for_current_hour
+
+    # 両方をORで結合（重複は自動的に排除される）
+    where(id: interval_check).or(where(id: schedule_check))
   }
   scope :by_check_priority, -> {
     order(:check_interval_hours, :last_items_checked_at)
@@ -62,6 +75,41 @@ class Channel < ApplicationRecord
       updated
     end
 
+    def adjust_all_schedules!
+      total_added = 0
+      total_removed = 0
+      skipped_insufficient = 0
+      skipped_inactive = 0
+
+      not_stopped.find_each do |channel|
+        if channel.items.count < 20
+          skipped_insufficient += 1
+          next
+        end
+
+        result = channel.adjust_schedules!
+        total_added += result[:added].count
+        total_removed += result[:removed].count
+
+        # 非アクティブなチャンネルかどうかを判定（adjust_schedules!内で判定・処理済み）
+        if result[:added].empty? && result[:removed].any?
+          latest_item = channel.items.order(published_at: :desc).first
+          if latest_item.published_at < 1.month.ago
+            skipped_inactive += 1
+          end
+        end
+      end
+
+      Rails.logger.info "Schedule adjustment completed: #{total_added} added, #{total_removed} removed"
+      Rails.logger.info "Skipped: #{skipped_insufficient} channels (insufficient items), #{skipped_inactive} channels (inactive)"
+
+      {
+        added: total_added,
+        removed: total_removed,
+        skipped_insufficient: skipped_insufficient,
+        skipped_inactive: skipped_inactive
+      }
+    end
 
     def add(url)
       feed = nil
@@ -269,6 +317,159 @@ class Channel < ApplicationRecord
     image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{self.title}"
   end
 
+  def mark_items_checked!
+    update!(last_items_checked_at: Time.current)
+  end
+
+  def set_check_interval!
+    # 各期間内のアイテム数をカウント
+    items_1_week = items.where("published_at > ?", 1.week.ago).count
+    items_2_weeks = items.where("published_at > ?", 2.weeks.ago).count
+    items_1_month = items.where("published_at > ?", 1.month.ago).count
+    items_2_months = items.where("published_at > ?", 2.months.ago).count
+
+    interval = if items_1_week >= 3
+                 1   # 1時間毎
+    elsif items_2_weeks >= 2
+                 3   # 3時間毎
+    elsif items_1_month >= 2
+                 4   # 4時間毎
+    elsif items_2_months >= 1
+                 12  # 12時間毎
+    else
+                 24  # 24時間毎（デフォルト）
+    end
+
+    update!(check_interval_hours: interval)
+  end
+
+  def add_schedule(day_of_week:, hour:)
+    fixed_schedules.create!(
+      day_of_week: day_of_week,
+      hour: hour
+    )
+  end
+
+  def remove_schedule(day_of_week:, hour:)
+    fixed_schedules.find_by(day_of_week: day_of_week, hour: hour)&.destroy
+  end
+
+  def adjust_schedules!
+    result = { added: [], removed: [] }
+
+    # 十分なデータがない場合は何もしない
+    return result if items.count < 20
+
+    # 直近1ヶ月以内にアイテムがない場合は全スケジュールを削除
+    latest_item = items.order(published_at: :desc).first
+    if latest_item.published_at < 1.month.ago
+      result[:removed] = fixed_schedules.pluck(:day_of_week, :hour)
+      fixed_schedules.destroy_all
+      return result
+    end
+
+    patterns = analyze_publishing_patterns(item_count: 20)
+    current_schedules = fixed_schedules.pluck(:day_of_week, :hour).to_set
+
+    # 条件を満たすパターンを追加
+    patterns.select { |_, count| count >= 6 }.each do |(day_of_week, hour), _|
+      next if current_schedules.include?([ day_of_week, hour ])
+
+      begin
+        add_schedule(day_of_week: day_of_week, hour: hour)
+        result[:added] << [ day_of_week, hour ]
+        Rails.logger.info "Added schedule for Channel ##{id}: #{day_of_week_name(day_of_week)} #{hour}:00"
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.warn "Failed to add schedule: #{e.message}"
+      end
+    end
+
+    # 条件を満たさなくなったスケジュールを削除
+    current_schedules.each do |day_of_week, hour|
+      pattern_count = patterns[[ day_of_week, hour ]] || 0
+      if pattern_count < 6
+        remove_schedule(day_of_week: day_of_week, hour: hour)
+        result[:removed] << [ day_of_week, hour ]
+        Rails.logger.info "Removed schedule for Channel ##{id}: #{day_of_week_name(day_of_week)} #{hour}:00 (only #{pattern_count} items found)"
+      end
+    end
+
+    result
+  end
+
+  def analyze_publishing_patterns(item_count: 20)
+    recent_items = items.order(published_at: :desc).limit(item_count)
+
+    # 曜日と時間帯のパターンをカウント
+    patterns = Hash.new(0)
+
+    recent_items.each do |item|
+      next unless item.published_at
+
+      # タイムゾーンを考慮（日本時間として処理）
+      published_time = item.published_at.in_time_zone("Asia/Tokyo")
+      day_of_week = published_time.wday
+      hour = published_time.hour
+
+      patterns[[ day_of_week, hour ]] += 1
+    end
+
+    # ソートして返す（頻度の高い順）
+    patterns.sort_by { |_, count| -count }.to_h
+  end
+
+  def publishing_pattern_summary(item_count: 20)
+    if items.count < 20
+      return "Not enough items for analysis (minimum 20 required, current: #{items.count})"
+    end
+
+    latest_item = items.order(published_at: :desc).first
+    if latest_item.published_at < 1.month.ago
+      return "No recent activity (last item: #{latest_item.published_at.strftime('%Y-%m-%d')})"
+    end
+
+    patterns = analyze_publishing_patterns(item_count: item_count)
+    current_schedules = fixed_schedules.pluck(:day_of_week, :hour).to_set
+
+    summary = [ "Publishing patterns for #{title} (last #{item_count} items):" ]
+    patterns.each do |(day_of_week, hour), count|
+      percentage = (count.to_f / item_count * 100).round(1)
+      status = if count >= 6
+                 current_schedules.include?([ day_of_week, hour ]) ? "[Scheduled]" : "[Will be scheduled]"
+      else
+                 current_schedules.include?([ day_of_week, hour ]) ? "[Will be removed]" : ""
+      end
+      summary << "  %s %2d:00 - %d items (%5.1f%% ) %s" % [ day_of_week_name(day_of_week), hour, count, percentage, status ]
+    end
+
+    # 現在のスケジュールで、パターンに含まれないもの
+    current_schedules.each do |day_of_week, hour|
+      next if patterns.key?([ day_of_week, hour ])
+      summary << "  %s %2d:00 - 0 items (0.0%) [Will be removed]" % [ day_of_week_name(day_of_week), hour ]
+    end
+
+    summary.join("\n")
+  end
+
+  def notify_channel_change
+    prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
+    # last_items_checked_atとupdated_atの変更は無視する
+    ignored_fields = %w[last_items_checked_at updated_at created_at]
+    significant_changes = previous_changes.except(*ignored_fields)
+
+    changed_fields = significant_changes.keys.map { |field| "# #{field}\n- [Old] #{significant_changes[field].first}\n- [New] #{significant_changes[field].last}" }
+    return if changed_fields.empty?
+
+    content = [
+      "[#{prefix}] #{title}",
+      "```",
+      changed_fields.join("\n\n"),
+      "```"
+    ].join("\n")
+
+    DiscoPosterJob.perform_later(content: content)
+  end
+
   def to_discord_more_embed
     {
       title: "Check out more recent items in #{title}",
@@ -300,48 +501,9 @@ class Channel < ApplicationRecord
     }
   end
 
-  def mark_items_checked!
-    update!(last_items_checked_at: Time.current)
-  end
+  private
 
-  def set_check_interval!
-    # 各期間内のアイテム数をカウント
-    items_1_week = items.where("published_at > ?", 1.week.ago).count
-    items_2_weeks = items.where("published_at > ?", 2.weeks.ago).count
-    items_1_month = items.where("published_at > ?", 1.month.ago).count
-    items_2_months = items.where("published_at > ?", 2.months.ago).count
-
-    interval = if items_1_week >= 3
-                 1   # 1時間毎
-    elsif items_2_weeks >= 2
-                 3   # 3時間毎
-    elsif items_1_month >= 2
-                 4   # 4時間毎
-    elsif items_2_months >= 1
-                 12  # 12時間毎
-    else
-                 24  # 24時間毎（デフォルト）
-    end
-
-    update!(check_interval_hours: interval)
-  end
-
-  def notify_channel_change
-    prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
-    # last_items_checked_atとupdated_atの変更は無視する
-    ignored_fields = %w[last_items_checked_at updated_at created_at]
-    significant_changes = previous_changes.except(*ignored_fields)
-
-    changed_fields = significant_changes.keys.map { |field| "# #{field}\n- [Old] #{significant_changes[field].first}\n- [New] #{significant_changes[field].last}" }
-    return if changed_fields.empty?
-
-    content = [
-      "[#{prefix}] #{title}",
-      "```",
-      changed_fields.join("\n\n"),
-      "```"
-    ].join("\n")
-
-    DiscoPosterJob.perform_later(content: content)
+  def day_of_week_name(day)
+    %w[Sun Mon Tue Wed Thu Fri Sat][day]
   end
 end

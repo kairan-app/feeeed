@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_01_112401) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_07_150625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "channel_fixed_schedules", force: :cascade do |t|
+    t.bigint "channel_id", null: false
+    t.integer "day_of_week", null: false
+    t.integer "hour", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_id", "day_of_week", "hour"], name: "idx_channel_fixed_schedules_unique", unique: true
+    t.index ["channel_id"], name: "index_channel_fixed_schedules_on_channel_id"
+    t.index ["day_of_week", "hour"], name: "index_channel_fixed_schedules_on_day_of_week_and_hour"
+  end
 
   create_table "channel_group_webhooks", force: :cascade do |t|
     t.bigint "channel_group_id", null: false
@@ -289,6 +300,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_01_112401) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "channel_fixed_schedules", "channels"
   add_foreign_key "channel_group_webhooks", "channel_groups"
   add_foreign_key "channel_group_webhooks", "users"
   add_foreign_key "channel_groupings", "channel_groups"
