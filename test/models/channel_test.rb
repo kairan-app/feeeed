@@ -233,4 +233,223 @@ class ChannelTest < ActiveSupport::TestCase
       assert_equal 24, channel.check_interval_hours
     end
   end
+
+  describe "Fixed schedules" do
+    test "add_schedule creates a new schedule" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      assert_difference 'channel.fixed_schedules.count', 1 do
+        channel.add_schedule(day_of_week: 1, hour: 10)
+      end
+
+      schedule = channel.fixed_schedules.last
+      assert_equal 1, schedule.day_of_week
+      assert_equal 10, schedule.hour
+    end
+
+    test "remove_schedule deletes the schedule" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+      channel.add_schedule(day_of_week: 1, hour: 10)
+
+      assert_difference 'channel.fixed_schedules.count', -1 do
+        channel.remove_schedule(day_of_week: 1, hour: 10)
+      end
+    end
+
+    test "analyze_publishing_patterns detects patterns" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      # Create items with pattern: Monday 10:00
+      base_time = Time.zone.parse("2024-01-01 10:00") # This is a Monday
+      5.times do |i|
+        channel.items.create!(
+          title: "Monday item #{i}",
+          url: "http://example.com/mon#{i}",
+          guid: "mon-guid-#{i}",
+          published_at: base_time + i.weeks
+        )
+      end
+
+      # Create items with pattern: Thursday 10:00
+      base_time = Time.zone.parse("2024-01-04 10:00") # This is a Thursday
+      3.times do |i|
+        channel.items.create!(
+          title: "Thursday item #{i}",
+          url: "http://example.com/thu#{i}",
+          guid: "thu-guid-#{i}",
+          published_at: base_time + i.weeks
+        )
+      end
+
+      patterns = channel.analyze_publishing_patterns(item_count: 10)
+
+      # Monday 10:00 should be the most frequent
+      assert_equal [1, 10], patterns.keys.first
+      assert_equal 5, patterns[[1, 10]]
+      assert_equal 3, patterns[[4, 10]]
+    end
+
+    test "adjust_schedules adds schedules for frequent patterns" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      # Create 6 items on Monday 10:00 (meets threshold)
+      base_time = Time.zone.parse("2024-01-01 10:00")
+      6.times do |i|
+        channel.items.create!(
+          title: "Item #{i}",
+          url: "http://example.com/item#{i}",
+          guid: "guid-#{i}",
+          published_at: base_time + i.weeks
+        )
+      end
+
+      # Create other items to reach 20 total
+      14.times do |i|
+        channel.items.create!(
+          title: "Other #{i}",
+          url: "http://example.com/other#{i}",
+          guid: "other-guid-#{i}",
+          published_at: 1.week.ago + i.hours
+        )
+      end
+
+      assert_difference 'channel.fixed_schedules.count', 1 do
+        result = channel.adjust_schedules!
+        assert_equal 1, result[:added].count
+        assert_equal 0, result[:removed].count
+      end
+
+      schedule = channel.fixed_schedules.last
+      assert_equal 1, schedule.day_of_week
+      assert_equal 10, schedule.hour
+    end
+
+    test "adjust_schedules removes schedules for infrequent patterns" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      # Create existing schedule
+      channel.add_schedule(day_of_week: 1, hour: 10)
+
+      # Create only 3 items on Monday 10:00 (below threshold)
+      base_time = Time.zone.parse("2024-01-01 10:00")
+      3.times do |i|
+        channel.items.create!(
+          title: "Monday item #{i}",
+          url: "http://example.com/mon#{i}",
+          guid: "mon-guid-#{i}",
+          published_at: base_time + i.weeks
+        )
+      end
+
+      # Create other items to reach 20 total
+      17.times do |i|
+        channel.items.create!(
+          title: "Other #{i}",
+          url: "http://example.com/other#{i}",
+          guid: "other-guid-#{i}",
+          published_at: 1.week.ago + i.hours
+        )
+      end
+
+      assert_difference 'channel.fixed_schedules.count', -1 do
+        result = channel.adjust_schedules!
+        assert_equal 0, result[:added].count
+        assert_equal 1, result[:removed].count
+      end
+    end
+
+    test "adjust_schedules skips channels with insufficient items" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      # Create only 19 items (below 20 threshold)
+      19.times do |i|
+        channel.items.create!(
+          title: "Item #{i}",
+          url: "http://example.com/item#{i}",
+          guid: "guid-#{i}",
+          published_at: Time.current - i.days
+        )
+      end
+
+      result = channel.adjust_schedules!
+      assert_equal [], result[:added]
+      assert_equal [], result[:removed]
+    end
+
+    test "adjust_schedules removes all schedules for inactive channels" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      # Create existing schedules
+      channel.add_schedule(day_of_week: 1, hour: 10)
+      channel.add_schedule(day_of_week: 4, hour: 10)
+
+      # Create 20 items, all older than 1 month
+      20.times do |i|
+        channel.items.create!(
+          title: "Old item #{i}",
+          url: "http://example.com/old#{i}",
+          guid: "old-guid-#{i}",
+          published_at: 2.months.ago - i.days
+        )
+      end
+
+      assert_difference 'channel.fixed_schedules.count', -2 do
+        result = channel.adjust_schedules!
+        assert_equal [], result[:added]
+        assert_equal [[1, 10], [4, 10]], result[:removed].sort
+      end
+    end
+
+    test "scheduled_for_current_hour scope includes channels with current schedules" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed"
+      )
+
+      now = Time.current
+      channel.add_schedule(day_of_week: now.wday, hour: now.hour)
+
+      assert_includes Channel.scheduled_for_current_hour, channel
+    end
+
+    test "needs_check_now includes scheduled channels" do
+      channel = Channel.create!(
+        title: "Test Channel",
+        feed_url: "http://example.com/feed",
+        last_items_checked_at: 1.hour.ago,
+        check_interval_hours: 24
+      )
+
+      # Normally wouldn't need check (last check was 1 hour ago, interval is 24 hours)
+      assert_not_includes Channel.needs_check_now, channel
+
+      # Add schedule for current hour
+      now = Time.current
+      channel.add_schedule(day_of_week: now.wday, hour: now.hour)
+
+      # Now should be included due to schedule
+      assert_includes Channel.needs_check_now, channel
+    end
+  end
 end
