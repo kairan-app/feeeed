@@ -1,3 +1,7 @@
+channel_fetcher:
+  class: ChannelItemsFetcherJob
+  schedule: "5 * * * *"
+
 channel_interval_adjustment:
   class: ChannelIntervalAdjustmentJob
   schedule: every day at 3am
