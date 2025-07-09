@@ -15,7 +15,7 @@ class ChannelFixedScheduleTest < ActiveSupport::TestCase
     end
 
     # Invalid values
-    [-1, 7, 10].each do |day|
+    [ -1, 7, 10 ].each do |day|
       schedule.day_of_week = day
       assert_not schedule.valid?, "Day of week #{day} should be invalid"
     end
@@ -31,7 +31,7 @@ class ChannelFixedScheduleTest < ActiveSupport::TestCase
     end
 
     # Invalid values
-    [-1, 24, 30].each do |hour|
+    [ -1, 24, 30 ].each do |hour|
       schedule.hour = hour
       assert_not schedule.valid?, "Hour #{hour} should be invalid"
     end

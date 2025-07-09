@@ -373,11 +373,11 @@ class Channel < ApplicationRecord
 
     # 条件を満たすパターンを追加
     patterns.select { |_, count| count >= 6 }.each do |(day_of_week, hour), _|
-      next if current_schedules.include?([day_of_week, hour])
+      next if current_schedules.include?([ day_of_week, hour ])
 
       begin
         add_schedule(day_of_week: day_of_week, hour: hour)
-        result[:added] << [day_of_week, hour]
+        result[:added] << [ day_of_week, hour ]
         Rails.logger.info "Added schedule for Channel ##{id}: #{day_of_week_name(day_of_week)} #{hour}:00"
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.warn "Failed to add schedule: #{e.message}"
@@ -386,10 +386,10 @@ class Channel < ApplicationRecord
 
     # 条件を満たさなくなったスケジュールを削除
     current_schedules.each do |day_of_week, hour|
-      pattern_count = patterns[[day_of_week, hour]] || 0
+      pattern_count = patterns[[ day_of_week, hour ]] || 0
       if pattern_count < 6
         remove_schedule(day_of_week: day_of_week, hour: hour)
-        result[:removed] << [day_of_week, hour]
+        result[:removed] << [ day_of_week, hour ]
         Rails.logger.info "Removed schedule for Channel ##{id}: #{day_of_week_name(day_of_week)} #{hour}:00 (only #{pattern_count} items found)"
       end
     end
@@ -407,11 +407,11 @@ class Channel < ApplicationRecord
       next unless item.published_at
 
       # タイムゾーンを考慮（日本時間として処理）
-      published_time = item.published_at.in_time_zone('Asia/Tokyo')
+      published_time = item.published_at.in_time_zone("Asia/Tokyo")
       day_of_week = published_time.wday
       hour = published_time.hour
 
-      patterns[[day_of_week, hour]] += 1
+      patterns[[ day_of_week, hour ]] += 1
     end
 
     # ソートして返す（頻度の高い順）
@@ -431,21 +431,21 @@ class Channel < ApplicationRecord
     patterns = analyze_publishing_patterns(item_count: item_count)
     current_schedules = fixed_schedules.pluck(:day_of_week, :hour).to_set
 
-    summary = ["Publishing patterns for #{title} (last #{item_count} items):"]
+    summary = [ "Publishing patterns for #{title} (last #{item_count} items):" ]
     patterns.each do |(day_of_week, hour), count|
       percentage = (count.to_f / item_count * 100).round(1)
       status = if count >= 6
-                 current_schedules.include?([day_of_week, hour]) ? "[Scheduled]" : "[Will be scheduled]"
-               else
-                 current_schedules.include?([day_of_week, hour]) ? "[Will be removed]" : ""
-               end
-      summary << "  %s %2d:00 - %d items (%5.1f%% ) %s" % [day_of_week_name(day_of_week), hour, count, percentage, status]
+                 current_schedules.include?([ day_of_week, hour ]) ? "[Scheduled]" : "[Will be scheduled]"
+      else
+                 current_schedules.include?([ day_of_week, hour ]) ? "[Will be removed]" : ""
+      end
+      summary << "  %s %2d:00 - %d items (%5.1f%% ) %s" % [ day_of_week_name(day_of_week), hour, count, percentage, status ]
     end
 
     # 現在のスケジュールで、パターンに含まれないもの
     current_schedules.each do |day_of_week, hour|
-      next if patterns.key?([day_of_week, hour])
-      summary << "  %s %2d:00 - 0 items (0.0%) [Will be removed]" % [day_of_week_name(day_of_week), hour]
+      next if patterns.key?([ day_of_week, hour ])
+      summary << "  %s %2d:00 - 0 items (0.0%) [Will be removed]" % [ day_of_week_name(day_of_week), hour ]
     end
 
     summary.join("\n")

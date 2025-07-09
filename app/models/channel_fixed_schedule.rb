@@ -3,7 +3,7 @@ class ChannelFixedSchedule < ApplicationRecord
 
   validates :day_of_week, inclusion: { in: 0..6 }
   validates :hour, inclusion: { in: 0..23 }
-  validates :channel_id, uniqueness: { scope: [:day_of_week, :hour] }
+  validates :channel_id, uniqueness: { scope: [ :day_of_week, :hour ] }
 
   scope :for_current_hour, -> {
     current_time = Time.current

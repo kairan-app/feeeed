@@ -241,7 +241,7 @@ class ChannelTest < ActiveSupport::TestCase
         feed_url: "http://example.com/feed"
       )
 
-      assert_difference 'channel.fixed_schedules.count', 1 do
+      assert_difference "channel.fixed_schedules.count", 1 do
         channel.add_schedule(day_of_week: 1, hour: 10)
       end
 
@@ -257,7 +257,7 @@ class ChannelTest < ActiveSupport::TestCase
       )
       channel.add_schedule(day_of_week: 1, hour: 10)
 
-      assert_difference 'channel.fixed_schedules.count', -1 do
+      assert_difference "channel.fixed_schedules.count", -1 do
         channel.remove_schedule(day_of_week: 1, hour: 10)
       end
     end
@@ -293,9 +293,9 @@ class ChannelTest < ActiveSupport::TestCase
       patterns = channel.analyze_publishing_patterns(item_count: 10)
 
       # Monday 10:00 should be the most frequent
-      assert_equal [1, 10], patterns.keys.first
-      assert_equal 5, patterns[[1, 10]]
-      assert_equal 3, patterns[[4, 10]]
+      assert_equal [ 1, 10 ], patterns.keys.first
+      assert_equal 5, patterns[[ 1, 10 ]]
+      assert_equal 3, patterns[[ 4, 10 ]]
     end
 
     test "adjust_schedules adds schedules for frequent patterns" do
@@ -325,7 +325,7 @@ class ChannelTest < ActiveSupport::TestCase
         )
       end
 
-      assert_difference 'channel.fixed_schedules.count', 1 do
+      assert_difference "channel.fixed_schedules.count", 1 do
         result = channel.adjust_schedules!
         assert_equal 1, result[:added].count
         assert_equal 0, result[:removed].count
@@ -366,7 +366,7 @@ class ChannelTest < ActiveSupport::TestCase
         )
       end
 
-      assert_difference 'channel.fixed_schedules.count', -1 do
+      assert_difference "channel.fixed_schedules.count", -1 do
         result = channel.adjust_schedules!
         assert_equal 0, result[:added].count
         assert_equal 1, result[:removed].count
@@ -414,10 +414,10 @@ class ChannelTest < ActiveSupport::TestCase
         )
       end
 
-      assert_difference 'channel.fixed_schedules.count', -2 do
+      assert_difference "channel.fixed_schedules.count", -2 do
         result = channel.adjust_schedules!
         assert_equal [], result[:added]
-        assert_equal [[1, 10], [4, 10]], result[:removed].sort
+        assert_equal [ [ 1, 10 ], [ 4, 10 ] ], result[:removed].sort
       end
     end
 
