@@ -25,6 +25,27 @@
       <li class="break-all"><span class="material-symbols-outlined">rss_feed</span> <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
     </ul>
 
+    <div class="my-4 text-sm text-gray-600">
+      <% if @channel.last_items_checked_at %>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined" style="font-size: 18px;">schedule</span>
+          <span>Last checked: <%= @channel.last_items_checked_at.in_time_zone("Asia/Tokyo").strftime("%Y-%m-%d %H:%M JST") %></span>
+        </div>
+      <% end %>
+
+      <% if @fixed_schedules.any? %>
+        <div class="flex items-start gap-2">
+          <span class="material-symbols-outlined" style="font-size: 18px;">event_repeat</span>
+          <div>
+            <span>Update schedule: </span>
+            <% @fixed_schedules.each_with_index do |schedule, index| %>
+              <span><%= %w[Sun Mon Tue Wed Thu Fri Sat][schedule.day_of_week] %> <%= sprintf("%02d:00", schedule.hour) %></span><%= index < @fixed_schedules.length - 1 ? ", " : "" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
     <div class="channel-control-buttons">
       <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
       <%= link_to(channel_fetch_path(@channel), data: { turbo_method: :post }) do %>

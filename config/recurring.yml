@@ -1,6 +1,6 @@
 channel_fetcher:
   class: ChannelItemsFetcherJob
-  schedule: "5 * * * *"
+  schedule: "5,55 * * * *"
 
 channel_interval_adjustment:
   class: ChannelIntervalAdjustmentJob
