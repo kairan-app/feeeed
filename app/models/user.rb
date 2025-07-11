@@ -83,12 +83,13 @@ class User < ApplicationRecord
     items = channel_group ? channel_group.items : subscribed_items
 
     items.
-    preload(:channel).
+    includes(:channel, :pawprints).
     where("NOT EXISTS (SELECT 1 FROM pawprints WHERE pawprints.item_id = items.id AND pawprints.user_id = ?)", self.id).
     where("NOT EXISTS (SELECT 1 FROM item_skips WHERE item_skips.item_id = items.id AND item_skips.user_id = ?)", self.id).
     where("items.created_at > ?", range_days.days.ago).
+    order("items.created_at DESC").
     group_by(&:channel).
-    sort_by { |_, items| items.map(&:created_at).max }.
+    sort_by { |_, items| items.first.created_at }.
     reverse
   end
 end
