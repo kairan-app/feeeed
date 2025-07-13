@@ -46,6 +46,15 @@ class Channel < ApplicationRecord
     order(:check_interval_hours, :last_items_checked_at)
   }
 
+  # トップページ用のスコープ
+  scope :recent, -> { order(id: :desc) }
+  scope :with_recent_activity, -> {
+    joins(:items)
+      .select("channels.*, MAX(items.id) AS max_item_id")
+      .group("channels.id")
+      .order("max_item_id DESC")
+  }
+
   class << self
     def ransackable_attributes(auth_object = nil)
       %w[title description site_url feed_url]
@@ -232,6 +241,35 @@ class Channel < ApplicationRecord
       end
 
       [ existing_urls, new_urls ]
+    end
+
+    # 最新のアイテムを持つチャンネルを効率的に取得
+    def with_recent_items(limit: 12, items_per_channel: 3)
+      channels = with_recent_activity.limit(limit)
+
+      # 各チャンネルの最新アイテムを一括取得
+      channel_ids = channels.map(&:id)
+      return channels if channel_ids.empty?
+
+      recent_items = Item
+        .where(channel_id: channel_ids)
+        .order(channel_id: :asc, id: :desc)
+        .select(:id, :channel_id, :guid, :title, :url, :published_at, :created_at, :updated_at, :image_url, :data)
+
+      # メモリ上でグループ化（パフォーマンス最適化）
+      items_by_channel = {}
+      recent_items.find_each do |item|
+        items_by_channel[item.channel_id] ||= []
+        items_by_channel[item.channel_id] << item if items_by_channel[item.channel_id].size < items_per_channel
+      end
+
+      # 各チャンネルに最新アイテムを関連付け
+      channels.each do |channel|
+        items = items_by_channel[channel.id] || []
+        channel.define_singleton_method(:recent_items) { items }
+      end
+
+      channels
     end
   end
 

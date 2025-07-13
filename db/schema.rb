@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_07_150625) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_045516) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_150625) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "owner_id", default: 1, null: false
+    t.index ["id"], name: "index_channel_groups_on_id_desc", order: :desc
     t.index ["owner_id"], name: "index_channel_groups_on_owner_id"
   end
 
@@ -74,6 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_150625) do
     t.datetime "last_items_checked_at"
     t.index ["check_interval_hours"], name: "index_channels_on_check_interval_hours"
     t.index ["feed_url"], name: "index_channels_on_feed_url", unique: true
+    t.index ["id"], name: "index_channels_on_id_desc", order: :desc
     t.index ["last_items_checked_at"], name: "index_channels_on_last_items_checked_at"
     t.index ["site_url"], name: "index_channels_on_site_url"
   end
@@ -99,6 +101,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_150625) do
     t.datetime "updated_at", null: false
     t.jsonb "data"
     t.index ["channel_id", "guid"], name: "index_items_on_channel_id_and_guid", unique: true
+    t.index ["channel_id", "id"], name: "index_items_on_channel_id_and_id_desc", order: { id: :desc }
     t.index ["channel_id"], name: "index_items_on_channel_id"
     t.index ["created_at", "channel_id"], name: "index_items_on_created_at_and_channel_id"
     t.index ["published_at"], name: "index_items_on_published_at"
@@ -152,6 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_150625) do
     t.string "memo", limit: 300
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_pawprints_on_id_desc", order: :desc
     t.index ["item_id", "user_id"], name: "index_pawprints_on_item_id_and_user_id"
     t.index ["item_id"], name: "index_pawprints_on_item_id"
     t.index ["user_id", "item_id"], name: "index_pawprints_on_user_id_and_item_id", unique: true
