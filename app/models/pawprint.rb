@@ -8,6 +8,12 @@ class Pawprint < ApplicationRecord
 
   after_create_commit { PawprintCreationNotifierJob.perform_later(self.id) }
 
+  # トップページ用のスコープ
+  scope :recent_with_associations, -> {
+    includes(:user, item: :channel)
+      .order(id: :desc)
+  }
+
   class << self
     def ransackable_attributes(auth_object = nil)
       %w[memo]

@@ -9,6 +9,12 @@ class ChannelGroup < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 64 }
 
+  # トップページ用のスコープ
+  scope :recent_with_associations, -> {
+    includes(:channels, :owner)
+      .order(id: :desc)
+  }
+
   def channel_image_urls
     channels.where.not(image_url: nil).pluck(:image_url)
   end
