@@ -40,13 +40,15 @@ class SolidQueueCleanupJob < ApplicationJob
 
   def cleanup_finished_jobs
     cutoff_date = RETENTION_DAYS.days.ago
+    deleted_count = 0
 
     SolidQueue::Job
       .where("finished_at < ?", cutoff_date)
       .in_batches(of: 1000) do |batch|
-        batch.delete_all
+        deleted_count += batch.delete_all
       end
-      .sum(&:size)
+
+    deleted_count
   end
 
   def cleanup_failed_jobs
@@ -56,13 +58,12 @@ class SolidQueueCleanupJob < ApplicationJob
     deleted_count = 0
 
     # FailedExecutionを削除
-    deleted_count = SolidQueue::FailedExecution
+    SolidQueue::FailedExecution
       .joins(:job)
       .where("solid_queue_jobs.created_at < ?", cutoff_date)
       .in_batches(of: 1000) do |batch|
-        batch.delete_all
+        deleted_count += batch.delete_all
       end
-      .sum(&:size)
 
     # 関連する未完了の古いジョブも削除
     SolidQueue::Job
