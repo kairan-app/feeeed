@@ -293,46 +293,75 @@ class Channel < ApplicationRecord
         feed.entries.sort_by(&:published).reverse.take(10)
       end
 
+    success_count = 0
+    error_count = 0
+
     entries.sort_by(&:published).each do |entry|
-      next if entry.title.blank?
+      begin
+        next if entry.title.blank?
 
-      url = (entry.url || self.site_url).strip
-      encoded_url = url.chars.map { |c|
-        if c.bytesize > 1
-          URI.encode_www_form_component(c)
-        elsif c == '"'
-          "%22"
-        else
-          c
+        url = (entry.url || self.site_url).strip
+        encoded_url = url.chars.map { |c|
+          if c.bytesize > 1
+            URI.encode_www_form_component(c)
+          elsif c == '"'
+            "%22"
+          else
+            c
+          end
+        }.join
+
+        guid = entry.entry_id || entry.url
+
+        image_url =
+          if entry.respond_to?(:itunes_image) && entry.itunes_image
+            entry.itunes_image
+          elsif entry.respond_to?(:image) && entry.image
+            entry.image
+          elsif guid.start_with?("yt:video:")
+            "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
+          else
+            sleep 2
+            OpenGraph.new(encoded_url).image rescue nil
+          end
+
+        parameters = {
+          guid: guid,
+          title: entry.title,
+          url: encoded_url,
+          image_url: image_url,
+          published_at: entry.published,
+          data: entry.to_h
+        }
+        item = self.items.find_or_initialize_by(guid: guid)
+
+        if item.new_record?
+          Rails.logger.info "[Channel] Saving new item: #{entry.title} (#{encoded_url})"
         end
-      }.join
 
-      guid = entry.entry_id || entry.url
+        item.update!(parameters)
+        success_count += 1
+      rescue StandardError => e
+        error_count += 1
 
-      image_url =
-        if entry.respond_to?(:itunes_image) && entry.itunes_image
-          entry.itunes_image
-        elsif entry.respond_to?(:image) && entry.image
-          entry.image
-        elsif guid.start_with?("yt:video:")
-          "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
-        else
-          sleep 2
-          OpenGraph.new(encoded_url).image rescue nil
-        end
+        # Sentryにエラーを送信
+        Sentry.capture_exception(e, extra: {
+          channel_id: self.id,
+          channel_title: self.title,
+          item_title: entry.title,
+          item_guid: entry.entry_id || entry.url,
+          error_count: error_count,
+          success_count: success_count
+        })
 
-      parameters = {
-        guid: guid,
-        title: entry.title,
-        url: encoded_url,
-        image_url: image_url,
-        published_at: entry.published,
-        data: entry.to_h
-      }
-      item = self.items.find_or_initialize_by(guid: guid)
-      p [ "Saving item", entry.title, encoded_url, entry.published ] if item.new_record?
+        # コンパクトなログ出力
+        Rails.logger.error "[Channel] Failed to save item - Channel: #{self.id}, Item: #{entry.title} - Error: #{e.class.name}: #{e.message}"
+      end
+    end
 
-      item.update(parameters)
+    # 処理結果のサマリーログ
+    if error_count > 0
+      Rails.logger.warn "[Channel] Item processing completed - Channel: #{self.id} - Success: #{success_count}, Errors: #{error_count}"
     end
   end
 
