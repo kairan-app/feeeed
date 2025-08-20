@@ -300,7 +300,14 @@ class Channel < ApplicationRecord
       begin
         next if entry.title.blank?
 
-        url = (entry.url || self.site_url).strip
+        url = entry.url.presence ||
+              (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
+              self.site_url.presence
+
+        next if url.blank?
+
+        url = url.strip
+
         encoded_url = url.chars.map { |c|
           if c.bytesize > 1
             URI.encode_www_form_component(c)
