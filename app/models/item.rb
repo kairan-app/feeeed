@@ -30,7 +30,7 @@ class Item < ApplicationRecord
   end
 
   def image_url_or_placeholder
-    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{self.title}"
+    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/270x180.png?text=#{URI.encode_www_form_component(self.title)}"
   end
 
   def summary(length: 1000)

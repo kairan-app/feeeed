@@ -388,7 +388,7 @@ class Channel < ApplicationRecord
   end
 
   def image_url_or_placeholder
-    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{self.title}"
+    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{URI.encode_www_form_component(self.title)}"
   end
 
   def mark_items_checked!

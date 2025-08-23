@@ -25,6 +25,6 @@ class ChannelGroup < ApplicationRecord
   end
 
   def placeholder_url
-    "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{name}"
+    "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{URI.encode_www_form_component(name)}"
   end
 end
