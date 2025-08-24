@@ -252,23 +252,28 @@ class Channel < ApplicationRecord
       return channels if channel_ids.empty?
 
       # Window関数で各Channelの上位N件を確実に取得
-      placeholders = channel_ids.map { "?" }.join(",")
-      items_sql = <<~SQL
-        WITH ranked_items AS (
-          SELECT id, channel_id, guid, title, url, published_at,
-                 created_at, updated_at, image_url, data,
-                 ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY id DESC) as rn
-          FROM items
-          WHERE channel_id IN (#{placeholders})
-        )
-        SELECT id, channel_id, guid, title, url, published_at,
-               created_at, updated_at, image_url, data
-        FROM ranked_items
-        WHERE rn <= ?
-        ORDER BY channel_id, id DESC
-      SQL
+      sql = Item.connection.execute(
+        ActiveRecord::Base.sanitize_sql_array([
+          <<~SQL,
+            WITH ranked_items AS (
+              SELECT id, channel_id, guid, title, url, published_at,
+                     created_at, updated_at, image_url, data,
+                     ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY id DESC) as rn
+              FROM items
+              WHERE channel_id = ANY(ARRAY[?]::bigint[])
+            )
+            SELECT id, channel_id, guid, title, url, published_at,
+                   created_at, updated_at, image_url, data
+            FROM ranked_items
+            WHERE rn <= ?
+            ORDER BY channel_id, id DESC
+          SQL
+          channel_ids,
+          items_per_channel
+        ])
+      )
 
-      recent_items = Item.find_by_sql([ items_sql, *channel_ids, items_per_channel ])
+      recent_items = sql.map { |row| Item.instantiate(row) }
 
       # メモリ上でグループ化（パフォーマンス最適化）
       items_by_channel = recent_items.group_by(&:channel_id)
