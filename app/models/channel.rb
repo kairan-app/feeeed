@@ -251,21 +251,27 @@ class Channel < ApplicationRecord
       channel_ids = channels.map(&:id)
       return channels if channel_ids.empty?
 
-      # 必要な最大件数を計算（チャンネル数 × 各チャンネルのアイテム数）
-      max_items_needed = channel_ids.size * items_per_channel
+      # Window関数で各Channelの上位N件を確実に取得
+      placeholders = channel_ids.map { "?" }.join(",")
+      items_sql = <<~SQL
+        WITH ranked_items AS (
+          SELECT id, channel_id, guid, title, url, published_at,
+                 created_at, updated_at, image_url, data,
+                 ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY id DESC) as rn
+          FROM items
+          WHERE channel_id IN (#{placeholders})
+        )
+        SELECT id, channel_id, guid, title, url, published_at,
+               created_at, updated_at, image_url, data
+        FROM ranked_items
+        WHERE rn <= ?
+        ORDER BY channel_id, id DESC
+      SQL
 
-      recent_items = Item
-        .where(channel_id: channel_ids)
-        .order(id: :desc)  # 全体でID降順（新しい順）にソート
-        .limit(max_items_needed * 3)  # 余裕を持って3倍取得（チャンネル偏りを考慮）
-        .select(:id, :channel_id, :guid, :title, :url, :published_at, :created_at, :updated_at, :image_url, :data)
+      recent_items = Item.find_by_sql([ items_sql, *channel_ids, items_per_channel ])
 
       # メモリ上でグループ化（パフォーマンス最適化）
-      items_by_channel = {}
-      recent_items.each do |item|
-        items_by_channel[item.channel_id] ||= []
-        items_by_channel[item.channel_id] << item if items_by_channel[item.channel_id].size < items_per_channel
-      end
+      items_by_channel = recent_items.group_by(&:channel_id)
 
       # 各チャンネルに最新アイテムを関連付け
       channels.each do |channel|
