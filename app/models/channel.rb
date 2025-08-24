@@ -251,14 +251,18 @@ class Channel < ApplicationRecord
       channel_ids = channels.map(&:id)
       return channels if channel_ids.empty?
 
+      # 必要な最大件数を計算（チャンネル数 × 各チャンネルのアイテム数）
+      max_items_needed = channel_ids.size * items_per_channel
+
       recent_items = Item
         .where(channel_id: channel_ids)
-        .order(channel_id: :asc, id: :desc)
+        .order(id: :desc)  # 全体でID降順（新しい順）にソート
+        .limit(max_items_needed * 3)  # 余裕を持って3倍取得（チャンネル偏りを考慮）
         .select(:id, :channel_id, :guid, :title, :url, :published_at, :created_at, :updated_at, :image_url, :data)
 
       # メモリ上でグループ化（パフォーマンス最適化）
       items_by_channel = {}
-      recent_items.find_each do |item|
+      recent_items.each do |item|
         items_by_channel[item.channel_id] ||= []
         items_by_channel[item.channel_id] << item if items_by_channel[item.channel_id].size < items_per_channel
       end
