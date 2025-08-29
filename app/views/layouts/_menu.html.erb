@@ -46,7 +46,7 @@
     </li>
   </ul>
   <label for="hamburger" class="hamburger-menu-button">
-    <%= image_tag(current_user.icon_url, size: "36x36") %>
+    <%= user_avatar_tag(current_user, size: :small) %>
   </label>
   <% end %>
 </nav>

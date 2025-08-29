@@ -1,7 +1,7 @@
 
 <div class="profile">
   <div class="profile-image">
-    <%= image_tag(@user.icon_url, size: "128x128") %>
+    <%= user_avatar_tag(@user, size: :thumb) %>
   </div>
   <div class="profile-info">
     <h2 class="text-2xl font-bold mt-6 mb-4"><%= "@" + @user.name %></h2>
