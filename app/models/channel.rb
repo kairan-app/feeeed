@@ -2,7 +2,6 @@ class Channel < ApplicationRecord
   include Rails.application.routes.url_helpers
   include Stripable
   include EmptyStringsAreAlignedToNil
-  include ValidationErrorsNotifiable
   include UrlHttpValidator
 
   has_many :items, dependent: :destroy
