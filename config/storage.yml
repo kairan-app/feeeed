@@ -6,6 +6,24 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+# Cloudflare R2 base configuration
+cloudflare_r2: &cloudflare_r2_base
+  service: S3
+  endpoint: <%= Rails.application.credentials.dig(:cloudflare_r2, :endpoint) %>
+  access_key_id: <%= Rails.application.credentials.dig(:cloudflare_r2, :access_key_id) %>
+  secret_access_key: <%= Rails.application.credentials.dig(:cloudflare_r2, :secret_access_key) %>
+  bucket: <%= Rails.application.credentials.dig(:cloudflare_r2, :bucket) %>
+  cdn_host: <%= Rails.application.credentials.dig(:cloudflare_r2, :cdn_host) %>
+  region: auto
+  force_path_style: true
+  public: true
+
+# User avatars specific storage
+cloudflare_r2_avatars:
+  <<: *cloudflare_r2_base
+  upload:
+    prefix: "users/avatars/"
+
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3

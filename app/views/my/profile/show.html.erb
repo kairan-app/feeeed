@@ -1,12 +1,47 @@
 <section>
   <h2 class="text-2xl font-bold mt-6 mb-4">My Profile</h2>
-  <%= form_tag(my_profile_path, method: :put) do |form| %>
-    <div class="setting-list">
-      <p>Username</p>
-      <%= text_field_tag(:name, @user.name) %>
-      <div>
-        <%= submit_tag("Update") %>
+
+  <%= form_tag(my_profile_path, method: :put, multipart: true) do |form| %>
+    <div class="setting-list mb-6">
+      <p class="mb-2">Profile Icon</p>
+      <div class="flex items-center gap-4 mb-4">
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar.variant(:thumb), class: "w-32 h-32 rounded-full object-cover", id: "avatar-preview" %>
+        <% else %>
+          <%= image_tag @user.icon_url, class: "w-32 h-32 rounded-full object-cover", id: "avatar-preview" %>
+        <% end %>
+        <div class="flex-1">
+          <%= file_field_tag :avatar, accept: "image/jpeg,image/jpg,image/png,image/gif,image/webp", class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100", id: "avatar-input" %>
+          <p class="text-xs text-gray-500 mt-2">Accepts JPG, PNG, GIF, WebP up to 5MB</p>
+        </div>
       </div>
+    </div>
+
+    <div class="setting-list mb-6">
+      <p>Username</p>
+      <%= text_field_tag(:name, @user.name, class: "mt-1") %>
+    </div>
+
+    <div>
+      <%= submit_tag("Update Profile", class: "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600") %>
     </div>
   <% end %>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const avatarInput = document.getElementById('avatar-input');
+  const avatarPreview = document.getElementById('avatar-preview');
+
+  avatarInput?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        avatarPreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+});
+</script>

@@ -4,6 +4,7 @@ ruby "3.4.5"
 
 gem "rails", "~> 8.0.2"
 
+gem "aws-sdk-s3", require: false
 gem "bootsnap", require: false
 gem "faraday"
 gem "faraday_middleware"
@@ -12,6 +13,7 @@ gem "feedbag"
 gem "feedjira"
 gem "googleauth"
 gem "hiredis"
+gem "image_processing"
 gem "importmap-rails"
 gem "jbuilder"
 gem "kaminari"
