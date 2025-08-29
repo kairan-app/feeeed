@@ -1,6 +1,12 @@
 class User < ApplicationRecord
   include UrlHttpValidator
 
+  has_one_attached :avatar, service: :cloudflare_r2_avatars do |attachable|
+    attachable.variant :display, resize_to_fill: [ 512, 512 ]
+    attachable.variant :thumb, resize_to_fill: [ 128, 128 ]
+    attachable.variant :small, resize_to_fill: [ 36, 36 ]
+  end
+
   has_many :ownerships, dependent: :destroy
   has_many :owned_channels, through: :ownerships, source: :channel
   has_many :memberships, dependent: :destroy
@@ -77,6 +83,21 @@ class User < ApplicationRecord
 
   def own_and_joined_channel_groups
     ChannelGroup.where(id: joined_channel_groups.pluck(:id)).or(ChannelGroup.where(owner_id: self.id))
+  end
+
+  def avatar_url(variant: nil)
+    if avatar.attached?
+      if variant
+        Rails.application.routes.url_helpers.rails_representation_url(
+          avatar.variant(variant),
+          only_path: true
+        )
+      else
+        Rails.application.routes.url_helpers.rails_blob_url(avatar, only_path: true)
+      end
+    else
+      icon_url
+    end
   end
 
   def unread_items_grouped_by_channel(range_days: 7, channel_group: nil)
