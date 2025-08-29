@@ -1,7 +1,6 @@
 class Item < ApplicationRecord
   include Stripable
   include EmptyStringsAreAlignedToNil
-  include ValidationErrorsNotifiable
   include UrlHttpValidator
 
   belongs_to :channel
