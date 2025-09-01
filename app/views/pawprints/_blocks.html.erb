@@ -28,7 +28,7 @@
       </div>
       <div class="w-full">
         <div class="flex items-center my-2">
-          <%= image_tag(user.icon_url, size: "24x24", class: "mr-2 object-cover rounded-full") %>
+          <%= user_avatar_tag(user, size: :small, css_class: "w-6 h-6 mr-2") %>
           <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
           <span class="ml-1">pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
         </div>
@@ -41,7 +41,7 @@
           <% if current_user&.not_pawed?(item) %>
             <div class="chase-paw">
               <div class="chase-paw-user">
-                <%= image_tag(current_user.icon_url, size: "24x24") %>
+                <%= user_avatar_tag(current_user, size: :small, css_class: "w-6 h-6") %>
                 <%= link_to("@" + current_user.name, user_path(user_name: current_user.name)) %>
               </div>
               <div class="chase-paw-form">

@@ -1,6 +1,12 @@
 class User < ApplicationRecord
   include UrlHttpValidator
 
+  has_one_attached :avatar do |attachable|
+    attachable.variant :display, resize_to_fill: [ 512, 512 ]
+    attachable.variant :thumb, resize_to_fill: [ 128, 128 ]
+    attachable.variant :small, resize_to_fill: [ 36, 36 ]
+  end
+
   has_many :ownerships, dependent: :destroy
   has_many :owned_channels, through: :ownerships, source: :channel
   has_many :memberships, dependent: :destroy
@@ -77,6 +83,51 @@ class User < ApplicationRecord
 
   def own_and_joined_channel_groups
     ChannelGroup.where(id: joined_channel_groups.pluck(:id)).or(ChannelGroup.where(owner_id: self.id))
+  end
+
+  def avatar_url(variant: nil)
+    if avatar.attached?
+      # Use direct R2 URL if using R2 service
+      if avatar.blob.service_name.to_s == "cloudflare_r2"
+        if variant
+          # Process variant and get direct CDN URL
+          processed_variant = avatar.variant(variant).processed
+          cdn_host = Rails.application.credentials.dig(:cloudflare_r2, :cdn_host)
+          if cdn_host.present? && processed_variant.blob
+            bucket = ENV["CLOUDFLARE_R2_BUCKET"] || Rails.application.credentials.dig(:cloudflare_r2, :bucket)
+            "https://#{cdn_host}/#{bucket}/#{processed_variant.key}"
+          else
+            Rails.application.routes.url_helpers.rails_representation_url(
+              avatar.variant(variant),
+              only_path: false
+            )
+          end
+        else
+          # For original images, use CDN URL if configured, otherwise direct R2 URL
+          cdn_host = Rails.application.credentials.dig(:cloudflare_r2, :cdn_host)
+          if cdn_host.present?
+            # Build CDN URL with bucket prefix
+            key = avatar.blob.key
+            bucket = ENV["CLOUDFLARE_R2_BUCKET"] || Rails.application.credentials.dig(:cloudflare_r2, :bucket)
+            "https://#{cdn_host}/#{bucket}/#{key}"
+          else
+            avatar.blob.url(expires_in: 1.year, disposition: :inline, filename: avatar.blob.filename)
+          end
+        end
+      else
+        # Local storage - use Rails URLs
+        if variant
+          Rails.application.routes.url_helpers.rails_representation_url(
+            avatar.variant(variant),
+            only_path: true
+          )
+        else
+          Rails.application.routes.url_helpers.rails_blob_url(avatar, only_path: true)
+        end
+      end
+    else
+      icon_url
+    end
   end
 
   def unread_items_grouped_by_channel(range_days: 7, channel_group: nil)
