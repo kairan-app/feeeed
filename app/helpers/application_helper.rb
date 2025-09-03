@@ -5,6 +5,7 @@ module ApplicationHelper
 
   def user_avatar_tag(user, size: :small, css_class: nil)
     size_config = {
+      xs: { dimension: "24x24", css: "w-6 h-6" },
       small: { dimension: "36x36", css: "w-9 h-9" },
       thumb: { dimension: "128x128", css: "w-32 h-32" },
       display: { dimension: "512x512", css: "w-128 h-128" }

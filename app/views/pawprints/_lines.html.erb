@@ -28,7 +28,7 @@
       </div>
       <div class="pawprint-paw">
         <div class="pawprint-user">
-          <%= user_avatar_tag(user, size: :small, css_class: "w-6 h-6") %>
+          <%= user_avatar_tag(user, size: :xs) %>
           <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
           <span>pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
         </div>
@@ -41,7 +41,7 @@
           <% unless current_user.pawed?(item) %>
             <div class="chase-paw">
               <div class="chase-paw-user">
-                <%= user_avatar_tag(current_user, size: :small, css_class: "w-6 h-6") %>
+                <%= user_avatar_tag(current_user, size: :xs) %>
                 <%= link_to("@" + current_user.name, user_path(user_name: current_user.name)) %>
               </div>
               <div class="chase-paw-form">
