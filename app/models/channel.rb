@@ -153,7 +153,7 @@ class Channel < ApplicationRecord
 
       feed.url = feed.url.strip if feed.url
 
-      parameters = build_from(feed)
+      parameters = build_from(feed, feed_url)
 
       Channel.new(parameters.merge(feed_url: feed_url))
     end
@@ -162,63 +162,92 @@ class Channel < ApplicationRecord
       feed = Feedjira.parse(Httpc.get(feed_url))
       feed.url = feed.url.strip if feed.url
 
-      parameters = build_from(feed)
+      parameters = build_from(feed, feed_url)
 
       channel = Channel.find_or_initialize_by(feed_url: feed_url)
       channel.update(parameters)
       channel
     end
 
-    def build_from(feed)
+    def build_from(feed, feed_url = nil)
       case feed
       when Feedjira::Parser::RSS
-        build_from_rss(feed)
+        build_from_rss(feed, feed_url)
       when Feedjira::Parser::Atom
-        build_from_atom(feed)
+        build_from_atom(feed, feed_url)
       when Feedjira::Parser::ITunesRSS
-        build_from_itunes_rss(feed)
+        build_from_itunes_rss(feed, feed_url)
       when Feedjira::Parser::AtomYoutube
-        build_from_atom_youtube(feed)
+        build_from_atom_youtube(feed, feed_url)
       end
     end
 
-    def build_from_rss(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_rss(feed, feed_url = nil)
+      # feed.urlが相対パスの場合はfeed_urlを使う
+      site_url = normalize_url(feed.url, feed_url)
+      og = OpenGraph.new(site_url) rescue nil
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.url,
-        image_url: og.image
+        site_url: site_url,
+        image_url: og&.image
       }
     end
 
-    def build_from_atom(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_atom(feed, feed_url = nil)
+      # feed.urlが相対パスの場合はfeed_urlを使う
+      site_url = normalize_url(feed.url, feed_url)
+      og = OpenGraph.new(site_url) rescue nil
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.links.first,
-        image_url: og.image
+        site_url: feed.links.first || site_url,
+        image_url: og&.image
       }
     end
 
-    def build_from_itunes_rss(feed)
+    def build_from_itunes_rss(feed, feed_url = nil)
+      site_url = normalize_url(feed.url, feed_url)
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.url,
+        site_url: site_url,
         image_url: feed.itunes_image
       }
     end
 
-    def build_from_atom_youtube(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_atom_youtube(feed, feed_url = nil)
+      site_url = normalize_url(feed.url, feed_url)
+      og = OpenGraph.new(site_url) rescue nil
       {
         title: feed.title,
-        description: og.description,
-        site_url: feed.url,
-        image_url: og.image
+        description: og&.description,
+        site_url: site_url,
+        image_url: og&.image
       }
+    end
+
+    def normalize_url(url, feed_url)
+      return feed_url if url.blank?
+
+      # 絶対URLの場合はそのまま返す
+      return url if url.start_with?("http://", "https://")
+
+      # 相対URLの場合はfeed_urlのドメインを使って絶対URLに変換
+      return feed_url unless feed_url
+
+      begin
+        uri = URI.parse(feed_url)
+        base_url = "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
+
+        if url.start_with?("/")
+          "#{base_url}#{url}"
+        else
+          URI.join(base_url, url).to_s
+        end
+      rescue URI::InvalidURIError
+        feed_url
+      end
     end
 
     def similar_to(channel)
@@ -314,6 +343,9 @@ class Channel < ApplicationRecord
       begin
         next if entry.title.blank?
 
+        # フィルタを適用
+        entry = apply_filters(entry)
+
         url = entry.url.presence ||
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
               self.site_url.presence
@@ -407,6 +439,30 @@ class Channel < ApplicationRecord
 
   def mark_items_checked!
     update!(last_items_checked_at: Time.current)
+  end
+
+  def apply_filters(entry)
+    return entry if applied_filters.blank?
+
+    applied_filters.each do |filter_name|
+      filter_class = "FeedFilters::#{filter_name}".constantize
+      filter = filter_class.new
+
+      if filter.applicable?(entry, self)
+        entry = filter.apply(entry, self)
+
+        # フィルタ適用の詳細を記録（必要に応じて）
+        if filter.applied
+          Rails.logger.info "[Channel#apply_filters] Applied #{filter_name} to entry"
+        end
+      end
+    rescue NameError => e
+      Rails.logger.error "[Channel#apply_filters] Filter not found: #{filter_name} - #{e.message}"
+    rescue StandardError => e
+      Rails.logger.error "[Channel#apply_filters] Error applying filter #{filter_name}: #{e.message}"
+    end
+
+    entry
   end
 
   def set_check_interval!
