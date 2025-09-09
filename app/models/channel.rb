@@ -122,30 +122,40 @@ class Channel < ApplicationRecord
     def add(url)
       feed = nil
       feed_url = nil
+      normalization_result = nil
 
       begin
-        feed = Feedjira.parse(Httpc.get(url))
+        normalization_result = fetch_and_normalize_feed(url)
+        feed = normalization_result[:feed]
         feed_url = url
       rescue Feedjira::NoParserAvailable
         feed_url = Feedbag.find(url).first
-        feed = Feedjira.parse(Httpc.get(feed_url)) if feed_url
+        if feed_url
+          normalization_result = fetch_and_normalize_feed(feed_url)
+          feed = normalization_result[:feed]
+        end
       end
 
       return nil if feed.nil?
       return nil if feed_url.nil?
-      save_from(feed_url)
+      save_from(feed_url, normalization_result)
     end
 
     def preview(url)
       feed = nil
       feed_url = nil
+      normalization_result = nil
 
       begin
-        feed = Feedjira.parse(Httpc.get(url))
+        normalization_result = fetch_and_normalize_feed(url)
+        feed = normalization_result[:feed]
         feed_url = url
       rescue Feedjira::NoParserAvailable
         feed_url = Feedbag.find(url).first
-        feed = Feedjira.parse(Httpc.get(feed_url)) if feed_url
+        if feed_url
+          normalization_result = fetch_and_normalize_feed(feed_url)
+          feed = normalization_result[:feed]
+        end
       end
 
       return nil if feed.nil?
@@ -154,15 +164,33 @@ class Channel < ApplicationRecord
       feed.url = feed.url.strip if feed.url
 
       parameters = build_from(feed, feed_url)
+      parameters.merge!(
+        feed_url: feed_url,
+        applied_filters: normalization_result[:applied_filters],
+        filter_details: normalization_result[:filter_details]
+      )
 
-      Channel.new(parameters.merge(feed_url: feed_url))
+      Channel.new(parameters)
     end
 
-    def save_from(feed_url)
-      feed = Feedjira.parse(Httpc.get(feed_url))
+    # フィードを取得し、正規化・パースを行う共通メソッド
+    def fetch_and_normalize_feed(feed_url)
+      raw_xml = Httpc.get(feed_url)
+      FeedNormalizer.normalize_and_parse(raw_xml, feed_url)
+    end
+
+    def save_from(feed_url, normalization_result = nil)
+      # 正規化結果が渡されていない場合は、新規に取得・正規化する
+      normalization_result ||= fetch_and_normalize_feed(feed_url)
+
+      feed = normalization_result[:feed]
       feed.url = feed.url.strip if feed.url
 
       parameters = build_from(feed, feed_url)
+      parameters.merge!(
+        applied_filters: normalization_result[:applied_filters],
+        filter_details: normalization_result[:filter_details]
+      )
 
       channel = Channel.find_or_initialize_by(feed_url: feed_url)
       channel.update(parameters)
@@ -321,7 +349,9 @@ class Channel < ApplicationRecord
   end
 
   def fetch_and_save_items(mode = :only_non_existing)
-    feed = Feedjira.parse(Httpc.get(feed_url))
+    # FeedNormalizerを使って正規化とパースを実行
+    normalization_result = self.class.fetch_and_normalize_feed(feed_url)
+    feed = normalization_result[:feed]
 
     entries =
       if mode == :all
@@ -342,9 +372,6 @@ class Channel < ApplicationRecord
     entries.sort_by(&:published).each do |entry|
       begin
         next if entry.title.blank?
-
-        # フィルタを適用
-        entry = apply_filters(entry)
 
         url = entry.url.presence ||
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
@@ -598,7 +625,7 @@ class Channel < ApplicationRecord
   def notify_channel_change
     prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
     # last_items_checked_atとupdated_atの変更は無視する
-    ignored_fields = %w[last_items_checked_at updated_at created_at]
+    ignored_fields = %w[last_items_checked_at filter_details updated_at created_at]
     significant_changes = previous_changes.except(*ignored_fields)
 
     changed_fields = significant_changes.keys.map { |field| "# #{field}\n- [Old] #{significant_changes[field].first}\n- [New] #{significant_changes[field].last}" }
