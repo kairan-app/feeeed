@@ -122,30 +122,40 @@ class Channel < ApplicationRecord
     def add(url)
       feed = nil
       feed_url = nil
+      normalization_result = nil
 
       begin
-        feed = Feedjira.parse(Httpc.get(url))
+        normalization_result = fetch_and_normalize_feed(url)
+        feed = normalization_result[:feed]
         feed_url = url
       rescue Feedjira::NoParserAvailable
         feed_url = Feedbag.find(url).first
-        feed = Feedjira.parse(Httpc.get(feed_url)) if feed_url
+        if feed_url
+          normalization_result = fetch_and_normalize_feed(feed_url)
+          feed = normalization_result[:feed]
+        end
       end
 
       return nil if feed.nil?
       return nil if feed_url.nil?
-      save_from(feed_url)
+      save_from(feed_url, normalization_result)
     end
 
     def preview(url)
       feed = nil
       feed_url = nil
+      normalization_result = nil
 
       begin
-        feed = Feedjira.parse(Httpc.get(url))
+        normalization_result = fetch_and_normalize_feed(url)
+        feed = normalization_result[:feed]
         feed_url = url
       rescue Feedjira::NoParserAvailable
         feed_url = Feedbag.find(url).first
-        feed = Feedjira.parse(Httpc.get(feed_url)) if feed_url
+        if feed_url
+          normalization_result = fetch_and_normalize_feed(feed_url)
+          feed = normalization_result[:feed]
+        end
       end
 
       return nil if feed.nil?
@@ -153,72 +163,119 @@ class Channel < ApplicationRecord
 
       feed.url = feed.url.strip if feed.url
 
-      parameters = build_from(feed)
+      parameters = build_from(feed, feed_url)
+      parameters.merge!(
+        feed_url: feed_url,
+        applied_filters: normalization_result[:applied_filters],
+        filter_details: normalization_result[:filter_details]
+      )
 
-      Channel.new(parameters.merge(feed_url: feed_url))
+      Channel.new(parameters)
     end
 
-    def save_from(feed_url)
-      feed = Feedjira.parse(Httpc.get(feed_url))
+    # フィードを取得し、正規化・パースを行う共通メソッド
+    def fetch_and_normalize_feed(feed_url)
+      raw_xml = Httpc.get(feed_url)
+      FeedNormalizer.normalize_and_parse(raw_xml, feed_url)
+    end
+
+    def save_from(feed_url, normalization_result = nil)
+      # 正規化結果が渡されていない場合は、新規に取得・正規化する
+      normalization_result ||= fetch_and_normalize_feed(feed_url)
+
+      feed = normalization_result[:feed]
       feed.url = feed.url.strip if feed.url
 
-      parameters = build_from(feed)
+      parameters = build_from(feed, feed_url)
+      parameters.merge!(
+        applied_filters: normalization_result[:applied_filters],
+        filter_details: normalization_result[:filter_details]
+      )
 
       channel = Channel.find_or_initialize_by(feed_url: feed_url)
       channel.update(parameters)
       channel
     end
 
-    def build_from(feed)
+    def build_from(feed, feed_url = nil)
       case feed
       when Feedjira::Parser::RSS
-        build_from_rss(feed)
+        build_from_rss(feed, feed_url)
       when Feedjira::Parser::Atom
-        build_from_atom(feed)
+        build_from_atom(feed, feed_url)
       when Feedjira::Parser::ITunesRSS
-        build_from_itunes_rss(feed)
+        build_from_itunes_rss(feed, feed_url)
       when Feedjira::Parser::AtomYoutube
-        build_from_atom_youtube(feed)
+        build_from_atom_youtube(feed, feed_url)
       end
     end
 
-    def build_from_rss(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_rss(feed, feed_url = nil)
+      # feed.urlが相対パスの場合はfeed_urlを使う
+      site_url = normalize_url(feed.url, feed_url)
+      og = OpenGraph.new(site_url) rescue nil
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.url,
-        image_url: og.image
+        site_url: site_url,
+        image_url: og&.image
       }
     end
 
-    def build_from_atom(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_atom(feed, feed_url = nil)
+      # feed.urlが相対パスの場合はfeed_urlを使う
+      site_url = normalize_url(feed.url, feed_url)
+      og = OpenGraph.new(site_url) rescue nil
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.links.first,
-        image_url: og.image
+        site_url: feed.links.first || site_url,
+        image_url: og&.image
       }
     end
 
-    def build_from_itunes_rss(feed)
+    def build_from_itunes_rss(feed, feed_url = nil)
+      site_url = normalize_url(feed.url, feed_url)
       {
         title: feed.title,
         description: feed.description,
-        site_url: feed.url,
+        site_url: site_url,
         image_url: feed.itunes_image
       }
     end
 
-    def build_from_atom_youtube(feed)
-      og = OpenGraph.new(feed.url)
+    def build_from_atom_youtube(feed, feed_url = nil)
+      site_url = normalize_url(feed.url, feed_url)
+      og = OpenGraph.new(site_url) rescue nil
       {
         title: feed.title,
-        description: og.description,
-        site_url: feed.url,
-        image_url: og.image
+        description: og&.description,
+        site_url: site_url,
+        image_url: og&.image
       }
+    end
+
+    def normalize_url(url, feed_url)
+      return feed_url if url.blank?
+
+      # 絶対URLの場合はそのまま返す
+      return url if url.start_with?("http://", "https://")
+
+      # 相対URLの場合はfeed_urlのドメインを使って絶対URLに変換
+      return feed_url unless feed_url
+
+      begin
+        uri = URI.parse(feed_url)
+        base_url = "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
+
+        if url.start_with?("/")
+          "#{base_url}#{url}"
+        else
+          URI.join(base_url, url).to_s
+        end
+      rescue URI::InvalidURIError
+        feed_url
+      end
     end
 
     def similar_to(channel)
@@ -292,7 +349,9 @@ class Channel < ApplicationRecord
   end
 
   def fetch_and_save_items(mode = :only_non_existing)
-    feed = Feedjira.parse(Httpc.get(feed_url))
+    # FeedNormalizerを使って正規化とパースを実行
+    normalization_result = self.class.fetch_and_normalize_feed(feed_url)
+    feed = normalization_result[:feed]
 
     entries =
       if mode == :all
@@ -407,6 +466,30 @@ class Channel < ApplicationRecord
 
   def mark_items_checked!
     update!(last_items_checked_at: Time.current)
+  end
+
+  def apply_filters(entry)
+    return entry if applied_filters.blank?
+
+    applied_filters.each do |filter_name|
+      filter_class = "FeedFilters::#{filter_name}".constantize
+      filter = filter_class.new
+
+      if filter.applicable?(entry, self)
+        entry = filter.apply(entry, self)
+
+        # フィルタ適用の詳細を記録（必要に応じて）
+        if filter.applied
+          Rails.logger.info "[Channel#apply_filters] Applied #{filter_name} to entry"
+        end
+      end
+    rescue NameError => e
+      Rails.logger.error "[Channel#apply_filters] Filter not found: #{filter_name} - #{e.message}"
+    rescue StandardError => e
+      Rails.logger.error "[Channel#apply_filters] Error applying filter #{filter_name}: #{e.message}"
+    end
+
+    entry
   end
 
   def set_check_interval!
@@ -542,7 +625,7 @@ class Channel < ApplicationRecord
   def notify_channel_change
     prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
     # last_items_checked_atとupdated_atの変更は無視する
-    ignored_fields = %w[last_items_checked_at updated_at created_at]
+    ignored_fields = %w[last_items_checked_at filter_details updated_at created_at]
     significant_changes = previous_changes.except(*ignored_fields)
 
     changed_fields = significant_changes.keys.map { |field| "# #{field}\n- [Old] #{significant_changes[field].first}\n- [New] #{significant_changes[field].last}" }

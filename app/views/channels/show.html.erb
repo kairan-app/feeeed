@@ -25,6 +25,22 @@
       <li class="break-all"><span class="material-symbols-outlined">rss_feed</span> <%= link_to(@channel.feed_url, @channel.feed_url, target: "_blank") %></li>
     </ul>
 
+    <% if @channel.applied_filters.present? && @channel.applied_filters.any? %>
+      <div class="my-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600" style="font-size: 18px;">build</span>
+          <div class="flex-1">
+            <span class="text-sm text-blue-800">
+              Applied Filters:
+              <% @channel.applied_filters.each_with_index do |filter_name, index| %>
+                <span class="font-medium"><%= filter_name %></span><%= index < @channel.applied_filters.length - 1 ? ", " : "" %>
+              <% end %>
+            </span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <div class="my-4 text-sm text-gray-600">
       <% if @channel.last_items_checked_at %>
         <div class="flex items-center gap-2 mb-2">

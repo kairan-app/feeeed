@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_27_014721) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_01_141459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -101,6 +101,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_014721) do
     t.datetime "updated_at", null: false
     t.integer "check_interval_hours", default: 1
     t.datetime "last_items_checked_at"
+    t.json "applied_filters", default: []
+    t.json "filter_details", default: {}
     t.index ["check_interval_hours"], name: "index_channels_on_check_interval_hours"
     t.index ["feed_url"], name: "index_channels_on_feed_url", unique: true
     t.index ["id"], name: "index_channels_on_id_desc", order: :desc
