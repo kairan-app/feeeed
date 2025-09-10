@@ -468,30 +468,6 @@ class Channel < ApplicationRecord
     update!(last_items_checked_at: Time.current)
   end
 
-  def apply_filters(entry)
-    return entry if applied_filters.blank?
-
-    applied_filters.each do |filter_name|
-      filter_class = "FeedFilters::#{filter_name}".constantize
-      filter = filter_class.new
-
-      if filter.applicable?(entry, self)
-        entry = filter.apply(entry, self)
-
-        # フィルタ適用の詳細を記録（必要に応じて）
-        if filter.applied
-          Rails.logger.info "[Channel#apply_filters] Applied #{filter_name} to entry"
-        end
-      end
-    rescue NameError => e
-      Rails.logger.error "[Channel#apply_filters] Filter not found: #{filter_name} - #{e.message}"
-    rescue StandardError => e
-      Rails.logger.error "[Channel#apply_filters] Error applying filter #{filter_name}: #{e.message}"
-    end
-
-    entry
-  end
-
   def set_check_interval!
     # 各期間内のアイテム数をカウント
     items_1_week = items.where("published_at > ?", 1.week.ago).count
