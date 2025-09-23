@@ -5,20 +5,10 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine => "/letter_opener"
   end
 
-  # Closed Beta routes
+  mount MissionControl::Jobs::Engine => "/admin/jobs"
+
   get    "/closed_beta",                       to: "closed_beta#show"
   post   "/closed_beta/request",               to: "closed_beta#request_access"
-
-  # Admin routes
-  namespace :admin do
-    mount MissionControl::Jobs::Engine, at: "/jobs"
-
-    resources :join_requests, only: [ :index ] do
-      member do
-        post :approve
-      end
-    end
-  end
 
   post   "/google_auth_callback",              to: "sessions#create"
   delete "/session",                           to: "sessions#destroy"
@@ -109,6 +99,11 @@ Rails.application.routes.draw do
                                                as: "channel_group_webhook"
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
+
+  get    "/admin/join_requests",               to: "admin/join_requests#index",
+                                               as: "admin_join_requests"
+  post   "/admin/join_requests/:id/approve",   to: "admin/join_requests#approve",
+                                               as: "approve_admin_join_request"
 
   root "welcome#index"
 end
