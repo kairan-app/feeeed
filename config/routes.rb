@@ -102,8 +102,8 @@ Rails.application.routes.draw do
 
   get    "/admin/join_requests",               to: "admin/join_requests#index",
                                                as: "admin_join_requests"
-  post   "/admin/join_requests/:id/approve",   to: "admin/join_requests#approve",
-                                               as: "approve_admin_join_request"
+  post   "/admin/join_requests/:id/approval",  to: "admin/join_requests/approvals#create",
+                                               as: "admin_join_request_approval"
 
   root "welcome#index"
 end

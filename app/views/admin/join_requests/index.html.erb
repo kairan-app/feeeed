@@ -36,7 +36,7 @@
                 </td>
                 <td class="px-4 py-2 whitespace-nowrap text-sm">
                   <%= button_to "承認",
-                        approve_admin_join_request_path(request),
+                        admin_join_request_approval_path(id: request.id),
                         method: :post,
                         class: "inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
                         data: { confirm: "#{request.email}を承認しますか？" } %>
