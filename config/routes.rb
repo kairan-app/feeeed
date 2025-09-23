@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   get "/up" => "rails/health#show", as: :rails_health_check
 
-  mount MissionControl::Jobs::Engine, at: "/jobs"
-
   if Rails.env.development?
     mount LetterOpenerWeb::Engine => "/letter_opener"
   end
@@ -13,6 +11,8 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
+    mount MissionControl::Jobs::Engine, at: "/jobs"
+
     resources :join_requests, only: [ :index ] do
       member do
         post :approve
