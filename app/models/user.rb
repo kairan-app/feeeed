@@ -143,4 +143,19 @@ class User < ApplicationRecord
     sort_by { |_, items| items.first.created_at }.
     reverse
   end
+
+  def admin?
+    admin == true
+  end
+
+  def approved_user?
+    # 既存ユーザー（adminカラムが追加される前のユーザー）は承認済みとみなす
+    return true if created_at < Time.zone.parse("2025-09-17")
+
+    # 管理者は常に承認済み
+    return true if admin?
+
+    # JoinRequestで承認されているかチェック
+    JoinRequest.where(email: email).approved.exists?
+  end
 end

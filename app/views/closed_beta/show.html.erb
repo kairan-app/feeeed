@@ -1,0 +1,103 @@
+<div class="max-w-4xl mx-auto py-8 px-4">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Closed Beta への参加リクエスト</h1>
+
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4">rururuは現在Closed Beta期間中です</h2>
+    <p class="text-gray-600 mb-4">
+      rururuへのアクセスは現在、承認制となっています。<br>
+      使ってみたい方は、以下のフォームからリクエストをお送りください。
+    </p>
+    <p class="text-gray-600">
+      承認されましたら、ご登録いただいたGoogleアカウントのメールアドレスにご連絡いたします。
+    </p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4">参加リクエストフォーム</h2>
+
+    <div id="closed-beta-form">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+          ひとことコメント（任意）
+        </label>
+        <input type="text" id="comment" name="comment"
+               placeholder="どこでrururuを知りましたか？ など"
+               maxlength="256"
+               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <p class="text-sm text-gray-500 mt-1">最大256文字</p>
+      </div>
+
+      <div class="mb-6">
+        <p class="text-sm text-gray-600 mb-4">
+          Googleアカウントでログインして、リクエストを送信してください。
+        </p>
+
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <div id="g_id_onload"
+           data-client_id="<%= Rails.application.credentials.google_auth_app.client_id %>"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-text="signin_with"
+           data-shape="rectangular"
+           data-logo_alignment="left">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 text-center">
+    <p class="text-gray-600">
+      お問い合わせがある場合は、開発チームのjunebokuかsugiweにご連絡ください。
+    </p>
+  </div>
+</div>
+
+<script>
+  function handleCredentialResponse(response) {
+    const comment = document.getElementById('comment').value;
+
+    // CSRFトークンを取得
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+    // フォームを作成して送信
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/closed_beta/request';
+
+    // CSRFトークン
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'authenticity_token';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    // Googleの認証情報
+    const credentialInput = document.createElement('input');
+    credentialInput.type = 'hidden';
+    credentialInput.name = 'credential';
+    credentialInput.value = response.credential;
+    form.appendChild(credentialInput);
+
+    // g_csrf_token
+    const gCsrfInput = document.createElement('input');
+    gCsrfInput.type = 'hidden';
+    gCsrfInput.name = 'g_csrf_token';
+    gCsrfInput.value = response.g_csrf_token || '';
+    form.appendChild(gCsrfInput);
+
+    // コメント
+    const commentInput = document.createElement('input');
+    commentInput.type = 'hidden';
+    commentInput.name = 'comment';
+    commentInput.value = comment;
+    form.appendChild(commentInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+</script>

@@ -13,9 +13,14 @@ class SessionsController < ApplicationController
     email = payload["email"]
     local_part = email.split("@").first
 
-    if user.new_record? && !ENV["ALLOWED_USERS"].split(",").include?(local_part)
-      DiscoPosterJob.perform_later(content: "#{email} tried to log in")
-      return redirect_to info_path
+    # 新規ユーザーの場合は承認チェック
+    if user.new_record?
+      # JoinRequestで承認されているかチェック
+      join_request = JoinRequest.where(email: email).approved.first
+      if join_request.nil?
+        # 承認されていない場合は/closed_betaにリダイレクト
+        return redirect_to closed_beta_path, alert: "アクセスリクエストを送信してください"
+      end
     end
 
     user.email ||= email

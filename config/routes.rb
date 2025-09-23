@@ -7,6 +7,19 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine => "/letter_opener"
   end
 
+  # Closed Beta routes
+  get    "/closed_beta",                       to: "closed_beta#show"
+  post   "/closed_beta/request",               to: "closed_beta#request_access"
+
+  # Admin routes
+  namespace :admin do
+    resources :join_requests, only: [ :index ] do
+      member do
+        post :approve
+      end
+    end
+  end
+
   post   "/google_auth_callback",              to: "sessions#create"
   delete "/session",                           to: "sessions#destroy"
   get    "/channels/preview",                  to: "channels/preview#show",
