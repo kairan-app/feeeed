@@ -48,6 +48,12 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Disable underline for specific login button */
+.google-login a,
+.google-login a:hover {
+  text-decoration: none !important;
+}
+
 .google-login {
   position: absolute;
   top: 18px;
