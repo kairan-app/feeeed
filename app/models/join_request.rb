@@ -8,8 +8,8 @@ class JoinRequest < ApplicationRecord
   scope :approved, -> { where.not(approved_at: nil) }
   scope :recent, -> { order(created_at: :desc) }
 
-  def approve!(admin_user)
-    update!(
+  def approve(admin_user)
+    update(
       approved_by: admin_user,
       approved_at: Time.current
     )

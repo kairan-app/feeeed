@@ -2,7 +2,7 @@ class Admin::JoinRequests::ApprovalsController < AdminController
   def create
     @join_request = JoinRequest.find(params[:id])
 
-    if @join_request.approve!(current_user)
+    if @join_request.approve(current_user)
       # メール送信
       JoinRequestMailer.welcome_email(@join_request).deliver_later
 
