@@ -6,7 +6,6 @@ class JoinRequest < ApplicationRecord
 
   scope :pending, -> { where(approved_at: nil) }
   scope :approved, -> { where.not(approved_at: nil) }
-  scope :recent, -> { order(created_at: :desc) }
 
   def approve(admin_user)
     update(
