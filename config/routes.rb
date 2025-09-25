@@ -8,7 +8,11 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine => "/admin/jobs"
 
   get    "/closed_beta",                       to: "closed_beta#show"
-  post   "/closed_beta/request",               to: "closed_beta#request_access"
+
+  get    "/join_requests/new",                 to: "join_requests#new",
+                                               as: "new_join_request"
+  post   "/join_requests",                      to: "join_requests#create",
+                                               as: "join_requests"
 
   post   "/google_auth_callback",              to: "sessions#create"
   delete "/session",                           to: "sessions#destroy"

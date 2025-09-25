@@ -16,17 +16,6 @@
     <h2 class="text-xl font-semibold mb-4">参加リクエストフォーム</h2>
 
     <div id="closed-beta-form">
-      <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2">
-          ひとことコメント（任意）
-        </label>
-        <input type="text" id="comment" name="comment"
-               placeholder="どこでrururuを知りましたか？ など"
-               maxlength="256"
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <p class="text-sm text-gray-500 mt-1">最大256文字</p>
-      </div>
-
       <div class="mb-6">
         <p class="text-sm text-gray-600 mb-4">
           Googleアカウントでログインして、リクエストを送信してください。
@@ -59,45 +48,22 @@
 
 <script>
   function handleCredentialResponse(response) {
-    const comment = document.getElementById('comment').value;
-
-    // CSRFトークンを取得
+    // fetchを使ったより安全な実装
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-    // フォームを作成して送信
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/closed_beta/request';
-
-    // CSRFトークン
-    const csrfInput = document.createElement('input');
-    csrfInput.type = 'hidden';
-    csrfInput.name = 'authenticity_token';
-    csrfInput.value = csrfToken;
-    form.appendChild(csrfInput);
-
-    // Googleの認証情報
-    const credentialInput = document.createElement('input');
-    credentialInput.type = 'hidden';
-    credentialInput.name = 'credential';
-    credentialInput.value = response.credential;
-    form.appendChild(credentialInput);
-
-    // g_csrf_token
-    const gCsrfInput = document.createElement('input');
-    gCsrfInput.type = 'hidden';
-    gCsrfInput.name = 'g_csrf_token';
-    gCsrfInput.value = response.g_csrf_token || '';
-    form.appendChild(gCsrfInput);
-
-    // コメント
-    const commentInput = document.createElement('input');
-    commentInput.type = 'hidden';
-    commentInput.name = 'comment';
-    commentInput.value = comment;
-    form.appendChild(commentInput);
-
-    document.body.appendChild(form);
-    form.submit();
+    fetch('/google_auth_callback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken
+      },
+      body: JSON.stringify({
+        credential: response.credential
+      })
+    }).then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      }
+    });
   }
 </script>
