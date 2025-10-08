@@ -4,7 +4,7 @@ class OwnershipsController < ApplicationController
 
   def create
     current_user.add_channel(@channel)
-    DiscoPosterJob.perform_later(content: "@#{current_user.name} added #{@channel.title} to their own", channel: :user_activities)
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} added #{@channel.title} to their own channels #{channel_url(@channel)}", channel: :user_activities)
 
     redirect_to @channel
   end

@@ -4,7 +4,7 @@ class ChannelGroupingsController < ApplicationController
   def create
     grouping = ChannelGrouping.create(channel_id: params[:channel_id], channel_group_id: params[:channel_group_id])
 
-    DiscoPosterJob.perform_later(content: "@#{current_user.name} added #{grouping.channel.title} to #{grouping.channel_group.name}", channel: :user_activities)
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} added #{grouping.channel.title} to #{grouping.channel_group.name} #{channel_group_url(grouping.channel_group)}", channel: :user_activities)
     redirect_to grouping.channel, notice: "Channel added to group"
   end
 
