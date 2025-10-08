@@ -36,9 +36,6 @@ Rails.application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
-
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
@@ -50,4 +47,10 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Set host to be used by URL helpers
+  url_options = { host: "example.com", protocol: "http" }
+  config.action_controller.default_url_options = url_options
+  config.action_mailer.default_url_options = url_options
+  Rails.application.routes.default_url_options = url_options
 end
