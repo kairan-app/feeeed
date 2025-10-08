@@ -27,6 +27,6 @@ class JoinRequestNotifierJob < ApplicationJob
       }
     ]
 
-    DiscoPosterJob.perform_later(embeds: embeds)
+    DiscoPosterJob.perform_later(embeds: embeds, channel: :admin)
   end
 end

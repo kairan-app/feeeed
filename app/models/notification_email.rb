@@ -36,8 +36,9 @@ class NotificationEmail < ApplicationRecord
     pawprints = user.pawprints.where("created_at >= ?", at).to_a
     return if pawprints.empty?
 
-    DiscoPosterJob.perform_later(content:
-      "NotificationEmail performed (id: #{id}, user: @#{user.name}, mode: pawprints, #{pawprints.count} pawprints)"
+    DiscoPosterJob.perform_later(
+      content: "NotificationEmail performed (id: #{id}, user: @#{user.name}, mode: pawprints, #{pawprints.count} pawprints)",
+      channel: :user_activities
     )
 
     NotificationEmailMailer.pawprints(notification_email: self, pawprints:).deliver_later
@@ -51,8 +52,9 @@ class NotificationEmail < ApplicationRecord
 
     channels = items.map(&:channel).uniq
 
-    DiscoPosterJob.perform_later(content:
-      "NotificationEmail performed (id: #{id}, user: @#{user.name}, mode: subscribed_items, #{channels.count} channels, #{items.count} items)"
+    DiscoPosterJob.perform_later(
+      content: "NotificationEmail performed (id: #{id}, user: @#{user.name}, mode: subscribed_items, #{channels.count} channels, #{items.count} items)",
+      channel: :user_activities
     )
 
     subject =

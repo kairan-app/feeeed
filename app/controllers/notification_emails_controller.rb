@@ -5,7 +5,7 @@ class NotificationEmailsController < ApplicationController
     ne = current_user.notification_emails.new(notification_email_params)
 
     if ne.save
-      DiscoPosterJob.perform_later(content: "@#{current_user.name} added a notification email (mode: #{ne.mode})")
+      DiscoPosterJob.perform_later(content: "@#{current_user.name} added a notification email (mode: #{ne.mode})", channel: :user_activities)
       redirect_to my_notification_settings_path, notice: "Verification email sent. Please check your inbox."
     else
       redirect_to my_notification_settings_path, alert: ne.errors.full_messages.join(", ")

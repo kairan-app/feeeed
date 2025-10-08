@@ -8,7 +8,8 @@ class Admin::JoinRequests::ApprovalsController < AdminController
 
       # Discord通知
       DiscoPosterJob.perform_later(
-        content: "✅ #{@join_request.email}を承認しました (by @#{current_user.name})"
+        content: "✅ #{@join_request.email}を承認しました (by @#{current_user.name})",
+        channel: :admin
       )
 
       redirect_to admin_join_requests_path, notice: "#{@join_request.email}を承認しました"

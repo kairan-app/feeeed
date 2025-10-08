@@ -614,7 +614,7 @@ class Channel < ApplicationRecord
       "```"
     ].join("\n")
 
-    DiscoPosterJob.perform_later(content: content)
+    DiscoPosterJob.perform_later(content: content, channel: :content_updates)
   end
 
   def to_discord_more_embed
