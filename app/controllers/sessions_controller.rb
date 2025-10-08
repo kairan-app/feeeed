@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
 
   def create
     # JSONリクエストとフォームリクエストの両方に対応
-    credential = params[:credential] || JSON.parse(request.body.read)['credential'] rescue params[:credential]
+    credential = params[:credential] || JSON.parse(request.body.read)["credential"] rescue params[:credential]
 
     payload = Google::Auth::IDTokens.verify_oidc(
       credential,
