@@ -14,7 +14,7 @@ class JoinRequest < ApplicationRecord
     )
 
     if result
-      JoinRequestMailer.welcome_email(self).deliver_later
+      JoinRequestMailer.welcome(self).deliver_later
     end
 
     result
