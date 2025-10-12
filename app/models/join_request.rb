@@ -7,11 +7,17 @@ class JoinRequest < ApplicationRecord
   scope :pending, -> { where(approved_at: nil) }
   scope :approved, -> { where.not(approved_at: nil) }
 
-  def approve(admin_user)
-    update(
-      approved_by: admin_user,
+  def approve_by(user)
+    result = update(
+      approved_by: user,
       approved_at: Time.current
     )
+
+    if result
+      JoinRequestMailer.welcome_email(self).deliver_later
+    end
+
+    result
   end
 
   def approved?
