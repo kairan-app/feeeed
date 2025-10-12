@@ -16,11 +16,6 @@ class JoinRequestNotifierJob < ApplicationJob
             name: "コメント",
             value: join_request.comment.presence || "（なし）",
             inline: false
-          },
-          {
-            name: "リクエスト日時",
-            value: join_request.created_at.strftime("%Y-%m-%d %H:%M"),
-            inline: true
           }
         ],
         timestamp: Time.current.iso8601
