@@ -1,17 +1,6 @@
 <div class="max-w-4xl mx-auto py-8 px-4">
   <h1 class="text-3xl font-bold text-gray-800 mb-6">Closed Beta への参加リクエスト</h1>
 
-  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-    <h2 class="text-xl font-semibold mb-4">rururuは現在Closed Beta期間中です</h2>
-    <p class="text-gray-600 mb-4">
-      rururuへのアクセスは現在、承認制となっています。<br>
-      使ってみたい方は、以下のフォームからリクエストをお送りください。
-    </p>
-    <p class="text-gray-600">
-      承認されましたら、ご登録いただいたGoogleアカウントのメールアドレスにご連絡いたします。
-    </p>
-  </div>
-
   <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-semibold mb-4">参加リクエストフォーム</h2>
 
@@ -26,14 +15,17 @@
     <%= form_with model: @join_request, url: join_requests_path, local: true do |form| %>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">
-          ひとことコメント（任意）
+          ひとことコメント (最大256文字)
         </label>
-        <%= form.text_field :comment,
-                           placeholder: "どこでrururuを知りましたか？ など",
+        <%= form.text_area :comment,
+                           placeholder: "どこでrururuを知りましたか？",
                            maxlength: 256,
+                           rows: 1,
                            class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-        <p class="text-sm text-gray-500 mt-1">最大256文字</p>
       </div>
+      <p class="text-sm text-gray-600 mb-6">
+        「誰なのか」「どこでrururuを知ったのか」等がわかれば迷わず承認できますので、なにかしら書いていただけると助かります！
+      </p>
 
       <div class="mb-6">
         <%= form.submit "リクエストを送信",
