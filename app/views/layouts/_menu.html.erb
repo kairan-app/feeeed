@@ -26,6 +26,14 @@
   <input type="checkbox" name="hamburger" id="hamburger" class="hamburger-menu-input"/>
   <label for="hamburger" class="hamburger-menu-bg"></label>
   <ul class="hamburger-menu-list">
+    <% if current_user.admin? %>
+    <li>
+      <%= link_to(admin_path) do %>
+        <span class="material-symbols-outlined">admin_panel_settings</span>
+        <span>Admin</span>
+      <% end %>
+    </li>
+    <% end %>
     <li>
       <%= link_to(guides_path) do %>
         <span class="material-symbols-outlined">info</span>

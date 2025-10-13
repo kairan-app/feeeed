@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine => "/letter_opener"
   end
 
-  mount MissionControl::Jobs::Engine => "/admin/jobs"
+  mount MissionControl::Jobs::Engine, at: "/admin/jobs", as: :admin_jobs
 
   get    "/closed_beta",                       to: "closed_beta#show"
 
@@ -104,6 +104,8 @@ Rails.application.routes.draw do
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
 
+  get    "/admin",                             to: "admin#index",
+                                               as: "admin"
   get    "/admin/join_requests",               to: "admin/join_requests#index",
                                                as: "admin_join_requests"
   post   "/admin/join_requests/:id/approval",  to: "admin/join_requests/approvals#create",
