@@ -15,6 +15,10 @@ class JoinRequest < ApplicationRecord
 
     if result
       JoinRequestMailer.welcome(self).deliver_later
+      DiscoPosterJob.perform_later(
+        content: "✅ #{email}を承認しました (by @#{user.name})",
+        channel: :admin
+      )
     end
 
     result
