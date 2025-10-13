@@ -22,7 +22,7 @@ class ChannelsController < ApplicationController
   def create
     url = params[:url]
 
-    DiscoPosterJob.perform_later(content: "@#{current_user.name} try to add #{url}")
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} try to add #{url}", channel: :user_activities)
 
     channel = Channel.add(url)
 

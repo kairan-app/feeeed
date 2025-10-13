@@ -27,6 +27,10 @@ class User < ApplicationRecord
   validates :icon_url, presence: true
   validates_url_http_format_of :icon_url
 
+  def admin?
+    admin == true
+  end
+
   def username_changed?
     email.split("@").first != name
   end

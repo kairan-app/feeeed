@@ -13,7 +13,7 @@ class Channels::PreviewController < ApplicationController
 
     @similar_channels = Channel.similar_to(@channel)
 
-    DiscoPosterJob.perform_later(content: "@#{current_user.name} previewed #{@channel.title}\n#{@channel.feed_url}")
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} previewed #{@channel.title}\n#{@channel.feed_url}", channel: :user_activities)
     @title = "Channel Preview: #{@channel.title}"
   end
 end

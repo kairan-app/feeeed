@@ -44,8 +44,9 @@ class NotificationWebhook < ApplicationRecord
       return
     end
 
-    DiscoPosterJob.perform_later(content:
-      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_discord, #{pawprints.count} pawprints)"
+    DiscoPosterJob.perform_later(
+      content: "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_discord, #{pawprints.count} pawprints)",
+      channel: :user_activities
     )
 
     pawprints.to_a.each_slice(3).with_index { |sub_pawprints, index|
@@ -70,8 +71,9 @@ class NotificationWebhook < ApplicationRecord
       return
     end
 
-    DiscoPosterJob.perform_later(content:
-      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_slack, #{pawprints.count} pawprints)"
+    DiscoPosterJob.perform_later(
+      content: "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: pawprints_to_slack, #{pawprints.count} pawprints)",
+      channel: :user_activities
     )
 
     pawprints.each.with_index { |pawprint, index|
@@ -102,8 +104,9 @@ class NotificationWebhook < ApplicationRecord
       return
     end
 
-    DiscoPosterJob.perform_later(content:
-      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_discord, #{items.count} items)"
+    DiscoPosterJob.perform_later(
+      content: "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_discord, #{items.count} items)",
+      channel: :user_activities
     )
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|
@@ -129,8 +132,9 @@ class NotificationWebhook < ApplicationRecord
       return
     end
 
-    DiscoPosterJob.perform_later(content:
-      "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_slack, #{items.count} items)"
+    DiscoPosterJob.perform_later(
+      content: "NotificationWebhook performed (id: #{id}, user: @#{user.name}, mode: subscribed_items_to_slack, #{items.count} items)",
+      channel: :user_activities
     )
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|

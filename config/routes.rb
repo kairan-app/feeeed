@@ -1,11 +1,19 @@
 Rails.application.routes.draw do
   get "/up" => "rails/health#show", as: :rails_health_check
 
-  mount MissionControl::Jobs::Engine, at: "/jobs"
-
   if Rails.env.development?
     mount LetterOpenerWeb::Engine => "/letter_opener"
   end
+
+  mount MissionControl::Jobs::Engine, at: "/admin/jobs", as: :admin_jobs
+
+  get    "/login",                             to: "login#show",
+                                               as: "login"
+
+  get    "/join_requests/new",                 to: "join_requests#new",
+                                               as: "new_join_request"
+  post   "/join_requests",                      to: "join_requests#create",
+                                               as: "join_requests"
 
   post   "/google_auth_callback",              to: "sessions#create"
   delete "/session",                           to: "sessions#destroy"
@@ -89,13 +97,18 @@ Rails.application.routes.draw do
   get    "/my/graduation",                     to: "my/graduation#show"
   get    "/about",                             to: "about#index",
                                                as: "about"
-  get    "/info",                              to: "info#index",
-                                               as: "info"
   post   "/channel_group_webhooks",            to: "channel_group_webhooks#create"
   delete "/channel_group_webhooks/:id",        to: "channel_group_webhooks#destroy",
                                                as: "channel_group_webhook"
   get    "/terms",                             to: "legal#terms", as: :terms
   get    "/privacy",                           to: "legal#privacy", as: :privacy
+
+  get    "/admin",                             to: "admin#index",
+                                               as: "admin"
+  get    "/admin/join_requests",               to: "admin/join_requests#index",
+                                               as: "admin_join_requests"
+  post   "/admin/join_requests/:id/approval",  to: "admin/join_requests/approvals#create",
+                                               as: "admin_join_request_approval"
 
   root "welcome#index"
 end

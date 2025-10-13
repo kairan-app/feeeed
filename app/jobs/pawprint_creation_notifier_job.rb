@@ -8,6 +8,6 @@ class PawprintCreationNotifierJob < ApplicationJob
     content = "@#{user.name} pawed!"
     embeds = [ pawprint.to_discord_embed ]
 
-    DiscoPosterJob.perform_later(content:, embeds:)
+    DiscoPosterJob.perform_later(content:, embeds:, channel: :user_activities)
   end
 end

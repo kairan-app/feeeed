@@ -4,7 +4,7 @@ class SubscriptionsController < ApplicationController
 
   def create
     current_user.subscribe(@channel)
-    DiscoPosterJob.perform_later(content: "@#{current_user.name} subscribed to #{@channel.title}")
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} subscribed to #{@channel.title} #{channel_url(@channel)}", channel: :user_activities)
 
     redirect_to @channel
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_01_141459) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -135,6 +135,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_141459) do
     t.index ["channel_id"], name: "index_items_on_channel_id"
     t.index ["created_at", "channel_id"], name: "index_items_on_created_at_and_channel_id"
     t.index ["published_at"], name: "index_items_on_published_at"
+  end
+
+  create_table "join_requests", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "icon_url"
+    t.string "comment", limit: 256
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_join_requests_on_approved_by_id"
+    t.index ["email"], name: "index_join_requests_on_email", unique: true
   end
 
   create_table "memberships", force: :cascade do |t|
@@ -330,6 +342,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_141459) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "google_guid", null: false
+    t.boolean "admin", default: false, null: false
     t.index ["google_guid"], name: "index_users_on_google_guid", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
   end
@@ -346,6 +359,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_01_141459) do
   add_foreign_key "item_skips", "items"
   add_foreign_key "item_skips", "users"
   add_foreign_key "items", "channels"
+  add_foreign_key "join_requests", "users", column: "approved_by_id"
   add_foreign_key "memberships", "channel_groups"
   add_foreign_key "memberships", "users"
   add_foreign_key "notification_emails", "users"

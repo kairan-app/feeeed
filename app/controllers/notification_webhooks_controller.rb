@@ -5,7 +5,7 @@ class NotificationWebhooksController < ApplicationController
     nw = current_user.notification_webhooks.new(notification_webhook_params)
 
     if nw.save
-      DiscoPosterJob.perform_later(content: "@#{current_user.name} added a notification webhook (mode: #{nw.mode})")
+      DiscoPosterJob.perform_later(content: "@#{current_user.name} added a notification webhook (mode: #{nw.mode})", channel: :user_activities)
       redirect_to my_notification_settings_path, notice: "Notification webhook was successfully created."
     else
       redirect_to my_notification_settings_path, alert: nw.errors.full_messages.join(", ")

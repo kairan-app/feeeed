@@ -9,7 +9,7 @@ class ItemCreationNotifierJob < ApplicationJob
     content = "New item saved"
     embeds = [ item.to_discord_embed ]
 
-    DiscoPosterJob.perform_later(content:, embeds:)
+    DiscoPosterJob.perform_later(content:, embeds:, channel: :content_updates)
   end
 
   def should_notify?(item)

@@ -68,6 +68,6 @@ class BulkChannelImportJob < ApplicationJob
 
     content = content.join("\n")
 
-    DiscoPosterJob.perform_later(content: content)
+    DiscoPosterJob.perform_later(content: content, channel: :user_activities)
   end
 end

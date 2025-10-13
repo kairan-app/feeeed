@@ -608,13 +608,13 @@ class Channel < ApplicationRecord
     return if changed_fields.empty?
 
     content = [
-      "[#{prefix}] #{title}",
+      "[#{prefix}] #{title} #{channel_url(self)}",
       "```",
       changed_fields.join("\n\n"),
       "```"
     ].join("\n")
 
-    DiscoPosterJob.perform_later(content: content)
+    DiscoPosterJob.perform_later(content: content, channel: :content_updates)
   end
 
   def to_discord_more_embed
