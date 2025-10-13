@@ -49,12 +49,12 @@ a:hover {
 }
 
 /* Disable underline for specific login button */
-.google-login a,
-.google-login a:hover {
+.login-link a,
+.login-link a:hover {
   text-decoration: none !important;
 }
 
-.google-login {
+.login-link {
   position: absolute;
   top: 18px;
   right: 15px;
@@ -63,7 +63,7 @@ a:hover {
 }
 
 @media screen and (max-width: 768px) {
-  .google-login {
+  .login-link {
     position: fixed;
     top: auto;
     bottom: 80px;

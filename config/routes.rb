@@ -7,7 +7,8 @@ Rails.application.routes.draw do
 
   mount MissionControl::Jobs::Engine, at: "/admin/jobs", as: :admin_jobs
 
-  get    "/closed_beta",                       to: "closed_beta#show"
+  get    "/login",                             to: "login#show",
+                                               as: "login"
 
   get    "/join_requests/new",                 to: "join_requests#new",
                                                as: "new_join_request"
