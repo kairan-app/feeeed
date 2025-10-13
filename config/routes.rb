@@ -97,8 +97,6 @@ Rails.application.routes.draw do
   get    "/my/graduation",                     to: "my/graduation#show"
   get    "/about",                             to: "about#index",
                                                as: "about"
-  get    "/info",                              to: "info#index",
-                                               as: "info"
   post   "/channel_group_webhooks",            to: "channel_group_webhooks#create"
   delete "/channel_group_webhooks/:id",        to: "channel_group_webhooks#destroy",
                                                as: "channel_group_webhook"
