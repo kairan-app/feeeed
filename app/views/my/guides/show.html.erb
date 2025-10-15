@@ -95,3 +95,22 @@
     </div>
   </div>
 </div>
+
+<div class="mt-8 p-6 bg-gray-50 rounded-lg">
+  <h3 class="text-lg font-bold mb-3">質問・要望等</h3>
+  <p class="mb-4">
+    使い方でわからないことや、要望などがあればお気軽にお声がけください。
+  </p>
+  <div class="flex gap-4">
+    <% if ENV["DISCORD_INVITE_URL"].present? %>
+      <%= link_to(ENV["DISCORD_INVITE_URL"], class:"inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700", target:"_blank", rel:"noopener noreferrer") do %>
+        <span>Discordで相談する</span>
+        <span class="material-symbols-outlined">open_in_new</span>
+      <% end %>
+    <% end %>
+    <%= link_to("https://github.com/kairan-app/feeeed/issues", class:"inline-flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900", target:"_blank", rel:"noopener noreferrer") do %>
+      <span>GitHubで報告する</span>
+      <span class="material-symbols-outlined">open_in_new</span>
+    <% end %>
+  </div>
+</div>
