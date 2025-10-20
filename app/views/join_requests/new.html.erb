@@ -15,16 +15,18 @@
     <%= form_with model: @join_request, url: join_requests_path, local: true do |form| %>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">
-          ひとことコメント (最大256文字)
+          自己紹介とrururuを知ったきっかけ (最大256文字)
         </label>
         <%= form.text_area :comment,
-                           placeholder: "どこでrururuを知りましたか？",
+                           placeholder: "例: 𝕏の@usernameです。@sugiweさんや@junebokuさんの告知を見て興味を持ちました！",
                            maxlength: 256,
-                           rows: 1,
+                           rows: 2,
                            class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
       <p class="text-sm text-gray-600 mb-6">
-        「誰なのか」「どこでrururuを知ったのか」等がわかれば迷わず承認できますので、なにかしら書いていただけると助かります！
+        <strong>以下の情報があると承認がスムーズです:</strong><br>
+        ・あなたが誰か(お名前、ハンドルネーム、所属コミュニティなど)<br>
+        ・どこでrururuを知ったか(𝕏、ブログ、知人からの紹介など)
       </p>
 
       <div class="mb-6">
