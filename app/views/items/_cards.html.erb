@@ -15,12 +15,12 @@
     </div>
     <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold"><%= link_to(item.title, item.url, target: "_blank") %></h3>
     <% if with_channel %>
-      <span class="card-channel">
+      <span class="block mb-[0.1em] text-[0.9em] leading-[1.5em] text-[#555555]">
         <%= image_tag(item.channel.favicon_url, size: "16x16", class: "w-[14px] h-auto") %>
         <%= link_to(item.channel.title, item.channel) %>
       </span>
     <% end %>
-    <span class="card-publish"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
+    <span class="block mb-[0.1em] text-[0.9em] leading-[1.5em] text-[#555555]"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
     <%= render(partial: "items/pawprint", locals: { item: item, pawprint: false }) %>
   </div>
   <% end %>

@@ -527,19 +527,6 @@ header nav ul li a:hover {
 }
 
 
-.card-description,
-.card-channel,
-.card-publish {
-  display: block;
-  margin: 0 0 0.1em;
-  font-size: 0.9em;
-  line-height: 1.5em;
-  color: #555555;
-}
-
-.card-channel a {
-  color: #555555;
-}
 
 img {
   display: inline-block;
