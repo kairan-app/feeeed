@@ -2,7 +2,7 @@
   <%= render(partial: "channels/search_form", locals: { channel_q: @channel_q }) %>
 
   <% if logged_in? %>
-  <ul class="pc-menu">
+  <ul class="max-md:!hidden">
     <li>
       <%= link_to(pawprints_path) do %>
         <span class="material-symbols-outlined"><%= image_tag("icon-pawprints-b.svg", alt: "pawprints", loading: "lazy", width: 24, height: 24) %></span>
