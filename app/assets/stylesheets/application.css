@@ -940,48 +940,6 @@ a.remove-from-my-own:hover {
   background-color: #aaaaaa;
 }
 
-.setting-cards {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-@media screen and (max-width: 768px) {
-  .setting-cards {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-.setting-card {
-  width: 100%;
-}
-
-.setting-card .card-image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ffffff;
-}
-
-@media screen and (max-width: 768px) {
-  .setting-card .card-image {
-    height: calc(100vw * 2 / 3 - 30px);
-  }
-}
-
-.setting-card .card-image .material-symbols-outlined {
-  margin: 0;
-  font-size: 96px;
-  color: #ccc;
-}
-
-.setting-card a {
-  transition: 0.5s;
-}
-
-.setting-card a:hover {
-  text-decoration: none;
-  opacity: 0.7;
-}
-
 .nav-setting {
   position: relative;
   display: flex;
