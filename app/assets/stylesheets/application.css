@@ -18,22 +18,6 @@ textarea {
   field-sizing: content;
 }
 
-.br-sp {
-  display: none;
-}
-
-@media screen and (max-width: 768px) {
-  .br-sp {
-    display: block;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .br-pc {
-    display: none;
-  }
-}
-
 @media screen and (max-width: 768px) {
   body {
     font-size: 90%;
