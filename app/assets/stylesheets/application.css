@@ -526,12 +526,6 @@ header nav ul li a:hover {
   }
 }
 
-.card-channel {
-  img {
-    width: 14px;
-    height: auto;
-  }
-}
 
 .card-description,
 .card-channel,
