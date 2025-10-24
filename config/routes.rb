@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine => "/letter_opener"
+    get "/dev/login", to: "dev#login"
   end
 
   mount MissionControl::Jobs::Engine, at: "/admin/jobs", as: :admin_jobs
