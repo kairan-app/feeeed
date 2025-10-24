@@ -335,12 +335,6 @@ header nav ul li a:hover {
   transform-origin: 0%;
 }
 
-/* Menu for PC */
-@media screen and (max-width: 768px) {
-  .pc-menu {
-    display: none;
-  }
-}
 
 /* Tab for Smatrphone */
 .sp-tab {
