@@ -388,49 +388,6 @@ header nav ul li a:hover {
   }
 }
 
-.cards {
-  width: 100%;
-  display: grid;
-  gap: 15px;
-}
-
-.channel-cards {
-  grid-template-columns: repeat(5, 1fr);
-}
-
-@media screen and (max-width: 1200px) {
-  .channel-cards {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media screen and (max-width: 960px) {
-  .channel-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .channel-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.item-cards {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-@media screen and (max-width: 1200px) {
-  .item-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media screen and (max-width: 960px) {
-  .item-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 
 .card-image {
   position: relative;
