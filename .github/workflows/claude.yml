@@ -32,10 +32,10 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Code
-        uses: anthropics/claude-code-action@beta
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          allowed_tools: "Agent,Bash,Edit,MultiEdit,WebFetch,WebSearch,Write"
-          custom_instructions: |
-            - 日本語で会話すること
-            - コードレビューや質問に対して、具体的で建設的なフィードバックを提供すること
+          claude_args: |
+            --allowed-tools Agent,Bash,Edit,MultiEdit,WebFetch,WebSearch,Write
+            --system-prompt "- 日本語で会話すること
+            - コードレビューや質問に対して、具体的で建設的なフィードバックを提供すること"
