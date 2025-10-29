@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_28_062312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,7 +55,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
 
   create_table "channel_group_webhooks", force: :cascade do |t|
     t.bigint "channel_group_id", null: false
-    t.string "url", limit: 2083, null: false
+    t.string "url", limit: 4096, null: false
     t.datetime "last_notified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -94,9 +94,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
   create_table "channels", force: :cascade do |t|
     t.string "title", limit: 256, null: false
     t.string "description", limit: 1024
-    t.string "site_url", limit: 2083
-    t.string "feed_url", limit: 2083, null: false
-    t.string "image_url", limit: 2083
+    t.string "site_url", limit: 4096
+    t.string "feed_url", limit: 4096, null: false
+    t.string "image_url", limit: 4096
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "check_interval_hours", default: 1
@@ -124,8 +124,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
     t.bigint "channel_id", null: false
     t.string "guid", limit: 2083, null: false
     t.string "title", limit: 256, null: false
-    t.string "url", limit: 2083, null: false
-    t.string "image_url", limit: 2083
+    t.string "url", limit: 4096, null: false
+    t.string "image_url", limit: 4096
     t.datetime "published_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -173,7 +173,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
 
   create_table "notification_webhooks", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "url", limit: 2083, null: false
+    t.string "url", limit: 4096, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_notified_at"
@@ -338,7 +338,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_020215) do
   create_table "users", force: :cascade do |t|
     t.string "name", limit: 30, null: false
     t.string "email", limit: 254, null: false
-    t.string "icon_url", limit: 2083, null: false
+    t.string "icon_url", limit: 4096, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "google_guid", null: false
