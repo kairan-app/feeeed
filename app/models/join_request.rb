@@ -31,4 +31,8 @@ class JoinRequest < ApplicationRecord
   def pending?
     approved_at.nil?
   end
+
+  def user
+    User.find_by(email: email)
+  end
 end
