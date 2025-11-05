@@ -207,6 +207,8 @@ class Channel < ApplicationRecord
         build_from_itunes_rss(feed, feed_url)
       when Feedjira::Parser::AtomYoutube
         build_from_atom_youtube(feed, feed_url)
+      when Feedjira::Parser::AtomGoogleAlerts
+        build_from_atom(feed, feed_url)
       end
     end
 
