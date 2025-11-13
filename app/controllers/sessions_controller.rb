@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
           google_guid: payload["sub"],
           email: email,
           name: email.split("@").first,
-          icon_url: payload["picture"]
+          icon_url: payload["picture"].presence || "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?d=identicon"
         )
         log_in(user)
         redirect_to root_path, notice: "Logged in"
@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
         session[:pending_auth] = {
           "google_guid" => payload["sub"],
           "email" => email,
-          "icon_url" => payload["picture"],
+          "icon_url" => payload["picture"].presence || "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?d=identicon",
           "name" => email.split("@").first
         }
         redirect_to new_join_request_path
