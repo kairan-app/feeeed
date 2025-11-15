@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.4.5"
 
-gem "rails", "~> 8.0.3"
+gem "rails", "~> 8.1.1"
 
 gem "aws-sdk-s3", require: false
 gem "bootsnap", require: false
