@@ -1,9 +1,9 @@
 <% channels.each do |channel| %>
 <div class="min-w-[160px] mr-[20px] sm:min-w-[240px]">
-  <div class="relative w-[160px] h-[160px] sm:w-[240px] sm:h-[240px]">
+  <div class="relative w-[160px] h-[160px] sm:w-[240px] sm:h-[240px] leading-[0] overflow-hidden">
     <%= link_to channel do %>
-      <div class="channel-card-image" style="background-image: url('<%= channel.image_url_or_placeholder %>')">
-        <%= image_tag(channel.image_url_or_placeholder) %>
+      <div class="channel-card-image relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= channel.image_url_or_placeholder %>')">
+        <%= image_tag(channel.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
       </div>
     <% end %>
   </div>
