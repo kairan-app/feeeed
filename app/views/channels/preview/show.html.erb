@@ -1,12 +1,12 @@
 <h2 class="text-2xl font-bold mt-6">Channel Preview</h2>
-<div class="channel-profile">
+<div class="flex flex-wrap w-[calc(100%-15px)] max-md:w-full mt-[2em] max-md:mt-[1em] pb-5 border-b border-[#aaaaaa]">
   <% if @channel.image_url %>
-  <div class="channel-profile-image">
+  <div class="w-[240px] h-[240px] mr-[30px] max-md:mx-auto max-md:mb-5 overflow-hidden">
     <%= image_tag(@channel.image_url, style: "max-height: 240px;") %>
   </div>
   <% end %>
 
-  <div class="channel-profile-info">
+  <div class="w-[calc(100%-270px)] max-md:w-full">
     <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel.title %></h2>
 
     <% if @channel.description %>
