@@ -9,39 +9,39 @@
     </p>
   </div>
   <%= form_for(@new_notification_webhook) do |form| %>
-    <div class="setting-list">
-      <div class="setting-mode">
-        <p><%= form.label :mode %></p>
-        <%= form.select :mode, NotificationWebhook.modes.keys %>
+    <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
+      <div class="w-[calc(50%-50px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :mode %></p>
+        <%= form.select :mode, NotificationWebhook.modes.keys, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="setting-url-or-email">
-        <p><%= form.label :url %></p>
-        <%= form.text_field :url %>
+      <div class="w-[calc(50%-50px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :url %></p>
+        <%= form.text_field :url, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="setting-submit">
-        <%= form.submit "Add" %>
+      <div class="w-20">
+        <%= form.submit "Add", class: "px-4 py-1 bg-[#333333] text-white border-none rounded-2xl cursor-pointer" %>
       </div>
     </div>
   <% end %>
 
   <% if @notification_webhooks.count > 0 %>
-  <div class="setting-table-scroll">
-    <table class="setting-table">
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[768px] mb-8 border-collapse">
       <tbody>
-        <tr>
-          <th>Mode</th>
-          <th>Webhook URL</th>
-          <th>Created</th>
-          <th>Last Notified</th>
-          <th>Action</th>
+        <tr class="flex border-b border-[#aaaaaa]">
+          <th class="block w-1/4 py-2 pr-2 text-left">Mode</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Webhook URL</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Created</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Last Notified</th>
+          <th class="block w-20 py-2 pr-2 text-left">Action</th>
         </tr>
         <% @notification_webhooks.each do |nw| %>
-        <tr>
-          <td><%= nw.mode %></td>
-          <td><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
-          <td><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
+        <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
+          <td class="block w-1/4 py-2 pr-2"><%= nw.mode %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="block w-20 py-2 pr-2"><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
         </tr>
         <% end %>
       </tbody>
@@ -59,41 +59,41 @@
     </p>
   </div>
   <%= form_for(@new_notification_email) do |form| %>
-    <div class="setting-list">
-      <div class="setting-mode">
-        <p><%= form.label :mode %></p>
-        <%= form.select :mode, NotificationEmail.modes.keys %>
+    <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
+      <div class="w-[calc(50%-50px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :mode %></p>
+        <%= form.select :mode, NotificationEmail.modes.keys, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="setting-url-or-email">
-        <p><%= form.label :email %></p>
-        <%= form.text_field :email %>
+      <div class="w-[calc(50%-50px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :email %></p>
+        <%= form.text_field :email, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="setting-submit">
-        <%= form.submit "Add" %>
+      <div class="w-20">
+        <%= form.submit "Add", class: "px-4 py-1 bg-[#333333] text-white border-none rounded-2xl cursor-pointer" %>
       </div>
     </div>
   <% end %>
 
   <% if @notification_emails.count > 0 %>
-  <div class="setting-table-scroll">
-    <table class="setting-table">
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[768px] mb-8 border-collapse">
       <tbody>
-        <tr>
-          <th>Mode</th>
-          <th>Email</th>
-          <th>Created</th>
-          <th>Verified</th>
-          <th>Last Notified</th>
-          <th>Action</th>
+        <tr class="flex border-b border-[#aaaaaa]">
+          <th class="block w-1/4 py-2 pr-2 text-left">Mode</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Email</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Created</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Verified</th>
+          <th class="block w-1/4 py-2 pr-2 text-left">Last Notified</th>
+          <th class="block w-20 py-2 pr-2 text-left">Action</th>
         </tr>
         <% @notification_emails.each do |ne| %>
-        <tr>
-          <td><%= ne.mode %></td>
-          <td><%= ne.email %></td>
-          <td><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= ne.verified? ? "Yes" : "No" %></td>
-          <td><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
-          <td><%= link_to("Delete", notification_email_path(ne), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
+        <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
+          <td class="block w-1/4 py-2 pr-2"><%= ne.mode %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= ne.email %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= ne.verified? ? "Yes" : "No" %></td>
+          <td class="block w-1/4 py-2 pr-2"><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="block w-20 py-2 pr-2"><%= link_to("Delete", notification_email_path(ne), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
         </tr>
         <% end %>
       </tbody>
@@ -110,39 +110,39 @@
     </p>
   </div>
   <%= form_with(model: @new_channel_group_webhook) do |form| %>
-    <div class="setting-list">
-      <div class="setting-channel-group">
-        <p><%= form.label :channel_group_id %></p>
-        <%= form.select :channel_group_id, ChannelGroup.order(id: :desc).map { |cg| [cg.name, cg.id] } %>
+    <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
+      <div class="w-[calc(50%-50px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :channel_group_id %></p>
+        <%= form.select :channel_group_id, ChannelGroup.order(id: :desc).map { |cg| [cg.name, cg.id] }, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="setting-url-or-email">
-        <p><%= form.label :url %></p>
-        <%= form.text_field :url %>
+      <div class="w-[calc(50%-50px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :url %></p>
+        <%= form.text_field :url, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="setting-submit">
-        <%= form.submit "Add" %>
+      <div class="w-20">
+        <%= form.submit "Add", class: "px-4 py-1 bg-[#333333] text-white border-none rounded-2xl cursor-pointer" %>
       </div>
     </div>
   <% end %>
 
   <% if @channel_group_webhooks.count > 0 %>
-    <div class="setting-table-scroll">
-      <table class="setting-table">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[768px] mb-8 border-collapse">
         <tbody>
-          <tr>
-            <th>Channel Group</th>
-            <th>Webhook URL</th>
-            <th>Created</th>
-            <th>Last Notified</th>
-            <th>Action</th>
+          <tr class="flex border-b border-[#aaaaaa]">
+            <th class="block w-1/4 py-2 pr-2 text-left">Channel Group</th>
+            <th class="block w-1/4 py-2 pr-2 text-left">Webhook URL</th>
+            <th class="block w-1/4 py-2 pr-2 text-left">Created</th>
+            <th class="block w-1/4 py-2 pr-2 text-left">Last Notified</th>
+            <th class="block w-20 py-2 pr-2 text-left">Action</th>
           </tr>
           <% @channel_group_webhooks.each do |webhook| %>
-          <tr>
-            <td><%= link_to(webhook.channel_group.name, channel_group_path(webhook.channel_group)) %></td>
-            <td><%= link_to(URI.parse(webhook.url).host, webhook.url) %></td>
-            <td><%= webhook.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-            <td><%= webhook.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
-            <td><%= link_to("Delete", channel_group_webhook_path(webhook), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
+          <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
+            <td class="block w-1/4 py-2 pr-2"><%= link_to(webhook.channel_group.name, channel_group_path(webhook.channel_group)) %></td>
+            <td class="block w-1/4 py-2 pr-2"><%= link_to(URI.parse(webhook.url).host, webhook.url) %></td>
+            <td class="block w-1/4 py-2 pr-2"><%= webhook.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td class="block w-1/4 py-2 pr-2"><%= webhook.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+            <td class="block w-20 py-2 pr-2"><%= link_to("Delete", channel_group_webhook_path(webhook), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
           </tr>
           <% end %>
         </tbody>

@@ -2,7 +2,7 @@
   <h2 class="text-2xl font-bold mt-6 mb-4">My Profile</h2>
 
   <%= form_tag(my_profile_path, method: :put, multipart: true) do |form| %>
-    <div class="setting-list mb-6">
+    <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
       <p class="mb-2">Profile Icon</p>
       <div class="flex items-center gap-4 mb-4">
         <div id="avatar-preview-container">
@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div class="setting-list mb-6">
+    <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
       <p>Username</p>
       <%= text_field_tag(:name, @user.name, class: "mt-1") %>
     </div>
