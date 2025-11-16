@@ -1,12 +1,12 @@
 <% if logged_in? %>
   <% if channel.owned_by?(current_user) %>
-    <%= link_to(channel_ownership_path(channel), data: { turbo_method: :delete }, class: "remove-from-my-own") do %>
-      <span class="material-symbols-outlined">remove_circle_outline</span>
+    <%= link_to(channel_ownership_path(channel), data: { turbo_method: :delete }, class: "flex items-center mr-2 mb-2 px-2 py-1 bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] hover:bg-[#fafafa] hover:border-[#999999]") do %>
+      <span class="material-symbols-outlined text-[18px]">remove_circle_outline</span>
       Remove from my own
     <% end %>
   <% else %>
-    <%= link_to(channel_ownership_path(channel), data: { turbo_method: :post }) do %>
-      <span class="material-symbols-outlined">add_circle_outline</span>
+    <%= link_to(channel_ownership_path(channel), data: { turbo_method: :post }, class: "flex items-center mr-2 mb-2 px-2 py-1 bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] hover:bg-[#fafafa] hover:border-[#999999]") do %>
+      <span class="material-symbols-outlined text-[18px]">add_circle_outline</span>
       Add to my own
     <% end %>
   <% end %>
