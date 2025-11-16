@@ -10,7 +10,7 @@
   <div class="w-[calc(100%-270px)] max-md:w-full">
     <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel.title %></h2>
 
-    <div class="channel-buttons">
+    <div class="flex flex-wrap my-2 mb-4">
       <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
     </div>
 
@@ -62,10 +62,10 @@
       <% end %>
     </div>
 
-    <div class="channel-control-buttons">
+    <div class="flex flex-wrap my-2">
       <%= render(partial: "ownerships/link", locals: { channel: @channel }) %>
-      <%= link_to(channel_fetch_path(@channel), data: { turbo_method: :post }) do %>
-        <span class="material-symbols-outlined">refresh</span>
+      <%= link_to(channel_fetch_path(@channel), data: { turbo_method: :post }, class: "flex items-center mr-2 mb-2 px-2 py-1 bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] hover:bg-[#fafafa] hover:border-[#999999]") do %>
+        <span class="material-symbols-outlined text-[18px]">refresh</span>
         Update and fetch items
       <% end %>
     </div>
@@ -80,7 +80,7 @@
     <ul class="my-4 flex flex-wrap gap-6">
       <% @channel.groups.each do |group| %>
         <li class="flex items-center gap-2">
-          <%= link_to(channel_group_path(group), class: "inline-block px-4 py-2 bg-white rounded-md border border-white hover:border hover:border-gray-300 hover:no-underline") do %>
+          <%= link_to(channel_group_path(group), class: "inline-block px-4 py-2 bg-white rounded-md border border-white hover:border hover:border-gray-300") do %>
             <%= group.name %>
           <% end %>
 
