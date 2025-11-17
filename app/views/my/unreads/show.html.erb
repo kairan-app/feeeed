@@ -54,8 +54,8 @@
                 </p>
               </div>
               <% if item.audio_enclosure_url %>
-                <div class="audio-player">
-                  <audio style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+                <div class="audio-player w-full mt-2 -mb-2">
+                  <audio class="h-9" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
                 </div>
               <% end %>
             <% end %>
