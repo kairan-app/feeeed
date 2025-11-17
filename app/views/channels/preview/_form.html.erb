@@ -1,22 +1,22 @@
 <% if logged_in? %>
 <nav>
-  <input type="checkbox" name="channel-registration-form" id="channel-registration-form" class="channel-registration-form-wrap-input"/>
-  <label for="channel-registration-form" class="channel-registration-form-wrap-bg"></label>
-  <div class="channel-registration-form-wrap">
-    <div class="channel-form">
-      <p>Channel Registration Form</p>
-      <%= form_tag(channel_preview_path, method: :get) do %>
-        <%= text_field_tag(:url, nil, placeholder: "https://~~~") %>
-        <%= submit_tag("Add", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
+  <input type="checkbox" name="channel-registration-form" id="channel-registration-form" class="hidden peer"/>
+  <label for="channel-registration-form" class="hidden peer-checked:block fixed top-0 left-[-20px] w-[calc(100%+40px)] h-screen bg-black opacity-70 z-[2]"></label>
+  <div class="fixed top-[calc(50%-44px)] left-[5%] flex flex-col items-start w-[90%] m-0 p-5 bg-[#3d8bcd] translate-y-0 opacity-0 transition-[opacity] duration-200 z-[-1] peer-checked:translate-y-0 peer-checked:opacity-100 peer-checked:transition-[opacity] peer-checked:duration-200 peer-checked:z-[2]">
+    <div class="w-full m-0 p-0">
+      <p class="m-0 mb-2 p-0 text-center text-white">Channel Registration Form</p>
+      <%= form_tag(channel_preview_path, method: :get, class: "flex flex-wrap justify-center items-end gap-2") do %>
+        <%= text_field_tag(:url, nil, placeholder: "https://~~~", class: "flex-1 max-w-[80%] md:max-w-[calc(80%-50px)] max-md:w-full max-md:mb-2") %>
+        <%= submit_tag("Add", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer max-md:w-full") %>
       <% end%>
-      <p class="mt-2">
+      <p class="mt-2 text-center">
         <%= link_to "→ Bulk import multiple feeds", new_channels_bulk_import_path, class: "text-white hover:text-yellow-200 hover:underline text-sm font-medium" %>
       </p>
     </div>
   </div>
-  <label for="channel-registration-form" class="channel-registration-form-button">
-    <span class="channel-registration-form-button-mark"></span>
-    <span class="channel-registration-form-button-mark"></span>
+  <label for="channel-registration-form" class="fixed bottom-5 right-5 max-md:bottom-20 flex flex-col justify-center items-center w-[54px] h-[54px] gap-[5px] appearance-none bg-[#3d8bcd] shadow-[0px_0px_8px_-4px_#555555] outline outline-2 outline-white rounded-full cursor-pointer z-[2] peer-checked:[&_.mark1]:!translate-x-[3px] peer-checked:[&_.mark1]:!translate-y-[-3px] peer-checked:[&_.mark1]:!rotate-45 peer-checked:[&_.mark2]:!translate-x-[3px] peer-checked:[&_.mark2]:!translate-y-[2px] peer-checked:[&_.mark2]:!-rotate-45">
+    <span class="mark1 block w-[18px] h-[2px] bg-white transition-transform duration-300 translate-x-[9px] translate-y-[-6px] rotate-90 origin-[0%]"></span>
+    <span class="mark2 block w-[18px] h-[2px] bg-white transition-transform duration-300 translate-x-0 translate-y-[-4px] rotate-0 origin-[0%]"></span>
   </label>
 </nav>
 <% end %>
