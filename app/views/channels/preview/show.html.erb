@@ -24,18 +24,18 @@
 <% if @similar_channels.count > 0 %>
 <section>
   <h3 class="text-lg font-bold mt-6">Did you mean...?</h3>
-  <ul class="similar-channels">
+  <ul class="flex flex-wrap w-full mt-5 mb-0 p-0">
     <% @similar_channels.each do |channel| %>
-      <li>
+      <li class="flex flex-wrap items-center w-full mr-0 mb-5 p-0 min-[769px]:w-[calc(50%-20px)] min-[769px]:mr-5">
         <% if channel.image_url %>
         <%= link_to channel_path(channel) do %>
-        <div class="similar-channel-image">
+        <div class="w-[100px] h-[100px] mr-[10px] [&_img]:w-full [&_img]:h-full [&_img]:object-cover">
           <%= image_tag(channel.image_url, style: "max-height: 100px;") %>
         </div>
         <% end %>
         <% end %>
-        <div class="similar-channel-info">
-          <div class="similar-channel-title">
+        <div class="w-[calc(100%-110px)]">
+          <div class="m-0 mb-[0.5em] font-bold">
             <%= link_to(channel.title, channel) %>
           </div>
           <div class="similar-channel-urls">
