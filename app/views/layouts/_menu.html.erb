@@ -63,29 +63,29 @@
   <% end %>
 </nav>
 
-<nav class="sp-tab">
-  <ul class="list-none p-0">
-    <li>
-      <%= link_to(root_path) do %>
+<nav class="sp-tab hidden max-md:block max-md:fixed max-md:bottom-0 max-md:w-full max-md:h-16 max-md:ml-[-20px] max-md:p-0 max-md:bg-[#3d8bcd] max-md:text-white max-md:z-[1]">
+  <ul class="list-none p-0 max-md:flex max-md:justify-evenly max-md:w-full max-md:h-16 max-md:m-0">
+    <li class="max-md:relative max-md:w-[33.33333%] max-md:text-center">
+      <%= link_to(root_path, class: "max-md:block max-md:w-full max-md:h-16 max-md:m-0 max-md:pt-9 max-md:text-[10px] max-md:text-white") do %>
         <span class="material-symbols-outlined material-symbols-outlined-sp-tab">home</span>
         <span>Home</span>
       <% end %>
     </li>
     <% if logged_in? %>
-    <li>
-      <%= link_to(pawprints_path) do %>
+    <li class="max-md:relative max-md:w-[33.33333%] max-md:text-center">
+      <%= link_to(pawprints_path, class: "max-md:block max-md:w-full max-md:h-16 max-md:m-0 max-md:pt-9 max-md:text-[10px] max-md:text-white") do %>
         <span class="material-symbols-outlined material-symbols-outlined-sp-tab material-symbols-outlined-sp-tab-paw"><%= image_tag("icon-pawprints-w.svg", alt: "pawprints", loading: "lazy", width: 32, height: 32) %></span>
         <span>Pawprints</span>
       <% end %>
     </li>
-    <li>
-      <%= link_to(unreads_path) do %>
+    <li class="max-md:relative max-md:w-[33.33333%] max-md:text-center">
+      <%= link_to(unreads_path, class: "max-md:block max-md:w-full max-md:h-16 max-md:m-0 max-md:pt-9 max-md:text-[10px] max-md:text-white") do %>
         <span class="material-symbols-outlined material-symbols-outlined-sp-tab">inbox</span>
         <span>Unreads</span>
       <% end %>
     </li>
-    <li>
-      <%= link_to(my_path) do %>
+    <li class="max-md:relative max-md:w-[33.33333%] max-md:text-center">
+      <%= link_to(my_path, class: "max-md:block max-md:w-full max-md:h-16 max-md:m-0 max-md:pt-9 max-md:text-[10px] max-md:text-white") do %>
         <span class="material-symbols-outlined material-symbols-outlined-sp-tab">settings</span>
         <span>Settings</span>
       <% end %>
