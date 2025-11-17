@@ -8,7 +8,7 @@
         </div>
       <% end %>
       <% if item.audio_enclosure_url %>
-        <div class="audio-player audio-player-on-the-image absolute bottom-0 w-[96%] my-1 mx-[2%]">
+        <div class="audio-player audio-player-on-the-image absolute bottom-0 w-[96%] my-1 mx-[2%] z-10">
           <audio class="h-[30px]" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
         </div>
       <% end %>
