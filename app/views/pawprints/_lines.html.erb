@@ -3,7 +3,7 @@
     <% user = pawprint.user %>
     <% item = pawprint.item %>
     <li class="flex flex-wrap w-full m-0 py-4 border-t border-[#aaaaaa] leading-6">
-      <div class="pawprint-item flex flex-wrap w-1/2 m-0 mr-5 max-[768px]:w-full max-[768px]:m-0 max-[768px]:mb-2">
+      <div class="pawprint-item flex flex-wrap w-full m-0 mb-2 min-[769px]:w-1/2 min-[769px]:mr-5 min-[769px]:mb-0">
         <div class="pawprint-item-image w-24 h-16 m-0 mr-[10px]">
           <%= link_to(item.url, target: "_blank") do %>
             <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
@@ -26,7 +26,7 @@
           </div>
         <% end %>
       </div>
-      <div class="pawprint-paw w-[calc(50%-20px)] max-[768px]:w-full">
+      <div class="pawprint-paw w-full min-[769px]:w-[calc(50%-20px)]">
         <div class="pawprint-user flex m-0 mb-2 [&_img]:mr-[10px] [&_img]:object-cover [&_img]:rounded-full">
           <%= user_avatar_tag(user, size: :xs) %>
           <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
@@ -36,7 +36,7 @@
           <%= render(partial: "items/pawprint", locals: { item: item, pawprint: pawprint }) %>
         <% else %>
           <% if pawprint.memo.present? %>
-          <div class="pawprint-memo w-full py-2 px-3 bg-white max-[768px]:mt-2"><%= pawprint.memo %></div>
+          <div class="pawprint-memo w-full py-2 px-3 bg-white mt-2 min-[769px]:mt-0"><%= pawprint.memo %></div>
           <% end %>
           <% unless current_user.pawed?(item) %>
             <div class="chase-paw flex flex-wrap w-full mt-4 m-0">
