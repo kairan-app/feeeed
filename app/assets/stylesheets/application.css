@@ -28,52 +28,16 @@ a {
   text-decoration: none;
 }
 
-header nav {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: calc(100% - 164px);
-}
-
-@media screen and (max-width: 768px) {
-  header nav {
-    width: calc(100% - 120px);
-  }
-}
-
-header nav ul {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0 72px 0 0;
-  padding: 0;
-}
-
-header nav ul li a {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0.75em;
-}
-
-header nav ul li a:hover {
-  text-decoration: none;
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.material-symbols-outlined {
+.material-symbols-outlined:not(.material-symbols-outlined-sp-tab) {
   display: flex;
   margin: 0 0.2em 0 0;
 }
 
 @media screen and (max-width: 768px) {
-  .material-symbols-outlined {
+  .material-symbols-outlined:not(.material-symbols-outlined-sp-tab) {
     display: block;
   }
 }
-
 
 
 /* Tab for Smatrphone */
@@ -105,6 +69,7 @@ header nav ul li a:hover {
   }
 
   .sp-tab ul li {
+    position: relative;
     width: 33.33333%;
     text-align: center;
   }
@@ -125,9 +90,8 @@ header nav ul li a:hover {
     font-size: 32px;
     position: absolute;
     top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .material-symbols-outlined-sp-tab-paw {
