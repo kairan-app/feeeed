@@ -4,9 +4,9 @@
     <% item = pawprint.item %>
     <li class="min-w-[270px] mr-[20px] py-2 sm:min-w-[400px]">
       <div class="flex flex-wrap w-full">
-        <div class="w-[96px] h-[64px] mr-2">
+        <div class="w-[96px] h-[64px] mr-2 overflow-hidden relative">
           <%= link_to(item.url, target: "_blank") do %>
-            <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+            <div class="relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-[inherit] before:blur-[10px] before:scale-110 before:z-[1] [&_img]:relative [&_img]:z-[2] [&_img]:w-full [&_img]:h-full [&_img]:object-contain" style="background-image: url('<%= item.image_url_or_placeholder %>')">
               <%= image_tag(item.image_url_or_placeholder) %>
             </div>
           <% end %>

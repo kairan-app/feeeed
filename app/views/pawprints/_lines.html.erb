@@ -2,21 +2,21 @@
   <% pawprints.each do |pawprint| %>
     <% user = pawprint.user %>
     <% item = pawprint.item %>
-    <li>
-      <div class="pawprint-item">
-        <div class="pawprint-item-image">
+    <li class="flex flex-wrap w-full m-0 py-4 border-t border-[#aaaaaa] leading-6">
+      <div class="pawprint-item flex flex-wrap w-full m-0 mb-2 min-[769px]:w-1/2 min-[769px]:mr-5 min-[769px]:mb-0">
+        <div class="pawprint-item-image w-24 h-16 m-0 mr-[10px] overflow-hidden relative">
           <%= link_to(item.url, target: "_blank") do %>
-            <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+            <div class="relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-[inherit] before:blur-[10px] before:scale-110 before:z-[1] [&_img]:relative [&_img]:z-[2] [&_img]:w-full [&_img]:h-full [&_img]:object-contain" style="background-image: url('<%= item.image_url_or_placeholder %>')">
               <%= image_tag(item.image_url_or_placeholder) %>
             </div>
           <% end %>
         </div>
-        <div class="pawprint-item-text">
+        <div class="pawprint-item-text w-[calc(100%-106px)] -mt-1 m-0">
           <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">
             <%= link_to(item.title, item.url, target: "_blank") %>
           </h3>
-          <p>
-            <%= image_tag(item.channel.favicon_url, size: "16x16") %>
+          <p class="flex">
+            <%= image_tag(item.channel.favicon_url, size: "16x16", class: "mt-1 mr-[5px] w-4 h-4") %>
             <%= link_to(item.channel.title, item.channel) %>
           </p>
         </div>
@@ -26,25 +26,25 @@
           </div>
         <% end %>
       </div>
-      <div class="pawprint-paw">
-        <div class="pawprint-user">
+      <div class="pawprint-paw w-full min-[769px]:w-[calc(50%-20px)]">
+        <div class="pawprint-user flex m-0 mb-2 [&_img]:mr-[10px] [&_img]:object-cover [&_img]:rounded-full">
           <%= user_avatar_tag(user, size: :xs) %>
           <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
-          <span>pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+          <span class="ml-1">pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
         </div>
         <% if user == current_user%>
           <%= render(partial: "items/pawprint", locals: { item: item, pawprint: pawprint }) %>
         <% else %>
           <% if pawprint.memo.present? %>
-          <div class="pawprint-memo"><%= pawprint.memo %></div>
+          <div class="pawprint-memo w-full py-2 px-3 bg-white mt-2 min-[769px]:mt-0"><%= pawprint.memo %></div>
           <% end %>
           <% unless current_user.pawed?(item) %>
-            <div class="chase-paw">
-              <div class="chase-paw-user">
+            <div class="chase-paw flex flex-wrap w-full mt-4 m-0">
+              <div class="chase-paw-user w-full flex items-center m-0 mb-2 [&_img]:mr-[10px] [&_img]:object-cover [&_img]:rounded-full">
                 <%= user_avatar_tag(current_user, size: :xs) %>
                 <%= link_to("@" + current_user.name, user_path(user_name: current_user.name)) %>
               </div>
-              <div class="chase-paw-form">
+              <div class="chase-paw-form w-full">
                 <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
               </div>
             </div>
