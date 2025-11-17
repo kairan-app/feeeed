@@ -1,0 +1,8 @@
+<%# Non-link tag that stands for skipped pages...
+  - available local variables
+    current_page:  a page object for the currently displayed page
+    total_pages:   total number of pages
+    per_page:      number of items to fetch per page
+    remote:        data-remote
+-%>
+<span class="inline-block max-[768px]:mb-[0.5em] m-0 mr-[0.25em] py-[0.5em] px-0"><%= t('views.pagination.truncate').html_safe %></span>
