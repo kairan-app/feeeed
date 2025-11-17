@@ -1,94 +1,94 @@
 <h2 class="text-2xl font-bold mt-6 mb-4">活用ガイド</h2>
-<div class="guides">
-  <div class="guides-item">
-    <div class="guides-item-check"><%= @username_changed ? "✅️" : nil %></div>
-    <div class="guides-item-detail">
-      <h3 class="text-lg font-bold">Usernameの設定</h3>
+<div class="w-full border-t border-[#aaaaaa] min-[769px]:w-[calc(100%-20px)]">
+  <div class="flex flex-wrap items-start py-5 border-b border-[#aaaaaa] min-[769px]:items-center">
+    <div class="w-[30px] text-left min-[769px]:w-[100px] min-[769px]:text-center"><%= @username_changed ? "✅️" : nil %></div>
+    <div class="w-[calc(100%-30px)] mb-[10px] min-[769px]:w-[calc(100%-350px)] min-[769px]:mb-0">
+      <h3 class="text-lg font-bold m-0 mb-[0.25em] min-[769px]:mb-[0.5em]">Usernameの設定</h3>
       <p>
         あなたの現在のUsernameは@<%= current_user.name %>です。
       </p>
     </div>
-    <div class="guides-item-action">
-      <%= link_to(my_profile_path, class:"guides-button") do %>
+    <div class="w-[calc(100%-30px)] ml-[30px] min-[769px]:w-[250px] min-[769px]:ml-0 min-[769px]:text-right">
+      <%= link_to(my_profile_path, class:"relative inline-block block m-0 py-[0.5em] pr-[2em] pl-[1em] bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] text-center hover:bg-[#fafafa] hover:border-[#999999] hover:no-underline min-[769px]:inline-block min-[769px]:mr-[1.5em] min-[769px]:text-left [&_.material-symbols-outlined]:absolute [&_.material-symbols-outlined]:top-[8.5px] [&_.material-symbols-outlined]:right-0 [&_.material-symbols-outlined]:!text-[18px] min-[769px]:[&_.material-symbols-outlined]:!text-[20px]") do %>
         <span>Usernameを変える</span>
         <span class="material-symbols-outlined">arrow_right_alt</span>
       <% end %>
     </div>
   </div>
-  <div class="guides-item">
-    <div class="guides-item-check"><%= @channel_subscribed ? "✅️" : nil %></div>
-    <div class="guides-item-detail">
-      <h3 class="text-lg font-bold">チャンネルの購読</h3>
+  <div class="flex flex-wrap items-start py-5 border-b border-[#aaaaaa] min-[769px]:items-center">
+    <div class="w-[30px] text-left min-[769px]:w-[100px] min-[769px]:text-center"><%= @channel_subscribed ? "✅️" : nil %></div>
+    <div class="w-[calc(100%-30px)] mb-[10px] min-[769px]:w-[calc(100%-350px)] min-[769px]:mb-0">
+      <h3 class="text-lg font-bold m-0 mb-[0.25em] min-[769px]:mb-[0.5em]">チャンネルの購読</h3>
       <p>
         購読したいチャンネルを見つけ、チャンネルページで「Subscribe」ボタンをクリックしてください。<br>
         好きなフィードをrururuに登録することもできます。
       </p>
     </div>
-    <div class="guides-item-action">
-      <%= link_to(channels_path, class:"guides-button") do %>
+    <div class="w-[calc(100%-30px)] ml-[30px] min-[769px]:w-[250px] min-[769px]:ml-0 min-[769px]:text-right">
+      <%= link_to(channels_path, class:"relative inline-block block m-0 py-[0.5em] pr-[2em] pl-[1em] bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] text-center hover:bg-[#fafafa] hover:border-[#999999] hover:no-underline min-[769px]:inline-block min-[769px]:mr-[1.5em] min-[769px]:text-left [&_.material-symbols-outlined]:absolute [&_.material-symbols-outlined]:top-[8.5px] [&_.material-symbols-outlined]:right-0 [&_.material-symbols-outlined]:!text-[18px] min-[769px]:[&_.material-symbols-outlined]:!text-[20px]") do %>
         <span>チャンネルを探す</span>
         <span class="material-symbols-outlined">arrow_right_alt</span>
       <% end %>
     </div>
   </div>
-  <div class="guides-item">
-    <div class="guides-item-check"><%= @channel_owned ? "✅️" : nil %></div>
-    <div class="guides-item-detail">
-      <h3 class="text-lg font-bold">マイ・チャンネルの登録</h3>
+  <div class="flex flex-wrap items-start py-5 border-b border-[#aaaaaa] min-[769px]:items-center">
+    <div class="w-[30px] text-left min-[769px]:w-[100px] min-[769px]:text-center"><%= @channel_owned ? "✅️" : nil %></div>
+    <div class="w-[calc(100%-30px)] mb-[10px] min-[769px]:w-[calc(100%-350px)] min-[769px]:mb-0">
+      <h3 class="text-lg font-bold m-0 mb-[0.25em] min-[769px]:mb-[0.5em]">マイ・チャンネルの登録</h3>
       <p>
         あなたのブログやポッドキャストなどがあれば「マイ・チャンネル」として登録しましょう。<br>
         チャンネルページで「Add to my own」ボタンをクリックしてください。<br>
         登録したチャンネルは、あなたのプロフィールページに表示されます。
       </p>
     </div>
-    <div class="guides-item-action">
-      <%= link_to(channels_path, class:"guides-button") do %>
+    <div class="w-[calc(100%-30px)] ml-[30px] min-[769px]:w-[250px] min-[769px]:ml-0 min-[769px]:text-right">
+      <%= link_to(channels_path, class:"relative inline-block block m-0 py-[0.5em] pr-[2em] pl-[1em] bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] text-center hover:bg-[#fafafa] hover:border-[#999999] hover:no-underline min-[769px]:inline-block min-[769px]:mr-[1.5em] min-[769px]:text-left [&_.material-symbols-outlined]:absolute [&_.material-symbols-outlined]:top-[8.5px] [&_.material-symbols-outlined]:right-0 [&_.material-symbols-outlined]:!text-[18px] min-[769px]:[&_.material-symbols-outlined]:!text-[20px]") do %>
         <span>チャンネルを探す</span>
         <span class="material-symbols-outlined">arrow_right_alt</span>
       <% end %>
     </div>
   </div>
-  <div class="guides-item">
-    <div class="guides-item-check"><%= @item_pawed ? "✅️" : nil %></div>
-    <div class="guides-item-detail">
-      <h3 class="text-lg font-bold">Pawprintの登録</h3>
+  <div class="flex flex-wrap items-start py-5 border-b border-[#aaaaaa] min-[769px]:items-center">
+    <div class="w-[30px] text-left min-[769px]:w-[100px] min-[769px]:text-center"><%= @item_pawed ? "✅️" : nil %></div>
+    <div class="w-[calc(100%-30px)] mb-[10px] min-[769px]:w-[calc(100%-350px)] min-[769px]:mb-0">
+      <h3 class="text-lg font-bold m-0 mb-[0.25em] min-[769px]:mb-[0.5em]">Pawprintの登録</h3>
       <p>
         チャンネルを購読するとUnreadsページに新着アイテムが表示されるようになります。<br>
         新着アイテムを「読んだ」「聴いた」ときには🐾ボタンで記録を残しましょう。
       </p>
     </div>
-    <div class="guides-item-action">
-      <%= link_to(unreads_path, class:"guides-button") do %>
+    <div class="w-[calc(100%-30px)] ml-[30px] min-[769px]:w-[250px] min-[769px]:ml-0 min-[769px]:text-right">
+      <%= link_to(unreads_path, class:"relative inline-block block m-0 py-[0.5em] pr-[2em] pl-[1em] bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] text-center hover:bg-[#fafafa] hover:border-[#999999] hover:no-underline min-[769px]:inline-block min-[769px]:mr-[1.5em] min-[769px]:text-left [&_.material-symbols-outlined]:absolute [&_.material-symbols-outlined]:top-[8.5px] [&_.material-symbols-outlined]:right-0 [&_.material-symbols-outlined]:!text-[18px] min-[769px]:[&_.material-symbols-outlined]:!text-[20px]") do %>
         <span>Unreadsを使う</span>
         <span class="material-symbols-outlined">arrow_right_alt</span>
       <% end %>
     </div>
   </div>
-  <div class="guides-item">
-    <div class="guides-item-check"><%= @notification_webhook_created ? "✅️" : nil %></div>
-    <div class="guides-item-detail">
-      <h3 class="text-lg font-bold">通知ウェブフックの設定</h3>
+  <div class="flex flex-wrap items-start py-5 border-b border-[#aaaaaa] min-[769px]:items-center">
+    <div class="w-[30px] text-left min-[769px]:w-[100px] min-[769px]:text-center"><%= @notification_webhook_created ? "✅️" : nil %></div>
+    <div class="w-[calc(100%-30px)] mb-[10px] min-[769px]:w-[calc(100%-350px)] min-[769px]:mb-0">
+      <h3 class="text-lg font-bold m-0 mb-[0.25em] min-[769px]:mb-[0.5em]">通知ウェブフックの設定</h3>
       <p>
         購読チャンネルの新着情報をDiscordやSlackに通知しましょう。
       </p>
     </div>
-    <div class="guides-item-action">
-      <%= link_to(my_notification_settings_path, class:"guides-button") do %>
+    <div class="w-[calc(100%-30px)] ml-[30px] min-[769px]:w-[250px] min-[769px]:ml-0 min-[769px]:text-right">
+      <%= link_to(my_notification_settings_path, class:"relative inline-block block m-0 py-[0.5em] pr-[2em] pl-[1em] bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] text-center hover:bg-[#fafafa] hover:border-[#999999] hover:no-underline min-[769px]:inline-block min-[769px]:mr-[1.5em] min-[769px]:text-left [&_.material-symbols-outlined]:absolute [&_.material-symbols-outlined]:top-[8.5px] [&_.material-symbols-outlined]:right-0 [&_.material-symbols-outlined]:!text-[18px] min-[769px]:[&_.material-symbols-outlined]:!text-[20px]") do %>
         <span>ウェブフックを設定する</span>
         <span class="material-symbols-outlined">arrow_right_alt</span>
       <% end %>
     </div>
   </div>
-  <div class="guides-item">
-    <div class="guides-item-check"><%= @notification_email_created ? "✅️" : nil %></div>
-    <div class="guides-item-detail">
-      <h3 class="text-lg font-bold">通知メールアドレスの設定</h3>
+  <div class="flex flex-wrap items-start py-5 border-b border-[#aaaaaa] min-[769px]:items-center">
+    <div class="w-[30px] text-left min-[769px]:w-[100px] min-[769px]:text-center"><%= @notification_email_created ? "✅️" : nil %></div>
+    <div class="w-[calc(100%-30px)] mb-[10px] min-[769px]:w-[calc(100%-350px)] min-[769px]:mb-0">
+      <h3 class="text-lg font-bold m-0 mb-[0.25em] min-[769px]:mb-[0.5em]">通知メールアドレスの設定</h3>
       <p>
         購読チャンネルの新着情報をメールで受け取りましょう。
       </p>
     </div>
-    <div class="guides-item-action">
-      <%= link_to(my_notification_settings_path, class:"guides-button") do %>
+    <div class="w-[calc(100%-30px)] ml-[30px] min-[769px]:w-[250px] min-[769px]:ml-0 min-[769px]:text-right">
+      <%= link_to(my_notification_settings_path, class:"relative inline-block block m-0 py-[0.5em] pr-[2em] pl-[1em] bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] text-center hover:bg-[#fafafa] hover:border-[#999999] hover:no-underline min-[769px]:inline-block min-[769px]:mr-[1.5em] min-[769px]:text-left [&_.material-symbols-outlined]:absolute [&_.material-symbols-outlined]:top-[8.5px] [&_.material-symbols-outlined]:right-0 [&_.material-symbols-outlined]:!text-[18px] min-[769px]:[&_.material-symbols-outlined]:!text-[20px]") do %>
         <span>メールアドレスを設定する</span>
         <span class="material-symbols-outlined">arrow_right_alt</span>
       <% end %>
