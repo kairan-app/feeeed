@@ -2,17 +2,17 @@
 
 <h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold">Unreads</h2>
 
-<p class="unreads-nav">Showing unreads from the last <%= @range_days %> days</p>
-<div class="unreads-nav-button">
-  <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(@unreads_params.merge(range_days: @range_days - 1))) %>
-  <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1))) %>
+<p class="flex flex-wrap w-full m-0 mb-2 p-0">Showing unreads from the last <%= @range_days %> days</p>
+<div class="flex m-0 mb-4">
+  <%= link_to("← " + (@range_days - 1).to_s + " days", unreads_path(@unreads_params.merge(range_days: @range_days - 1)), class: "block mr-1 py-1 px-3 bg-white border border-[#cccccc] rounded hover:bg-[#3d8bcd] hover:text-white hover:no-underline") %>
+  <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1)), class: "block mr-1 py-1 px-3 bg-white border border-[#cccccc] rounded hover:bg-[#3d8bcd] hover:text-white hover:no-underline") %>
 </div>
 
 <% if @channel_groups.exists? %>
-<div class="unreads-channel-group-tab">
-  <%= link_to("指定なし", unreads_path(@unreads_params.merge(channel_group_id: nil))) %>
+<div class="w-full m-0 overflow-x-auto whitespace-nowrap text-[0px]">
+  <%= link_to("指定なし", unreads_path(@unreads_params.merge(channel_group_id: nil)), class: "inline-block -mr-px mb-4 py-4 px-4 bg-white border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white hover:no-underline [&.active]:bg-[#3d8bcd] [&.active]:text-white [&.active]:no-underline") %>
   <% @channel_groups.each do |channel_group| %>
-    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id)), class: @channel_group == channel_group ? "active" : nil) %>
+    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id)), class: "inline-block -mr-px mb-4 py-4 px-4 bg-white border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white hover:no-underline #{'active' if @channel_group == channel_group}") %>
   <% end %>
 </div>
 <% end %>
@@ -34,8 +34,8 @@
     <%= turbo_frame_tag "channel_#{channel.id}_items" do %>
       <ul class="channel-and-items-component-item-list">
         <% items.sort_by(&:published_at).reverse.take(item_count_threshold).each do |item| %>
-          <li class="unreads-list" id="item_<%= item.id %>">
-            <%= link_to(item.url, target: "_blank") do %>
+          <li class="flex flex-wrap items-start border-t border-[#dddddd] border-t-[0.5px]" id="item_<%= item.id %>">
+            <%= link_to(item.url, target: "_blank", class: "w-full !border-t-0 min-[769px]:w-1/2") do %>
               <div class="channel-and-items-component-item-image">
                 <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
                   <%= image_tag(item.image_url_or_placeholder, loading: "lazy", style: "object-fit: contain;") %>

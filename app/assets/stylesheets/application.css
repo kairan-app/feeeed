@@ -380,23 +380,7 @@ img {
   background-color: rgba(255, 255, 255, 0.75);
 }
 
-.unreads-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: top;
-  border-top: 0.5px solid #dddddd;
-}
-
-.unreads-list a {
-  width: 50%;
-  border-top: none !important;
-}
-
-@media screen and (max-width: 768px) {
-  .unreads-list a {
-    width: 100%;
-  }
-}
+/* Unreads List - Removed, migrated to Tailwind CSS */
 
 .channel-and-items-component-item-image {
   position: relative;
@@ -627,74 +611,7 @@ img {
   text-decoration: none;
 }
 
-.unreads-nav {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  margin: 0 0 0.5em;
-  padding: 0;
-}
-
-.unreads-nav-button {
-  display: flex;
-  margin: 0 0 1em;
-}
-
-.unreads-nav-button a {
-  display: block;
-  margin: 0 0.25em 0 0;
-  padding: 0.25em 0.75em;
-  background-color: #ffffff;
-  border: solid 1px #cccccc;
-  border-radius: 4px;
-}
-
-.unreads-nav-button a:hover,
-.unreads-nav-button a.active {
-  background-color: #3d8bcd;
-  color: #ffffff;
-  text-decoration: none;
-}
-
-.unreads-channel-group-tab {
-  width: 100%;
-  margin: 0;
-  overflow-x: auto;
-  white-space: nowrap;
-  font-size: 0;
-}
-
-.unreads-channel-group-tab a {
-  display: inline-block;
-  margin: 0 -1px 1em 0;
-  padding: 1em 1.5em;
-  background-color: #ffffff;
-  border: solid 1px #cccccc;
-  text-align: center;
-  font-size: 16px;
-}
-
-@media screen and (max-width: 768px) {
-  .unreads-channel-group-tab a {
-    padding: 1em 1em;
-    font-size: 13px;
-  }
-}
-
-.unreads-channel-group-tab a:first-of-type {
-  border-radius: 6px 0 0 6px;
-}
-
-.unreads-channel-group-tab a:last-of-type {
-  border-radius: 0 6px 6px 0;
-}
-
-.unreads-channel-group-tab a.active,
-.unreads-channel-group-tab a:hover {
-  background-color: #3d8bcd;
-  color: #ffffff;
-  text-decoration: none;
-}
+/* Unreads Nav and Channel Group Tab - Removed, migrated to Tailwind CSS */
 
 /* About */
 
