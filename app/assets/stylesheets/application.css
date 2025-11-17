@@ -90,30 +90,8 @@ a {
   z-index: 1;
 }
 
-
-
 img {
   display: inline-block;
-}
-
-
-
-.sub-column .pawprint-info {
-  width: calc(100% - 34px);
-  margin: 0;
-  font-size: 0.9em;
-  line-height: 1.5em;
-
-  span {
-    display: inline-block;
-    margin: 0;
-  }
-}
-
-.sub-column .pawprint-memo {
-  width: 100%;
-  font-size: 0.9em;
-  line-height: 1.5em;
 }
 
 /* Channel profile image container - ::before for blur effect */
