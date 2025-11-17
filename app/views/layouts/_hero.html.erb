@@ -1,21 +1,21 @@
-<div class="hero-area">
-  <div class="hero-area-image">
+<div class="flex flex-wrap justify-center items-center flex-row-reverse w-screen h-auto min-h-0 mt-[15px] ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] mb-0 p-0 bg-white min-[769px]:min-h-[500px] min-[769px]:mt-0 min-[769px]:ml-[calc(50%-50vw-10px)] min-[769px]:mr-[calc(50%-50vw)]">
+  <div class="w-4/5 my-[10%] mx-0 mb-[5%] max-w-[720px] min-[769px]:w-1/2 min-[769px]:m-0 [&_img]:w-full [&_img]:h-auto">
     <%= image_tag("hero.png", alt: "rururu", loading: "lazy", width: 720, height: 400) %>
   </div>
-  <div class="hero-area-text">
-    <h1 class="text-3xl font-bold leading-normal mt-6 mb-4">
+  <div class="max-w-[calc(100%-60px)] mx-[30px] min-[769px]:max-w-[calc(50%-60px)]">
+    <h1 class="text-[1.25em] leading-[1.75em] font-bold m-0 mb-[0.75em] min-[769px]:text-3xl min-[769px]:leading-normal max-[960px]:min-[769px]:text-[1.45em]">
       みんなの登録フィードや<br/>
       感想メモのシェアができる<br/>
       新しいフィードリーダー
     </h1>
-    <p>
+    <p class="m-0 mb-[1.5em] leading-[1.8em] min-[769px]:mb-[2em]">
       rururuは、あなたや友達が見ているサイトの最新情報がわかったり<br class="hidden md:inline"/>
       自身の登録フィードの未読管理や感想のメモもできる、<br class="hidden md:inline"/>
       ポストSNS時代に向けた新しいフィードリーダーです。
     </p>
     <% if show_buttons %>
-    <div class="hero-area-button">
-      <%= link_to("rururu について", about_path, class: "hero-area-button-secondary") %>
+    <div class="flex mt-[1em] mr-0 mb-[2em] ml-0 min-[769px]:mb-0">
+      <%= link_to("rururu について", about_path, class: "block mr-[1em] ml-0 mt-0 mb-0 py-[0.5em] px-[1em] border-none rounded bg-[#eeeeee] text-[#777777] border border-[#cccccc] hover:no-underline hover:bg-[#dddddd]") %>
     </div>
     <% end %>
   </div>
