@@ -27,6 +27,11 @@ class User < ApplicationRecord
   validates :icon_url, presence: true
   validates_url_http_format_of :icon_url
 
+  def self.generate_default_name(email)
+    local_part = email.split("@").first
+    local_part.length >= 2 ? local_part : email.gsub("@", ".")
+  end
+
   def admin?
     admin == true
   end
