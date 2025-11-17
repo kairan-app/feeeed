@@ -1,6 +1,6 @@
-  <%= search_form_for(channel_q || Channel.ransack, url: channels_path, as: :channel_q) do |form| %>
-    <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels") %>
-    <%= button_tag type: "submit" do %>
+  <%= search_form_for(channel_q || Channel.ransack, url: channels_path, as: :channel_q, html: { class: "flex w-[calc(100%-66px)] mt-[3px] mr-[10px] mb-0 ml-[20px] min-[769px]:w-auto min-[769px]:mt-0 min-[769px]:mr-[10px] min-[769px]:mb-0 min-[769px]:ml-[30px]" }) do |form| %>
+    <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels", class: "w-full py-1 px-2 border border-[#cccccc]") %>
+    <%= button_tag type: "submit", class: "mt-0 mr-0 mb-0 ml-[-1px] py-1 px-2 border border-[#cccccc] cursor-pointer leading-[1em]" do %>
       <span class="material-symbols-outlined m-0 max-md:relative max-md:p-0 max-md:text-[24px]">search</span>
     <% end %>
   <% end %>

@@ -289,32 +289,6 @@ img {
 }
 
 
-.channel_search {
-  display: flex;
-  margin: 0 10px 0 30px;
-}
-
-@media screen and (max-width: 768px) {
-  .channel_search {
-    width: calc(100% - 66px);
-    margin: 3px 10px 0 20px;
-  }
-}
-
-.channel_search input {
-  width: 100%;
-  padding: 0.25em 0.5em;
-  border: solid 1px #cccccc;
-}
-
-.channel_search button {
-  margin: 0 0 0 -1px;
-  padding: 0.25em 0.5em;
-  border: solid 1px #cccccc;
-  cursor: pointer;
-  line-height: 1em;
-}
-
 .channel-and-items-component {
   min-width: 400px;
   margin: 0;
