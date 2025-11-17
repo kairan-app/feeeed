@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
         user = User.create!(
           google_guid: payload["sub"],
           email: email,
-          name: email.split("@").first,
+          name: User.generate_default_name(email),
           icon_url: payload["picture"].presence || "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?d=identicon"
         )
         log_in(user)
@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
           "google_guid" => payload["sub"],
           "email" => email,
           "icon_url" => payload["picture"].presence || "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?d=identicon",
-          "name" => email.split("@").first
+          "name" => User.generate_default_name(email)
         }
         redirect_to new_join_request_path
       end
