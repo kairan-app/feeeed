@@ -18,11 +18,11 @@
 <% end %>
 
 <% @channel_and_items.each do |channel, items| %>
-  <div class="channel-and-items-component channel-and-items-component-unreads">
-    <h3 class="text-lg font-bold mt-2 channel-and-items-component-channel">
+  <div class="min-w-[400px] max-[768px]:min-w-[270px] max-[1200px]:w-[calc(50%-20px)] m-0 p-0 border-b-[6px] border-b-[#dddddd] last:border-b-0 w-full">
+    <h3 class="text-lg font-bold mt-2 [&_a]:flex [&_a]:items-center [&_a]:gap-[10px] [&_a]:p-[10px] [&_a]:transition-[0.25s] [&_a:hover]:no-underline [&_a:hover]:bg-[rgba(255,255,255,0.75)] [&_a_span]:flex-1 max-[768px]:[&_a]:p-0 max-[768px]:[&_a]:py-[10px]">
       <%= link_to channel_path(channel) do %>
         <% if channel.image_url %>
-          <div class="channel-component-image">
+          <div class="relative h-16 overflow-hidden [&_img]:h-full [&_img]:object-contain">
             <%= image_tag(channel.image_url, loading: "lazy") %>
           </div>
         <% end %>
@@ -32,16 +32,16 @@
       <% end %>
     </h3>
     <%= turbo_frame_tag "channel_#{channel.id}_items" do %>
-      <ul class="channel-and-items-component-item-list">
+      <ul class="my-2 mx-0">
         <% items.sort_by(&:published_at).reverse.take(item_count_threshold).each do |item| %>
           <li class="flex flex-wrap items-start border-t border-[#dddddd] border-t-[0.5px]" id="item_<%= item.id %>">
             <%= link_to(item.url, target: "_blank", class: "w-full !border-t-0 min-[769px]:w-1/2") do %>
-              <div class="channel-and-items-component-item-image">
-                <div class="component-item-image" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+              <div class="relative w-24 h-16 mr-[10px] overflow-hidden max-[1200px]:w-24 max-[1200px]:h-16 max-[1200px]:mr-[10px]">
+                <div class="relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-[inherit] before:blur-[10px] before:scale-110 before:z-[1] [&_img]:relative [&_img]:z-[2] [&_img]:w-full [&_img]:h-full [&_img]:object-contain" style="background-image: url('<%= item.image_url_or_placeholder %>')">
                   <%= image_tag(item.image_url_or_placeholder, loading: "lazy", style: "object-fit: contain;") %>
                 </div>
               </div>
-              <div class="channel-and-items-component-item-info channel-and-items-component-item-info-unreads">
+              <div class="w-[calc(100%-126px)] mr-5 m-0 max-[768px]:w-[calc(100%-106px)] max-[768px]:m-0">
                 <h4 class="font-bold">
                   <%= item.title %>
                 </h4>
@@ -59,12 +59,12 @@
                 </div>
               <% end %>
             <% end %>
-            <div class="channel-and-items-component-item-player-and-paw">
-              <div class="channel-and-items-component-item-paw">
-                <div class="channel-and-items-component-item-skip">
+            <div class="w-[calc(50%-20px)] ml-5 m-0 py-3 px-0 max-[768px]:w-full max-[768px]:m-0 max-[768px]:mt-[-0.25em] max-[768px]:p-0 max-[768px]:pb-3">
+              <div class="flex w-full m-0">
+                <div class="relative top-0 right-0 w-[58px] [&_a]:inline-block [&_a]:w-[50px] [&_a]:m-0 [&_a]:py-[6px] [&_a]:px-0 [&_a]:text-center [&_a]:bg-[#999999] [&_a]:text-white [&_a]:rounded-sm [&_a:hover]:bg-[#aaaaaa]">
                   <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
                 </div>
-                <div class="channel-and-items-component-item-memo">
+                <div class="w-[calc(100%-60px)] max-[1200px]:w-[calc(100%-58px)] [&_p]:bg-white [&_p]:py-3 [&_p]:px-4 [&_p.button-to-unpaw]:bg-transparent [&_p.button-to-unpaw]:text-right [&_p.button-to-unpaw]:py-1 [&_p.button-to-unpaw]:px-0 [&_p.button-to-unpaw]:pt-1 max-[1200px]:[&_p.button-to-unpaw]:py-1 max-[1200px]:[&_p.button-to-unpaw]:pr-[5px] max-[1200px]:[&_p.button-to-unpaw]:pl-0 max-[1200px]:[&_p.button-to-unpaw]:pt-1">
                   <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
                 </div>
               </div>
@@ -72,7 +72,7 @@
           </li>
         <% end %>
         <% if items.size > item_count_threshold %>
-          <p id= "item-skipper-<%= channel.id %>" class="channel-and-items-component-item-skipper text-center">
+          <p id= "item-skipper-<%= channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
             <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded-sm hover:text-white hover:bg-[#aaaaaa]") %>
           </p>
         <% end %>
