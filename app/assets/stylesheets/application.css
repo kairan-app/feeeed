@@ -698,29 +698,6 @@ img {
 
 /* About */
 
-.about-contents,
-.info-contents {
-  width: calc(100% - 20px);
-}
-
-@media screen and (max-width: 768px) {
-
-  .about-contents,
-  .info-contents {
-    width: 100%;
-  }
-}
-
-.about-contents h2,
-.info-contents h2 {
-  color: #3d8bcd;
-}
-
-.about-contents section h2,
-.info-contents article h2 {
-  color: #000000;
-}
-
 .similar-channels {
   display: flex;
   flex-wrap: wrap;
