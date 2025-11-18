@@ -24,10 +24,6 @@ textarea {
   }
 }
 
-a {
-  text-decoration: none;
-}
-
 .material-symbols-outlined:not(.material-symbols-outlined-sp-tab) {
   display: flex;
   margin: 0 0.2em 0 0;
