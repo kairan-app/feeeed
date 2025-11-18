@@ -18,7 +18,7 @@
       <p><%= @channel.description %></p>
     <% end %>
 
-    <ul class="my-4 channel-links">
+    <ul class="my-4 [&_li]:flex [&_li]:mb-1 [&_li_.material-symbols-outlined]:text-[22px]">
       <% if @channel.site_url %>
       <li class="break-all"><span class="material-symbols-outlined">language</span> <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
       <% end %>

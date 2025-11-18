@@ -80,47 +80,6 @@ img {
   display: inline-block;
 }
 
-.channel-links li {
-  display: flex;
-  margin: 0 0 0.25em;
-}
-
-.channel-links li .material-symbols-outlined {
-  font-size: 22px;
-}
-
-
-.setting-description {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 20px 0.5em 0;
-  padding: 0;
-  line-height: 1.5em;
-
-  img {
-    width: 40%;
-    height: auto;
-    margin: 10px 20px 0 0;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .setting-description {
-    margin: 0 0 0.5em;
-
-    img {
-      width: 100%;
-      height: auto;
-      margin: 0 0 1em;
-    }
-  }
-}
-
-.setting-description p {
-  margin: 0.5em 0 0.5em;
-  padding: 0;
-}
-
 
 /* Channel and Items Component - Removed, migrated to Tailwind CSS */
 
