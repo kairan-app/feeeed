@@ -35,7 +35,6 @@ textarea {
   }
 }
 
-
 /* Tab for Smatrphone */
 @media screen and (max-width: 768px) {
   .material-symbols-outlined-sp-tab {
@@ -57,7 +56,6 @@ textarea {
   }
 }
 
-
 /* Image blur background - ::before for blur effect */
 .image-blur-bg::before {
   content: '';
@@ -75,14 +73,3 @@ textarea {
 img {
   display: inline-block;
 }
-
-
-/* Channel and Items Component - Removed, migrated to Tailwind CSS */
-
-/* Pagination - Removed, migrated to Tailwind CSS */
-
-/* Unreads Nav and Channel Group Tab - Removed, migrated to Tailwind CSS */
-
-/* About - Removed, migrated to Tailwind CSS */
-
-/* Guides - Removed, migrated to Tailwind CSS */
