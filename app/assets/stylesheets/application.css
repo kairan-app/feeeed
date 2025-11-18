@@ -83,35 +83,6 @@ img {
 
 /* Unreads Nav and Channel Group Tab - Removed, migrated to Tailwind CSS */
 
-/* About */
-
-.preview-notice ul {
-  margin: 0 0 0 1.5em;
-  padding: 0;
-}
-
-.preview-notice ul li {
-  list-style: disc;
-  margin: 0 0 0.5em;
-  padding: 0;
-}
-
-@media screen and (max-width: 768px) {
-  .preview-notice ul li {
-    margin: 0 0 1em;
-  }
-}
-
-.preview-notice ul li ul {
-  margin: 0.5em 0 0 1.5em;
-  padding: 0;
-}
-
-@media screen and (max-width: 768px) {
-  .preview-notice ul li ul li {
-    margin: 0 0 0.5em;
-    padding: 0;
-  }
-}
+/* About - Removed, migrated to Tailwind CSS */
 
 /* Guides - Removed, migrated to Tailwind CSS */
