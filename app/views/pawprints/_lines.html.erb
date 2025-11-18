@@ -6,8 +6,8 @@
       <div class="pawprint-item flex flex-wrap w-full m-0 mb-2 min-[769px]:w-1/2 min-[769px]:mr-5 min-[769px]:mb-0">
         <div class="pawprint-item-image w-24 h-16 m-0 mr-[10px] overflow-hidden relative">
           <%= link_to(item.url, target: "_blank") do %>
-            <div class="relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-[inherit] before:blur-[10px] before:scale-110 before:z-[1] [&_img]:relative [&_img]:z-[2] [&_img]:w-full [&_img]:h-full [&_img]:object-contain" style="background-image: url('<%= item.image_url_or_placeholder %>')">
-              <%= image_tag(item.image_url_or_placeholder) %>
+            <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+              <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] w-full h-full object-contain") %>
             </div>
           <% end %>
         </div>

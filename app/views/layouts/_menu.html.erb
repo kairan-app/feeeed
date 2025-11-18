@@ -4,19 +4,19 @@
   <% if logged_in? %>
   <ul class="flex justify-end items-center m-0 mr-[72px] p-0 max-md:!hidden">
     <li>
-      <%= link_to(pawprints_path, class: "relative flex items-center m-0 p-3 hover:no-underline hover:bg-white/50") do %>
+      <%= link_to(pawprints_path, class: "relative flex items-center m-0 p-3 hover:bg-white/50") do %>
         <span class="material-symbols-outlined"><%= image_tag("icon-pawprints-b.svg", alt: "pawprints", loading: "lazy", width: 24, height: 24) %></span>
         <span>Pawprints</span>
       <% end %>
     </li>
     <li>
-      <%= link_to(unreads_path, class: "relative flex items-center m-0 p-3 hover:no-underline hover:bg-white/50") do %>
+      <%= link_to(unreads_path, class: "relative flex items-center m-0 p-3 hover:bg-white/50") do %>
         <span class="material-symbols-outlined">inbox</span>
         <span>Unreads</span>
       <% end %>
     </li>
     <li>
-      <%= link_to(my_path, class: "relative flex items-center m-0 p-3 hover:no-underline hover:bg-white/50") do %>
+      <%= link_to(my_path, class: "relative flex items-center m-0 p-3 hover:bg-white/50") do %>
         <span class="material-symbols-outlined">settings</span>
         <span>Settings</span>
       <% end %>
@@ -28,26 +28,26 @@
   <ul class="absolute top-[55px] right-[10px] max-md:right-[-10px] flex flex-col items-start w-auto !m-0 p-0 bg-white -translate-y-[calc(100%+50px)] transition-none z-0 opacity-20 shadow-[0px_0px_6px_rgba(0,0,0,0.1)] rounded-[2px] peer-checked:translate-y-0 peer-checked:transition-none peer-checked:z-[2] peer-checked:opacity-100">
     <% if current_user.admin? %>
     <li class="w-full p-0 border-b border-[#cccccc]">
-      <%= link_to(admin_path, class: "flex items-center w-full p-3 hover:no-underline hover:bg-gray-50") do %>
+      <%= link_to(admin_path, class: "flex items-center w-full p-3 hover:bg-gray-50") do %>
         <span class="material-symbols-outlined">admin_panel_settings</span>
         <span>Admin</span>
       <% end %>
     </li>
     <% end %>
     <li class="w-full p-0 border-b border-[#cccccc]">
-      <%= link_to(guides_path, class: "flex items-center w-full p-3 hover:no-underline hover:bg-gray-50") do %>
+      <%= link_to(guides_path, class: "flex items-center w-full p-3 hover:bg-gray-50") do %>
         <span class="material-symbols-outlined">info</span>
         <span>Guides</span>
       <% end %>
     </li>
     <li class="w-full p-0 border-b border-[#cccccc]">
-      <%= link_to(user_path(user_name: current_user.name), class: "flex items-center w-full p-3 hover:no-underline hover:bg-gray-50") do %>
+      <%= link_to(user_path(user_name: current_user.name), class: "flex items-center w-full p-3 hover:bg-gray-50") do %>
         <span class="material-symbols-outlined">account_circle</span>
         <span>My Page</span>
       <% end %>
     </li>
     <li class="w-full p-0 border-b-0">
-      <%= link_to(session_path, data: { turbo_method: :delete }, class: "flex items-center w-full p-3 hover:no-underline hover:bg-gray-50") do %>
+      <%= link_to(session_path, data: { turbo_method: :delete }, class: "flex items-center w-full p-3 hover:bg-gray-50") do %>
         <span class="material-symbols-outlined">logout</span>
         <span>Log out</span>
       <% end %>

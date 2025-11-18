@@ -1,7 +1,7 @@
 <div class="flex flex-wrap w-[calc(100%-15px)] max-md:w-full mt-[2em] max-md:mt-[1em] pb-5 border-b border-[#aaaaaa]">
   <% if @channel.image_url %>
   <div class="w-[240px] h-[240px] mr-[30px] max-md:mx-auto max-md:mb-5 overflow-hidden">
-    <div class="channel-profile-image-container relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat" style="background-image: url('<%= @channel.image_url %>')">
+    <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= @channel.image_url %>')">
       <%= image_tag(@channel.image_url, class: "relative z-[2] max-w-full max-h-full object-contain") %>
     </div>
   </div>
@@ -18,7 +18,7 @@
       <p><%= @channel.description %></p>
     <% end %>
 
-    <ul class="my-4 channel-links">
+    <ul class="my-4 [&_li]:flex [&_li]:mb-1 [&_li_.material-symbols-outlined]:text-[22px]">
       <% if @channel.site_url %>
       <li class="break-all"><span class="material-symbols-outlined">language</span> <%= link_to(@channel.site_url, @channel.site_url, target: "_blank") %></li>
       <% end %>

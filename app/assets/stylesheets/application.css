@@ -24,10 +24,6 @@ textarea {
   }
 }
 
-a {
-  text-decoration: none;
-}
-
 .material-symbols-outlined:not(.material-symbols-outlined-sp-tab) {
   display: flex;
   margin: 0 0.2em 0 0;
@@ -39,8 +35,6 @@ a {
   }
 }
 
-
-/* Tab for Smatrphone */
 @media screen and (max-width: 768px) {
   .material-symbols-outlined-sp-tab {
     margin: 0;
@@ -61,9 +55,7 @@ a {
   }
 }
 
-
-/* Channel card image styles - ::before for blur effect */
-.channel-card-image::before {
+.image-blur-bg::before {
   content: '';
   position: absolute;
   top: 0;
@@ -75,138 +67,3 @@ a {
   transform: scale(1.1);
   z-index: 1;
 }
-
-/* Item card image styles - ::before for blur effect */
-.item-card-image::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: inherit;
-  filter: blur(10px);
-  transform: scale(1.1);
-  z-index: 1;
-}
-
-
-
-img {
-  display: inline-block;
-}
-
-
-
-.sub-column .pawprint-info {
-  width: calc(100% - 34px);
-  margin: 0;
-  font-size: 0.9em;
-  line-height: 1.5em;
-
-  span {
-    display: inline-block;
-    margin: 0;
-  }
-}
-
-.sub-column .pawprint-memo {
-  width: 100%;
-  font-size: 0.9em;
-  line-height: 1.5em;
-}
-
-/* Channel profile image container - ::before for blur effect */
-.channel-profile-image-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: inherit;
-  filter: blur(10px);
-  transform: scale(1.1);
-  z-index: 1;
-}
-
-.channel-links li {
-  display: flex;
-  margin: 0 0 0.25em;
-}
-
-.channel-links li .material-symbols-outlined {
-  font-size: 22px;
-}
-
-
-.setting-description {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 20px 0.5em 0;
-  padding: 0;
-  line-height: 1.5em;
-
-  img {
-    width: 40%;
-    height: auto;
-    margin: 10px 20px 0 0;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .setting-description {
-    margin: 0 0 0.5em;
-
-    img {
-      width: 100%;
-      height: auto;
-      margin: 0 0 1em;
-    }
-  }
-}
-
-.setting-description p {
-  margin: 0.5em 0 0.5em;
-  padding: 0;
-}
-
-
-/* Channel and Items Component - Removed, migrated to Tailwind CSS */
-
-/* Pagination - Removed, migrated to Tailwind CSS */
-
-/* Unreads Nav and Channel Group Tab - Removed, migrated to Tailwind CSS */
-
-/* About */
-
-.preview-notice ul {
-  margin: 0 0 0 1.5em;
-  padding: 0;
-}
-
-.preview-notice ul li {
-  list-style: disc;
-  margin: 0 0 0.5em;
-  padding: 0;
-}
-
-@media screen and (max-width: 768px) {
-  .preview-notice ul li {
-    margin: 0 0 1em;
-  }
-}
-
-.preview-notice ul li ul {
-  margin: 0.5em 0 0 1.5em;
-  padding: 0;
-}
-
-@media screen and (max-width: 768px) {
-  .preview-notice ul li ul li {
-    margin: 0 0 0.5em;
-    padding: 0;
-  }
-}
-
-/* Guides - Removed, migrated to Tailwind CSS */

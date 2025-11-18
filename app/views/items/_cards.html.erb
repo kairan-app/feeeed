@@ -3,7 +3,7 @@
   <div class="card item-card">
     <div class="relative w-full leading-[0] overflow-hidden aspect-[3/2] max-md:h-[calc((100vw-55px)/3)]">
       <%= link_to item.url, target: "_blank" do %>
-        <div class="item-card-image relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+        <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
           <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
         </div>
       <% end %>
