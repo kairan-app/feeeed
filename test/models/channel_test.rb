@@ -452,4 +452,94 @@ class ChannelTest < ActiveSupport::TestCase
       assert_includes Channel.needs_check_now, channel
     end
   end
+
+  describe "Feed URL redirect handling" do
+    describe "リダイレクトが検出された場合" do
+      setup do
+        @old_url = "https://listen.style/p/juneboku-life/rss"
+        @new_url = "https://rss.listen.style/p/juneboku-life/rss"
+        @feed_xml = File.read(Rails.root.join("test/fixtures/files/juneboku_life.xml"))
+
+        # Httpc.get_with_redirect_infoをスタブ（リダイレクトあり）
+        Httpc.stubs(:get_with_redirect_info).with(@old_url).returns({
+          body: @feed_xml,
+          final_url: @new_url,
+          redirected: true
+        })
+
+        # FeedNormalizerは実際のメソッドを呼ぶ（リダイレクト情報が追加される）
+        # OpenGraphのモックも必要
+        OpenGraph.stubs(:new).returns(OpenStruct.new())
+      end
+
+      test "旧URLでチャンネルが存在する場合、feed_urlが新URLに更新される" do
+        # 旧URLでチャンネルを作成
+        existing_channel = Channel.create!(
+          title: "純朴声活",
+          feed_url: @old_url,
+          site_url: "https://listen.style/p/juneboku-life"
+        )
+
+        # 旧URLで再度追加を試みる
+        channel = Channel.add(@old_url)
+
+        # 同じチャンネルが返される
+        assert_equal existing_channel.id, channel.id
+        # feed_urlが新URLに更新されている
+        assert_equal @new_url, channel.feed_url
+        # チャンネルの総数は増えていない
+        assert_equal 1, Channel.where(title: "純朴声活").count
+      end
+
+      test "旧URLでチャンネルが存在しない場合、新URLでチャンネルが作成される" do
+        # 旧URLで追加
+        channel = Channel.add(@old_url)
+
+        # 新URLで作成される
+        assert_equal @new_url, channel.feed_url
+        assert_equal "純朴声活", channel.title
+      end
+
+      test "既存チャンネルのfetch_and_save_itemsでリダイレクトが検出された場合、feed_urlが更新される" do
+        # 旧URLでチャンネルを作成
+        channel = Channel.create!(
+          title: "純朴声活",
+          feed_url: @old_url,
+          site_url: "https://listen.style/p/juneboku-life"
+        )
+
+        # 既存のfeed_urlを保存
+        original_feed_url = channel.feed_url
+
+        # アイテムを取得
+        channel.fetch_and_save_items(:only_recent)
+
+        # feed_urlが更新されている
+        channel.reload
+        assert_equal @new_url, channel.feed_url
+        assert_not_equal original_feed_url, channel.feed_url
+      end
+    end
+
+    describe "リダイレクトが検出されない場合" do
+      setup do
+        @feed_url = "https://example.com/feed.xml"
+        @feed_xml = File.read(Rails.root.join("test/fixtures/files/juneboku_life.xml"))
+
+        # Httpc.get_with_redirect_infoをスタブ（リダイレクトなし）
+        Httpc.stubs(:get_with_redirect_info).with(@feed_url).returns({
+          body: @feed_xml,
+          final_url: @feed_url,
+          redirected: false
+        })
+
+        OpenGraph.stubs(:new).returns(OpenStruct.new())
+      end
+
+      test "feed_urlは変更されない" do
+        channel = Channel.add(@feed_url)
+        assert_equal @feed_url, channel.feed_url
+      end
+    end
+  end
 end
