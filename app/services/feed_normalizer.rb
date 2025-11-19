@@ -1,6 +1,7 @@
 class FeedNormalizer
   # Pre-parseフィルタ（XML文字列に対して適用）
   PRE_PARSE_FILTERS = [
+    FeedFilters::PreParse::HtmlEntityFixer,
     FeedFilters::PreParse::AtomNamespaceFixer
     # 将来的に追加予定:
     # FeedFilters::PreParse::InvalidXmlFixer,
@@ -11,7 +12,6 @@ class FeedNormalizer
   POST_PARSE_FILTERS = [
     FeedFilters::PostParse::RelativeUrlResolver
     # 将来的に追加予定:
-    # FeedFilters::PostParse::EmptyFieldFiller,
     # FeedFilters::PostParse::DateNormalizer
   ].freeze
 
