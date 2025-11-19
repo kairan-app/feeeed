@@ -19,11 +19,11 @@ module FeedFilters
       ].freeze
 
       def applicable?(xml_content, metadata = {})
-        # 対象タグが存在し、かつHTMLエンティティを含む場合のみ適用
-        return false unless TARGET_TAGS.any? { |tag| xml_content.include?("<#{tag}>") }
-
-        # HTMLエンティティパターン: &xxx;
-        xml_content.match?(/&[a-zA-Z]+;/)
+        # 対象タグ内にHTMLエンティティが含まれている場合のみ適用
+        TARGET_TAGS.any? do |tag|
+          # <tag>と</tag>の間にHTMLエンティティ(&xxx;)が含まれているかチェック
+          xml_content.match?(/<#{tag}[^>]*>.*?&[a-zA-Z]+;.*?<\/#{tag}>/m)
+        end
       end
 
       def apply(xml_content, metadata = {})
@@ -34,9 +34,10 @@ module FeedFilters
           elements = doc.xpath("//channel/#{tag}")
           elements.each do |element|
             original_xml = element.to_xml
-            # Nokogiriのtextメソッドは自動的にHTMLエンティティをデコードする
-            # element.contentで再設定すると、実際の文字になる
-            element.content = element.text
+            # HTMLエンティティをデコードして実際の文字に変換
+            # Nokogiri::HTML::DocumentFragmentを使ってHTMLとしてパースし、textで変換
+            decoded_text = Nokogiri::HTML::DocumentFragment.parse(element.inner_html).text
+            element.content = decoded_text
 
             # 変更があった場合のみ記録
             if element.to_xml != original_xml
