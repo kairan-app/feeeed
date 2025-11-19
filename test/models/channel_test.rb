@@ -19,8 +19,18 @@ class ChannelTest < ActiveSupport::TestCase
           @feed_xml = File.read(Rails.root.join("test/fixtures/files/june29_jp.xml"))
 
           Feedbag.stubs(:find).with(@site_url).returns([ @feed_url ])
-          Httpc.stubs(:get).with(@site_url).returns(@site_html)
-          Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
+          # 最初にサイトURLに対してリクエストが行われる（フィードとしてパースを試みる）
+          Httpc.stubs(:get_with_redirect_info).with(@site_url).returns({
+            body: @site_html,
+            final_url: @site_url,
+            redirected: false
+          })
+          # 次にフィードURLに対してリクエストが行われる
+          Httpc.stubs(:get_with_redirect_info).with(@feed_url).returns({
+            body: @feed_xml,
+            final_url: @feed_url,
+            redirected: false
+          })
           OpenGraph.stubs(:new).returns(OpenStruct.new())
         end
 
@@ -42,7 +52,11 @@ class ChannelTest < ActiveSupport::TestCase
           @og_image_url = "https://example.com/image.jpg"
 
           OpenGraph.stubs(:new).returns(OpenStruct.new(image: @og_image_url))
-          Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
+          Httpc.stubs(:get_with_redirect_info).with(@feed_url).returns({
+            body: @feed_xml,
+            final_url: @feed_url,
+            redirected: false
+          })
         end
 
         test "Channelが期待通りに保存される" do
@@ -63,7 +77,11 @@ class ChannelTest < ActiveSupport::TestCase
           @description = "HANA official YouTube channel"
 
           OpenGraph.stubs(:new).returns(OpenStruct.new(image: @og_image_url, description: @description))
-          Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
+          Httpc.stubs(:get_with_redirect_info).with(@feed_url).returns({
+            body: @feed_xml,
+            final_url: @feed_url,
+            redirected: false
+          })
         end
 
         test "Channelが期待通りに保存される" do
@@ -81,7 +99,11 @@ class ChannelTest < ActiveSupport::TestCase
           @feed_url = "https://rss.listen.style/p/juneboku-life/rss"
           @feed_xml = File.read(Rails.root.join("test/fixtures/files/juneboku_life.xml"))
 
-          Httpc.stubs(:get).with(@feed_url).returns(@feed_xml)
+          Httpc.stubs(:get_with_redirect_info).with(@feed_url).returns({
+            body: @feed_xml,
+            final_url: @feed_url,
+            redirected: false
+          })
         end
 
         test "Channelが期待通りに保存される" do
