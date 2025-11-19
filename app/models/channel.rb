@@ -175,8 +175,16 @@ class Channel < ApplicationRecord
 
     # フィードを取得し、正規化・パースを行う共通メソッド
     def fetch_and_normalize_feed(feed_url)
-      raw_xml = Httpc.get(feed_url)
-      FeedNormalizer.normalize_and_parse(raw_xml, feed_url)
+      http_response = Httpc.get_with_redirect_info(feed_url)
+      normalization_result = FeedNormalizer.normalize_and_parse(http_response[:body], feed_url)
+
+      # リダイレクト情報を追加
+      normalization_result[:redirect_info] = {
+        redirected: http_response[:redirected],
+        final_url: http_response[:final_url]
+      }
+
+      normalization_result
     end
 
     def save_from(feed_url, normalization_result = nil)
@@ -186,14 +194,35 @@ class Channel < ApplicationRecord
       feed = normalization_result[:feed]
       feed.url = feed.url.strip if feed.url
 
-      parameters = build_from(feed, feed_url)
+      # リダイレクトされた場合は、最終的なURLを使用する
+      redirect_info = normalization_result[:redirect_info]
+      final_feed_url = redirect_info&.dig(:redirected) ? redirect_info[:final_url] : feed_url
+
+      parameters = build_from(feed, final_feed_url)
       parameters.merge!(
         applied_filters: normalization_result[:applied_filters],
         filter_details: normalization_result[:filter_details]
       )
 
-      channel = Channel.find_or_initialize_by(feed_url: feed_url)
-      channel.update(parameters)
+      # リダイレクトされた場合の処理
+      if redirect_info&.dig(:redirected)
+        # 旧URLのチャンネルが存在する場合は、feed_urlを更新する
+        channel = Channel.find_by(feed_url: feed_url)
+        if channel
+          Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating existing channel ##{channel.id}"
+          channel.update!(feed_url: final_feed_url)
+          channel.update(parameters)
+        else
+          # 旧URLのチャンネルが存在しない場合は、新URLでチャンネルを作成
+          channel = Channel.find_or_initialize_by(feed_url: final_feed_url)
+          channel.update(parameters)
+        end
+      else
+        # リダイレクトされていない場合は、通常の処理
+        channel = Channel.find_or_initialize_by(feed_url: feed_url)
+        channel.update(parameters)
+      end
+
       channel
     end
 
@@ -354,6 +383,14 @@ class Channel < ApplicationRecord
     # FeedNormalizerを使って正規化とパースを実行
     normalization_result = self.class.fetch_and_normalize_feed(feed_url)
     feed = normalization_result[:feed]
+
+    # リダイレクトが検出された場合は、feed_urlを更新する
+    redirect_info = normalization_result[:redirect_info]
+    if redirect_info&.dig(:redirected)
+      final_feed_url = redirect_info[:final_url]
+      Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating channel ##{id}"
+      update!(feed_url: final_feed_url)
+    end
 
     entries =
       if mode == :all
