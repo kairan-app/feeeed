@@ -40,7 +40,7 @@
           <% end %>
           <% if current_user&.not_pawed?(item) %>
             <div class="chase-paw">
-              <div class="chase-paw-user">
+              <div class="chase-paw-user flex items-center gap-2 mb-2">
                 <%= user_avatar_tag(current_user, size: :xs) %>
                 <%= link_to("@" + current_user.name, user_path(user_name: current_user.name)) %>
               </div>
