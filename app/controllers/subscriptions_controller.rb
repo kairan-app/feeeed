@@ -4,16 +4,26 @@ class SubscriptionsController < ApplicationController
 
   def create
     current_user.subscribe(@channel)
+    @subscribed_channel_ids = current_user.subscribed_channel_ids
     DiscoPosterJob.perform_later(content: "@#{current_user.name} subscribed to #{@channel.title} #{channel_url(@channel)}", channel: :user_activities)
 
-    redirect_to @channel
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to @channel }
+    end
   end
 
   def destroy
     current_user.unsubscribe(@channel)
+    @subscribed_channel_ids = current_user.subscribed_channel_ids
 
-    redirect_to @channel
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to @channel }
+    end
   end
+
+  private
 
   def set_channel
     @channel = Channel.find(params[:channel_id])

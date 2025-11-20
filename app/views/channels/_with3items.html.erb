@@ -11,6 +11,9 @@
       </span>
     <% end %>
   </h3>
+  <div class="px-[10px] mb-2 max-[768px]:px-0">
+    <%= render partial: "subscriptions/link", locals: { channel: channel } %>
+  </div>
   <ul class="my-2 mx-0">
     <% channel.recent_items.each do |item| %>
       <%= turbo_frame_tag(item) do %>
