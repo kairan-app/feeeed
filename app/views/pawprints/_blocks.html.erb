@@ -2,39 +2,40 @@
   <% pawprints.each do |pawprint| %>
     <% user = pawprint.user %>
     <% item = pawprint.item %>
-    <li class="min-w-[270px] h-[320px] mr-5 sm:min-w-[400px] bg-white rounded-lg overflow-hidden border border-gray-200 flex flex-col">
-      <%= link_to(item.url, target: "_blank", class: "block h-32 flex-shrink-0") do %>
-        <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat" style="background-image: url('<%= item.image_url_or_placeholder %>')">
-          <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
-        </div>
-      <% end %>
-      <div class="p-3 flex flex-col flex-1 min-h-0">
-        <h3 class="font-bold text-sm mb-2 line-clamp-2 min-h-[2.5rem] flex items-center justify-center">
-          <%= link_to(item.title, item.url, target: "_blank") %>
-        </h3>
-        <div class="flex items-center justify-center gap-1 text-xs text-gray-600 mb-1 flex-shrink-0">
-          <%= image_tag(item.channel.favicon_url, size: "14x14", class: "w-[14px] h-[14px]") %>
-          <%= link_to(item.channel.title, item.channel) %>
-        </div>
-        <div class="flex items-center justify-center gap-2 mb-2 text-xs text-gray-600 flex-shrink-0">
-          <%= user_avatar_tag(user, size: :xs) %>
-          <span>pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
-        </div>
-        <% if user == current_user %>
-          <div class="mt-auto pt-3 border-t border-gray-200">
-            <%= render(partial: "items/pawprint", locals: { item: item, pawprint: pawprint }) %>
+    <li class="min-w-[270px] mr-5 sm:min-w-[360px] flex flex-col">
+      <div class="h-[250px] bg-white rounded-lg overflow-hidden border border-gray-200 flex flex-col">
+        <%= link_to(item.url, target: "_blank", class: "block h-32 flex-shrink-0") do %>
+          <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+            <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
           </div>
-        <% else %>
-          <% if pawprint.memo.present? %>
-            <div class="mb-2 p-2 bg-gray-50 rounded text-sm overflow-y-auto flex-shrink min-h-0"><%= pawprint.memo %></div>
-          <% end %>
-          <% if current_user&.not_pawed?(item) %>
-            <div class="mt-auto pt-3 border-t border-gray-200">
-              <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
-            </div>
-          <% end %>
         <% end %>
+        <div class="p-3 flex flex-col flex-1 min-h-0">
+          <div class="mb-2 min-h-[2.5rem] flex items-center justify-center">
+            <h3 class="font-bold text-sm line-clamp-2 text-center">
+              <%= link_to(item.title, item.url, target: "_blank") %>
+            </h3>
+          </div>
+          <div class="flex items-center justify-center gap-1 text-xs text-gray-600 mb-1 flex-shrink-0">
+            <%= image_tag(item.channel.favicon_url, size: "14x14", class: "w-[14px] h-[14px]") %>
+            <%= link_to(item.channel.title, item.channel) %>
+          </div>
+          <div class="flex items-center justify-center gap-2 text-xs text-gray-600 flex-shrink-0">
+            <%= user_avatar_tag(user, size: :xs) %>
+            <span>pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+          </div>
+        </div>
       </div>
+      <% if user == current_user %>
+        <div class="mt-2">
+          <%= render(partial: "items/pawprint", locals: { item: item, pawprint: pawprint }) %>
+        </div>
+      <% else %>
+        <% if current_user&.not_pawed?(item) %>
+          <div class="mt-2">
+            <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
+          </div>
+        <% end %>
+      <% end %>
     </li>
   <% end %>
 </ul>
