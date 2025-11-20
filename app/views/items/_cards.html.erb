@@ -21,7 +21,7 @@
       </span>
     <% end %>
     <span class="block mb-[0.1em] text-[0.9em] leading-[1.5em] text-[#555555]"><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></span>
-    <%= render(partial: "items/pawprint", locals: { item: item, pawprint: false }) %>
+    <%= render(partial: "items/pawprint", locals: { item: item, pawprint: item.pawprints.find { |p| p.user_id == current_user.id } }) %>
   </div>
   <% end %>
 </div>
