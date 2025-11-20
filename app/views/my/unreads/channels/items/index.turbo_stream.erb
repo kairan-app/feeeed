@@ -1,0 +1,53 @@
+<% @items.each do |item| %>
+  <%= turbo_stream.before "load-more-#{@channel.id}" do %>
+    <li class="flex flex-wrap items-start border-t border-[#dddddd] border-t-[0.5px]" id="item_<%= item.id %>">
+      <%= link_to(item.url, target: "_blank", class: "flex flex-wrap w-full !border-t-0 py-3 px-[10px] max-[768px]:py-4 max-[768px]:px-0 transition-[0.25s] hover:bg-[rgba(255,255,255,0.75)] min-[769px]:w-1/2") do %>
+        <div class="relative w-24 h-16 mr-[10px] overflow-hidden max-[1200px]:w-24 max-[1200px]:h-16 max-[1200px]:mr-[10px]">
+          <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+            <%= image_tag(item.image_url_or_placeholder, loading: "lazy", class: "relative z-[2] w-full h-full object-contain") %>
+          </div>
+        </div>
+        <div class="w-[calc(100%-126px)] mr-5 m-0 max-[768px]:w-[calc(100%-106px)] max-[768px]:m-0">
+          <h4 class="font-bold">
+            <%= item.title %>
+          </h4>
+          <p>
+            <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+          </p>
+          <p class="hidden line-clamp-1 line-clamp-2 line-clamp-3 line-clamp-4 line-clamp-5 line-clamp-6"></p>
+          <p class="text-sm text-gray-500 line-clamp-<%= @item_summary_line_clamp %>">
+            <%= item.summary %>
+          </p>
+        </div>
+        <% if item.audio_enclosure_url %>
+          <div class="audio-player w-full mt-2 -mb-2">
+            <audio class="h-9" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+          </div>
+        <% end %>
+      <% end %>
+      <div class="w-[calc(50%-20px)] ml-5 m-0 py-3 px-0 max-[768px]:w-full max-[768px]:m-0 max-[768px]:mt-[-0.25em] max-[768px]:p-0 max-[768px]:pb-3">
+        <div class="flex w-full m-0">
+          <div class="relative top-0 right-0 w-[58px] [&_a]:inline-block [&_a]:w-[50px] [&_a]:m-0 [&_a]:py-[6px] [&_a]:px-0 [&_a]:text-center [&_a]:bg-[#999999] [&_a]:text-white [&_a]:rounded-sm [&_a:hover]:bg-[#aaaaaa]">
+            <%= link_to("Skip", item_skip_path(item), data: { turbo_method: :post }) %>
+          </div>
+          <div class="w-[calc(100%-60px)] max-[1200px]:w-[calc(100%-58px)] [&_p]:bg-white [&_p]:py-3 [&_p]:px-4 [&_p.button-to-unpaw]:bg-transparent [&_p.button-to-unpaw]:text-right [&_p.button-to-unpaw]:py-1 [&_p.button-to-unpaw]:px-0 [&_p.button-to-unpaw]:pt-1 max-[1200px]:[&_p.button-to-unpaw]:py-1 max-[1200px]:[&_p.button-to-unpaw]:pr-[5px] max-[1200px]:[&_p.button-to-unpaw]:pl-0 max-[1200px]:[&_p.button-to-unpaw]:pt-1">
+            <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
+          </div>
+        </div>
+      </div>
+    </li>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace "load-more-#{@channel.id}" do %>
+  <% if @has_more %>
+    <li id="load-more-<%= @channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
+      <%= link_to("Load more unread items", my_unreads_channel_items_path(
+        channel_id: @channel.id,
+        offset: @next_offset,
+        limit: @limit,
+        range_days: @range_days
+      ), data: { turbo_stream: true }, class: "inline-block leading-6 bg-[#3d8bcd] text-white p-2 rounded-sm hover:text-white hover:bg-[#5a9fd9]") %>
+    </li>
+  <% end %>
+<% end %>

@@ -152,4 +152,14 @@ class User < ApplicationRecord
     sort_by { |_, items| items.first.created_at }.
     reverse
   end
+
+  def unread_items_for(channel, offset: 0, limit: 3, range_days: 7)
+    channel.items.
+    where("NOT EXISTS (SELECT 1 FROM pawprints WHERE pawprints.item_id = items.id AND pawprints.user_id = ?)", self.id).
+    where("NOT EXISTS (SELECT 1 FROM item_skips WHERE item_skips.item_id = items.id AND item_skips.user_id = ?)", self.id).
+    where("items.created_at > ?", range_days.days.ago).
+    order("items.published_at DESC").
+    offset(offset).
+    limit(limit)
+  end
 end

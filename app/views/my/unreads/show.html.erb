@@ -32,7 +32,7 @@
       <% end %>
     </h3>
     <%= turbo_frame_tag "channel_#{channel.id}_items" do %>
-      <ul class="my-2 mx-0">
+      <ul class="my-2 mx-0" id="channel_<%= channel.id %>_items_list">
         <% items.sort_by(&:published_at).reverse.take(item_count_threshold).each do |item| %>
           <li class="flex flex-wrap items-start border-t border-[#dddddd] border-t-[0.5px]" id="item_<%= item.id %>">
             <%= link_to(item.url, target: "_blank", class: "flex flex-wrap w-full !border-t-0 py-3 px-[10px] max-[768px]:py-4 max-[768px]:px-0 transition-[0.25s] hover:bg-[rgba(255,255,255,0.75)] min-[769px]:w-1/2") do %>
@@ -72,9 +72,17 @@
           </li>
         <% end %>
         <% if items.size > item_count_threshold %>
-          <p id= "item-skipper-<%= channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
+          <li id="load-more-<%= channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
+            <%= link_to("Load more unread items", my_unreads_channel_items_path(
+              channel_id: channel.id,
+              offset: item_count_threshold,
+              limit: 3,
+              range_days: @range_days
+            ), data: { turbo_stream: true }, class: "inline-block leading-6 bg-[#3d8bcd] text-white p-2 rounded-sm hover:text-white hover:bg-[#5a9fd9]") %>
+          </li>
+          <li id="item-skipper-<%= channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
             <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded-sm hover:text-white hover:bg-[#aaaaaa]") %>
-          </p>
+          </li>
         <% end %>
       </ul>
     <% end %>
