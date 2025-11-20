@@ -1,17 +1,15 @@
 <div class="w-[300px] flex-shrink-0 mr-4 max-[768px]:w-full max-[768px]:mr-0 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+  <%= link_to channel_path(channel), class: "block h-32 flex-shrink-0" do %>
+    <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat" style="background-image: url('<%= channel.image_url_or_placeholder %>')">
+      <%= image_tag(channel.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
+    </div>
+  <% end %>
   <div class="p-4 flex flex-col">
-    <%= link_to channel_path(channel), class: "block" do %>
-      <div class="w-full h-32 mb-3 overflow-hidden flex items-center justify-center bg-gray-50">
-        <% if channel.image_url %>
-          <%= image_tag(channel.image_url, class: "max-w-full max-h-full object-contain") %>
-        <% end %>
-      </div>
-      <div class="min-h-[3.5rem] flex items-center justify-center mb-3">
-        <h3 class="text-lg font-bold line-clamp-2 text-center">
-          <%= channel.title %>
-        </h3>
-      </div>
-    <% end %>
+    <div class="min-h-[3.5rem] flex items-center justify-center mb-3">
+      <h3 class="text-lg font-bold line-clamp-2 text-center">
+        <%= link_to channel.title, channel_path(channel) %>
+      </h3>
+    </div>
     <%= render partial: "subscriptions/link", locals: { channel: channel } %>
   </div>
   <ul class="border-t border-gray-200">
