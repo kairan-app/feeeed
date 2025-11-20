@@ -210,8 +210,7 @@ class Channel < ApplicationRecord
         channel = Channel.find_by(feed_url: feed_url)
         if channel
           Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating existing channel ##{channel.id}"
-          channel.update!(feed_url: final_feed_url)
-          channel.update(parameters)
+          channel.update!(parameters.merge(feed_url: final_feed_url))
         else
           # 旧URLのチャンネルが存在しない場合は、新URLでチャンネルを作成
           channel = Channel.find_or_initialize_by(feed_url: final_feed_url)
