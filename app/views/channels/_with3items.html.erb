@@ -1,42 +1,42 @@
-<div class="min-w-[400px] max-[768px]:min-w-[270px] max-[1200px]:w-[calc(50%-20px)] m-0 mr-5 mb-5 p-0 border-b-0 overflow-scroll">
-  <h3 class="text-lg font-bold mt-[1em] mb-[0.5em] [&_a]:flex [&_a]:items-center [&_a]:gap-[10px] [&_a]:p-[10px] [&_a]:transition-[0.25s] [&_a:hover]:bg-[rgba(255,255,255,0.75)] [&_a_span]:flex-1 max-[768px]:[&_a]:p-0 max-[768px]:[&_a]:py-[10px]">
-    <%= link_to channel_path(channel) do %>
-      <% if channel.image_url %>
-        <div class="relative h-16 overflow-hidden [&_img]:h-full [&_img]:object-contain">
-          <%= image_tag(channel.image_url) %>
-        </div>
-      <% end %>
-      <span>
-        <%= channel.title %>
-      </span>
+<div class="w-[300px] flex-shrink-0 mr-4 max-[768px]:w-full max-[768px]:mr-0 bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+  <div class="p-4 flex flex-col">
+    <%= link_to channel_path(channel), class: "block" do %>
+      <div class="w-full h-32 mb-3 overflow-hidden flex items-center justify-center bg-gray-50">
+        <% if channel.image_url %>
+          <%= image_tag(channel.image_url, class: "max-w-full max-h-full object-contain") %>
+        <% end %>
+      </div>
+      <div class="min-h-[3.5rem] flex items-center justify-center mb-3">
+        <h3 class="text-lg font-bold line-clamp-2 text-center">
+          <%= channel.title %>
+        </h3>
+      </div>
     <% end %>
-  </h3>
-  <div class="px-[10px] mb-2 max-[768px]:px-0 w-48 mx-auto">
     <%= render partial: "subscriptions/link", locals: { channel: channel } %>
   </div>
-  <ul class="my-2 mx-0">
+  <ul class="border-t border-gray-200">
     <% channel.recent_items.each do |item| %>
       <%= turbo_frame_tag(item) do %>
-      <li>
-      <%= link_to(item.url, target: "_blank", class: "relative flex flex-wrap m-0 py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] leading-6 transition-[0.25s] hover:bg-[rgba(255,255,255,0.75)] max-[768px]:p-0 max-[768px]:py-4") do %>
-        <div class="relative w-24 h-16 mr-[10px] overflow-hidden max-[1200px]:w-24 max-[1200px]:h-16 max-[1200px]:mr-[10px]">
-          <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
-            <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] w-full h-full object-contain") %>
-          </div>
-        </div>
-        <div class="w-[calc(100%-106px)] m-0 max-[1200px]:w-[calc(100%-106px)] max-[1200px]:m-0">
-          <h4 class="font-bold">
-            <%= item.title %>
-          </h4>
-          <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
-        </div>
-        <% if item.audio_enclosure_url %>
-          <div class="audio-player w-full mt-2 -mb-2">
-            <audio class="h-9" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
-          </div>
-        <% end %>
-      <% end %>
-      </li>
+        <li class="border-b border-gray-200 last:border-b-0">
+          <%= link_to item.url, target: "_blank", class: "block p-3 hover:bg-gray-50 transition-colors" do %>
+            <div class="w-full h-24 mb-2 overflow-hidden flex items-center justify-center bg-gray-50">
+              <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+                <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
+              </div>
+            </div>
+            <h4 class="font-bold text-sm leading-tight mb-1 line-clamp-2">
+              <%= item.title %>
+            </h4>
+            <time class="text-xs text-gray-600">
+              <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
+            </time>
+          <% end %>
+          <% if item.audio_enclosure_url %>
+            <div class="px-3 pb-3">
+              <audio class="w-full h-9" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+            </div>
+          <% end %>
+        </li>
       <% end %>
     <% end %>
   </ul>
