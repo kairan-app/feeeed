@@ -4,6 +4,8 @@ class ChannelItemsUpdaterJob < ApplicationJob
 
     begin
       channel.update_info
+      # リダイレクトでfeed_urlが更新された場合、メモリ上のオブジェクトを最新の状態にする
+      channel.reload
     rescue StandardError => e
       handle_error(e, channel, "Failed to update channel info")
     end
