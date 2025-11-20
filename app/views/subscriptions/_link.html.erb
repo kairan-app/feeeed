@@ -2,11 +2,11 @@
   <div class="subscription-button-for-channel-<%= channel.id %>">
     <% if @subscribed_channel_ids.include?(channel.id) %>
       <%= form_tag(channel_subscription_path(channel), method: :delete) do %>
-        <%= submit_tag("Subscribed", class: "block mr-2 max-md:mr-0 max-md:w-full max-md:mb-2 text-center px-4 py-2 bg-[#3d8bcd] text-white border border-[#3d8bcd] rounded-full cursor-pointer hover:bg-[#2c6a9f] hover:border-[#2c6a9f]") %>
+        <%= submit_tag("Subscribed", class: "w-full text-center px-4 py-2 bg-[#3d8bcd] text-white border border-[#3d8bcd] rounded-full cursor-pointer hover:bg-[#2c6a9f] hover:border-[#2c6a9f]") %>
       <% end %>
     <% else %>
       <%= form_tag(channel_subscription_path(channel), method: :post) do %>
-        <%= submit_tag("Subscribe", class: "block mr-2 max-md:mr-0 max-md:w-full max-md:mb-2 text-center px-4 py-2 bg-white text-[#333333] border border-[#cccccc] rounded-full cursor-pointer hover:bg-[#fafafa] hover:border-[#999999]") %>
+        <%= submit_tag("Subscribe", class: "w-full text-center px-4 py-2 bg-white text-[#333333] border border-[#cccccc] rounded-full cursor-pointer hover:bg-[#fafafa] hover:border-[#999999]") %>
       <% end %>
     <% end %>
   </div>

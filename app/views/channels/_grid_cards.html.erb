@@ -12,8 +12,7 @@
       <%= render partial: "subscriptions/link", locals: { channel: channel } %>
     </div>
     <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">
-      <%= image_tag(channel.favicon_url, size: "16x16", class: "w-[14px] h-auto") %>
-      <%= link_to(channel.title, channel) %>
+      <%= link_to channel.title, channel %>
     </h3>
     <span class="block mb-[0.1em] text-[0.9em] leading-[1.5em] text-[#555555]">
       <%= channel.description.to_s[0..64] %><br/>
