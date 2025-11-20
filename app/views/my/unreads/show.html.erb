@@ -37,8 +37,8 @@
           <li class="flex flex-wrap items-start border-t border-[#dddddd] border-t-[0.5px]" id="item_<%= item.id %>">
             <%= link_to(item.url, target: "_blank", class: "flex flex-wrap w-full !border-t-0 py-3 px-[10px] max-[768px]:py-4 max-[768px]:px-0 transition-[0.25s] hover:bg-[rgba(255,255,255,0.75)] min-[769px]:w-1/2") do %>
               <div class="relative w-24 h-16 mr-[10px] overflow-hidden max-[1200px]:w-24 max-[1200px]:h-16 max-[1200px]:mr-[10px]">
-                <div class="relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-[inherit] before:blur-[10px] before:scale-110 before:z-[1] [&_img]:relative [&_img]:z-[2] [&_img]:w-full [&_img]:h-full [&_img]:object-contain" style="background-image: url('<%= item.image_url_or_placeholder %>')">
-                  <%= image_tag(item.image_url_or_placeholder, loading: "lazy", style: "object-fit: contain;") %>
+                <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+                  <%= image_tag(item.image_url_or_placeholder, loading: "lazy", class: "relative z-[2] w-full h-full object-contain") %>
                 </div>
               </div>
               <div class="w-[calc(100%-126px)] mr-5 m-0 max-[768px]:w-[calc(100%-106px)] max-[768px]:m-0">
