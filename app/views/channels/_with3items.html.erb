@@ -31,11 +31,6 @@
               <%= item.published_at.strftime("%Y-%m-%d %H:%M") %>
             </time>
           <% end %>
-          <% if item.audio_enclosure_url %>
-            <div class="px-3 pb-3">
-              <audio class="w-full h-9" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
-            </div>
-          <% end %>
         </li>
       <% end %>
     <% end %>
