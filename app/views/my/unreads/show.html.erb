@@ -73,15 +73,15 @@
         <% end %>
         <% if items.size > item_count_threshold %>
           <li id="load-more-<%= channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
-            <%= link_to("Load more unread items", my_unreads_channel_items_path(
-              channel_id: channel.id,
-              offset: item_count_threshold,
-              limit: 3,
-              range_days: @range_days
-            ), data: { turbo_stream: true }, class: "inline-block leading-6 bg-[#3d8bcd] text-white p-2 rounded-sm hover:text-white hover:bg-[#5a9fd9]") %>
-          </li>
-          <li id="item-skipper-<%= channel.id %>" class="py-3 px-[10px] border-t border-t-[#dddddd] border-t-[0.5px] text-center max-[768px]:py-3 max-[768px]:px-0">
-            <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded-sm hover:text-white hover:bg-[#aaaaaa]") %>
+            <div class="flex gap-2 justify-center">
+              <%= link_to("Skip all items", channel_skips_path(channel_id: channel.id), data: { turbo_method: :post }, class: "inline-block leading-6 bg-[#999999] text-white p-2 rounded-sm hover:text-white hover:bg-[#aaaaaa]") %>
+              <%= link_to("Load more unreads", my_unreads_channel_items_path(
+                channel_id: channel.id,
+                offset: item_count_threshold,
+                limit: 3,
+                range_days: @range_days
+              ), data: { turbo_stream: true }, class: "inline-block leading-6 bg-[#3d8bcd] text-white p-2 rounded-sm hover:text-white hover:bg-[#5a9fd9]") %>
+            </div>
           </li>
         <% end %>
       </ul>
