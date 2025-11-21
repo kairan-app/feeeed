@@ -16,8 +16,8 @@
             </h3>
           </div>
           <div class="flex items-center justify-center gap-1 text-xs text-gray-600 mb-1 flex-shrink-0">
-            <%= image_tag(item.channel.favicon_url, size: "14x14", class: "w-[14px] h-[14px]") %>
-            <%= link_to(item.channel.title, item.channel) %>
+            <%= image_tag(item.channel.favicon_url, size: "14x14", class: "w-[14px] h-[14px] flex-shrink-0") %>
+            <%= link_to(item.channel.title, item.channel, class: "truncate") %>
           </div>
           <div class="flex items-center justify-center gap-2 text-xs text-gray-600 flex-shrink-0">
             <%= user_avatar_tag(user, size: :xs) %>
