@@ -2,55 +2,40 @@
   <% pawprints.each do |pawprint| %>
     <% user = pawprint.user %>
     <% item = pawprint.item %>
-    <li class="min-w-[270px] mr-[20px] py-2 sm:min-w-[400px]">
-      <div class="flex flex-wrap w-full">
-        <div class="w-[96px] h-[64px] mr-2 overflow-hidden relative">
-          <%= link_to(item.url, target: "_blank") do %>
-            <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat overflow-hidden" style="background-image: url('<%= item.image_url_or_placeholder %>')">
-              <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] w-full h-full object-contain") %>
-            </div>
-          <% end %>
-        </div>
-        <div class="w-[calc(100%-106px)] -mt-0.75">
-          <h3 class="font-bold">
-            <%= link_to(item.title, item.url, target: "_blank") %>
-          </h3>
-          <span class="flex">
-            <%= image_tag(item.channel.favicon_url, size: "16x16", class: "mt-1 mr-1 w-[16px] h-[16px]") %>
-            <%= link_to(item.channel.title, item.channel) %>
-          </span>
-        </div>
-        <% if item.audio_enclosure_url %>
-          <div class="w-full mt-2">
-            <audio class="h-[36px]" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+    <li class="min-w-[270px] mr-5 sm:min-w-[360px] flex flex-col">
+      <div class="h-[250px] bg-white rounded-lg overflow-hidden border border-gray-200 flex flex-col">
+        <%= link_to(item.url, target: "_blank", class: "block h-32 flex-shrink-0") do %>
+          <div class="image-blur-bg relative w-full h-full flex items-center justify-center bg-center bg-cover bg-no-repeat" style="background-image: url('<%= item.image_url_or_placeholder %>')">
+            <%= image_tag(item.image_url_or_placeholder, class: "relative z-[2] max-w-full max-h-full object-contain") %>
           </div>
         <% end %>
-      </div>
-      <div class="w-full">
-        <div class="flex items-center my-2">
-          <%= user_avatar_tag(user, size: :xs, css_class: "mr-2") %>
-          <%= link_to("@" + user.name, user_path(user_name: user.name)) %>
-          <span class="ml-1">pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+        <div class="p-3 flex flex-col flex-1 min-h-0">
+          <div class="mb-2 min-h-[2.5rem] flex items-center justify-center">
+            <h3 class="font-bold text-sm line-clamp-2 text-center">
+              <%= link_to(item.title, item.url, target: "_blank") %>
+            </h3>
+          </div>
+          <div class="flex items-center justify-center gap-1 text-xs text-gray-600 mb-1 flex-shrink-0">
+            <%= image_tag(item.channel.favicon_url, size: "14x14", class: "w-[14px] h-[14px] flex-shrink-0") %>
+            <%= link_to(item.channel.title, item.channel, class: "truncate") %>
+          </div>
+          <div class="flex items-center justify-center gap-2 text-xs text-gray-600 flex-shrink-0">
+            <%= user_avatar_tag(user, size: :xs) %>
+            <span>pawed on <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+          </div>
         </div>
-        <% if user == current_user %>
-          <%= render(partial: "items/pawprint", locals: { item: item, pawprint: pawprint }) %>
-        <% else %>
-          <% if pawprint.memo.present? %>
-          <div class="pawprint-memo"><%= pawprint.memo %></div>
-          <% end %>
-          <% if current_user&.not_pawed?(item) %>
-            <div class="chase-paw">
-              <div class="chase-paw-user">
-                <%= user_avatar_tag(current_user, size: :xs) %>
-                <%= link_to("@" + current_user.name, user_path(user_name: current_user.name)) %>
-              </div>
-              <div class="chase-paw-form">
-                <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
-              </div>
-            </div>
-          <% end %>
-        <% end %>
       </div>
+      <% if user == current_user %>
+        <div class="mt-2">
+          <%= render(partial: "items/pawprint", locals: { item: item, pawprint: pawprint }) %>
+        </div>
+      <% else %>
+        <% if current_user&.not_pawed?(item) %>
+          <div class="mt-2">
+            <%= render(partial: "items/pawprint", locals: { item: item, pawprint: nil }) %>
+          </div>
+        <% end %>
+      <% end %>
     </li>
   <% end %>
 </ul>

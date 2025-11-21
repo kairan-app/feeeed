@@ -1,0 +1,3 @@
+<%= turbo_stream.replace_all(".subscription-button-for-channel-#{@channel.id}") do %>
+  <%= render(partial: "subscriptions/link", locals: { channel: @channel }) %>
+<% end %>

@@ -3,6 +3,10 @@ module ApplicationHelper
     "pawprint-form-for-item-#{item.id}"
   end
 
+  def id_of_subscription_button_for(channel)
+    "subscription-button-for-channel-#{channel.id}"
+  end
+
   def user_avatar_tag(user, size: :small, css_class: nil)
     size_config = {
       xs: { dimension: "24x24", css: "w-6 h-6", variant: :small },
