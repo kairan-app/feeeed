@@ -18,16 +18,8 @@ class ApplicationController < ActionController::Base
   end
 
   def track_action
-    return if turbo_prefetch_request?
-
     filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
     filtered = filter.filter(params.except(:controller, :action).to_unsafe_h)
     ahoy.track "#{controller_path}##{action_name}", filtered
-  end
-
-  def turbo_prefetch_request?
-    request.headers["Purpose"] == "prefetch" ||
-      request.headers["Sec-Purpose"] == "prefetch" ||
-      request.headers["X-Sec-Purpose"] == "prefetch"
   end
 end
