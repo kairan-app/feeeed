@@ -1,0 +1,47 @@
+<div class="max-w-6xl mx-auto py-8 px-4">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Events</h1>
+
+  <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+    <p class="text-gray-600 mb-4">Total: <%= Ahoy::Event.count %> events</p>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Properties</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @events.each do |event| %>
+            <tr>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                <%= event.time.strftime("%Y-%m-%d %H:%M:%S") %>
+              </td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm">
+                <% if event.user %>
+                  <div class="flex items-center space-x-2">
+                    <%= image_tag event.user.avatar_url(variant: :small), class: "h-6 w-6 rounded-full", alt: event.user.name %>
+                    <span><%= event.user.name %></span>
+                  </div>
+                <% else %>
+                  <span class="text-gray-400">Anonymous</span>
+                <% end %>
+              </td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm font-mono">
+                <%= event.name %>
+              </td>
+              <td class="px-4 py-2 text-sm font-mono text-gray-600 max-w-md truncate">
+                <%= event.properties.except("authenticity_token").to_json %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%= paginate @events %>
+</div>

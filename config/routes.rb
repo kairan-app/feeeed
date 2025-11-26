@@ -112,6 +112,10 @@ Rails.application.routes.draw do
                                                as: "admin_join_requests"
   post   "/admin/join_requests/:id/approval",  to: "admin/join_requests/approvals#create",
                                                as: "admin_join_request_approval"
+  get    "/admin/events",                      to: "admin/events#index",
+                                               as: "admin_events"
+  get    "/admin/visits",                      to: "admin/visits#index",
+                                               as: "admin_visits"
 
   root "welcome#index"
 end
