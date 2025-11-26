@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
 
     filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
     filtered = filter.filter(params.except(:controller, :action).to_unsafe_h)
-    ahoy.track "#{controller_name}##{action_name}", filtered
+    ahoy.track "#{controller_path}##{action_name}", filtered
   end
 
   def turbo_prefetch_request?
