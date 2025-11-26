@@ -4,6 +4,7 @@ ruby "3.4.5"
 
 gem "rails", "~> 8.1.1"
 
+gem "ahoy_matey"
 gem "aws-sdk-s3", require: false
 gem "bootsnap", require: false
 gem "faraday"
