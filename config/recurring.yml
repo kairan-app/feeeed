@@ -1,6 +1,6 @@
 channel_fetcher:
   class: ChannelItemsFetcherJob
-  schedule: "5,55 * * * *"
+  schedule: "10,59 * * * *"
 
 channel_interval_adjustment:
   class: ChannelIntervalAdjustmentJob
@@ -12,4 +12,8 @@ channel_schedule_adjustment:
 
 solid_queue_cleanup:
   class: SolidQueueCleanupJob
-  schedule: every day at 3am
+  schedule: every day at 4:30am
+
+daily_active_users_notifier:
+  class: DailyActiveUsersNotifierJob
+  schedule: every day at 0:05am
