@@ -14,7 +14,7 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
   validates_url_http_format_of :url, :image_url
 
-  strip_before_save :title
+  strip_before_save :title, :image_url
   empty_strings_are_aligned_to_nil :image_url
   after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
