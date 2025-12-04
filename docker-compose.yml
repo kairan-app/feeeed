@@ -1,12 +1,12 @@
 services:
   web:
     build: .
-    command: bin/rails s -p 3000 -b '0.0.0.0'
+    command: bin/rails s -p 3111 -b '0.0.0.0'
     volumes:
       - .:/app
       - bundle:/usr/local/bundle
     ports:
-      - "3000:3000"
+      - "3111:3111"
     environment:
       REDIS_URL: redis://redis:6379
     depends_on:

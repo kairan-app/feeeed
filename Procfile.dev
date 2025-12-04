@@ -1,0 +1,2 @@
+caddy: caddy run
+web: docker compose up

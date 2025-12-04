@@ -1,5 +1,7 @@
 # Tips
 
+- 開発環境の起動: `foreman start -f Procfile.dev`
+  - https://fh.lvh.me でアクセスできる
 - 開発コンテナに向けて実行するコマンドは`docker compose run --rm web`を使ってください
 - `rails`コマンドは`docker compose run --rm web rails`を使ってください
 - ただし、`grep` `find`といったコマンドはDocker内部じゃなくそのまま実行できます
