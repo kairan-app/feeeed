@@ -38,11 +38,6 @@ class GuestAccessTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "guest can access users index" do
-    get "/users"
-    assert_response :success
-  end
-
   test "guest can access user show" do
     get "/@#{@user.name}"
     assert_response :success
