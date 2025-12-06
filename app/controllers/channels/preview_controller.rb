@@ -3,6 +3,8 @@ class Channels::PreviewController < ApplicationController
 
   def show
     url = params[:url].to_s.strip
+    return redirect_to(root_path, alert: "Please enter a URL") if url.blank?
+
     begin
       @channel = Channel.preview(url)
     rescue Feedjira::NoParserAvailable

@@ -20,7 +20,8 @@ class ChannelsController < ApplicationController
   end
 
   def create
-    url = params[:url]
+    url = params[:url].to_s.strip
+    return redirect_to(root_path, alert: "Please enter a URL") if url.blank?
 
     DiscoPosterJob.perform_later(content: "@#{current_user.name} try to add #{url}", channel: :user_activities)
 
