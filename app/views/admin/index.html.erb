@@ -1,8 +1,114 @@
-<h1 class="text-2xl font-bold mb-4">Admin</h1>
+<h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
-<ul class="list-disc list-inside space-y-2">
-  <li><%= link_to "Join Requests", admin_join_requests_path, class: "text-blue-600 hover:underline" %></li>
-  <li><%= link_to "Jobs", admin_jobs_path, class: "text-blue-600 hover:underline" %></li>
-  <li><%= link_to "Events (Ahoy)", admin_events_path, class: "text-blue-600 hover:underline" %></li>
-  <li><%= link_to "Visits (Ahoy)", admin_visits_path, class: "text-blue-600 hover:underline" %></li>
-</ul>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <%# Users %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Users</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@users_count) %></div>
+    <div class="text-xs text-gray-400 mt-1">
+      24h: <%= @active_users_24h %> / 3d: <%= @active_users_3d %> active
+    </div>
+  </div>
+
+  <%# Channels %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Channels</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@channels_count) %></div>
+    <div class="text-xs text-gray-400 mt-1">
+      +<%= @channels_24h_count %> in 24h / <%= @stopped_channels_count %> stopped
+    </div>
+  </div>
+
+  <%# Items %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Items</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@items_count) %></div>
+    <div class="text-xs text-gray-400 mt-1">
+      +<%= @items_today_count %> today
+    </div>
+  </div>
+
+  <%# Pawprints %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Pawprints</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@pawprints_count) %></div>
+  </div>
+
+  <%# Subscriptions %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Subscriptions</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@subscriptions_count) %></div>
+  </div>
+
+  <%# Channel Groups %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Channel Groups</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@channel_groups_count) %></div>
+  </div>
+
+  <%# Join Requests %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 flex flex-col">
+    <div class="text-sm text-gray-500">Join Requests</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@join_requests_count) %></div>
+    <% if @pending_join_requests_count > 0 %>
+      <div class="text-xs text-orange-600 font-medium">
+        <%= @pending_join_requests_count %> pending
+      </div>
+    <% end %>
+    <div class="flex-grow"></div>
+    <%= link_to "more →", admin_join_requests_path, class: "text-xs text-blue-600 hover:underline self-end mt-2" %>
+  </div>
+
+  <%# Notification Emails %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Notification Emails</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@notification_emails_count) %></div>
+  </div>
+
+  <%# Notification Webhooks %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+    <div class="text-sm text-gray-500">Notification Webhooks</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@notification_webhooks_count) %></div>
+    <div class="text-xs text-gray-400 mt-1">
+      + <%= @channel_group_webhooks_count %> group webhooks
+    </div>
+  </div>
+
+  <%# Jobs %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 flex flex-col">
+    <div class="text-sm text-gray-500">Jobs</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@jobs_pending_count) %> <span class="text-sm font-normal text-gray-400">pending</span></div>
+    <div class="text-xs text-gray-400">
+      +<%= @jobs_24h_count %> in 24h
+    </div>
+    <% if @jobs_failed_count > 0 %>
+      <div class="text-xs text-red-600 font-medium">
+        <%= @jobs_failed_count %> failed
+      </div>
+    <% end %>
+    <div class="flex-grow"></div>
+    <%= link_to "more →", admin_jobs_path, class: "text-xs text-blue-600 hover:underline self-end mt-2" %>
+  </div>
+
+  <%# Events (Ahoy) %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 flex flex-col">
+    <div class="text-sm text-gray-500">Events (Ahoy)</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@events_count) %></div>
+    <div class="text-xs text-gray-400">
+      +<%= @events_today_count %> today
+    </div>
+    <div class="flex-grow"></div>
+    <%= link_to "more →", admin_events_path, class: "text-xs text-blue-600 hover:underline self-end mt-2" %>
+  </div>
+
+  <%# Visits (Ahoy) %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 flex flex-col">
+    <div class="text-sm text-gray-500">Visits (Ahoy)</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@visits_count) %></div>
+    <div class="text-xs text-gray-400">
+      +<%= @visits_today_count %> today
+    </div>
+    <div class="flex-grow"></div>
+    <%= link_to "more →", admin_visits_path, class: "text-xs text-blue-600 hover:underline self-end mt-2" %>
+  </div>
+</div>
