@@ -70,7 +70,6 @@ Rails.application.routes.draw do
                                                    as: "notification_email"
   get    "/notification_emails/:token",            to: "notification_emails/verifications#create",
                                                    as: "notification_email_verification"
-  get    "/users",                                 to: "users#index"
   get    "/@:user_name",                           to: "users#show",
                                                    as: "user",
                                                    constraints: { user_name: /[^\/]+/ }
