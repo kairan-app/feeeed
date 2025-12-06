@@ -27,18 +27,43 @@
       <%= yield %>
     </div>
     <%= render(partial: "channels/preview/form") %>
-    <footer class="sticky top-[100vh] w-full pt-8 pb-24 bg-[#3d8bcd] text-white text-center md:py-8">
-      <ul class="flex flex-wrap justify-center items-center mb-4 space-x-8">
-        <li class="mx-4"><%= link_to("About", about_path, class: "text-white hover:text-white") %></li>
-        <li class="mx-4"><%= link_to("Channels", channels_path, class: "text-white hover:text-white") %></li>
-        <li class="mx-4"><%= link_to("Items", items_path, class: "text-white hover:text-white") %></li>
-        <li class="mx-4"><%= link_to("Channel Groups", channel_groups_path, class: "text-white hover:text-white") %></li>
-      </ul>
-      <ul class="flex flex-wrap justify-center items-center mb-4 space-x-8">
-        <li class="mx-4"><%= link_to("Terms of Service", terms_path, class: "text-white hover:text-white") %></li>
-        <li class="mx-4"><%= link_to("Privacy Policy", privacy_path, class: "text-white hover:text-white") %></li>
-      </ul>
-      <p>© rururu</p>
+    <footer class="sticky top-[100vh] w-full pt-6 pb-24 md:pb-6 bg-[#3d8bcd] text-white text-center text-sm">
+      <div class="max-w-[1440px] mx-auto px-5">
+        <%# デスクトップ: 1行 %>
+        <div class="hidden md:flex justify-center items-center gap-2">
+          <%= link_to "About", about_path, class: "hover:underline" %>
+          <span class="text-white/50">·</span>
+          <%= link_to "Channels", channels_path, class: "hover:underline" %>
+          <span class="text-white/50">·</span>
+          <%= link_to "Items", items_path, class: "hover:underline" %>
+          <span class="text-white/50">·</span>
+          <%= link_to "Channel Groups", channel_groups_path, class: "hover:underline" %>
+          <span class="text-white/50">·</span>
+          <%= link_to "Terms", terms_path, class: "hover:underline" %>
+          <span class="text-white/50">·</span>
+          <%= link_to "Privacy", privacy_path, class: "hover:underline" %>
+          <span class="ml-4 text-white/70">© rururu</span>
+        </div>
+        <%# モバイル: 2行 %>
+        <div class="md:hidden space-y-2">
+          <div class="flex justify-center items-center gap-2">
+            <%= link_to "About", about_path, class: "hover:underline" %>
+            <span class="text-white/50">·</span>
+            <%= link_to "Channels", channels_path, class: "hover:underline" %>
+            <span class="text-white/50">·</span>
+            <%= link_to "Items", items_path, class: "hover:underline" %>
+            <span class="text-white/50">·</span>
+            <%= link_to "Channel Groups", channel_groups_path, class: "hover:underline" %>
+          </div>
+          <div class="flex justify-center items-center gap-2 text-white/70">
+            <%= link_to "Terms", terms_path, class: "hover:underline" %>
+            <span class="text-white/50">·</span>
+            <%= link_to "Privacy", privacy_path, class: "hover:underline" %>
+            <span class="text-white/50">·</span>
+            <span>© rururu</span>
+          </div>
+        </div>
+      </div>
     </footer>
   </body>
 </html>
