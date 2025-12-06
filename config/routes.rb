@@ -115,6 +115,8 @@ Rails.application.routes.draw do
                                                    as: "admin_events"
   get    "/admin/visits",                          to: "admin/visits#index",
                                                    as: "admin_visits"
+  get    "/admin/users",                           to: "admin/users#index",
+                                                   as: "admin_users"
 
   root "welcome#index"
 end

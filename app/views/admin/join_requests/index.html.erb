@@ -1,5 +1,7 @@
 <div class="max-w-6xl mx-auto py-8 px-4">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Join Requests</h1>
+  <nav class="text-sm text-gray-500 mb-6">
+    <%= link_to "Admin", admin_path, class: "hover:underline" %> / <span class="text-gray-800 font-medium">Join Requests</span>
+  </nav>
 
   <% if @pending_requests.any? %>
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
