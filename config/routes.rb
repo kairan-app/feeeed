@@ -83,6 +83,8 @@ Rails.application.routes.draw do
                                                    defaults: { format: :atom }
   get    "/feeds/channel_groups",                  to: "feeds/channel_groups#index",
                                                    defaults: { format: :atom }
+  get    "/releases",                              to: "releases#index",
+                                                   defaults: { format: :atom }
   get    "/my",                                    to: "my#index"
   delete "/my",                                    to: "my#destroy"
   get    "/my/guides",                             to: "my/guides#show",
