@@ -1,6 +1,7 @@
 atom_feed do |feed|
   feed.id("rururu/releases")
   feed.title("rururuのリリース情報")
+  feed.subtitle("rururuの機能の追加や変更についてお知らせします")
   feed.updated(@releases.first ? Time.zone.parse(@releases.first["published_at"]) : Time.current)
 
   @releases.each do |release|
