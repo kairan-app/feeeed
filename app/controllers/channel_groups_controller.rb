@@ -33,7 +33,7 @@ class ChannelGroupsController < ApplicationController
     @channel_group = ChannelGroup.new(channel_group_params.merge(owner: current_user))
 
     if @channel_group.save
-      DiscoPosterJob.perform_later(content: "@#{current_user.name} created a new channel group: #{@channel_group.name} #{channel_group_url(@channel_group)}", channel: :user_activities)
+      DiscoPosterJob.perform_later(content: "@#{current_user.name} created a new channel group: #{@channel_group.name} <#{channel_group_url(@channel_group)}>", channel: :user_activities)
       redirect_to(channel_group_path(@channel_group), notice: "Channel Group created")
     else
       render(:new, status: :unprocessable_entity)
@@ -43,7 +43,7 @@ class ChannelGroupsController < ApplicationController
   def update
     channel_group = ChannelGroup.find(params[:id])
     DiscoPosterJob.perform_later(
-      content: "@#{current_user.name} try to update the channel group #{params[:channel_group][:name]} #{channel_group_url(channel_group)}",
+      content: "@#{current_user.name} try to update the channel group #{params[:channel_group][:name]} <#{channel_group_url(channel_group)}>",
       channel: :user_activities
     )
 
