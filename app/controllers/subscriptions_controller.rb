@@ -5,7 +5,7 @@ class SubscriptionsController < ApplicationController
   def create
     current_user.subscribe(@channel)
     @subscribed_channel_ids = current_user.subscribed_channel_ids
-    DiscoPosterJob.perform_later(content: "@#{current_user.name} subscribed to #{@channel.title} #{channel_url(@channel)}", channel: :user_activities)
+    DiscoPosterJob.perform_later(content: "@#{current_user.name} subscribed to #{@channel.title} <#{channel_url(@channel)}>", channel: :user_activities)
 
     respond_to do |format|
       format.turbo_stream

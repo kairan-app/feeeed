@@ -646,7 +646,7 @@ class Channel < ApplicationRecord
     return if changed_fields.empty?
 
     content = [
-      "[#{prefix}] #{title} #{channel_url(self)}",
+      "[#{prefix}] #{title} <#{channel_url(self)}>",
       "```",
       changed_fields.join("\n\n"),
       "```"

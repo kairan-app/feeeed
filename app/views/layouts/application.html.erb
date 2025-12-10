@@ -9,6 +9,13 @@
     <meta name="robots" content="noindex">
     <% end %>
     <%= favicon_link_tag "square.png" %>
+    <meta name="description" content="みんなの登録フィードや感想メモのシェアができる新しいフィードリーダー">
+    <meta property="og:title" content="<%= [@title, 'rururu'].compact.join(' - ') %>">
+    <meta property="og:description" content="みんなの登録フィードや感想メモのシェアができる新しいフィードリーダー">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:site_name" content="rururu">
+    <meta property="og:image" content="<%= image_url('banner.jpg') %>">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
