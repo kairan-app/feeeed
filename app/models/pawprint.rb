@@ -16,7 +16,7 @@ class Pawprint < ApplicationRecord
 
   class << self
     def ransackable_attributes(auth_object = nil)
-      %w[memo]
+      %w[memo created_at]
     end
 
     def ransackable_associations(auth_object = nil)
