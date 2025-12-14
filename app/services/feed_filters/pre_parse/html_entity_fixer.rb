@@ -21,8 +21,13 @@ module FeedFilters
       def applicable?(xml_content, metadata = {})
         # 対象タグ内にHTMLエンティティが含まれている場合のみ適用
         TARGET_TAGS.any? do |tag|
-          # <tag>と</tag>の間にHTMLエンティティ(&xxx;)が含まれているかチェック
-          xml_content.match?(/<#{tag}[^>]*>.*?&[a-zA-Z]+;.*?<\/#{tag}>/m)
+          # まずタグが存在するかを単純な文字列検索で高速にチェック
+          next false unless xml_content.include?("<#{tag}")
+
+          # タグが存在する場合のみ、タグ内容を抽出してHTMLエンティティをチェック
+          # 注: [^<]* を使うことで、巨大なファイルでのバックトラッキングを防止
+          # copyright/generatorタグは通常テキストのみなのでこれで十分
+          xml_content.match?(/<#{tag}[^>]*>([^<]*)&[a-zA-Z]+;/)
         end
       end
 
