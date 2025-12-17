@@ -16,3 +16,9 @@ module ActiveSupport
     include FactoryBot::Syntax::Methods
   end
 end
+
+class ActionDispatch::IntegrationTest
+  def sign_in(user)
+    get "/dev/login", params: { user_id: user.id }
+  end
+end

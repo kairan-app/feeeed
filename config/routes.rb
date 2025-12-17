@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine => "/letter_opener"
+  end
+
+  if Rails.env.local?
     get "/dev/login", to: "dev#login"
   end
 
