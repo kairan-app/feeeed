@@ -4,24 +4,22 @@
       <%= image_tag "logo.svg", class: "h-8 w-auto", alt: "rururu" %>
       <span class="text-2xl font-bold text-gray-700">@<%= current_user.name %></span>
       <%= image_tag current_user.avatar_url(variant: :thumb), class: "w-10 h-10 rounded-full", alt: current_user.name %>
-      <span class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-        Wrapped <%= @year %>
-      </span>
-    </div>
-    <% if @has_prev_year || @has_next_year %>
-      <div class="flex gap-2 mt-2">
+      <div class="flex items-center gap-1">
         <% if @has_prev_year %>
-          <%= link_to my_wrapped_path(year: @year - 1), class: "text-gray-400 hover:text-gray-600 transition-colors" do %>
-            <span class="material-symbols-outlined">chevron_left</span>
+          <%= link_to my_wrapped_path(year: @year - 1), class: "text-gray-300 hover:text-gray-500 transition-colors" do %>
+            <span class="material-symbols-outlined text-2xl">chevron_left</span>
           <% end %>
         <% end %>
+        <span class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          Wrapped <%= @year %>
+        </span>
         <% if @has_next_year %>
-          <%= link_to my_wrapped_path(year: @year + 1), class: "text-gray-400 hover:text-gray-600 transition-colors" do %>
-            <span class="material-symbols-outlined">chevron_right</span>
+          <%= link_to my_wrapped_path(year: @year + 1), class: "text-gray-300 hover:text-gray-500 transition-colors" do %>
+            <span class="material-symbols-outlined text-2xl">chevron_right</span>
           <% end %>
         <% end %>
       </div>
-    <% end %>
+    </div>
   </div>
 
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
