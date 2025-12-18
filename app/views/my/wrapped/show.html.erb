@@ -167,6 +167,34 @@
   </div>
 </section>
 
+<% if @top_memo_channels.any? %>
+<section class="mt-8">
+  <h3 class="text-xl font-bold mb-4 text-gray-700 text-center">Top Channels with Memos</h3>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <ol class="divide-y divide-gray-100">
+      <% @top_memo_channels.each_with_index do |data, index| %>
+        <li class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
+          <span class="text-lg font-bold text-gray-400 w-6 text-center"><%= index + 1 %></span>
+          <%= link_to channel_path(data[:channel]), class: "flex items-center gap-3 flex-1 min-w-0" do %>
+            <% if data[:channel].image_url.present? %>
+              <%= image_tag data[:channel].image_url, class: "w-10 h-10 rounded-lg object-cover flex-shrink-0", alt: data[:channel].title %>
+            <% else %>
+              <div class="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-gray-400">rss_feed</span>
+              </div>
+            <% end %>
+            <span class="text-sm font-medium text-gray-700 truncate"><%= data[:channel].title %></span>
+          <% end %>
+          <span class="text-sm font-bold text-sky-600 flex-shrink-0">
+            <%= data[:count] %> memo<%= data[:count] > 1 ? 's' : '' %>
+          </span>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</section>
+<% end %>
+
 <section class="mt-8 text-center">
   <p class="text-sm text-gray-400">
     Thanks for being part of rururu in <%= @year %>!

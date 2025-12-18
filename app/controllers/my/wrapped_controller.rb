@@ -7,6 +7,7 @@ class My::WrappedController < MyController
 
     @stats = build_stats(year_range)
     @monthly_data = build_monthly_data(year_range)
+    @top_memo_channels = build_top_memo_channels(year_range)
     @has_prev_year = has_data_for_year?(@year - 1)
     @has_next_year = has_data_for_year?(@year + 1)
   end
@@ -40,6 +41,21 @@ class My::WrappedController < MyController
     end
 
     monthly_data
+  end
+
+  def build_top_memo_channels(year_range)
+    current_user.pawprints
+      .joins(item: :channel)
+      .where(created_at: year_range)
+      .where.not(memo: [nil, ""])
+      .group("channels.id")
+      .order(Arel.sql("COUNT(*) DESC"))
+      .limit(10)
+      .count
+      .map do |channel_id, count|
+        channel = Channel.find(channel_id)
+        { channel: channel, count: count }
+      end
   end
 
   def has_data_for_year?(year)
