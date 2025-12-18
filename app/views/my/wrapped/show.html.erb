@@ -177,7 +177,7 @@
           <span class="text-lg font-bold text-gray-400 w-6 text-center"><%= index + 1 %></span>
           <%= link_to channel_path(data[:channel]), class: "flex items-center gap-3 flex-1 min-w-0" do %>
             <% if data[:channel].image_url.present? %>
-              <%= image_tag data[:channel].image_url, class: "w-10 h-10 rounded-lg object-cover flex-shrink-0", alt: data[:channel].title %>
+              <%= image_tag data[:channel].image_url, class: "w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-200", alt: data[:channel].title %>
             <% else %>
               <div class="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
                 <span class="material-symbols-outlined text-gray-400">rss_feed</span>
