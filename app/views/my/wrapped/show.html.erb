@@ -4,38 +4,35 @@
       <%= image_tag "logo.svg", class: "h-8 w-auto", alt: "rururu" %>
       <span class="text-2xl font-bold text-gray-700">@<%= current_user.name %></span>
       <%= image_tag current_user.avatar_url(variant: :thumb), class: "w-10 h-10 rounded-full", alt: current_user.name %>
-      <div class="flex items-center gap-1">
-        <% if @has_prev_year %>
-          <%= link_to my_wrapped_path(year: @year - 1), class: "text-gray-300 hover:text-gray-500 transition-colors" do %>
-            <span class="material-symbols-outlined text-2xl">chevron_left</span>
-          <% end %>
+    </div>
+    <div class="flex items-center gap-1">
+      <% if @has_prev_year %>
+        <%= link_to my_wrapped_path(year: @year - 1), class: "text-gray-300 hover:text-gray-500 transition-colors" do %>
+          <span class="material-symbols-outlined text-2xl">chevron_left</span>
         <% end %>
-        <span class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Wrapped <%= @year %>
-        </span>
-        <% if @has_next_year %>
-          <%= link_to my_wrapped_path(year: @year + 1), class: "text-gray-300 hover:text-gray-500 transition-colors" do %>
-            <span class="material-symbols-outlined text-2xl">chevron_right</span>
-          <% end %>
+      <% end %>
+      <span class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        Wrapped <%= @year %>
+      </span>
+      <% if @has_next_year %>
+        <%= link_to my_wrapped_path(year: @year + 1), class: "text-gray-300 hover:text-gray-500 transition-colors" do %>
+          <span class="material-symbols-outlined text-2xl">chevron_right</span>
         <% end %>
-      </div>
+      <% end %>
     </div>
   </div>
 
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
     <% stat_configs = [
-      { key: :pawprints, label: "Pawprints", icon: "pets", color: "from-orange-400 to-red-500" },
-      { key: :subscriptions, label: "Subscriptions", icon: "bookmark_add", color: "from-blue-400 to-blue-600" },
-      { key: :ownerships, label: "Owned Channels", icon: "add_circle", color: "from-green-400 to-green-600" },
-      { key: :notification_webhooks, label: "Notification Webhooks", icon: "webhook", color: "from-purple-400 to-purple-600" },
-      { key: :notification_emails, label: "Notification Emails", icon: "mail", color: "from-pink-400 to-pink-600" }
+      { key: :pawprints, label: "Pawprints" },
+      { key: :subscriptions, label: "Subscriptions" },
+      { key: :ownerships, label: "Owned Channels" },
+      { key: :notification_webhooks, label: "Notification Webhooks" },
+      { key: :notification_emails, label: "Notification Emails" }
     ] %>
     <% stat_configs.each do |config| %>
       <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="material-symbols-outlined text-lg bg-gradient-to-r <%= config[:color] %> bg-clip-text text-transparent">
-            <%= config[:icon] %>
-          </span>
+        <div class="mb-2">
           <span class="text-xs text-gray-500 font-medium"><%= config[:label] %></span>
         </div>
         <div class="text-2xl font-bold text-gray-800">
@@ -49,35 +46,31 @@
 <section class="mt-8">
   <h3 class="text-xl font-bold mb-4 text-gray-700 text-center">Monthly Activity</h3>
 
-  <% max_count = @monthly_data.values.flat_map(&:values).max || 1 %>
+  <% model_labels = {
+    pawprints: "Pawprints",
+    subscriptions: "Subscriptions"
+  } %>
 
-  <div class="overflow-x-auto">
+  <%# Desktop: horizontal table (months as columns) %>
+  <div class="hidden md:block overflow-x-auto">
     <table class="w-full border-collapse">
       <thead>
         <tr>
           <th class="p-2 text-left text-sm font-medium text-gray-600 sticky left-0 bg-gray-50 z-10"></th>
           <% (1..12).each do |month| %>
             <th class="p-2 text-center text-xs font-medium text-gray-600 min-w-[40px]">
-              <span class="hidden md:inline"><%= Date::ABBR_MONTHNAMES[month] %></span>
-              <span class="md:hidden"><%= month %></span>
+              <%= Date::ABBR_MONTHNAMES[month] %>
             </th>
           <% end %>
           <th class="p-2 text-center text-xs font-medium text-gray-600 min-w-[50px]">Total</th>
         </tr>
       </thead>
       <tbody>
-        <% model_labels = {
-          pawprints: { label: "Pawprints", icon: "pets" },
-          subscriptions: { label: "Subscriptions", icon: "bookmark_add" }
-        } %>
         <% @monthly_data.each do |model_name, months| %>
           <% row_max = months.values.max || 1 %>
           <tr class="border-t border-gray-100">
             <td class="p-2 text-sm font-medium text-gray-700 whitespace-nowrap sticky left-0 bg-white z-10">
-              <div class="flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm text-gray-400"><%= model_labels[model_name][:icon] %></span>
-                <span class="hidden sm:inline"><%= model_labels[model_name][:label] %></span>
-              </div>
+              <%= model_labels[model_name] %>
             </td>
             <% months.each do |month, count| %>
               <% intensity = row_max > 0 ? (count.to_f / row_max) : 0 %>
@@ -95,20 +88,80 @@
                 end
               %>
               <td class="p-1 text-center">
-                <div class="<%= bg_class %> rounded-md p-2 min-h-[36px] flex items-center justify-center transition-all hover:scale-105 hover:shadow-sm" title="<%= Date::MONTHNAMES[month] %>: <%= count %>">
+                <div class="<%= bg_class %> rounded-md p-2 min-h-[36px] flex items-center justify-center transition-all hover:scale-105 hover:shadow-sm" title="<%= Date::MONTHNAMES[month] %>: +<%= count %>">
                   <span class="text-xs font-medium <%= count > 0 ? 'text-sky-800' : 'text-gray-400' %>">
-                    <%= count > 0 ? count : '-' %>
+                    <%= count > 0 ? "+#{count}" : '-' %>
                   </span>
                 </div>
               </td>
             <% end %>
             <td class="p-1 text-center">
               <div class="bg-gray-100 rounded-md p-2 min-h-[36px] flex items-center justify-center">
-                <span class="text-xs font-bold text-gray-700"><%= months.values.sum %></span>
+                <span class="text-xs font-bold text-gray-700">+<%= months.values.sum %></span>
               </div>
             </td>
           </tr>
         <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%# Mobile: vertical table (months as rows) %>
+  <div class="md:hidden">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr>
+          <th class="p-2 text-left text-sm font-medium text-gray-600"></th>
+          <% @monthly_data.each do |model_name, _| %>
+            <th class="p-2 text-center text-xs font-medium text-gray-600">
+              <%= model_labels[model_name] %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% (1..12).each do |month| %>
+          <tr class="border-t border-gray-100">
+            <td class="p-2 text-sm font-medium text-gray-700 whitespace-nowrap">
+              <%= Date::ABBR_MONTHNAMES[month] %>
+            </td>
+            <% @monthly_data.each do |model_name, months| %>
+              <% row_max = months.values.max || 1 %>
+              <% count = months[month] %>
+              <% intensity = row_max > 0 ? (count.to_f / row_max) : 0 %>
+              <%
+                bg_class = if count == 0
+                  "bg-gray-50"
+                elsif intensity <= 0.25
+                  "bg-sky-100"
+                elsif intensity <= 0.5
+                  "bg-sky-200"
+                elsif intensity <= 0.75
+                  "bg-sky-300"
+                else
+                  "bg-sky-400"
+                end
+              %>
+              <td class="p-1 text-center">
+                <div class="<%= bg_class %> rounded-md p-2 min-h-[36px] flex items-center justify-center" title="<%= Date::MONTHNAMES[month] %>: +<%= count %>">
+                  <span class="text-xs font-medium <%= count > 0 ? 'text-sky-800' : 'text-gray-400' %>">
+                    <%= count > 0 ? "+#{count}" : '-' %>
+                  </span>
+                </div>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+        <tr class="border-t border-gray-200">
+          <td class="p-2 text-sm font-bold text-gray-700">Total</td>
+          <% @monthly_data.each do |_, months| %>
+            <td class="p-1 text-center">
+              <div class="bg-gray-100 rounded-md p-2 min-h-[36px] flex items-center justify-center">
+                <span class="text-xs font-bold text-gray-700">+<%= months.values.sum %></span>
+              </div>
+            </td>
+          <% end %>
+        </tr>
       </tbody>
     </table>
   </div>
