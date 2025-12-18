@@ -87,7 +87,7 @@
                   "bg-sky-400"
                 end
               %>
-              <td class="p-1 text-center">
+              <td class="p-1 text-center min-w-[52px]">
                 <div class="<%= bg_class %> rounded-md p-2 min-h-[36px] flex items-center justify-center transition-all hover:scale-105 hover:shadow-sm" title="<%= Date::MONTHNAMES[month] %>: +<%= count %>">
                   <span class="text-xs font-medium <%= count > 0 ? 'text-sky-800' : 'text-gray-400' %>">
                     <%= count > 0 ? "+#{count}" : '-' %>
@@ -95,7 +95,7 @@
                 </div>
               </td>
             <% end %>
-            <td class="p-1 text-center">
+            <td class="p-1 text-center min-w-[60px]">
               <div class="bg-gray-100 rounded-md p-2 min-h-[36px] flex items-center justify-center">
                 <span class="text-xs font-bold text-gray-700">+<%= months.values.sum %></span>
               </div>
@@ -142,7 +142,7 @@
                   "bg-sky-400"
                 end
               %>
-              <td class="p-1 text-center">
+              <td class="p-1 text-center w-[72px]">
                 <div class="<%= bg_class %> rounded-md p-2 min-h-[36px] flex items-center justify-center" title="<%= Date::MONTHNAMES[month] %>: +<%= count %>">
                   <span class="text-xs font-medium <%= count > 0 ? 'text-sky-800' : 'text-gray-400' %>">
                     <%= count > 0 ? "+#{count}" : '-' %>
@@ -155,7 +155,7 @@
         <tr class="border-t border-gray-200">
           <td class="p-2 text-sm font-bold text-gray-700">Total</td>
           <% @monthly_data.each do |_, months| %>
-            <td class="p-1 text-center">
+            <td class="p-1 text-center w-[72px]">
               <div class="bg-gray-100 rounded-md p-2 min-h-[36px] flex items-center justify-center">
                 <span class="text-xs font-bold text-gray-700">+<%= months.values.sum %></span>
               </div>
