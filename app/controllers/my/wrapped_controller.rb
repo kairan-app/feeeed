@@ -47,7 +47,7 @@ class My::WrappedController < MyController
     current_user.pawprints
       .joins(item: :channel)
       .where(created_at: year_range)
-      .where.not(memo: [nil, ""])
+      .where.not(memo: [ nil, "" ])
       .group("channels.id")
       .order(Arel.sql("COUNT(*) DESC"))
       .limit(10)
