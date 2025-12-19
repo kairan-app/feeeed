@@ -1,4 +1,13 @@
 module ApplicationHelper
+  ENVIRONMENT_TITLE_PREFIXES = {
+    "development" => "👷"
+  }.freeze
+
+  def with_environment_prefix(text)
+    prefix = ENVIRONMENT_TITLE_PREFIXES[Rails.env]
+    [ prefix, text ].compact.join(" ").presence
+  end
+
   def id_of_pawprint_form_for(item)
     "pawprint-form-for-item-#{item.id}"
   end
