@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= [@title, "rururu"].compact.join(" - ") %></title>
+    <title><%= [with_environment_prefix(@title), "rururu"].compact.join(" - ") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
