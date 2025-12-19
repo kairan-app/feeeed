@@ -102,6 +102,9 @@ Rails.application.routes.draw do
   put    "/my/profile",                            to: "my/profile#update"
   get    "/my/notification_settings",              to: "my/notification_settings#index"
   get    "/my/graduation",                         to: "my/graduation#show"
+  get    "/my/wrapped/:year",                      to: "my/wrapped#show",
+                                                   as: "my_wrapped",
+                                                   constraints: { year: /\d{4}/ }
   get    "/about",                                 to: "about#index",
                                                    as: "about"
   post   "/channel_group_webhooks",                to: "channel_group_webhooks#create"

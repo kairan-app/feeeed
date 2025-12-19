@@ -17,6 +17,14 @@
         <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">My Notification Settings</h3>
       <% end %>
     </div>
+    <div class="card item-card setting-card w-full">
+      <%= link_to(my_wrapped_path(year: Time.current.year), class: "transition-all duration-500 hover:opacity-70") do %>
+        <div class="relative w-full leading-[0] overflow-hidden aspect-[3/2] max-md:h-[calc(100vw*2/3-30px)] flex justify-center items-center bg-gradient-to-br from-purple-500 to-pink-500">
+          <span class="material-symbols-outlined m-0 text-[96px] text-white">auto_awesome</span>
+        </div>
+        <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">Wrapped <%= Time.current.year %></h3>
+      <% end %>
+    </div>
   </div>
 </section>
 
