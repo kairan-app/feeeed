@@ -1,0 +1,174 @@
+<%# グローバル音声プレイヤー - ページ遷移しても維持される %>
+<div id="global-audio-player"
+     data-turbo-permanent
+     data-controller="audio-player"
+     data-audio-player-target="container"
+     class="hidden fixed bottom-16 md:bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg">
+
+  <%# 非表示のaudio要素 %>
+  <audio data-audio-player-target="audio"
+         data-action="timeupdate->audio-player#onTimeUpdate ended->audio-player#onEnded loadedmetadata->audio-player#onLoadedMetadata"
+         preload="metadata"></audio>
+
+  <%# キューパネル（展開時） %>
+  <div data-audio-player-target="queuePanel"
+       class="hidden max-h-64 overflow-y-auto border-b border-gray-100 bg-gray-50">
+    <div class="max-w-[1440px] mx-auto px-4 py-2">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm font-medium text-gray-700">再生キュー</span>
+        <div class="flex gap-2">
+          <button data-action="audio-player#clearQueue"
+                  class="text-xs text-gray-500 hover:text-red-500">
+            クリア
+          </button>
+          <button data-action="audio-player#toggleQueuePanel"
+                  class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined text-lg">expand_more</span>
+          </button>
+        </div>
+      </div>
+      <div data-audio-player-target="queueList" class="space-y-1"></div>
+    </div>
+  </div>
+
+  <%# メインプレイヤー %>
+  <div class="max-w-[1440px] mx-auto px-3 py-2 md:px-4">
+
+    <%# === モバイル用レイアウト (3段) === %>
+    <div class="md:hidden">
+      <%# 上段: トラック情報 + 閉じるボタン %>
+      <div class="flex items-center gap-2 mb-1">
+        <div class="flex-1 min-w-0">
+          <div data-audio-player-target="titleMobile" class="text-sm font-medium truncate"></div>
+          <div class="flex items-center gap-2 text-xs text-gray-500">
+            <span data-audio-player-target="channelMobile" class="truncate"></span>
+            <span class="flex-shrink-0">
+              <span data-audio-player-target="currentTimeMobile">0:00</span>
+              /
+              <span data-audio-player-target="durationMobile">0:00</span>
+            </span>
+          </div>
+        </div>
+        <button data-action="audio-player#closePlayer"
+                class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-600"
+                title="閉じる">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <%# 中段: プログレスバー %>
+      <div data-audio-player-target="progressMobile"
+           data-action="click->audio-player#seekMobile"
+           class="h-1.5 bg-gray-200 rounded-full cursor-pointer mb-2">
+        <div data-audio-player-target="progressBarMobile"
+             class="h-full bg-[#3d8bcd] rounded-full"
+             style="width: 0%"></div>
+      </div>
+
+      <%# 下段: 速度 | ←15s | 再生 | 30s→ | キュー %>
+      <div class="flex items-center justify-center gap-2">
+        <button data-action="audio-player#cycleSpeed"
+                data-audio-player-target="speedMobile"
+                class="w-10 h-10 flex items-center justify-center text-xs font-bold text-gray-600 bg-gray-100 rounded-full active:bg-gray-200"
+                title="再生速度">
+          1x
+        </button>
+        <button data-action="audio-player#skipBackward"
+                class="w-10 h-10 flex items-center justify-center text-gray-500 active:text-gray-700 active:bg-gray-100 rounded-full"
+                title="15秒戻る">
+          <%= image_tag "player-skip-back.svg", class: "w-6 h-6", alt: "15秒戻る" %>
+        </button>
+        <button data-audio-player-target="playButtonMobile"
+                data-action="audio-player#toggle"
+                data-play-icon="<%= image_path('player-play.svg') %>"
+                data-pause-icon="<%= image_path('player-pause.svg') %>"
+                class="w-14 h-14 flex items-center justify-center bg-[#3d8bcd] text-white rounded-full shadow-md active:bg-[#2d7bbd]">
+          <%= image_tag "player-play.svg", data: { audio_player_target: "playIconMobile" }, class: "w-7 h-7 ml-0.5", alt: "再生" %>
+        </button>
+        <button data-action="audio-player#skipForward"
+                class="w-10 h-10 flex items-center justify-center text-gray-500 active:text-gray-700 active:bg-gray-100 rounded-full"
+                title="30秒進む">
+          <%= image_tag "player-skip-forward.svg", class: "w-6 h-6", alt: "30秒進む" %>
+        </button>
+        <button data-action="audio-player#toggleQueuePanel"
+                class="w-10 h-10 flex items-center justify-center text-gray-600 bg-gray-100 rounded-full active:bg-gray-200 relative"
+                title="キューを表示">
+          <span class="material-symbols-outlined text-xl">queue_music</span>
+          <span data-audio-player-target="queueCountMobile"
+                class="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold text-white bg-[#3d8bcd] rounded-full">0</span>
+        </button>
+      </div>
+    </div>
+
+    <%# === デスクトップ用レイアウト (1段) === %>
+    <div class="hidden md:block">
+      <%# プログレスバー %>
+      <div data-audio-player-target="progress"
+           data-action="click->audio-player#seek"
+           class="h-1.5 bg-gray-200 rounded-full cursor-pointer mb-2 group">
+        <div data-audio-player-target="progressBar"
+             class="h-full bg-[#3d8bcd] rounded-full transition-all group-hover:bg-[#2d7bbd]"
+             style="width: 0%"></div>
+      </div>
+
+      <%# コントロール %>
+      <div class="flex items-center gap-3">
+        <%# 再生コントロール %>
+        <div class="flex items-center gap-1">
+          <button data-action="audio-player#skipBackward"
+                  class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                  title="15秒戻る">
+            <%= image_tag "player-skip-back.svg", class: "w-6 h-6", alt: "15秒戻る" %>
+          </button>
+          <button data-audio-player-target="playButton"
+                  data-action="audio-player#toggle"
+                  data-play-icon="<%= image_path('player-play.svg') %>"
+                  data-pause-icon="<%= image_path('player-pause.svg') %>"
+                  class="w-11 h-11 flex items-center justify-center bg-[#3d8bcd] text-white rounded-full hover:bg-[#2d7bbd] shadow-md transition-all hover:scale-105">
+            <%= image_tag "player-play.svg", data: { audio_player_target: "playIcon" }, class: "w-6 h-6 ml-0.5", alt: "再生" %>
+          </button>
+          <button data-action="audio-player#skipForward"
+                  class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                  title="30秒進む">
+            <%= image_tag "player-skip-forward.svg", class: "w-6 h-6", alt: "30秒進む" %>
+          </button>
+        </div>
+
+        <%# トラック情報 %>
+        <div class="flex-1 min-w-0">
+          <div data-audio-player-target="title" class="text-sm font-medium truncate"></div>
+          <div class="flex items-center gap-2 text-xs text-gray-500">
+            <span data-audio-player-target="channel" class="truncate"></span>
+            <span class="flex-shrink-0">
+              <span data-audio-player-target="currentTime">0:00</span>
+              /
+              <span data-audio-player-target="duration">0:00</span>
+            </span>
+          </div>
+        </div>
+
+        <%# 速度・キュー・閉じる %>
+        <div class="flex items-center gap-1">
+          <button data-action="audio-player#cycleSpeed"
+                  data-audio-player-target="speed"
+                  class="min-w-[3rem] px-2 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                  title="再生速度">
+            1.0x
+          </button>
+          <button data-action="audio-player#toggleQueuePanel"
+                  class="flex items-center gap-1 px-2 py-1.5 text-xs text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                  title="キューを表示">
+            <span class="material-symbols-outlined text-sm">queue_music</span>
+            <span data-audio-player-target="queueCount">0</span>
+          </button>
+          <button data-action="audio-player#closePlayer"
+                  class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                  title="閉じる">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

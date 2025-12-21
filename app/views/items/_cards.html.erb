@@ -8,8 +8,8 @@
         </div>
       <% end %>
       <% if item.audio_enclosure_url %>
-        <div class="audio-player audio-player-on-the-image absolute bottom-0 w-[96%] my-1 mx-[2%] z-10">
-          <audio class="h-[30px]" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+        <div class="absolute bottom-0 w-[96%] my-1 mx-[2%] z-10">
+          <%= render(partial: "items/audio_queue_button", locals: { item: item, size: :small }) %>
         </div>
       <% end %>
     </div>
