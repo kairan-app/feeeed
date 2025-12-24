@@ -1,5 +1,5 @@
 <h2 class="text-2xl font-bold mt-6">Channel Preview</h2>
-<div class="flex flex-wrap w-[calc(100%-15px)] max-md:w-full mt-[2em] max-md:mt-[1em] pb-5 border-b border-[#aaaaaa]">
+<div class="flex flex-wrap w-[calc(100%-15px)] max-md:w-full mt-[2em] max-md:mt-[1em] pb-5">
   <% if @channel.image_url %>
   <div class="w-[240px] h-[240px] mr-[30px] max-md:mx-auto max-md:mb-5 overflow-hidden">
     <%= image_tag(@channel.image_url, style: "max-height: 240px;") %>
@@ -21,61 +21,59 @@
     </ul>
   </div>
 </div>
+
+<section class="my-6 pb-6 border-b border-gray-300">
+  <%= form_tag(channels_path, class: "flex items-center gap-2") do %>
+    <%= text_field_tag(:url, @channel.feed_url, class: "flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded") %>
+    <%= submit_tag("Save", class: "px-4 py-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer shrink-0") %>
+  <% end %>
+</section>
+
 <% if @similar_channels.count > 0 %>
-<section>
-  <h3 class="text-lg font-bold mt-6">Did you mean...?</h3>
-  <ul class="flex flex-wrap w-full mt-5 mb-0 p-0">
+<section class="my-6">
+  <h3 class="text-lg font-bold mb-4">Did you mean...?</h3>
+  <p class="text-sm text-gray-600 mb-4">
+    既に該当するフィードが登録済みか、同じコンテンツを提供する別フィードが先に登録されている可能性があります。
+  </p>
+  <ul class="flex flex-wrap w-full m-0 p-0">
     <% @similar_channels.each do |channel| %>
-      <li class="flex flex-wrap items-center w-full mr-0 mb-5 p-0 min-[769px]:w-[calc(50%-20px)] min-[769px]:mr-5">
-        <% if channel.image_url %>
-        <%= link_to channel_path(channel) do %>
-        <div class="w-[100px] h-[100px] mr-[10px] [&_img]:w-full [&_img]:h-full [&_img]:object-cover">
-          <%= image_tag(channel.image_url, style: "max-height: 100px;") %>
-        </div>
-        <% end %>
-        <% end %>
-        <div class="w-[calc(100%-110px)]">
-          <div class="m-0 mb-[0.5em] font-bold">
-            <%= link_to(channel.title, channel) %>
+      <li class="w-full mr-0 mb-4 min-[769px]:w-[calc(50%-20px)] min-[769px]:mr-5">
+        <%= link_to channel_path(channel), class: "flex flex-wrap items-center w-full p-4 border border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 hover:border-gray-400 transition-colors" do %>
+          <% if channel.image_url %>
+          <div class="w-[100px] h-[100px] mr-[10px] [&_img]:w-full [&_img]:h-full [&_img]:object-cover">
+            <%= image_tag(channel.image_url, style: "max-height: 100px;") %>
           </div>
-          <div class="similar-channel-urls">
-            <% if channel.site_url %>
-            Site: <%= link_to(channel.site_url, channel.site_url, target: "_blank") %><br/>
-            <% end %>
-            Feed: <%= link_to(channel.feed_url, channel.feed_url, target: "_blank") %>
+          <% end %>
+          <div class="w-[calc(100%-110px)]">
+            <div class="m-0 mb-[0.5em] font-bold">
+              <%= channel.title %>
+            </div>
+            <div class="text-sm text-gray-500">
+              <% if channel.site_url %>
+              Site: <%= URI.parse(channel.site_url).host %><br/>
+              <% end %>
+              Feed: <%= URI.parse(channel.feed_url).host %>
+            </div>
           </div>
-        </div>
+        <% end %>
       </li>
     <% end %>
   </ul>
-  <p>
-    既に該当するフィードが登録済みか、同じコンテンツを提供する別フィードが先に登録されている可能性があります。<br/>
-    上に表示されているChannelをご確認ください。<br/>
-    問題ないようでしたら、以下より登録をお願いいたします。
-  </p>
 </section>
 <% end %>
-<section>
-  <%= form_tag(channels_path, style: "margin: 20px 0;") do %>
-    <%= text_field_tag(:url, @channel.feed_url, style: "width: 80%;") %>
-    <%= submit_tag("Save", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer") %>
 
-  <% end %>
-  <div>
-  <ul class="ml-6 p-0">
-    <li class="list-disc mb-2 p-0 max-md:mb-4">
-      ニュースサイトなど、フィードによっては利用規約や注意事項が設けられている場合があります。<br/>フィード登録の際には、配信元の利用規約や注意事項をご確認ください。
+<section class="my-6 text-xs text-gray-400">
+  <ul class="ml-4 space-y-2">
+    <li class="list-disc">
+      ニュースサイトなど、フィードによっては利用規約や注意事項が設けられている場合があります。フィード登録の際には、配信元の利用規約や注意事項をご確認ください。
     </li>
-    <li class="list-disc mb-2 p-0 max-md:mb-4">
-      フィードの利用に注意事項が設けられている例：<br/>
-      <ul class="mt-2 ml-6 p-0">
-        <li class="list-disc mb-2 p-0"><a href="https://news.yahoo.co.jp/rss" target="_blank">RSS一覧 - Yahoo!ニュース</a></li>
-        <li class="list-disc mb-2 p-0"><a href="https://www.nhk.or.jp/toppage/rss/" target="_blank">NHKオンライン｜RSSについて</a></li>
-      </ul>
+    <li class="list-disc">
+      フィードの利用に注意事項が設けられている例：
+      <a href="https://news.yahoo.co.jp/rss" target="_blank" class="underline hover:text-gray-600">Yahoo!ニュース</a>、
+      <a href="https://www.nhk.or.jp/toppage/rss/" target="_blank" class="underline hover:text-gray-600">NHKオンライン</a>
     </li>
-    <li class="list-disc mb-2 p-0 max-md:mb-4">
-      現在rururuには自動で規約違反を検知する機能はありません。<br/>規約違反が発覚した場合は、運営者が手動で削除することがありますのでご了承ください。
+    <li class="list-disc">
+      現在rururuには自動で規約違反を検知する機能はありません。規約違反が発覚した場合は、運営者が手動で削除することがありますのでご了承ください。
     </li>
   </ul>
-  </div>
 </section>
