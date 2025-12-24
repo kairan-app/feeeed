@@ -4,10 +4,9 @@
   <label for="channel-registration-form" class="hidden peer-checked:block fixed top-0 left-[-20px] w-[calc(100%+40px)] h-screen bg-black opacity-70 z-[2]"></label>
   <div class="fixed top-[calc(50%-44px)] left-[5%] flex flex-col items-start w-[90%] m-0 p-5 bg-[#3d8bcd] translate-y-0 opacity-0 transition-[opacity] duration-200 z-[-1] peer-checked:translate-y-0 peer-checked:opacity-100 peer-checked:transition-[opacity] peer-checked:duration-200 peer-checked:z-[2]">
     <div class="w-full m-0 p-0">
-      <p class="m-0 mb-2 p-0 text-center text-white">Channel Registration Form</p>
-      <%= form_tag(channel_preview_path, method: :get, class: "flex flex-wrap justify-center items-end gap-2") do %>
-        <%= text_field_tag(:url, nil, placeholder: "https://~~~", class: "flex-1 max-w-[80%] md:max-w-[calc(80%-50px)] max-md:w-full max-md:mb-2", id: "channel-url-input", oninput: "document.getElementById('channel-add-button').disabled = this.value.trim() === ''") %>
-        <%= submit_tag("Add", class: "p-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer max-md:w-full disabled:opacity-50 disabled:cursor-not-allowed", id: "channel-add-button", disabled: true) %>
+      <%= form_tag(channel_preview_path, method: :get, class: "flex items-center gap-2") do %>
+        <%= text_field_tag(:url, nil, placeholder: "https://example.com or https://example.com/feed.xml", class: "flex-1 min-w-0", id: "channel-url-input", oninput: "document.getElementById('channel-add-button').disabled = this.value.trim() === ''") %>
+        <%= submit_tag("Add", class: "px-4 py-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0", id: "channel-add-button", disabled: true) %>
       <% end%>
       <p class="mt-2 text-center">
         <%= link_to "→ Bulk import multiple feeds", new_channels_bulk_import_path, class: "text-white hover:text-yellow-200 hover:underline text-sm font-medium" %>
