@@ -1,6 +1,15 @@
 <% item_count_threshold = 3 %>
 
-<h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold">Unreads</h2>
+<div class="flex items-center justify-between mt-[1em] mb-[0.5em]">
+  <h2 class="text-2xl font-bold">Unreads</h2>
+  <div data-controller="audio-queue-all">
+    <button data-action="audio-queue-all#addAll"
+            class="inline-flex items-center gap-1 text-sm py-2 px-3 bg-[#3d8bcd] text-white rounded hover:bg-[#2d7bbd] transition-colors">
+      <span class="material-symbols-outlined text-base">queue_music</span>
+      <span>すべてキューに追加</span>
+    </button>
+  </div>
+</div>
 
 <p class="flex flex-wrap w-full m-0 mb-2 p-0">Showing unreads from the last <%= @range_days %> days</p>
 <div class="flex m-0 mb-4">
@@ -54,8 +63,8 @@
                 </p>
               </div>
               <% if item.audio_enclosure_url %>
-                <div class="audio-player w-full mt-2 -mb-2">
-                  <audio class="h-9" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+                <div class="w-full mt-2 -mb-2" onclick="event.preventDefault(); event.stopPropagation();">
+                  <%= render(partial: "items/audio_queue_button", locals: { item: item, size: :small }) %>
                 </div>
               <% end %>
             <% end %>

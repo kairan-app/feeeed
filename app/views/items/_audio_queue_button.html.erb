@@ -1,0 +1,25 @@
+<%# 音声アイテムのキュー追加ボタン %>
+<%# locals: item, size: :normal %>
+<% size ||= :normal %>
+<% button_class = size == :small ? "text-xs py-1 px-2" : "text-sm py-1.5 px-3" %>
+<% icon_size = size == :small ? "text-sm" : "text-base" %>
+
+<div data-controller="audio-item"
+     data-audio-item-item-id-value="<%= item.id %>"
+     data-audio-item-title-value="<%= item.title %>"
+     data-audio-item-url-value="<%= item.audio_enclosure_url %>"
+     data-audio-item-channel-title-value="<%= item.channel.title %>"
+     data-audio-item-image-url-value="<%= item.image_url_or_placeholder %>"
+     class="audio-queue-buttons flex gap-1 flex-wrap">
+  <button data-action="audio-item#playNow"
+          class="inline-flex items-center gap-1 <%= button_class %> bg-[#3d8bcd] text-white rounded hover:bg-[#2d7bbd] transition-colors">
+    <span class="material-symbols-outlined <%= icon_size %>">play_arrow</span>
+    <span>再生</span>
+  </button>
+  <button data-action="audio-item#addToQueue"
+          data-audio-item-add-button
+          class="inline-flex items-center gap-1 <%= button_class %> bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors">
+    <span class="material-symbols-outlined <%= icon_size %>">add</span>
+    <span>キューに追加</span>
+  </button>
+</div>

@@ -67,3 +67,15 @@ textarea {
   transform: scale(1.1);
   z-index: 1;
 }
+
+/* 音声プレイヤー表示時にフローティングボタンを上にずらす */
+body.audio-player-visible label[for="channel-registration-form"]:last-of-type {
+  bottom: calc(20px + 72px); /* 通常の bottom-5 + プレイヤーの高さ */
+  transition: bottom 0.2s ease-out;
+}
+
+@media screen and (max-width: 768px) {
+  body.audio-player-visible label[for="channel-registration-form"]:last-of-type {
+    bottom: calc(80px + 64px + 130px); /* モバイルの bottom-20 + ナビ高さ + プレイヤーの高さ */
+  }
+}

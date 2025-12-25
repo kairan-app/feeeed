@@ -20,8 +20,8 @@
           </p>
         </div>
         <% if item.audio_enclosure_url %>
-          <div class="audio-player w-full mt-2 -mb-2">
-            <audio class="h-9" style="width: 100%;" src="<%= item.audio_enclosure_url %>" controls controlslist="nodownload"></audio>
+          <div class="w-full mt-2 -mb-2" onclick="event.preventDefault(); event.stopPropagation();">
+            <%= render(partial: "items/audio_queue_button", locals: { item: item, size: :small }) %>
           </div>
         <% end %>
       <% end %>
