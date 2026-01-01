@@ -1,0 +1,18 @@
+<h1>New arrival items!</h1>
+
+<p>Hi, @<%= @user.name %>!</p>
+
+<% @channel_and_items.each do |channel, items| %>
+  <h2><%= link_to channel.title, channel.site_url %></h2>
+  <ul>
+    <% items.sort_by(&:id).reverse.each do |item| %>
+      <li>
+        <p>
+          <strong><%= link_to item.title, item.url %></strong>
+          <br>
+          <small><%= item.published_at.strftime("%Y-%m-%d %H:%M") %></small>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
