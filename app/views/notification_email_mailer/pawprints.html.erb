@@ -1,18 +1,39 @@
 <h1>Your recent pawprints!</h1>
 
-<p>Hi, @<%= @user.name %>!</p>
+<table cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+  <tr>
+    <td style="vertical-align: middle; padding-right: 10px;">
+      <img src="<%= @user.avatar_url(variant: :thumb) %>" alt="@<%= @user.name %>" width="48" height="48" style="border-radius: 50%;">
+    </td>
+    <td style="vertical-align: middle;">
+      <p style="margin: 0;">Hi, @<%= @user.name %>!</p>
+    </td>
+  </tr>
+</table>
 
-<ul>
-  <% @pawprints.sort_by(&:id).each do |pawprint| %>
-    <li>
-      <p>
-        <strong><%= link_to pawprint.item.title, pawprint.item.url %></strong>
+<% @pawprints.sort_by(&:id).each do |pawprint| %>
+  <table cellpadding="0" cellspacing="0" style="margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 16px; width: 100%;">
+    <tr>
+      <% if pawprint.item.image_url.present? %>
+        <td style="vertical-align: top; padding-right: 12px; width: 80px;">
+          <a href="<%= pawprint.item.url %>">
+            <img src="<%= pawprint.item.image_url %>" alt="" width="80" style="border-radius: 4px; display: block;">
+          </a>
+        </td>
+      <% end %>
+      <td style="vertical-align: top;">
+        <p style="margin: 0 0 4px 0;">
+          <strong><%= link_to pawprint.item.title, pawprint.item.url %></strong>
+        </p>
         <% if pawprint.memo.present? %>
-          <br>💬 <%= pawprint.memo %>
+          <p style="margin: 0 0 4px 0; color: #666;">
+            💬 <%= pawprint.memo %>
+          </p>
         <% end %>
-        <br>
-        <small><%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %></small>
-      </p>
-    </li>
-  <% end %>
-</ul>
+        <p style="margin: 0; color: #999; font-size: 12px;">
+          <%= pawprint.created_at.strftime("%Y-%m-%d %H:%M") %>
+        </p>
+      </td>
+    </tr>
+  </table>
+<% end %>
