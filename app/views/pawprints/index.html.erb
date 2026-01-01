@@ -3,7 +3,15 @@
 
   <%= render(partial: "pawprints/scope_tabs", locals: { current_scope: @scope }) %>
 
-  <div class="mb-4">
+  <% filter_active = params[:pawprint_q].present? %>
+  <details class="mb-4" <%= "open" if filter_active %>>
+    <summary class="list-none cursor-pointer text-sm text-[#666666] hover:text-[#333333] mb-2 flex items-center gap-1 [&::-webkit-details-marker]:hidden">
+      <span class="material-symbols-outlined text-base">expand_more</span>
+      <span>Filter</span>
+      <% if filter_active %>
+        <span class="text-xs text-[#999999]">(active)</span>
+      <% end %>
+    </summary>
     <%= search_form_for @pawprint_q, url: pawprints_path, as: :pawprint_q, method: :get do |f| %>
       <%= hidden_field_tag :scope, @scope %>
       <div class="mb-2">
@@ -26,7 +34,7 @@
         <% end %>
       </div>
     <% end %>
-  </div>
+  </details>
 
   <%= paginate(@pawprints) %>
   <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
