@@ -1,5 +1,33 @@
 <section>
-  <%= render(partial: "shared/pawprints_header", locals: { title: "All Pawprints" }) %>
+  <h2 class="text-2xl font-bold mt-4 mb-2">Pawprints</h2>
+
+  <%= render(partial: "pawprints/scope_tabs", locals: { current_scope: @scope }) %>
+
+  <div class="mb-4">
+    <%= search_form_for @pawprint_q, url: pawprints_path, as: :pawprint_q, method: :get do |f| %>
+      <%= hidden_field_tag :scope, @scope %>
+      <div class="mb-2">
+        <%= f.search_field :memo_or_item_title_or_item_channel_title_cont, placeholder: "Search by memo, item title, or channel title...", class: "w-full p-2 border border-[#cccccc] rounded" %>
+      </div>
+      <div class="flex flex-wrap gap-4 items-center justify-between text-sm">
+        <div class="flex flex-wrap gap-4 items-center">
+          <label class="flex items-center gap-1 cursor-pointer">
+            <%= f.check_box :memo_present, {}, "1", nil %>
+            <span>With memo only</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <%= f.date_field :created_at_gteq, class: "p-1 border border-[#cccccc] rounded" %>
+            <span>〜</span>
+            <%= date_field_tag "pawprint_q[created_at_lteq]", @original_created_at_lteq, class: "p-1 border border-[#cccccc] rounded" %>
+          </div>
+        </div>
+        <%= button_tag type: "submit", class: "px-3 py-1 border border-[#cccccc] rounded cursor-pointer" do %>
+          <span class="material-symbols-outlined m-0 max-md:relative max-md:p-0 max-md:text-[24px]">search</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
   <%= paginate(@pawprints) %>
   <%= render(partial: "pawprints/lines", locals: { pawprints: @pawprints }) %>
   <%= paginate(@pawprints) %>
