@@ -101,7 +101,7 @@
   </div>
 </div>
 
-<h3 class="text-lg font-bold">Items</h3>
+<h3 class="text-xl font-bold mt-8 mb-6">Items</h3>
 
 <%= paginate(@items) %>
 <%= render(partial: "items/cards", locals: { items: @items, with_channel: false }) %>
