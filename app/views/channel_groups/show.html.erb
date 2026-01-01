@@ -1,17 +1,41 @@
-<section>
-  <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel_group.name %></h2>
-  <% if logged_in? %>
-    <p>
-      <%= link_to("Edit channel group", edit_channel_group_path(@channel_group)) %>
-    </p>
-    <p>
-    <% if @channel_group.users.include?(current_user) %>
-      <%= link_to("Leave this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :delete }) %>
+<section class="flex flex-wrap w-[calc(100%-15px)] max-md:w-full mt-[2em] max-md:mt-[1em] pb-5 border-b border-[#aaaaaa]">
+  <div class="w-[180px] h-[180px] mr-[30px] max-md:mx-auto max-md:mb-5 overflow-hidden">
+    <% image_urls = @channel_group.channel_image_urls_in_today %>
+    <% if image_urls.length == 4 %>
+      <div class="grid grid-cols-2 gap-0 w-full h-full">
+        <% image_urls.each do |image_url| %>
+          <%= image_tag(image_url, class: "w-full h-full object-cover aspect-square") %>
+        <% end %>
+      </div>
     <% else %>
-      <%= link_to("Join to this channel group", channel_group_membership_path(@channel_group), data: { turbo_method: :post }) %>
+      <%= image_tag(@channel_group.placeholder_url, class: "w-full h-full object-cover") %>
     <% end %>
-    </p>
-  <% end %>
+  </div>
+
+  <div class="w-[calc(100%-210px)] max-md:w-full">
+    <h2 class="text-2xl font-bold mt-6 mb-4"><%= @channel_group.name %></h2>
+
+    <% if logged_in? %>
+      <div class="flex flex-wrap my-2">
+        <%= link_to(edit_channel_group_path(@channel_group), class: "flex items-center mr-2 mb-2 px-2 py-1 bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] hover:bg-[#fafafa] hover:border-[#999999]") do %>
+          <span class="material-symbols-outlined text-[18px]">edit</span>
+          Edit channel group
+        <% end %>
+
+        <% if @channel_group.users.include?(current_user) %>
+          <%= link_to(channel_group_membership_path(@channel_group), data: { turbo_method: :delete }, class: "flex items-center mr-2 mb-2 px-2 py-1 bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] hover:bg-[#fafafa] hover:border-[#999999]") do %>
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+            Leave this channel group
+          <% end %>
+        <% else %>
+          <%= link_to(channel_group_membership_path(@channel_group), data: { turbo_method: :post }, class: "flex items-center mr-2 mb-2 px-2 py-1 bg-white text-[#333333] border border-[#cccccc] rounded cursor-pointer text-[90%] hover:bg-[#fafafa] hover:border-[#999999]") do %>
+            <span class="material-symbols-outlined text-[18px]">login</span>
+            Join this channel group
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </section>
 
 <% if @channels.count > 0 %>
