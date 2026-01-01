@@ -1,0 +1,23 @@
+<%# Pawprints スコープ切り替えタブ %>
+<%
+  tabs = [
+    { scope: "all", label: "All" },
+    { scope: "my", label: "My" },
+    { scope: "to_me", label: "To me" }
+  ]
+
+  active_class = "text-[#333333] border-b-2 border-[#333333] pb-1"
+  inactive_class = "text-[#666666] hover:text-[#333333] pb-1"
+%>
+
+<nav class="mb-4 border-b border-[#cccccc]">
+  <ul class="flex space-x-4">
+    <% tabs.each do |tab| %>
+      <li>
+        <%= link_to tab[:label],
+            pawprints_path(scope: tab[:scope] == "all" ? nil : tab[:scope]),
+            class: "text-sm font-medium #{current_scope == tab[:scope] ? active_class : inactive_class}" %>
+      </li>
+    <% end %>
+  </ul>
+</nav>

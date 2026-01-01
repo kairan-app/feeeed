@@ -96,8 +96,8 @@ Rails.application.routes.draw do
                                                    as: "unreads"
   get    "/my/unreads/channels/:channel_id/items", to: "my/unreads/channels/items#index",
                                                    as: "my_unreads_channel_items"
-  get    "/my/pawprints",                          to: "my/pawprints#index"
-  get    "/my/owned_channels/pawprints",           to: "my/owned_channels/pawprints#index"
+  get    "/my/pawprints",                          to: redirect("/pawprints?scope=my", status: 301)
+  get    "/my/owned_channels/pawprints",           to: redirect("/pawprints?scope=to_me", status: 301)
   get    "/my/profile",                            to: "my/profile#show"
   put    "/my/profile",                            to: "my/profile#update"
   get    "/my/notification_settings",              to: "my/notification_settings#index"
