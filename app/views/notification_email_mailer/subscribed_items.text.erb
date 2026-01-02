@@ -1,15 +1,22 @@
 # New arrival items!
 
 Hi, @<%= @user.name %>!
-
+<% max_items_per_channel = 5 %>
 <% @channel_and_items.each do |channel, items| %>
+<% sorted_items = items.sort_by(&:id).reverse %>
+<% display_items = sorted_items.first(max_items_per_channel) %>
+<% remaining_count = sorted_items.size - display_items.size %>
 
 
 ## <%= channel.title %> - <%= channel.site_url %>
-<% items.sort_by(&:id).reverse.each do |item| %>
+<% display_items.each do |item| %>
 
 <%= item.title %>
 <%= item.url %>
 (<%= item.published_at.strftime("%Y-%m-%d %H:%M") %>)
+<% end %>
+<% if remaining_count > 0 %>
+
++ <%= remaining_count %> more items
 <% end %>
 <% end %>

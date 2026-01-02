@@ -11,7 +11,14 @@
   </tr>
 </table>
 
+<% max_items_per_channel = 5 %>
 <% @channel_and_items.each do |channel, items| %>
+  <% sorted_items = items.sort_by(&:id).reverse %>
+  <% display_items = sorted_items.first(max_items_per_channel) %>
+  <% remaining_count = sorted_items.size - display_items.size %>
+
+  <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+
   <table cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
     <tr>
       <td style="vertical-align: middle; padding-right: 8px;">
@@ -23,7 +30,7 @@
     </tr>
   </table>
 
-  <% items.sort_by(&:id).reverse.each do |item| %>
+  <% display_items.each do |item| %>
     <table cellpadding="0" cellspacing="0" style="margin-bottom: 12px; margin-left: 24px; width: calc(100% - 24px);">
       <tr>
         <% if item.image_url.present? %>
@@ -45,5 +52,9 @@
     </table>
   <% end %>
 
-  <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+  <% if remaining_count > 0 %>
+    <p style="margin: 8px 0 0 24px; color: #666; font-size: 14px;">
+      <%= link_to "+ #{remaining_count} more items", channel.site_url %>
+    </p>
+  <% end %>
 <% end %>

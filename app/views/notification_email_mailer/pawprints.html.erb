@@ -12,7 +12,8 @@
 </table>
 
 <% @pawprints.sort_by(&:id).each do |pawprint| %>
-  <table cellpadding="0" cellspacing="0" style="margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 16px; width: 100%;">
+  <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;">
+  <table cellpadding="0" cellspacing="0" style="margin-bottom: 16px; width: 100%;">
     <tr>
       <% if pawprint.item.image_url.present? %>
         <td style="vertical-align: top; padding-right: 12px; width: 80px;">
