@@ -308,3 +308,61 @@ end
 
 5. **タグ名の重複**: 同一ユーザー内でのタグ名重複を禁止するか？
    - → 許容しない（UNIQUE制約で担保）
+
+---
+
+## 実装済み
+
+### データベース
+- `subscription_tags` テーブル作成（案Aの多対多構造を採用）
+- `subscription_taggings` 中間テーブル作成
+- 各種インデックス設定済み
+
+### モデル
+- `SubscriptionTag` モデル
+  - `before_validation :set_position_on_create` で作成時に自動position設定
+  - `after_destroy :normalize_positions_after_destroy` で削除後にposition正規化
+  - `move_up` / `move_down` メソッドで並び替え
+- `SubscriptionTagging` 中間モデル
+- `Subscription` モデルに `has_many :subscription_taggings, dependent: :destroy` 追加
+- `User#unsubscribe` メソッドを修正（`dependent: :destroy` が発動するように）
+
+### Unreadsページ (`/my/unreads`)
+- Tags / Channel Groups のフィルタリングUI実装
+- 「Tags (Manage)」ヘッダーでタグ管理ページへのリンク
+- TagsとChannel Groupsは排他的選択（どちらか一方のみ）
+- タグはSubscriptionが1件以上あるもののみ表示
+- 選択状態のスタイリング（青色 `#3d8bcd`）
+
+### Subscriptions管理ページ (`/my/subscriptions`)
+- 購読中チャンネル一覧表示（Channel画像付き）
+- タグ管理セクション
+  - タグ追加フォーム
+  - タグ一覧（position順で表示）
+  - 各タグに編集（pencilアイコン）・削除（trashアイコン）ボタン
+  - 上下矢印で並び替え
+- 各Subscriptionにチェックボックス形式でタグ付け
+  - Optimistic UI（クリック時に即座に背景色が変化）
+  - Turbo Streamで非同期更新
+  - `id: nil` でスクロール位置維持
+
+### タグ編集ページ (`/my/subscription_tags/:id/edit`)
+- タグ名変更フォーム
+
+### Channel詳細ページのSubscribedボタン
+- ドロップダウンメニュー化
+  - タグ選択チェックボックス（Subscribed状態のとき）
+  - 区切り線
+  - Unsubscribeリンク（赤色）
+- タグ変更時はTurbo Streamで非同期更新
+
+### ナビゲーション
+- ユーザーメニュー（右上アイコン）に「Subscriptions」リンク追加
+
+### Stimulusコントローラ
+- `dropdown_controller.js` - ドロップダウンメニューの開閉制御
+- `auto_submit_controller.js` - チェックボックス変更時の自動送信 + Optimistic UI
+
+### 削除したコード
+- `My::SubscriptionTagsController#reorder` アクション（未使用だったため）
+- 対応するルーティング
