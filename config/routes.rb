@@ -111,6 +111,8 @@ Rails.application.routes.draw do
                                                    as: "my_subscription"
   post   "/my/subscription_tags",                  to: "my/subscription_tags#create",
                                                    as: "my_subscription_tags"
+  get    "/my/subscription_tags/:id/edit",         to: "my/subscription_tags#edit",
+                                                   as: "edit_my_subscription_tag"
   patch  "/my/subscription_tags/:id",              to: "my/subscription_tags#update",
                                                    as: "my_subscription_tag"
   delete "/my/subscription_tags/:id",              to: "my/subscription_tags#destroy"

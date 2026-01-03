@@ -1,4 +1,9 @@
 class My::SubscriptionTagsController < MyController
+  def edit
+    @subscription_tag = current_user.subscription_tags.find(params[:id])
+    @title = "Edit Tag"
+  end
+
   def create
     @subscription_tag = current_user.subscription_tags.build(subscription_tag_params)
 
