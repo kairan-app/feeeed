@@ -26,6 +26,9 @@
         <p style="margin: 0 0 4px 0;">
           <strong><%= link_to pawprint.item.title, pawprint.item.url %></strong>
         </p>
+        <p style="margin: 0 0 4px 0; font-size: 12px; color: #666;">
+          <img src="<%= pawprint.item.channel.favicon_url %>" alt="" width="12" height="12" style="vertical-align: middle; margin-right: 4px;"><%= link_to pawprint.item.channel.title, pawprint.item.channel.site_url, style: "color: #666; text-decoration: none;" %>
+        </p>
         <% if pawprint.memo.present? %>
           <p style="margin: 0 0 4px 0; color: #666;">
             💬 <%= pawprint.memo %>
