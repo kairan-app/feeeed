@@ -1,0 +1,9 @@
+<h1>Hi, @<%= @user.name %>!</h1>
+
+<p>This email address was added to your account.</p>
+<p><strong><%= @notification_email.email %></strong></p>
+
+<p>Please verify it by clicking the link below.</p>
+<p><%= link_to @verification_url, @verification_url %></p>
+
+<p><small>If you did not add this email address, please ignore this email.</small></p>
