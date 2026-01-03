@@ -140,8 +140,15 @@ class User < ApplicationRecord
     end
   end
 
-  def unread_items_grouped_by_channel(range_days: 7, channel_group: nil)
-    items = channel_group ? channel_group.items : subscribed_items
+  def unread_items_grouped_by_channel(range_days: 7, channel_group: nil, subscription_tag: nil)
+    items = if channel_group
+              channel_group.items
+    elsif subscription_tag
+              Item.joins(channel: :subscriptions)
+                  .where(subscriptions: { id: subscription_tag.subscriptions.select(:id) })
+    else
+              subscribed_items
+    end
 
     items.
     includes(:channel, :pawprints).

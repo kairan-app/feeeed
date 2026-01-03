@@ -105,6 +105,17 @@ Rails.application.routes.draw do
   get    "/my/wrapped/:year",                      to: "my/wrapped#show",
                                                    as: "my_wrapped",
                                                    constraints: { year: /\d{4}/ }
+  get    "/my/subscriptions",                      to: "my/subscriptions#index",
+                                                   as: "my_subscriptions"
+  patch  "/my/subscriptions/:id",                  to: "my/subscriptions#update",
+                                                   as: "my_subscription"
+  post   "/my/subscription_tags",                  to: "my/subscription_tags#create",
+                                                   as: "my_subscription_tags"
+  patch  "/my/subscription_tags/:id",              to: "my/subscription_tags#update",
+                                                   as: "my_subscription_tag"
+  delete "/my/subscription_tags/:id",              to: "my/subscription_tags#destroy"
+  patch  "/my/subscription_tags/reorder",          to: "my/subscription_tags#reorder",
+                                                   as: "reorder_my_subscription_tags"
   get    "/about",                                 to: "about#index",
                                                    as: "about"
   post   "/channel_group_webhooks",                to: "channel_group_webhooks#create"

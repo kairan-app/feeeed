@@ -1,0 +1,24 @@
+<div id="<%= dom_id(subscription) %>" class="p-4 border border-gray-200 rounded">
+  <div class="flex items-start gap-4">
+    <div class="flex-grow">
+      <h4 class="font-medium">
+        <%= link_to subscription.channel.title, channel_path(subscription.channel), class: "hover:underline" %>
+      </h4>
+      <p class="text-sm text-gray-500 truncate"><%= subscription.channel.feed_url %></p>
+    </div>
+
+    <div class="flex-shrink-0">
+      <%= form_with url: my_subscription_path(subscription), method: :patch, class: "flex flex-wrap gap-2", data: { controller: "auto-submit" } do |f| %>
+        <% subscription_tags.each do |tag| %>
+          <label class="inline-flex items-center gap-1 px-2 py-1 rounded text-sm cursor-pointer <%= subscription.subscription_tags.include?(tag) ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600' %>">
+            <%= check_box_tag "subscription_tag_ids[]", tag.id, subscription.subscription_tags.include?(tag), data: { action: "change->auto-submit#submit" } %>
+            <%= tag.name %>
+          </label>
+        <% end %>
+        <noscript>
+          <%= f.submit "Save", class: "px-2 py-1 bg-blue-500 text-white rounded text-sm" %>
+        </noscript>
+      <% end %>
+    </div>
+  </div>
+</div>

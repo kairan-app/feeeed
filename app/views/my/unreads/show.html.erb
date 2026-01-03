@@ -17,6 +17,15 @@
 </div>
 <% end %>
 
+<% if @subscription_tags.exists? %>
+<div class="w-full m-0 overflow-x-auto whitespace-nowrap text-[0px]">
+  <%= link_to("All Tags", unreads_path(@unreads_params.merge(subscription_tag_id: nil)), class: "inline-block -mr-px mb-4 py-4 px-4 bg-white border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#10b981] hover:text-white #{'active bg-[#10b981] text-white' unless @subscription_tag}") %>
+  <% @subscription_tags.each do |tag| %>
+    <%= link_to(tag.name, unreads_path(@unreads_params.merge(subscription_tag_id: tag.id)), class: "inline-block -mr-px mb-4 py-4 px-4 bg-white border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#10b981] hover:text-white #{'active bg-[#10b981] text-white' if @subscription_tag == tag}") %>
+  <% end %>
+</div>
+<% end %>
+
 <% @channel_and_items.each do |channel, items| %>
   <div class="min-w-[400px] max-[768px]:min-w-[270px] m-0 p-0 border-b-[6px] border-b-[#dddddd] last:border-b-0 w-full">
     <h3 class="text-lg font-bold mt-2 [&_a]:flex [&_a]:items-center [&_a]:gap-[10px] [&_a]:p-[10px] [&_a]:transition-[0.25s] [&_a:hover]:bg-[rgba(255,255,255,0.75)] [&_a_span]:flex-1 max-[768px]:[&_a]:p-0 max-[768px]:[&_a]:py-[10px]">
