@@ -30,14 +30,6 @@ class My::SubscriptionTagsController < MyController
     redirect_to my_subscriptions_path
   end
 
-  def reorder
-    params[:subscription_tag_ids].each_with_index do |id, index|
-      current_user.subscription_tags.find(id).update(position: index)
-    end
-
-    head :ok
-  end
-
   def move_up
     @subscription_tag = current_user.subscription_tags.find(params[:id])
     @subscription_tag.move_up
