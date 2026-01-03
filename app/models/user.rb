@@ -54,7 +54,7 @@ class User < ApplicationRecord
   end
 
   def unsubscribe(channel)
-    subscribed_channels.delete(channel)
+    subscriptions.find_by(channel: channel)&.destroy
   end
 
   def paw(item, memo:)

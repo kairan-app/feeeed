@@ -15,7 +15,7 @@ class SubscriptionsController < ApplicationController
 
   def destroy
     current_user.unsubscribe(@channel)
-    @subscribed_channel_ids = current_user.subscribed_channel_ids
+    @subscribed_channel_ids = current_user.reload.subscribed_channel_ids
 
     respond_to do |format|
       format.turbo_stream

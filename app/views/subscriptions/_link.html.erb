@@ -1,9 +1,35 @@
 <% if logged_in? %>
   <div class="subscription-button-for-channel-<%= channel.id %>">
     <% if @subscribed_channel_ids.include?(channel.id) %>
-      <%= form_tag(channel_subscription_path(channel), method: :delete) do %>
-        <%= submit_tag("Subscribed", class: "w-full text-center px-4 py-2 bg-[#3d8bcd] text-white border border-[#3d8bcd] rounded-full cursor-pointer hover:bg-[#2c6a9f] hover:border-[#2c6a9f]") %>
-      <% end %>
+      <% subscription = current_user.subscriptions.find_by(channel: channel) %>
+      <% subscription_tags = current_user.subscription_tags.ordered %>
+      <div class="relative w-full" data-controller="dropdown">
+        <button type="button" data-action="click->dropdown#toggle" class="w-full flex items-center justify-center gap-1 px-4 py-2 bg-[#3d8bcd] text-white border border-[#3d8bcd] rounded-full cursor-pointer hover:bg-[#2c6a9f] hover:border-[#2c6a9f]">
+          <span>Subscribed</span>
+          <span class="material-symbols-outlined text-base">expand_more</span>
+        </button>
+        <div data-dropdown-target="menu" class="hidden absolute left-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+          <% if subscription && subscription_tags.any? %>
+            <div class="p-2">
+              <%= form_with url: my_subscription_path(subscription), method: :patch, data: { controller: "auto-submit", turbo_preserve_scroll: true } do |f| %>
+                <% subscription_tags.each do |tag| %>
+                  <label class="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer hover:bg-gray-50">
+                    <%= check_box_tag "subscription_tag_ids[]", tag.id, subscription.subscription_tags.include?(tag), id: nil, class: "w-4 h-4", data: { action: "change->auto-submit#submit" } %>
+                    <span class="text-sm text-gray-700"><%= tag.name %></span>
+                  </label>
+                <% end %>
+              <% end %>
+            </div>
+            <div class="border-t border-gray-200"></div>
+          <% end %>
+          <div class="p-2">
+            <%= button_to channel_subscription_path(channel), method: :delete, class: "w-full flex items-center gap-2 px-2 py-1.5 text-sm text-red-600 rounded hover:bg-red-50" do %>
+              <span class="material-symbols-outlined text-base">remove_circle</span>
+              <span>Unsubscribe</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
     <% else %>
       <%= form_tag(channel_subscription_path(channel), method: :post) do %>
         <%= submit_tag("Subscribe", class: "w-full text-center px-4 py-2 bg-white text-[#333333] border border-[#cccccc] rounded-full cursor-pointer hover:bg-[#fafafa] hover:border-[#999999]") %>
