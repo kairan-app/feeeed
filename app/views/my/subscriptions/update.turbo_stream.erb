@@ -1,0 +1,3 @@
+<%= turbo_stream.replace @subscription do %>
+  <%= render "subscription", subscription: @subscription, subscription_tags: @subscription_tags %>
+<% end %>
