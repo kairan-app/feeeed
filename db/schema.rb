@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_26_143541) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_03_082753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -368,6 +368,27 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_26_143541) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "subscription_taggings", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "subscription_id", null: false
+    t.bigint "subscription_tag_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscription_id", "subscription_tag_id"], name: "idx_subscription_taggings_unique", unique: true
+    t.index ["subscription_id"], name: "index_subscription_taggings_on_subscription_id"
+    t.index ["subscription_tag_id"], name: "index_subscription_taggings_on_subscription_tag_id"
+  end
+
+  create_table "subscription_tags", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", limit: 32, null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "name"], name: "index_subscription_tags_on_user_id_and_name", unique: true
+    t.index ["user_id", "position"], name: "index_subscription_tags_on_user_id_and_position"
+    t.index ["user_id"], name: "index_subscription_tags_on_user_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.bigint "channel_id", null: false
     t.datetime "created_at", null: false
@@ -417,6 +438,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_26_143541) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "subscription_taggings", "subscription_tags"
+  add_foreign_key "subscription_taggings", "subscriptions"
+  add_foreign_key "subscription_tags", "users"
   add_foreign_key "subscriptions", "channels"
   add_foreign_key "subscriptions", "users"
 end
