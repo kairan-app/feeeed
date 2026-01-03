@@ -114,6 +114,10 @@ Rails.application.routes.draw do
   patch  "/my/subscription_tags/:id",              to: "my/subscription_tags#update",
                                                    as: "my_subscription_tag"
   delete "/my/subscription_tags/:id",              to: "my/subscription_tags#destroy"
+  post   "/my/subscription_tags/:id/move_up",      to: "my/subscription_tags#move_up",
+                                                   as: "move_up_my_subscription_tag"
+  post   "/my/subscription_tags/:id/move_down",    to: "my/subscription_tags#move_down",
+                                                   as: "move_down_my_subscription_tag"
   patch  "/my/subscription_tags/reorder",          to: "my/subscription_tags#reorder",
                                                    as: "reorder_my_subscription_tags"
   get    "/about",                                 to: "about#index",

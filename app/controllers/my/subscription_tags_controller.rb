@@ -1,8 +1,6 @@
 class My::SubscriptionTagsController < MyController
   def create
-    next_position = current_user.subscription_tags.maximum(:position).to_i + 1
     @subscription_tag = current_user.subscription_tags.build(subscription_tag_params)
-    @subscription_tag.position = next_position
 
     if @subscription_tag.save
       respond_to do |format|
@@ -43,6 +41,18 @@ class My::SubscriptionTagsController < MyController
     end
 
     head :ok
+  end
+
+  def move_up
+    @subscription_tag = current_user.subscription_tags.find(params[:id])
+    @subscription_tag.move_up
+    redirect_to my_subscriptions_path
+  end
+
+  def move_down
+    @subscription_tag = current_user.subscription_tags.find(params[:id])
+    @subscription_tag.move_down
+    redirect_to my_subscriptions_path
   end
 
   private

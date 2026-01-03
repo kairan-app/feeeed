@@ -1,7 +1,18 @@
 <div id="<%= dom_id(subscription_tag) %>" class="flex items-center gap-2 p-2 bg-gray-50 rounded" data-subscription-tag-id="<%= subscription_tag.id %>">
-  <span class="drag-handle cursor-move text-gray-400">&#9776;</span>
+  <div class="flex flex-col gap-0.5 w-4">
+    <% unless is_first %>
+      <%= button_to move_up_my_subscription_tag_path(subscription_tag), class: "text-gray-400 hover:text-gray-600 text-xs leading-none" do %>
+        &uarr;
+      <% end %>
+    <% end %>
+    <% unless is_last %>
+      <%= button_to move_down_my_subscription_tag_path(subscription_tag), class: "text-gray-400 hover:text-gray-600 text-xs leading-none" do %>
+        &darr;
+      <% end %>
+    <% end %>
+  </div>
 
-  <span class="flex-grow font-medium"><%= subscription_tag.name %></span>
+  <span class="flex-grow font-medium"><%= subscription_tag.position + 1 %>. <%= subscription_tag.name %></span>
 
   <span class="text-sm text-gray-500">
     <%= subscription_tag.subscriptions.count %> subscriptions

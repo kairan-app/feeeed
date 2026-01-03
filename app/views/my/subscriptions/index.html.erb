@@ -6,8 +6,8 @@
     <h3 class="text-lg font-semibold mb-3">Tags</h3>
 
     <div id="subscription-tags-list" class="space-y-2 mb-4">
-      <% @subscription_tags.each do |tag| %>
-        <%= render "subscription_tag", subscription_tag: tag %>
+      <% @subscription_tags.each_with_index do |tag, index| %>
+        <%= render "subscription_tag", subscription_tag: tag, is_first: index == 0, is_last: index == @subscription_tags.size - 1 %>
       <% end %>
     </div>
 
