@@ -1,0 +1,31 @@
+<tr>
+  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+    <%= user.id %>
+  </td>
+  <td class="px-4 py-2 whitespace-nowrap">
+    <%= image_tag user.avatar_url(variant: :small), class: "h-8 w-8 rounded-full", alt: user.name %>
+  </td>
+  <td class="px-4 py-2 whitespace-nowrap">
+    <%= link_to user.name, user_path(user_name: user.name), class: "text-blue-600 hover:underline" %>
+  </td>
+  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+    <%= user.email %>
+  </td>
+  <td class="px-4 py-2 text-sm text-gray-500">
+    <div class="flex flex-wrap gap-1">
+      <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">All (<%= user.subscriptions.count %>)</span>
+      <% user.subscription_tags.each do |tag| %>
+        <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded"><%= tag.name %> (<%= tag.subscription_taggings.size %>)</span>
+      <% end %>
+    </div>
+  </td>
+  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+    <%= user.pawprints.count %>
+  </td>
+  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+    <%= user.last_event_at&.in_time_zone&.strftime("%Y-%m-%d %H:%M") || "-" %>
+  </td>
+  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+    <%= user.created_at.strftime("%Y-%m-%d %H:%M") %>
+  </td>
+</tr>
