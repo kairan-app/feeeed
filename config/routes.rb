@@ -140,6 +140,8 @@ Rails.application.routes.draw do
                                                    as: "admin_visits"
   get    "/admin/users",                           to: "admin/users#index",
                                                    as: "admin_users"
+  get    "/admin/subscriptions",                   to: "admin/subscriptions#index",
+                                                   as: "admin_subscriptions"
 
   root "welcome#index"
 end

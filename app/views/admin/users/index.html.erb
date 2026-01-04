@@ -3,15 +3,16 @@
     <%= link_to "Admin", admin_path, class: "hover:underline" %> / <span class="text-gray-800 font-medium">Users</span>
   </nav>
 
-  <div class="bg-white rounded-lg shadow-md p-6">
+  <%# Active Users (Last 7 Days) %>
+  <h2 class="text-lg font-semibold mb-3">Active in Last 7 Days (<%= @active_users.length %>)</h2>
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
     <div class="overflow-x-auto">
       <table class="min-w-full table-auto">
         <thead>
           <tr class="bg-gray-50">
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avatar</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name / Email</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscriptions</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pawprints</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Event</th>
@@ -19,33 +20,33 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <% @users.each do |user| %>
-            <tr>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.id %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap">
-                <%= image_tag user.avatar_url(variant: :small), class: "h-8 w-8 rounded-full", alt: user.name %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap">
-                <%= link_to user.name, user_path(user_name: user.name), class: "text-blue-600 hover:underline" %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.email %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.subscriptions.count %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.pawprints.count %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.last_event_at&.in_time_zone&.strftime("%Y-%m-%d %H:%M") || "-" %>
-              </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.created_at.strftime("%Y-%m-%d %H:%M") %>
-              </td>
-            </tr>
+          <% @active_users.each do |user| %>
+            <%= render "user_row", user: user %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%# Inactive Users %>
+  <h2 class="text-lg font-semibold mb-3">Inactive (<%= @inactive_users.length %>)</h2>
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avatar</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name / Email</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscriptions</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pawprints</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Event</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created at</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @inactive_users.each do |user| %>
+            <%= render "user_row", user: user %>
           <% end %>
         </tbody>
       </table>

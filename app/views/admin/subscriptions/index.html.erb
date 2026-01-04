@@ -1,0 +1,57 @@
+<div class="max-w-6xl mx-auto py-8 px-4">
+  <nav class="text-sm text-gray-500 mb-6">
+    <%= link_to "Admin", admin_path, class: "hover:underline" %> / <span class="text-gray-800 font-medium">Subscriptions</span>
+  </nav>
+
+  <%= paginate @subscriptions %>
+
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Channel</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created at</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @subscriptions.each do |subscription| %>
+            <tr>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                <%= subscription.id %>
+              </td>
+              <td class="px-4 py-2 whitespace-nowrap">
+                <div class="flex items-center gap-2">
+                  <%= image_tag subscription.user.avatar_url(variant: :small), class: "h-6 w-6 rounded-full", alt: subscription.user.name %>
+                  <%= link_to subscription.user.name, user_path(user_name: subscription.user.name), class: "text-blue-600 hover:underline" %>
+                </div>
+              </td>
+              <td class="px-4 py-2 whitespace-nowrap">
+                <%= link_to subscription.channel.title, channel_path(subscription.channel), class: "text-blue-600 hover:underline" %>
+              </td>
+              <td class="px-4 py-2 text-sm text-gray-500">
+                <% if subscription.subscription_tags.any? %>
+                  <div class="flex flex-wrap gap-1">
+                    <% subscription.subscription_tags.each do |tag| %>
+                      <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded"><%= tag.name %></span>
+                    <% end %>
+                  </div>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                <%= subscription.created_at.strftime("%Y-%m-%d %H:%M") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%= paginate @subscriptions %>
+</div>
