@@ -5,11 +5,9 @@
   <td class="px-4 py-2 whitespace-nowrap">
     <%= image_tag user.avatar_url(variant: :small), class: "h-8 w-8 rounded-full", alt: user.name %>
   </td>
-  <td class="px-4 py-2 whitespace-nowrap">
-    <%= link_to user.name, user_path(user_name: user.name), class: "text-blue-600 hover:underline" %>
-  </td>
-  <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-    <%= user.email %>
+  <td class="px-4 py-2">
+    <%= link_to user.name, user_path(user_name: user.name), class: "text-blue-600 hover:underline" %><br>
+    <span class="text-sm text-gray-500"><%= user.email %></span>
   </td>
   <td class="px-4 py-2 text-sm text-gray-500">
     <div class="flex flex-wrap gap-1">
