@@ -41,6 +41,12 @@
       <% end %>
     </li>
     <li class="w-full p-0 border-b border-[#cccccc]">
+      <%= link_to(my_subscriptions_path, class: "flex items-center w-full p-3 hover:bg-gray-50") do %>
+        <span class="material-symbols-outlined">bookmark</span>
+        <span>Subscriptions</span>
+      <% end %>
+    </li>
+    <li class="w-full p-0 border-b border-[#cccccc]">
       <%= link_to(user_path(user_name: current_user.name), class: "flex items-center w-full p-3 hover:bg-gray-50") do %>
         <span class="material-symbols-outlined">account_circle</span>
         <span>My Page</span>

@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_many :notification_webhooks, dependent: :destroy
   has_many :notification_emails, dependent: :destroy
   has_many :channel_group_webhooks, dependent: :destroy
+  has_many :subscription_tags, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..30 }
   validates :email, presence: true, length: { maximum: 254 }
@@ -53,7 +54,7 @@ class User < ApplicationRecord
   end
 
   def unsubscribe(channel)
-    subscribed_channels.delete(channel)
+    subscriptions.find_by(channel: channel)&.destroy
   end
 
   def paw(item, memo:)
@@ -139,8 +140,15 @@ class User < ApplicationRecord
     end
   end
 
-  def unread_items_grouped_by_channel(range_days: 7, channel_group: nil)
-    items = channel_group ? channel_group.items : subscribed_items
+  def unread_items_grouped_by_channel(range_days: 7, channel_group: nil, subscription_tag: nil)
+    items = if channel_group
+              channel_group.items
+    elsif subscription_tag
+              Item.joins(channel: :subscriptions)
+                  .where(subscriptions: { id: subscription_tag.subscriptions.select(:id) })
+    else
+              subscribed_items
+    end
 
     items.
     includes(:channel, :pawprints).

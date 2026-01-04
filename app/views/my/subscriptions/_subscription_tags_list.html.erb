@@ -1,0 +1,3 @@
+<% subscription_tags.each_with_index do |tag, index| %>
+  <%= render "my/subscriptions/subscription_tag", subscription_tag: tag, is_first: index == 0, is_last: index == subscription_tags.size - 1 %>
+<% end %>

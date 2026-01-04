@@ -1,0 +1,28 @@
+<div id="<%= dom_id(subscription) %>" class="p-4 border border-gray-200 rounded">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+    <div class="flex items-start gap-3 flex-grow min-w-0">
+      <%= image_tag subscription.channel.image_url_or_placeholder, class: "w-12 h-12 rounded object-cover flex-shrink-0", alt: subscription.channel.title %>
+
+      <div class="flex-grow min-w-0">
+        <h4 class="font-medium">
+          <%= link_to subscription.channel.title, channel_path(subscription.channel), class: "hover:underline" %>
+        </h4>
+        <p class="text-sm text-gray-500 truncate"><%= subscription.channel.feed_url %></p>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0 pl-15 sm:pl-0">
+      <%= form_with url: my_subscription_path(subscription), method: :patch, class: "flex flex-wrap gap-1.5", data: { controller: "auto-submit", turbo_preserve_scroll: true } do |f| %>
+        <% subscription_tags.each do |tag| %>
+          <label class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs cursor-pointer <%= subscription.subscription_tags.include?(tag) ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600' %>">
+            <%= check_box_tag "subscription_tag_ids[]", tag.id, subscription.subscription_tags.include?(tag), id: nil, class: "w-3 h-3", data: { action: "change->auto-submit#submit" } %>
+            <%= tag.name %>
+          </label>
+        <% end %>
+        <noscript>
+          <%= f.submit "Save", class: "px-2 py-1 bg-blue-500 text-white rounded text-sm" %>
+        </noscript>
+      <% end %>
+    </div>
+  </div>
+</div>

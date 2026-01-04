@@ -8,14 +8,35 @@
   <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1)), class: "block mr-1 py-1 px-3 bg-white border border-[#cccccc] rounded hover:bg-[#3d8bcd] hover:text-white") %>
 </div>
 
-<% if @channel_groups.exists? %>
-<div class="w-full m-0 overflow-x-auto whitespace-nowrap text-[0px]">
-  <%= link_to("指定なし", unreads_path(@unreads_params.merge(channel_group_id: nil)), class: "inline-block -mr-px mb-4 py-4 px-4 bg-white border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white [&.active]:bg-[#3d8bcd] [&.active]:text-white") %>
-  <% @channel_groups.each do |channel_group| %>
-    <%= link_to(channel_group.name, unreads_path(@unreads_params.merge(channel_group_id: channel_group.id)), class: "inline-block -mr-px mb-4 py-4 px-4 bg-white border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white #{'active' if @channel_group == channel_group}") %>
+<div class="flex flex-wrap gap-6 mb-4">
+  <% if @subscription_tags.exists? %>
+  <div>
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-sm font-medium text-gray-700">Tags</span>
+      <%= link_to "(Manage)", my_subscriptions_path, class: "text-sm text-gray-500 hover:underline" %>
+    </div>
+    <div class="w-full m-0 overflow-x-auto whitespace-nowrap text-[0px]">
+      <%= link_to("All", unreads_path(range_days: @range_days), class: "inline-block -mr-px py-3 px-4 border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white #{@subscription_tag || @channel_group ? 'bg-white text-gray-700' : 'bg-[#3d8bcd] text-white'}") %>
+      <% @subscription_tags.each do |tag| %>
+        <%= link_to(tag.name, unreads_path(range_days: @range_days, subscription_tag_id: tag.id), class: "inline-block -mr-px py-3 px-4 border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white #{@subscription_tag == tag ? 'bg-[#3d8bcd] text-white' : 'bg-white text-gray-700'}") %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
+  <% if @channel_groups.exists? %>
+  <div>
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-sm font-medium text-gray-700">Channel Groups</span>
+    </div>
+    <div class="w-full m-0 overflow-x-auto whitespace-nowrap text-[0px]">
+      <% @channel_groups.each do |channel_group| %>
+        <%= link_to(channel_group.name, unreads_path(range_days: @range_days, channel_group_id: channel_group.id), class: "inline-block -mr-px py-3 px-4 border border-[#cccccc] text-center text-[13px] min-[769px]:px-6 min-[769px]:text-base first:rounded-l-md last:rounded-r-md hover:bg-[#3d8bcd] hover:text-white #{@channel_group == channel_group ? 'bg-[#3d8bcd] text-white' : 'bg-white text-gray-700'}") %>
+      <% end %>
+    </div>
+  </div>
   <% end %>
 </div>
-<% end %>
 
 <% @channel_and_items.each do |channel, items| %>
   <div class="min-w-[400px] max-[768px]:min-w-[270px] m-0 p-0 border-b-[6px] border-b-[#dddddd] last:border-b-0 w-full">
