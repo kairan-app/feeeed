@@ -33,8 +33,13 @@
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
                 <%= user.email %>
               </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                <%= user.subscriptions.count %>
+              <td class="px-4 py-2 text-sm text-gray-500">
+                <div class="flex flex-wrap gap-1">
+                  <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">All (<%= user.subscriptions.count %>)</span>
+                  <% user.subscription_tags.each do |tag| %>
+                    <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded"><%= tag.name %> (<%= tag.subscription_taggings.size %>)</span>
+                  <% end %>
+                </div>
               </td>
               <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
                 <%= user.pawprints.count %>
