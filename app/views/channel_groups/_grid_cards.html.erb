@@ -2,15 +2,17 @@
     <% channel_groups.each do |channel_group| %>
     <div class="card channel-card">
       <div class="relative w-full leading-[0] overflow-hidden aspect-square max-md:h-[calc((100vw-55px)/2)]">
-        <% image_urls = channel_group.channel_image_urls_in_today %>
-        <% if image_urls.length == 4 %>
-          <div class="grid grid-cols-2 gap-0">
-            <% image_urls.each do |image_url| %>
-              <%= image_tag(image_url, class: "w-full h-full object-cover aspect-square") %>
-            <% end %>
-          </div>
-        <% else %>
-          <%= image_tag(channel_group.placeholder_url, class: "w-full h-full object-cover") %>
+        <%= link_to channel_group do %>
+          <% image_urls = channel_group.channel_image_urls_in_today %>
+          <% if image_urls.length == 4 %>
+            <div class="grid grid-cols-2 gap-0">
+              <% image_urls.each do |image_url| %>
+                <%= image_tag(image_url, class: "w-full h-full object-cover aspect-square") %>
+              <% end %>
+            </div>
+          <% else %>
+            <%= image_tag(channel_group.placeholder_url, class: "w-full h-full object-cover") %>
+          <% end %>
         <% end %>
       </div>
       <h3 class="my-2 mb-1 text-base leading-[1.4em] font-bold">
