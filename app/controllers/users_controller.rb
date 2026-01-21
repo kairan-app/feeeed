@@ -1,9 +1,7 @@
 class UsersController < ApplicationController
   def show
     @user = User.find_by(name: params[:user_name])
-    @owned_channels = @user.owned_channels.order("ownerships.id DESC")
-    @subscribed_channels = @user.subscribed_channels.order("subscriptions.id DESC")
-    @channel_groups = @user.channel_groups.order("channel_groups.id DESC")
+    @profile_widgets = @user.profile_widgets.ordered
 
     @title = "@" + @user.name
   end

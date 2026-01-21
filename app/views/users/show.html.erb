@@ -1,4 +1,3 @@
-<%# プロフィールセクション %>
 <section class="mb-12">
   <div class="profile flex flex-col items-center py-8">
     <div class="profile-image w-24 h-24 md:w-32 md:h-32 mb-4 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_img]:rounded-full">
@@ -7,38 +6,14 @@
     <div class="profile-info text-center">
       <h2 class="text-2xl md:text-3xl font-bold"><%= "@" + @user.name %></h2>
       <p class="mt-2 text-gray-600 text-sm">
-        <%= pluralize(@owned_channels.count, "owned channel") %>,
-        <%= pluralize(@subscribed_channels.count, "subscription") %>,
+        <%= pluralize(@user.owned_channels.count, "owned channel") %>,
+        <%= pluralize(@user.subscribed_channels.count, "subscription") %>,
         <%= pluralize(@user.pawprints.count, "pawprint") %>
       </p>
     </div>
   </div>
 </section>
 
-<%# Channel Groups セクション %>
-<% if @channel_groups.exists? %>
-<section class="mb-12">
-  <h3 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-center">Channel Groups</h3>
-  <div class="flex flex-wrap justify-center gap-2">
-    <% @channel_groups.each do |channel_group| %>
-      <%= link_to(channel_group.name, channel_group, class: "inline-block px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow text-[#3d8bcd] font-medium") %>
-    <% end %>
-  </div>
-</section>
-<% end %>
-
-<%# Owned Channels セクション %>
-<% if @owned_channels.exists? %>
-<section class="mb-12">
-  <h3 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-center">Owned Channels</h3>
-  <%= render(partial: "channels/grid_cards", locals: { channels: @owned_channels }) %>
-</section>
-<% end %>
-
-<%# Subscribed Channels セクション %>
-<% if @subscribed_channels.exists? %>
-<section class="mb-12">
-  <h3 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-center">Subscribed Channels</h3>
-  <%= render(partial: "channels/grid_cards", locals: { channels: @subscribed_channels }) %>
-</section>
+<% @profile_widgets.each do |widget| %>
+  <%= render "user_profile_widgets/#{widget.widget_type}", user: @user %>
 <% end %>
