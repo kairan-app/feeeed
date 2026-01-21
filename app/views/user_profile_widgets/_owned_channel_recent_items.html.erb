@@ -1,1 +1,10 @@
-<%# TODO: Implement owned_channel_recent_items widget %>
+<% items = Item.joins(channel: :ownerships)
+              .where(ownerships: { user_id: user.id })
+              .order(published_at: :desc)
+              .limit(12) %>
+<% if items.exists? %>
+<section class="mb-12">
+  <h3 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-center">Recent Items</h3>
+  <%= render(partial: "items/cards", locals: { items: items, with_channel: true }) %>
+</section>
+<% end %>

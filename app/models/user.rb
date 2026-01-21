@@ -171,4 +171,20 @@ class User < ApplicationRecord
     offset(offset).
     limit(limit)
   end
+
+  def publish_punchcard_data(weeks: 52)
+    start_date = weeks.weeks.ago.to_date
+    Item.joins(channel: :ownerships)
+        .where(ownerships: { user_id: id })
+        .where("items.published_at >= ?", start_date)
+        .group("DATE(items.published_at)")
+        .count
+  end
+
+  def pawprints_punchcard_data(weeks: 52)
+    start_date = weeks.weeks.ago.to_date
+    pawprints.where("created_at >= ?", start_date)
+             .group("DATE(created_at)")
+             .count
+  end
 end
