@@ -22,6 +22,7 @@ class User < ApplicationRecord
   has_many :notification_emails, dependent: :destroy
   has_many :channel_group_webhooks, dependent: :destroy
   has_many :subscription_tags, dependent: :destroy
+  has_many :profile_widgets, class_name: "UserProfileWidget", dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..30 }
   validates :email, presence: true, length: { maximum: 254 }
