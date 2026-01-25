@@ -295,7 +295,8 @@ class Channel < ApplicationRecord
       return feed_url unless feed_url
 
       uri = Addressable::URI.parse(feed_url)
-      base_url = "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
+      port_str = (uri.port && uri.port != uri.default_port) ? ":#{uri.port}" : ""
+      base_url = "#{uri.scheme}://#{uri.host}#{port_str}"
 
       if url.start_with?("/")
         "#{base_url}#{url}"

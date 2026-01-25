@@ -82,7 +82,8 @@ module FeedFilters
 
       def extract_base_url(feed_url)
         uri = Addressable::URI.parse(feed_url)
-        "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
+        port_str = (uri.port && uri.port != uri.default_port) ? ":#{uri.port}" : ""
+        "#{uri.scheme}://#{uri.host}#{port_str}"
       end
 
       def resolve_url(url, base_url)
