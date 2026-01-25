@@ -27,7 +27,7 @@ class Pawprint < ApplicationRecord
   def to_discord_embed
     channel = item.channel
     {
-      author: { name: [ channel.title, URI.parse(item.url).host ].join(" | "), url: channel.site_url },
+      author: { name: [ channel.title, Addressable::URI.parse(item.url).host ].join(" | "), url: channel.site_url },
       title: item.title,
       description: memo.present? ? "💬 #{memo}" : nil,
       url: item.url,

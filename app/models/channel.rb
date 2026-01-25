@@ -294,17 +294,13 @@ class Channel < ApplicationRecord
       # 相対URLの場合はfeed_urlのドメインを使って絶対URLに変換
       return feed_url unless feed_url
 
-      begin
-        uri = URI.parse(feed_url)
-        base_url = "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
+      uri = Addressable::URI.parse(feed_url)
+      base_url = "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
 
-        if url.start_with?("/")
-          "#{base_url}#{url}"
-        else
-          URI.join(base_url, url).to_s
-        end
-      rescue URI::InvalidURIError
-        feed_url
+      if url.start_with?("/")
+        "#{base_url}#{url}"
+      else
+        Addressable::URI.join(base_url, url).to_s
       end
     end
 
