@@ -81,11 +81,9 @@ module FeedFilters
       end
 
       def extract_base_url(feed_url)
-        uri = URI.parse(feed_url)
-        "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
-      rescue URI::InvalidURIError
-        # フォールバック: feed_urlが不正な場合
-        feed_url.split("/")[0..2].join("/")
+        uri = Addressable::URI.parse(feed_url)
+        port_str = (uri.port && uri.port != uri.default_port) ? ":#{uri.port}" : ""
+        "#{uri.scheme}://#{uri.host}#{port_str}"
       end
 
       def resolve_url(url, base_url)
@@ -97,11 +95,8 @@ module FeedFilters
           "#{base_url}#{url}"
         else
           # 相対パスの場合（./やディレクトリ名で始まる）
-          URI.join(base_url, url).to_s
+          Addressable::URI.join(base_url, url).to_s
         end
-      rescue URI::InvalidURIError => e
-        Rails.logger.error "[RelativeUrlResolver] Failed to resolve URL: #{url} with base: #{base_url} - #{e.message}"
-        url # 変換に失敗した場合は元のURLを返す
       end
     end
   end

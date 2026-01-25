@@ -64,7 +64,7 @@ class Item < ApplicationRecord
 
   def to_discord_embed
     {
-      author: { name: [ channel.title, URI.parse(self.url).host ].join(" | "), url: channel.site_url },
+      author: { name: [ channel.title, Addressable::URI.parse(self.url).host ].join(" | "), url: channel.site_url },
       title: self.title,
       url: self.url,
       thumbnail: { url: self.image_url },

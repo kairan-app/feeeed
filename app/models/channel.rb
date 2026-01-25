@@ -294,17 +294,14 @@ class Channel < ApplicationRecord
       # 相対URLの場合はfeed_urlのドメインを使って絶対URLに変換
       return feed_url unless feed_url
 
-      begin
-        uri = URI.parse(feed_url)
-        base_url = "#{uri.scheme}://#{uri.host}#{uri.port != uri.default_port ? ":#{uri.port}" : ''}"
+      uri = Addressable::URI.parse(feed_url)
+      port_str = (uri.port && uri.port != uri.default_port) ? ":#{uri.port}" : ""
+      base_url = "#{uri.scheme}://#{uri.host}#{port_str}"
 
-        if url.start_with?("/")
-          "#{base_url}#{url}"
-        else
-          URI.join(base_url, url).to_s
-        end
-      rescue URI::InvalidURIError
-        feed_url
+      if url.start_with?("/")
+        "#{base_url}#{url}"
+      else
+        Addressable::URI.join(base_url, url).to_s
       end
     end
 
@@ -495,7 +492,10 @@ class Channel < ApplicationRecord
     url = site_url || items.order(id: :desc).first&.url
     return "" if url.nil?
 
-    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(url).host}"
+    host = Addressable::URI.parse(url).host
+    return "" if host.nil?
+
+    "https://www.google.com/s2/favicons?domain_url=#{host}"
   end
 
   def image_url_or_placeholder
