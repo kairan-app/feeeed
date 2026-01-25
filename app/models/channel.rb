@@ -495,7 +495,10 @@ class Channel < ApplicationRecord
     url = site_url || items.order(id: :desc).first&.url
     return "" if url.nil?
 
-    "https://www.google.com/s2/favicons?domain_url=#{URI.parse(url).host}"
+    host = Addressable::URI.parse(url).host
+    return "" if host.nil?
+
+    "https://www.google.com/s2/favicons?domain_url=#{host}"
   end
 
   def image_url_or_placeholder
