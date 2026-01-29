@@ -15,6 +15,8 @@ class ApplicationController < ActionController::Base
 
   def set_subscribed_channel_ids
     @subscribed_channel_ids = current_user&.subscribed_channel_ids || []
+    @subscriptions_by_channel_id = current_user&.subscriptions&.includes(:subscription_tags)&.index_by(&:channel_id) || {}
+    @subscription_tags_ordered = current_user&.subscription_tags&.ordered || []
   end
 
   def track_action

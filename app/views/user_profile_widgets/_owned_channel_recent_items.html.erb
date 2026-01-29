@@ -1,4 +1,5 @@
 <% items = Item.joins(channel: :ownerships)
+              .includes(:channel, :pawprints)
               .where(ownerships: { user_id: user.id })
               .order(published_at: :desc)
               .limit(12) %>
