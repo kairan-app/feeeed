@@ -29,6 +29,8 @@ class User < ApplicationRecord
   validates :icon_url, presence: true
   validates_url_http_format_of :icon_url
 
+  after_create :setup_default_profile_widgets
+
   def self.generate_default_name(email)
     local_part = email.split("@").first
     local_part.length >= 2 ? local_part : email.gsub("@", ".")
@@ -186,5 +188,12 @@ class User < ApplicationRecord
     pawprints.where("created_at >= ?", start_date)
              .group("DATE(created_at)")
              .count
+  end
+
+  private
+
+  def setup_default_profile_widgets
+    profile_widgets.create!(widget_type: :owned_channels)
+    profile_widgets.create!(widget_type: :subscribed_channels)
   end
 end
