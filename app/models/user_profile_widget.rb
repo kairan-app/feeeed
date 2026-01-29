@@ -6,7 +6,7 @@ class UserProfileWidget < ApplicationRecord
     owned_channel_recent_items: "owned_channel_recent_items",
     subscribed_channels: "subscribed_channels",
     publish_punchcard: "publish_punchcard",
-    pawprints_punchcard: "pawprints_punchcard"
+    pawprint_punchcard: "pawprint_punchcard"
   }
 
   validates :widget_type, presence: true
