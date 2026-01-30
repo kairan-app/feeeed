@@ -15,7 +15,7 @@
           "type": "controller",
           "class": "ChannelsController",
           "method": "show",
-          "line": 19,
+          "line": 20,
           "file": "app/controllers/channels_controller.rb",
           "rendered": {
             "name": "channels/show",
@@ -59,7 +59,7 @@
         {
           "type": "template",
           "name": "channel_groups/show",
-          "line": 27,
+          "line": 51,
           "file": "app/views/channel_groups/show.html.erb",
           "rendered": {
             "name": "items/_cards",
@@ -103,7 +103,7 @@
         {
           "type": "template",
           "name": "channel_groups/show",
-          "line": 27,
+          "line": 51,
           "file": "app/views/channel_groups/show.html.erb",
           "rendered": {
             "name": "items/_cards",
@@ -137,7 +137,7 @@
           "type": "controller",
           "class": "ChannelsController",
           "method": "show",
-          "line": 19,
+          "line": 20,
           "file": "app/controllers/channels_controller.rb",
           "rendered": {
             "name": "channels/show",
@@ -157,5 +157,5 @@
       "note": ""
     }
   ],
-  "brakeman_version": "7.0.0"
+  "brakeman_version": "8.0.1"
 }
