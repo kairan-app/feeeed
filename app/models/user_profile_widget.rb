@@ -39,12 +39,6 @@ class UserProfileWidget < ApplicationRecord
     end
   end
 
-  def self.normalize_positions(user)
-    user.profile_widgets.ordered.each_with_index do |widget, index|
-      widget.update_column(:position, index)
-    end
-  end
-
   private
 
   def set_position_on_create
@@ -53,6 +47,6 @@ class UserProfileWidget < ApplicationRecord
   end
 
   def normalize_positions_after_destroy
-    self.class.normalize_positions(user)
+    user.profile_widgets.where("position > ?", position).update_all("position = position - 1")
   end
 end
