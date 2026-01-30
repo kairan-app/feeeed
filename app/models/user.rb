@@ -190,6 +190,14 @@ class User < ApplicationRecord
              .count
   end
 
+  def recent_items_from_owned_channels(limit: 12)
+    Item.joins(channel: :ownerships)
+        .includes(:channel, :pawprints)
+        .where(ownerships: { user_id: id })
+        .order(published_at: :desc)
+        .limit(limit)
+  end
+
   private
 
   def setup_default_profile_widgets
