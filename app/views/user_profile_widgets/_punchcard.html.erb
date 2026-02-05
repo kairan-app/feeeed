@@ -1,51 +1,12 @@
-<%
-  # Generate 52 weeks of data starting from today
-  today = Date.current
-  start_of_week = today.beginning_of_week(:sunday)
-  weeks = 52
-
-  # Calculate max count for color intensity
-  max_count = data.values.max || 1
-
-  # Generate week columns (oldest to newest, left to right)
-  week_columns = (0...weeks).map do |week_offset|
-    week_start = start_of_week - (weeks - 1 - week_offset).weeks
-    (0..6).map do |day_offset|
-      date = week_start + day_offset.days
-      count = data[date] || 0
-      { date: date, count: count }
-    end
-  end
-%>
+<% presenter = PunchcardPresenter.new(data) %>
 
 <div class="overflow-x-auto flex justify-center">
   <div class="inline-flex gap-[3px] p-2">
-    <% week_columns.each do |week| %>
+    <% presenter.week_columns.each do |week| %>
       <div class="flex flex-col gap-[3px]">
         <% week.each do |day| %>
-          <%
-            intensity = if day[:count] == 0
-              0
-            elsif day[:count] <= max_count * 0.25
-              1
-            elsif day[:count] <= max_count * 0.5
-              2
-            elsif day[:count] <= max_count * 0.75
-              3
-            else
-              4
-            end
-
-            color_class = case intensity
-              when 0 then "bg-gray-100"
-              when 1 then "bg-blue-200"
-              when 2 then "bg-blue-300"
-              when 3 then "bg-blue-500"
-              else "bg-blue-700"
-            end
-          %>
           <div
-            class="w-[10px] h-[10px] rounded-sm <%= color_class %> <%= day[:date] > today ? 'invisible' : '' %>"
+            class="w-[10px] h-[10px] rounded-sm <%= presenter.color_class_for(day) %> <%= presenter.future?(day) ? 'invisible' : '' %>"
             title="<%= day[:date].strftime('%Y-%m-%d') %>: <%= day[:count] %>"
           ></div>
         <% end %>
