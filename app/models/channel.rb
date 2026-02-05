@@ -406,8 +406,6 @@ class Channel < ApplicationRecord
 
     entries.sort_by(&:published).each do |entry|
       begin
-        next if entry.title.blank?
-
         url = entry.url.presence ||
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
               self.site_url.presence
