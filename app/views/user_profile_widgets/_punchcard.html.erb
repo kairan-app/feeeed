@@ -1,0 +1,26 @@
+<% presenter = PunchcardPresenter.new(data) %>
+
+<div class="overflow-x-auto flex justify-center">
+  <div class="inline-flex gap-[3px] p-2">
+    <% presenter.week_columns.each do |week| %>
+      <div class="flex flex-col gap-[3px]">
+        <% week.each do |day| %>
+          <div
+            class="w-[10px] h-[10px] rounded-sm <%= presenter.color_class_for(day) %> <%= presenter.future?(day) ? 'invisible' : '' %>"
+            title="<%= day[:date].strftime('%Y-%m-%d') %>: <%= day[:count] %>"
+          ></div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="flex items-center justify-center gap-1 mt-2 text-xs text-gray-500">
+  <span>Less</span>
+  <div class="w-[10px] h-[10px] rounded-sm bg-gray-100"></div>
+  <div class="w-[10px] h-[10px] rounded-sm bg-blue-200"></div>
+  <div class="w-[10px] h-[10px] rounded-sm bg-blue-300"></div>
+  <div class="w-[10px] h-[10px] rounded-sm bg-blue-500"></div>
+  <div class="w-[10px] h-[10px] rounded-sm bg-blue-700"></div>
+  <span>More</span>
+</div>

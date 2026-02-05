@@ -1,0 +1,7 @@
+<% channels = user.subscribed_channels.order("subscriptions.id DESC") %>
+<% if channels.exists? %>
+<section class="mb-12">
+  <h3 class="text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-center">Subscribed Channels</h3>
+  <%= render(partial: "channels/grid_cards", locals: { channels: channels }) %>
+</section>
+<% end %>

@@ -120,6 +120,15 @@ Rails.application.routes.draw do
                                                    as: "move_up_my_subscription_tag"
   post   "/my/subscription_tags/:id/move_down",    to: "my/subscription_tags#move_down",
                                                    as: "move_down_my_subscription_tag"
+  get    "/my/profile_widgets",                    to: "my/profile_widgets#index",
+                                                   as: "my_profile_widgets"
+  post   "/my/profile_widgets",                    to: "my/profile_widgets#create"
+  delete "/my/profile_widgets/:id",                to: "my/profile_widgets#destroy",
+                                                   as: "my_profile_widget"
+  post   "/my/profile_widgets/:id/move_up",        to: "my/profile_widgets#move_up",
+                                                   as: "move_up_my_profile_widget"
+  post   "/my/profile_widgets/:id/move_down",      to: "my/profile_widgets#move_down",
+                                                   as: "move_down_my_profile_widget"
   get    "/about",                                 to: "about#index",
                                                    as: "about"
   post   "/channel_group_webhooks",                to: "channel_group_webhooks#create"

@@ -22,11 +22,14 @@ class User < ApplicationRecord
   has_many :notification_emails, dependent: :destroy
   has_many :channel_group_webhooks, dependent: :destroy
   has_many :subscription_tags, dependent: :destroy
+  has_many :profile_widgets, class_name: "UserProfileWidget", dependent: :destroy
 
   validates :name, presence: true, uniqueness: true, length: { in: 2..30 }
   validates :email, presence: true, length: { maximum: 254 }
   validates :icon_url, presence: true
   validates_url_http_format_of :icon_url
+
+  after_create :setup_default_profile_widgets
 
   def self.generate_default_name(email)
     local_part = email.split("@").first
@@ -169,5 +172,36 @@ class User < ApplicationRecord
     order("items.published_at DESC").
     offset(offset).
     limit(limit)
+  end
+
+  def publish_punchcard_data(weeks: 52)
+    start_date = weeks.weeks.ago.to_date
+    Item.joins(channel: :ownerships)
+        .where(ownerships: { user_id: id })
+        .where("items.published_at >= ?", start_date)
+        .group("DATE(items.published_at)")
+        .count
+  end
+
+  def pawprints_punchcard_data(weeks: 52)
+    start_date = weeks.weeks.ago.to_date
+    pawprints.where("created_at >= ?", start_date)
+             .group("DATE(created_at)")
+             .count
+  end
+
+  def recent_items_from_owned_channels(limit: 12)
+    Item.joins(channel: :ownerships)
+        .includes(:channel, :pawprints)
+        .where(ownerships: { user_id: id })
+        .order(published_at: :desc)
+        .limit(limit)
+  end
+
+  private
+
+  def setup_default_profile_widgets
+    profile_widgets.create!(widget_type: :owned_channels)
+    profile_widgets.create!(widget_type: :subscribed_channels)
   end
 end

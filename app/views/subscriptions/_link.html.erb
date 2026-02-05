@@ -1,8 +1,8 @@
 <% if logged_in? %>
   <div class="subscription-button-for-channel-<%= channel.id %>">
     <% if @subscribed_channel_ids.include?(channel.id) %>
-      <% subscription = current_user.subscriptions.find_by(channel: channel) %>
-      <% subscription_tags = current_user.subscription_tags.ordered %>
+      <% subscription = @subscriptions_by_channel_id[channel.id] %>
+      <% subscription_tags = @subscription_tags_ordered %>
       <div class="relative w-full" data-controller="dropdown">
         <button type="button" data-action="click->dropdown#toggle" class="w-full flex items-center justify-between px-4 py-2 bg-[#3d8bcd] text-white border border-[#3d8bcd] rounded-full cursor-pointer hover:bg-[#2c6a9f] hover:border-[#2c6a9f]">
           <span class="w-5"></span>
