@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "6c777b908ba0",
+  "strategy": "manual-commit",
+  "branch": "notification-schedule",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "app/controllers/notification_emails_controller.rb",
+    "app/controllers/notification_webhooks_controller.rb",
+    "app/views/my/notification_settings/index.html.erb",
+    "config/routes.rb"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6c/777b908ba0/0/metadata.json",
+      "transcript": "/6c/777b908ba0/0/full.jsonl",
+      "context": "/6c/777b908ba0/0/context.md",
+      "content_hash": "/6c/777b908ba0/0/content_hash.txt",
+      "prompt": "/6c/777b908ba0/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 10680,
+    "cache_read_tokens": 1600162,
+    "output_tokens": 319,
+    "api_call_count": 16
+  }
+}
