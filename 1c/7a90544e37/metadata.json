@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "1c7a90544e37",
+  "strategy": "manual-commit",
+  "branch": "notification-schedule",
+  "checkpoints_count": 11,
+  "files_touched": [
+    "app/controllers/channel_group_webhooks_controller.rb",
+    "app/controllers/notification_emails_controller.rb",
+    "app/controllers/notification_webhooks_controller.rb",
+    "app/jobs/channel_group_webhook_dispatcher_job.rb",
+    "app/jobs/channel_interval_adjustment_job.rb",
+    "app/jobs/channel_items_updater_job.rb",
+    "app/jobs/channel_schedule_adjustment_job.rb",
+    "app/jobs/notification_email_dispatcher_job.rb",
+    "app/jobs/notification_webhook_dispatcher_job.rb",
+    "app/models/channel.rb",
+    "app/models/channel_group_webhook.rb",
+    "app/models/notification_email.rb",
+    "app/models/notification_webhook.rb",
+    "app/views/my/notification_settings/index.html.erb",
+    "config/recurring.yml",
+    "db/migrate/20260216141414_add_notify_hour_to_notification_models.rb",
+    "docs/2026-02-16_各種通知のタイミングを設定できるように.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1c/7a90544e37/0/metadata.json",
+      "transcript": "/1c/7a90544e37/0/full.jsonl",
+      "context": "/1c/7a90544e37/0/context.md",
+      "content_hash": "/1c/7a90544e37/0/content_hash.txt",
+      "prompt": "/1c/7a90544e37/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 572,
+    "cache_creation_tokens": 80431,
+    "cache_read_tokens": 5751054,
+    "output_tokens": 6899,
+    "api_call_count": 93
+  }
+}

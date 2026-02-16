@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "1c7a90544e37",
+  "session_id": "a873a59f-d19e-4ae3-ac28-c9ad25cfde91",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-16T14:44:19.390783Z",
+  "branch": "notification-schedule",
+  "checkpoints_count": 11,
+  "files_touched": [
+    "app/controllers/channel_group_webhooks_controller.rb",
+    "app/controllers/notification_emails_controller.rb",
+    "app/controllers/notification_webhooks_controller.rb",
+    "app/jobs/channel_group_webhook_dispatcher_job.rb",
+    "app/jobs/channel_interval_adjustment_job.rb",
+    "app/jobs/channel_items_updater_job.rb",
+    "app/jobs/channel_schedule_adjustment_job.rb",
+    "app/jobs/notification_email_dispatcher_job.rb",
+    "app/jobs/notification_webhook_dispatcher_job.rb",
+    "app/models/channel.rb",
+    "app/models/channel_group_webhook.rb",
+    "app/models/notification_email.rb",
+    "app/models/notification_webhook.rb",
+    "app/views/my/notification_settings/index.html.erb",
+    "config/recurring.yml",
+    "db/migrate/20260216141414_add_notify_hour_to_notification_models.rb",
+    "docs/2026-02-16_各種通知のタイミングを設定できるように.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "b7058c4e-473a-4bdc-9f43-0a1bb320ba6d",
+  "token_usage": {
+    "input_tokens": 572,
+    "cache_creation_tokens": 80431,
+    "cache_read_tokens": 5751054,
+    "output_tokens": 6899,
+    "api_call_count": 93
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-16T14:44:19.217416Z",
+    "agent_lines": 212,
+    "human_added": 1695,
+    "human_modified": 8,
+    "human_removed": 0,
+    "total_committed": 1915,
+    "agent_percentage": 11.070496083550914
+  },
+  "transcript_path": ".claude/projects/-Users-juneboku-ghq-src-github-com-kairan-app-feeeed/a873a59f-d19e-4ae3-ac28-c9ad25cfde91.jsonl"
+}
