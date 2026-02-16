@@ -19,6 +19,6 @@ class NotificationEmailsController < ApplicationController
   end
 
   def notification_email_params
-    params.require(:notification_email).permit(:email, :mode)
+    params.require(:notification_email).permit(:email, :mode, :notify_hour)
   end
 end

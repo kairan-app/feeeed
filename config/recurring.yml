@@ -2,18 +2,22 @@ channel_fetcher:
   class: ChannelItemsFetcherJob
   schedule: "10,59 * * * *"
 
-channel_interval_adjustment:
-  class: ChannelIntervalAdjustmentJob
-  schedule: every day at 3am
+notification_webhook_dispatcher:
+  class: NotificationWebhookDispatcherJob
+  schedule: "0 * * * *"
 
-channel_schedule_adjustment:
-  class: ChannelScheduleAdjustmentJob
-  schedule: every day at 4am
+notification_email_dispatcher:
+  class: NotificationEmailDispatcherJob
+  schedule: "0 * * * *"
+
+channel_group_webhook_dispatcher:
+  class: ChannelGroupWebhookDispatcherJob
+  schedule: "20 * * * *"
 
 solid_queue_cleanup:
   class: SolidQueueCleanupJob
-  schedule: every day at 4:30am
+  schedule: "30 4 * * *"
 
 daily_active_users_notifier:
   class: DailyActiveUsersNotifierJob
-  schedule: every day at 0:05am
+  schedule: "5 0 * * *"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_29_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_16_141414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -207,6 +207,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_29_150000) do
     t.string "email", null: false
     t.datetime "last_notified_at"
     t.integer "mode", default: 0, null: false
+    t.integer "notify_hour", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "verification_token", null: false
@@ -218,6 +219,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_29_150000) do
     t.datetime "created_at", null: false
     t.datetime "last_notified_at"
     t.integer "mode", default: 0, null: false
+    t.integer "notify_hour", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url", limit: 4096, null: false
     t.bigint "user_id", null: false

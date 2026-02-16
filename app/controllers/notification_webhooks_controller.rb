@@ -20,6 +20,6 @@ class NotificationWebhooksController < ApplicationController
   end
 
   def notification_webhook_params
-    params.require(:notification_webhook).permit(:url, :mode)
+    params.require(:notification_webhook).permit(:url, :mode, :notify_hour)
   end
 end

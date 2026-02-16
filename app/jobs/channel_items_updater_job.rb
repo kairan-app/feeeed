@@ -21,6 +21,18 @@ class ChannelItemsUpdaterJob < ApplicationJob
     rescue StandardError => e
       handle_error(e, channel, "Failed to mark items checked")
     end
+
+    begin
+      channel.set_check_interval!
+    rescue StandardError => e
+      handle_error(e, channel, "Failed to set check interval")
+    end
+
+    begin
+      channel.adjust_schedules!
+    rescue StandardError => e
+      handle_error(e, channel, "Failed to adjust schedules")
+    end
   end
 
   private

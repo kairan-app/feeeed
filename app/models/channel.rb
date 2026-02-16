@@ -69,56 +69,6 @@ class Channel < ApplicationRecord
       end
     end
 
-    def adjust_all_check_intervals
-      total = not_stopped.count
-      updated = 0
-
-      not_stopped.find_each do |channel|
-        channel.set_check_interval!
-        updated += 1
-        Rails.logger.info "Channel #{channel.id} interval adjusted to #{channel.check_interval_hours} hours"
-      end
-
-      Rails.logger.info "Auto-adjusted check intervals for #{updated}/#{total} channels"
-      updated
-    end
-
-    def adjust_all_schedules!
-      total_added = 0
-      total_removed = 0
-      skipped_insufficient = 0
-      skipped_inactive = 0
-
-      not_stopped.find_each do |channel|
-        if channel.items.count < 20
-          skipped_insufficient += 1
-          next
-        end
-
-        result = channel.adjust_schedules!
-        total_added += result[:added].count
-        total_removed += result[:removed].count
-
-        # 非アクティブなチャンネルかどうかを判定（adjust_schedules!内で判定・処理済み）
-        if result[:added].empty? && result[:removed].any?
-          latest_item = channel.items.order(published_at: :desc).first
-          if latest_item.published_at < 1.month.ago
-            skipped_inactive += 1
-          end
-        end
-      end
-
-      Rails.logger.info "Schedule adjustment completed: #{total_added} added, #{total_removed} removed"
-      Rails.logger.info "Skipped: #{skipped_insufficient} channels (insufficient items), #{skipped_inactive} channels (inactive)"
-
-      {
-        added: total_added,
-        removed: total_removed,
-        skipped_insufficient: skipped_insufficient,
-        skipped_inactive: skipped_inactive
-      }
-    end
-
     def add(url)
       feed = nil
       feed_url = nil
