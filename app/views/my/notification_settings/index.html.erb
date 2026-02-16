@@ -44,7 +44,11 @@
         <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
           <td class="block w-1/5 py-2 pr-2"><%= nw.mode %></td>
           <td class="block w-1/5 py-2 pr-2"><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
-          <td class="block w-1/5 py-2 pr-2"><%= "#{nw.notify_hour}:00" %></td>
+          <td class="block w-1/5 py-2 pr-2">
+            <%= form_with(model: nw, url: notification_webhook_path(nw), method: :patch) do |f| %>
+              <%= f.select :notify_hour, (0..23).map { |h| ["#{h}:00", h] }, {}, class: "w-24 h-8 px-2 py-1", onchange: "this.form.requestSubmit()" %>
+            <% end %>
+          </td>
           <td class="block w-1/5 py-2 pr-2"><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
           <td class="block w-1/5 py-2 pr-2"><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
           <td class="block w-20 py-2 pr-2"><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
@@ -101,7 +105,11 @@
         <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
           <td class="block w-1/6 py-2 pr-2"><%= ne.mode %></td>
           <td class="block w-1/6 py-2 pr-2"><%= ne.email %></td>
-          <td class="block w-1/6 py-2 pr-2"><%= "#{ne.notify_hour}:00" %></td>
+          <td class="block w-1/6 py-2 pr-2">
+            <%= form_with(model: ne, url: notification_email_path(ne), method: :patch) do |f| %>
+              <%= f.select :notify_hour, (0..23).map { |h| ["#{h}:00", h] }, {}, class: "w-24 h-8 px-2 py-1", onchange: "this.form.requestSubmit()" %>
+            <% end %>
+          </td>
           <td class="block w-1/6 py-2 pr-2"><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
           <td class="block w-1/6 py-2 pr-2"><%= ne.verified? ? "Yes" : "No" %></td>
           <td class="block w-1/6 py-2 pr-2"><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
