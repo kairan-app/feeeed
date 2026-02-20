@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "82fa5c85bfd3",
+  "session_id": "34d4ee3b-0e9c-4f36-8856-ca3b3a06d5bb",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-20T01:19:16.195226Z",
+  "branch": "feature/feed-proxy-via-cloudflare-workers",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "docs/2026-02-20_特定のサーバからのアクセスが遮断されているフィード.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "94e66903-6bd9-4ce2-92e8-ac53e735319d",
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 19030,
+    "cache_read_tokens": 218848,
+    "output_tokens": 96,
+    "api_call_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-20T01:19:16.129533Z",
+    "agent_lines": 28,
+    "human_added": 149,
+    "human_modified": 5,
+    "human_removed": 0,
+    "total_committed": 177,
+    "agent_percentage": 15.819209039548024
+  },
+  "transcript_path": ".claude/projects/-Users-juneboku-ghq-src-github-com-kairan-app-feeeed/34d4ee3b-0e9c-4f36-8856-ca3b3a06d5bb.jsonl"
+}
