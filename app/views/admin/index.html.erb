@@ -108,6 +108,17 @@
     </div>
   </div>
 
+  <%# Proxy Required Domains %>
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 flex flex-col">
+    <div class="text-sm text-gray-500">Proxy Required Domains</div>
+    <div class="text-2xl font-bold"><%= number_with_delimiter(@proxy_required_domains_count) %></div>
+    <div class="text-xs text-gray-400 mt-1">
+      +<%= @proxy_required_domains_24h_count %> in 24h / +<%= @proxy_required_domains_7d_count %> in 7d
+    </div>
+    <div class="flex-grow"></div>
+    <%= link_to "more →", admin_proxy_required_domains_path, class: "text-xs text-blue-600 hover:underline self-end mt-2" %>
+  </div>
+
   <%# Jobs %>
   <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500 flex flex-col">
     <div class="text-sm text-gray-500">Jobs</div>

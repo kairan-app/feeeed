@@ -1,0 +1,40 @@
+<div class="max-w-6xl mx-auto py-8 px-4">
+  <nav class="text-sm text-gray-500 mb-6">
+    <%= link_to "Admin", admin_path, class: "hover:underline" %> / <span class="text-gray-800 font-medium">Proxy Required Domains</span>
+  </nav>
+
+  <h2 class="text-lg font-semibold mb-3">Proxy Required Domains (<%= @proxy_required_domains.count %>)</h2>
+
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <% if @proxy_required_domains.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Domain</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered at</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @proxy_required_domains.each do |domain| %>
+              <tr>
+                <td class="px-4 py-2 text-sm text-gray-500"><%= domain.id %></td>
+                <td class="px-4 py-2 text-sm font-medium text-gray-900"><%= domain.domain %></td>
+                <td class="px-4 py-2 text-sm text-gray-500"><%= domain.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td class="px-4 py-2 text-sm">
+                  <%= button_to "Delete", admin_proxy_required_domain_path(domain), method: :delete,
+                    class: "text-red-600 hover:underline text-xs",
+                    data: { turbo_confirm: "#{domain.domain} を削除しますか？次回アクセス時に再検知されます。" } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-gray-500 text-sm">まだ登録されたドメインはありません。直接アクセスが失敗してプロキシ経由で成功したドメインが自動的に登録されます。</p>
+    <% end %>
+  </div>
+</div>

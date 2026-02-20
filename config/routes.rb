@@ -153,6 +153,10 @@ Rails.application.routes.draw do
                                                    as: "admin_users"
   get    "/admin/subscriptions",                   to: "admin/subscriptions#index",
                                                    as: "admin_subscriptions"
+  get    "/admin/proxy_required_domains",          to: "admin/proxy_required_domains#index",
+                                                   as: "admin_proxy_required_domains"
+  delete "/admin/proxy_required_domains/:id",      to: "admin/proxy_required_domains#destroy",
+                                                   as: "admin_proxy_required_domain"
 
   root "welcome#index"
 end
