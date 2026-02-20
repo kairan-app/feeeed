@@ -58,6 +58,11 @@ class AdminController < ApplicationController
     @channel_group_webhooks_24h_count = ChannelGroupWebhook.where("created_at > ?", 24.hours.ago).count
     @channel_group_webhooks_7d_count = ChannelGroupWebhook.where("created_at > ?", 7.days.ago).count
 
+    # Proxy Required Domains
+    @proxy_required_domains_count = ProxyRequiredDomain.count
+    @proxy_required_domains_24h_count = ProxyRequiredDomain.where("created_at > ?", 24.hours.ago).count
+    @proxy_required_domains_7d_count = ProxyRequiredDomain.where("created_at > ?", 7.days.ago).count
+
     # Jobs (Solid Queue)
     @jobs_pending_count = SolidQueue::ReadyExecution.count
     @jobs_24h_count = SolidQueue::Job.where("created_at > ?", 24.hours.ago).count
