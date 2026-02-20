@@ -41,7 +41,7 @@
           <th class="block w-20 py-2 pr-2 text-left">Action</th>
         </tr>
         <% @notification_webhooks.each do |nw| %>
-        <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
+        <tr class="flex items-center border-b border-[#aaaaaa] last:border-b-0">
           <td class="block w-1/5 py-2 pr-2"><%= nw.mode %></td>
           <td class="block w-1/5 py-2 pr-2"><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
           <td class="block w-1/5 py-2 pr-2">
@@ -102,7 +102,7 @@
           <th class="block w-20 py-2 pr-2 text-left">Action</th>
         </tr>
         <% @notification_emails.each do |ne| %>
-        <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
+        <tr class="flex items-center border-b border-[#aaaaaa] last:border-b-0">
           <td class="block w-1/6 py-2 pr-2"><%= ne.mode %></td>
           <td class="block w-1/6 py-2 pr-2"><%= ne.email %></td>
           <td class="block w-1/6 py-2 pr-2">
