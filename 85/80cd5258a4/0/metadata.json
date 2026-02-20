@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "8580cd5258a4",
+  "session_id": "a873a59f-d19e-4ae3-ac28-c9ad25cfde91",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-20T12:43:59.745179Z",
+  "branch": "notification-schedule",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/views/my/notification_settings/index.html.erb"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "bddd23f9-e5f7-4c9a-98bb-b017c33804f7",
+  "checkpoint_transcript_start": 620,
+  "transcript_lines_at_start": 620,
+  "token_usage": {
+    "input_tokens": 9,
+    "cache_creation_tokens": 103595,
+    "cache_read_tokens": 455690,
+    "output_tokens": 31,
+    "api_call_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-20T12:43:59.514663Z",
+    "agent_lines": 2,
+    "human_added": 143,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 145,
+    "agent_percentage": 1.3793103448275863
+  },
+  "transcript_path": ".claude/projects/-Users-juneboku-ghq-src-github-com-kairan-app-feeeed/a873a59f-d19e-4ae3-ac28-c9ad25cfde91.jsonl"
+}

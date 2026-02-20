@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "8580cd5258a4",
+  "strategy": "manual-commit",
+  "branch": "notification-schedule",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/views/my/notification_settings/index.html.erb"
+  ],
+  "sessions": [
+    {
+      "metadata": "/85/80cd5258a4/0/metadata.json",
+      "transcript": "/85/80cd5258a4/0/full.jsonl",
+      "context": "/85/80cd5258a4/0/context.md",
+      "content_hash": "/85/80cd5258a4/0/content_hash.txt",
+      "prompt": "/85/80cd5258a4/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 9,
+    "cache_creation_tokens": 103595,
+    "cache_read_tokens": 455690,
+    "output_tokens": 31,
+    "api_call_count": 6
+  }
+}
