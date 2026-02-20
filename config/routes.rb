@@ -66,9 +66,11 @@ Rails.application.routes.draw do
   delete "/channel_groups/:id/membership",         to: "memberships#destroy"
   get    "/pawprints",                             to: "pawprints#index"
   post   "/notification_webhooks",                 to: "notification_webhooks#create"
+  patch  "/notification_webhooks/:id",             to: "notification_webhooks#update"
   delete "/notification_webhooks/:id",             to: "notification_webhooks#destroy",
                                                    as: "notification_webhook"
   post   "/notification_emails",                   to: "notification_emails#create"
+  patch  "/notification_emails/:id",               to: "notification_emails#update"
   delete "/notification_emails/:id",               to: "notification_emails#destroy",
                                                    as: "notification_email"
   get    "/notification_emails/:token",            to: "notification_emails/verifications#create",

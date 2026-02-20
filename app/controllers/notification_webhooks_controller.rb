@@ -12,6 +12,16 @@ class NotificationWebhooksController < ApplicationController
     end
   end
 
+  def update
+    nw = current_user.notification_webhooks.find(params[:id])
+
+    if nw.update(notification_webhook_params)
+      redirect_to my_notification_settings_path, notice: "Notification webhook was successfully updated."
+    else
+      redirect_to my_notification_settings_path, alert: nw.errors.full_messages.join(", ")
+    end
+  end
+
   def destroy
     nw = current_user.notification_webhooks.find(params[:id])
     nw.destroy
@@ -20,6 +30,6 @@ class NotificationWebhooksController < ApplicationController
   end
 
   def notification_webhook_params
-    params.require(:notification_webhook).permit(:url, :mode)
+    params.require(:notification_webhook).permit(:url, :mode, :notify_hour)
   end
 end

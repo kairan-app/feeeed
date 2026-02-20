@@ -7,6 +7,7 @@ class NotificationWebhook < ApplicationRecord
   validates :user_id, presence: true
   validates :url, presence: true
   validates :mode, presence: true
+  validates :notify_hour, inclusion: { in: 0..23 }
   validates_url_http_format_of :url
 
   enum :mode, {
@@ -16,7 +17,7 @@ class NotificationWebhook < ApplicationRecord
 
   class << self
     def notify
-      find_each { NotificationWebhookNotifierJob.perform_later(_1.id) }
+      where(notify_hour: Time.current.hour).find_each { NotificationWebhookNotifierJob.perform_later(_1.id) }
     end
   end
 

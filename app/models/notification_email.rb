@@ -4,6 +4,7 @@ class NotificationEmail < ApplicationRecord
   validates :user_id, presence: true
   validates :email, presence: true, length: { maximum: 254 }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :mode, presence: true
+  validates :notify_hour, inclusion: { in: 0..23 }
   validates :verification_token, presence: true, uniqueness: true
 
   before_validation :set_verification_token
@@ -18,7 +19,7 @@ class NotificationEmail < ApplicationRecord
 
   class << self
     def notify
-      only_verified.find_each { NotificationEmailNotifierJob.perform_later(_1.id) }
+      only_verified.where(notify_hour: Time.current.hour).find_each { NotificationEmailNotifierJob.perform_later(_1.id) }
     end
   end
 

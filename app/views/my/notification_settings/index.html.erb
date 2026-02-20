@@ -10,13 +10,17 @@
   </div>
   <%= form_for(@new_notification_webhook) do |form| %>
     <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
-      <div class="w-[calc(50%-50px)] max-md:w-full">
+      <div class="w-[calc(33%-30px)] max-md:w-full">
         <p class="mb-1 p-0"><%= form.label :mode %></p>
         <%= form.select :mode, NotificationWebhook.modes.keys, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="w-[calc(50%-50px)] max-md:w-full">
+      <div class="w-[calc(33%-30px)] max-md:w-full">
         <p class="mb-1 p-0"><%= form.label :url %></p>
         <%= form.text_field :url, class: "w-full h-8 mb-4 px-2 py-1" %>
+      </div>
+      <div class="w-[calc(33%-30px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :notify_hour, "Notify Hour" %></p>
+        <%= form.select :notify_hour, (0..23).map { |h| ["#{h}:00", h] }, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
       <div class="w-20">
         <%= form.submit "Add", class: "px-4 py-1 bg-[#333333] text-white border-none rounded-2xl cursor-pointer" %>
@@ -29,18 +33,24 @@
     <table class="w-full min-w-[768px] mb-8 border-collapse">
       <tbody>
         <tr class="flex border-b border-[#aaaaaa]">
-          <th class="block w-1/4 py-2 pr-2 text-left">Mode</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Webhook URL</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Created</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Last Notified</th>
+          <th class="block w-1/5 py-2 pr-2 text-left">Mode</th>
+          <th class="block w-1/5 py-2 pr-2 text-left">Webhook URL</th>
+          <th class="block w-1/5 py-2 pr-2 text-left">Notify Hour</th>
+          <th class="block w-1/5 py-2 pr-2 text-left">Created</th>
+          <th class="block w-1/5 py-2 pr-2 text-left">Last Notified</th>
           <th class="block w-20 py-2 pr-2 text-left">Action</th>
         </tr>
         <% @notification_webhooks.each do |nw| %>
-        <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
-          <td class="block w-1/4 py-2 pr-2"><%= nw.mode %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+        <tr class="flex items-center border-b border-[#aaaaaa] last:border-b-0">
+          <td class="block w-1/5 py-2 pr-2"><%= nw.mode %></td>
+          <td class="block w-1/5 py-2 pr-2"><%= link_to(URI.parse(nw.url).host, nw.url) %></td>
+          <td class="block w-1/5 py-2 pr-2">
+            <%= form_with(model: nw, url: notification_webhook_path(nw), method: :patch) do |f| %>
+              <%= f.select :notify_hour, (0..23).map { |h| ["#{h}:00", h] }, {}, class: "w-24 h-8 px-2 py-1", onchange: "this.form.requestSubmit()" %>
+            <% end %>
+          </td>
+          <td class="block w-1/5 py-2 pr-2"><%= nw.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="block w-1/5 py-2 pr-2"><%= nw.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
           <td class="block w-20 py-2 pr-2"><%= link_to("Delete", notification_webhook_path(nw), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
         </tr>
         <% end %>
@@ -60,13 +70,17 @@
   </div>
   <%= form_for(@new_notification_email) do |form| %>
     <div class="flex flex-wrap items-end justify-between mb-2 pb-2 leading-[1.5em] max-md:mb-2">
-      <div class="w-[calc(50%-50px)] max-md:w-full">
+      <div class="w-[calc(33%-30px)] max-md:w-full">
         <p class="mb-1 p-0"><%= form.label :mode %></p>
         <%= form.select :mode, NotificationEmail.modes.keys, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
-      <div class="w-[calc(50%-50px)] max-md:w-full">
+      <div class="w-[calc(33%-30px)] max-md:w-full">
         <p class="mb-1 p-0"><%= form.label :email %></p>
         <%= form.text_field :email, class: "w-full h-8 mb-4 px-2 py-1" %>
+      </div>
+      <div class="w-[calc(33%-30px)] max-md:w-full">
+        <p class="mb-1 p-0"><%= form.label :notify_hour, "Notify Hour" %></p>
+        <%= form.select :notify_hour, (0..23).map { |h| ["#{h}:00", h] }, {}, class: "w-full h-8 mb-4 px-2 py-1" %>
       </div>
       <div class="w-20">
         <%= form.submit "Add", class: "px-4 py-1 bg-[#333333] text-white border-none rounded-2xl cursor-pointer" %>
@@ -79,20 +93,26 @@
     <table class="w-full min-w-[768px] mb-8 border-collapse">
       <tbody>
         <tr class="flex border-b border-[#aaaaaa]">
-          <th class="block w-1/4 py-2 pr-2 text-left">Mode</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Email</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Created</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Verified</th>
-          <th class="block w-1/4 py-2 pr-2 text-left">Last Notified</th>
+          <th class="block w-1/6 py-2 pr-2 text-left">Mode</th>
+          <th class="block w-1/6 py-2 pr-2 text-left">Email</th>
+          <th class="block w-1/6 py-2 pr-2 text-left">Notify Hour</th>
+          <th class="block w-1/6 py-2 pr-2 text-left">Created</th>
+          <th class="block w-1/6 py-2 pr-2 text-left">Verified</th>
+          <th class="block w-1/6 py-2 pr-2 text-left">Last Notified</th>
           <th class="block w-20 py-2 pr-2 text-left">Action</th>
         </tr>
         <% @notification_emails.each do |ne| %>
-        <tr class="flex border-b border-[#aaaaaa] last:border-b-0">
-          <td class="block w-1/4 py-2 pr-2"><%= ne.mode %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= ne.email %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= ne.verified? ? "Yes" : "No" %></td>
-          <td class="block w-1/4 py-2 pr-2"><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
+        <tr class="flex items-center border-b border-[#aaaaaa] last:border-b-0">
+          <td class="block w-1/6 py-2 pr-2"><%= ne.mode %></td>
+          <td class="block w-1/6 py-2 pr-2"><%= ne.email %></td>
+          <td class="block w-1/6 py-2 pr-2">
+            <%= form_with(model: ne, url: notification_email_path(ne), method: :patch) do |f| %>
+              <%= f.select :notify_hour, (0..23).map { |h| ["#{h}:00", h] }, {}, class: "w-24 h-8 px-2 py-1", onchange: "this.form.requestSubmit()" %>
+            <% end %>
+          </td>
+          <td class="block w-1/6 py-2 pr-2"><%= ne.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="block w-1/6 py-2 pr-2"><%= ne.verified? ? "Yes" : "No" %></td>
+          <td class="block w-1/6 py-2 pr-2"><%= ne.last_notified_at&.strftime("%Y-%m-%d %H:%M") %></td>
           <td class="block w-20 py-2 pr-2"><%= link_to("Delete", notification_email_path(ne), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }) %></td>
         </tr>
         <% end %>

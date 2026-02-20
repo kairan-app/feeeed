@@ -12,6 +12,16 @@ class NotificationEmailsController < ApplicationController
     end
   end
 
+  def update
+    ne = current_user.notification_emails.find(params[:id])
+
+    if ne.update(notification_email_params)
+      redirect_to my_notification_settings_path, notice: "Notification email was successfully updated."
+    else
+      redirect_to my_notification_settings_path, alert: ne.errors.full_messages.join(", ")
+    end
+  end
+
   def destroy
     ne = current_user.notification_emails.find(params[:id])
     ne.destroy
@@ -19,6 +29,6 @@ class NotificationEmailsController < ApplicationController
   end
 
   def notification_email_params
-    params.require(:notification_email).permit(:email, :mode)
+    params.require(:notification_email).permit(:email, :mode, :notify_hour)
   end
 end
