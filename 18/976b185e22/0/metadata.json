@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "18976b185e22",
+  "session_id": "34d4ee3b-0e9c-4f36-8856-ca3b3a06d5bb",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-20T12:37:28.212616Z",
+  "branch": "feature/feed-proxy-via-cloudflare-workers",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".gitignore",
+    "app/models/proxy_required_domain.rb",
+    "db/migrate/20260220100000_create_proxy_required_domains.rb",
+    "lib/httpc.rb",
+    "proxy/package.json",
+    "proxy/src/index.js",
+    "proxy/wrangler.toml",
+    "test/lib/httpc_test.rb",
+    "test/models/proxy_required_domain_test.rb"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "4f146752-8601-4239-a204-de972d11db34",
+  "checkpoint_transcript_start": 229,
+  "transcript_lines_at_start": 229,
+  "token_usage": {
+    "input_tokens": 53,
+    "cache_creation_tokens": 45423,
+    "cache_read_tokens": 3075216,
+    "output_tokens": 575,
+    "api_call_count": 47
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-20T12:37:28.021285Z",
+    "agent_lines": 365,
+    "human_added": 142,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 507,
+    "agent_percentage": 71.99211045364892
+  },
+  "transcript_path": ".claude/projects/-Users-juneboku-ghq-src-github-com-kairan-app-feeeed/34d4ee3b-0e9c-4f36-8856-ca3b3a06d5bb.jsonl"
+}
