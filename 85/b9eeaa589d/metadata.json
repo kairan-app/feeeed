@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "85b9eeaa589d",
+  "strategy": "manual-commit",
+  "branch": "feature/feed-proxy-via-cloudflare-workers",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "app/controllers/admin/proxy_required_domains_controller.rb",
+    "app/controllers/admin_controller.rb",
+    "app/views/admin/index.html.erb",
+    "app/views/admin/proxy_required_domains/index.html.erb",
+    "config/routes.rb",
+    "db/schema.rb"
+  ],
+  "sessions": [
+    {
+      "metadata": "/85/b9eeaa589d/0/metadata.json",
+      "transcript": "/85/b9eeaa589d/0/full.jsonl",
+      "context": "/85/b9eeaa589d/0/context.md",
+      "content_hash": "/85/b9eeaa589d/0/content_hash.txt",
+      "prompt": "/85/b9eeaa589d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 19,
+    "cache_creation_tokens": 86735,
+    "cache_read_tokens": 1355014,
+    "output_tokens": 110,
+    "api_call_count": 15
+  }
+}
