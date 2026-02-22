@@ -39,6 +39,40 @@ class ProxyRequiredDomainTest < ActiveSupport::TestCase
     end
   end
 
+  describe "#recheck!" do
+    test "直接アクセスで200が返ればレコードを削除する" do
+      record = ProxyRequiredDomain.create!(domain: "unblocked.example.com")
+
+      response = OpenStruct.new(status: 200, body: "OK")
+      Httpc.expects(:direct_get).with("https://unblocked.example.com/").returns(response)
+
+      assert_difference "ProxyRequiredDomain.count", -1 do
+        record.recheck!
+      end
+    end
+
+    test "直接アクセスで403が返ればレコードを残す" do
+      record = ProxyRequiredDomain.create!(domain: "still-blocked.example.com")
+
+      response = OpenStruct.new(status: 403, body: "Forbidden")
+      Httpc.expects(:direct_get).with("https://still-blocked.example.com/").returns(response)
+
+      assert_no_difference "ProxyRequiredDomain.count" do
+        record.recheck!
+      end
+    end
+
+    test "接続エラーでもレコードを残す" do
+      record = ProxyRequiredDomain.create!(domain: "timeout.example.com")
+
+      Httpc.expects(:direct_get).with("https://timeout.example.com/").raises(Faraday::ConnectionFailed.new("Connection refused"))
+
+      assert_no_difference "ProxyRequiredDomain.count" do
+        record.recheck!
+      end
+    end
+  end
+
   describe "validations" do
     test "domainは必須" do
       record = ProxyRequiredDomain.new(domain: nil)
