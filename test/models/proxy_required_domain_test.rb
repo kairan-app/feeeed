@@ -51,6 +51,18 @@ class ProxyRequiredDomainTest < ActiveSupport::TestCase
       end
     end
 
+    test "Channelが存在する場合はそのfeed_urlでチェックする" do
+      record = ProxyRequiredDomain.create!(domain: "blocked.example.com")
+      channel = create(:channel, feed_url: "https://blocked.example.com/rss.xml")
+
+      response = OpenStruct.new(status: 403, body: "Forbidden")
+      Httpc.expects(:direct_get).with("https://blocked.example.com/rss.xml").returns(response)
+
+      assert_no_difference "ProxyRequiredDomain.count" do
+        record.recheck!
+      end
+    end
+
     test "直接アクセスで403が返ればレコードを残す" do
       record = ProxyRequiredDomain.create!(domain: "still-blocked.example.com")
 
