@@ -1,7 +1,15 @@
+function timingSafeEqual(a, b) {
+  const encoder = new TextEncoder();
+  const bufA = encoder.encode(a);
+  const bufB = encoder.encode(b);
+  if (bufA.byteLength !== bufB.byteLength) return false;
+  return crypto.subtle.timingSafeEqual(bufA, bufB);
+}
+
 export default {
   async fetch(request, env) {
     const authHeader = request.headers.get("X-Proxy-Secret");
-    if (authHeader !== env.PROXY_SECRET) {
+    if (!authHeader || !timingSafeEqual(authHeader, env.PROXY_SECRET)) {
       return new Response("Unauthorized", { status: 401 });
     }
 
