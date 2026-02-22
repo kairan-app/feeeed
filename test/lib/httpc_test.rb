@@ -11,17 +11,6 @@ class HttpcTest < ActiveSupport::TestCase
     end).returns(connection)
   end
 
-  def stub_proxy_connection(expected_url, expected_secret, response)
-    connection = mock("proxy_connection")
-    connection.expects(:get).with("/").yields(mock("request").tap do |req|
-      headers = {}
-      req.stubs(:headers).returns(headers)
-    end).returns(response)
-    Faraday.expects(:new).with(url: ENV["FEED_PROXY_URL"]).yields(mock("builder").tap do |builder|
-      builder.expects(:adapter).with(Faraday.default_adapter)
-    end).returns(connection)
-  end
-
   describe ".get_with_redirect_info" do
     test "リダイレクトが発生しない場合はredirected: falseを返す" do
       url = "https://example.com/feed.xml"
@@ -125,7 +114,7 @@ class HttpcTest < ActiveSupport::TestCase
         ProxyRequiredDomain.expects(:required?).with(url).returns(true)
 
         proxy_response = OpenStruct.new(status: 200, body: body)
-        stub_proxy_connection(ENV["FEED_PROXY_URL"], ENV["FEED_PROXY_SECRET"], proxy_response)
+        Httpc.expects(:request_via_proxy).with(url).returns(proxy_response)
 
         result = Httpc.get(url)
         assert_equal body, result
@@ -143,7 +132,7 @@ class HttpcTest < ActiveSupport::TestCase
           body: body,
           headers: { "X-Original-URL" => final_url }
         )
-        stub_proxy_connection(ENV["FEED_PROXY_URL"], ENV["FEED_PROXY_SECRET"], proxy_response)
+        Httpc.expects(:request_via_proxy).with(url).returns(proxy_response)
 
         result = Httpc.get_with_redirect_info(url)
         assert_equal body, result[:body]
@@ -161,7 +150,7 @@ class HttpcTest < ActiveSupport::TestCase
         Httpc.expects(:direct_get).with(url).raises(Faraday::ConnectionFailed.new("Connection refused"))
 
         proxy_response = OpenStruct.new(status: 200, body: body)
-        stub_proxy_connection(ENV["FEED_PROXY_URL"], ENV["FEED_PROXY_SECRET"], proxy_response)
+        Httpc.expects(:request_via_proxy).with(url).returns(proxy_response)
         ProxyRequiredDomain.expects(:register!).with(url)
 
         result = Httpc.get(url)
@@ -186,7 +175,7 @@ class HttpcTest < ActiveSupport::TestCase
           body: body,
           headers: { "X-Original-URL" => url }
         )
-        stub_proxy_connection(ENV["FEED_PROXY_URL"], ENV["FEED_PROXY_SECRET"], proxy_response)
+        Httpc.expects(:request_via_proxy).with(url).returns(proxy_response)
         ProxyRequiredDomain.expects(:register!).with(url)
 
         result = Httpc.get_with_redirect_info(url)

@@ -12,7 +12,7 @@ class Httpc
 
   def self.get(url)
     if proxy_available? && ProxyRequiredDomain.required?(url)
-      return get_via_proxy(url)
+      return handle_response(request_via_proxy(url))
     end
 
     response = direct_get(url)
@@ -20,25 +20,25 @@ class Httpc
   rescue *PROXY_TRIGGERING_ERRORS => e
     raise e unless proxy_available?
 
-    retry_via_proxy(url) { |proxy_response| handle_response(proxy_response) }
+    handle_response(retry_via_proxy(url))
   end
 
   def self.get_with_redirect_info(url)
     if proxy_available? && ProxyRequiredDomain.required?(url)
-      return get_with_redirect_info_via_proxy(url)
+      return handle_proxy_response_with_redirect_info(request_via_proxy(url), url)
     end
 
     response = direct_get(url)
 
     if proxy_available? && PROXY_TRIGGERING_STATUSES.include?(response.status)
-      return retry_via_proxy_with_redirect_info(url)
+      return handle_proxy_response_with_redirect_info(retry_via_proxy(url), url)
     end
 
     handle_response_with_redirect_info(response, url)
   rescue *PROXY_TRIGGERING_ERRORS => e
     raise e unless proxy_available?
 
-    retry_via_proxy_with_redirect_info(url)
+    handle_proxy_response_with_redirect_info(retry_via_proxy(url), url)
   end
 
   def self.proxy_available?
@@ -57,60 +57,28 @@ class Httpc
     connection.get(url)
   end
 
-  def self.proxy_connection
-    Faraday.new(url: ENV["FEED_PROXY_URL"]) do |builder|
+  def self.request_via_proxy(url)
+    connection = Faraday.new(url: ENV["FEED_PROXY_URL"]) do |builder|
       builder.adapter Faraday.default_adapter
     end
-  end
 
-  def self.get_via_proxy(url)
-    response = proxy_connection.get("/") do |req|
+    connection.get("/") do |req|
       req.headers["X-Proxy-Secret"] = ENV["FEED_PROXY_SECRET"]
       req.headers["X-Target-URL"] = url
     end
-
-    handle_response(response)
-  end
-
-  def self.get_with_redirect_info_via_proxy(url)
-    response = proxy_connection.get("/") do |req|
-      req.headers["X-Proxy-Secret"] = ENV["FEED_PROXY_SECRET"]
-      req.headers["X-Target-URL"] = url
-    end
-
-    handle_proxy_response_with_redirect_info(response, url)
   end
 
   def self.retry_via_proxy(url)
     Rails.logger.info "[Httpc] Direct request failed for #{url}, retrying via proxy"
 
-    response = proxy_connection.get("/") do |req|
-      req.headers["X-Proxy-Secret"] = ENV["FEED_PROXY_SECRET"]
-      req.headers["X-Target-URL"] = url
-    end
+    response = request_via_proxy(url)
 
     if response.status.between?(200, 299)
       ProxyRequiredDomain.register!(url)
       Rails.logger.info "[Httpc] Registered #{URI.parse(url).host} as proxy-required domain"
     end
 
-    yield response
-  end
-
-  def self.retry_via_proxy_with_redirect_info(url)
-    Rails.logger.info "[Httpc] Direct request failed for #{url}, retrying via proxy"
-
-    response = proxy_connection.get("/") do |req|
-      req.headers["X-Proxy-Secret"] = ENV["FEED_PROXY_SECRET"]
-      req.headers["X-Target-URL"] = url
-    end
-
-    if response.status.between?(200, 299)
-      ProxyRequiredDomain.register!(url)
-      Rails.logger.info "[Httpc] Registered #{URI.parse(url).host} as proxy-required domain"
-    end
-
-    handle_proxy_response_with_redirect_info(response, url)
+    response
   end
 
   def self.handle_response(response)
