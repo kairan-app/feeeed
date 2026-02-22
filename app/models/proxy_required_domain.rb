@@ -1,6 +1,9 @@
 class ProxyRequiredDomain < ApplicationRecord
   validates :domain, presence: true, uniqueness: true
 
+  after_create_commit :notify_created
+  after_destroy_commit :notify_destroyed
+
   def self.required?(url)
     domain = URI.parse(url).host
     exists?(domain: domain)
@@ -33,5 +36,21 @@ class ProxyRequiredDomain < ApplicationRecord
     Rails.logger.info "[ProxyRequiredDomain] #{domain} still blocked: #{e.class}"
   rescue StandardError => e
     Rails.logger.warn "[ProxyRequiredDomain] Error rechecking #{domain}: #{e.message}"
+  end
+
+  private
+
+  def notify_created
+    DiscoPosterJob.perform_later(
+      content: "[ProxyRequiredDomain] Added: `#{domain}`",
+      channel: :content_updates
+    )
+  end
+
+  def notify_destroyed
+    DiscoPosterJob.perform_later(
+      content: "[ProxyRequiredDomain] Removed: `#{domain}`",
+      channel: :content_updates
+    )
   end
 end
