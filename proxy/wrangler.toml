@@ -1,0 +1,3 @@
+name = "feeeed-proxy"
+main = "src/index.js"
+compatibility_date = "2026-02-20"

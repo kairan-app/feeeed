@@ -21,3 +21,7 @@ solid_queue_cleanup:
 daily_active_users_notifier:
   class: DailyActiveUsersNotifierJob
   schedule: "5 0 * * *"
+
+proxy_required_domains_rechecker:
+  class: ProxyRequiredDomainsRecheckerJob
+  schedule: "0 5 * * *"
