@@ -1,0 +1,30 @@
+<nav class="fixed bottom-0 left-0 right-0 h-16 bg-[#3d8bcd] text-white z-50">
+  <ul class="flex justify-evenly items-center h-full m-0 p-0 list-none">
+    <li class="w-1/4 text-center">
+      <%= link_to(root_path, class: "flex flex-col items-center justify-center gap-0.5 w-full h-16 text-white") do %>
+        <span class="material-symbols-outlined !m-0 text-[24px]">home</span>
+        <span class="text-[10px]">Home</span>
+      <% end %>
+    </li>
+    <% if logged_in? %>
+    <li class="w-1/4 text-center">
+      <%= link_to(pawprints_path, class: "flex flex-col items-center justify-center gap-0.5 w-full h-16 text-white") do %>
+        <span class="material-symbols-outlined !m-0"><%= image_tag("icon-pawprints-w.svg", alt: "pawprints", loading: "lazy", width: 24, height: 24) %></span>
+        <span class="text-[10px]">Pawprints</span>
+      <% end %>
+    </li>
+    <li class="w-1/4 text-center">
+      <%= link_to(unreads_path, class: "flex flex-col items-center justify-center gap-0.5 w-full h-16 text-white") do %>
+        <span class="material-symbols-outlined !m-0 text-[24px]">inbox</span>
+        <span class="text-[10px]">Unreads</span>
+      <% end %>
+    </li>
+    <% end %>
+    <li class="w-1/4 text-center">
+      <button type="button" data-action="bottom-sheet#toggle" class="flex flex-col items-center justify-center gap-0.5 w-full h-16 text-white bg-transparent border-none cursor-pointer">
+        <span class="material-symbols-outlined !m-0 text-[24px]">grid_view</span>
+        <span class="text-[10px]">More</span>
+      </button>
+    </li>
+  </ul>
+</nav>

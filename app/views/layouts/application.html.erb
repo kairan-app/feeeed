@@ -23,54 +23,27 @@
   </head>
 
   <body class="bg-[#ecf2fa] font-sans break-words">
-    <header class="relative w-[calc(100%-40px)] h-[72px] max-w-[1440px] flex flex-wrap mx-auto z-50 md:w-full">
-      <h1 class="flex w-[120px] h-18 items-center ml-0 md:w-[144px] md:ml-[20px]">
-        <%= link_to image_tag("logo.svg", class: "w-full h-auto"), root_path, class: "leading-none" %>
-      </h1>
-      <%= render(partial: "layouts/menu") %>
-    </header>
-    <div class="w-full max-w-[1440px] mx-auto px-5 mb-12">
-      <%= render(partial: "layouts/flash_messages") %>
-      <%= yield %>
-    </div>
-    <%= render(partial: "channels/preview/form") %>
-    <footer class="sticky top-[100vh] w-full pt-6 pb-24 md:pb-6 bg-[#3d8bcd] text-white text-center text-sm">
-      <div class="max-w-[1440px] mx-auto px-5">
-        <%# デスクトップ: 1行 %>
-        <div class="hidden md:flex justify-center items-center gap-2">
-          <%= link_to "About", about_path, class: "hover:underline" %>
-          <span class="text-white/50">·</span>
-          <%= link_to "Channels", channels_path, class: "hover:underline" %>
-          <span class="text-white/50">·</span>
-          <%= link_to "Items", items_path, class: "hover:underline" %>
-          <span class="text-white/50">·</span>
-          <%= link_to "Channel Groups", channel_groups_path, class: "hover:underline" %>
-          <span class="text-white/50">·</span>
-          <%= link_to "Terms", terms_path, class: "hover:underline" %>
-          <span class="text-white/50">·</span>
-          <%= link_to "Privacy", privacy_path, class: "hover:underline" %>
-          <span class="ml-4 text-white/70">© rururu</span>
-        </div>
-        <%# モバイル: 2行 %>
-        <div class="md:hidden space-y-2">
-          <div class="flex justify-center items-center gap-2">
-            <%= link_to "About", about_path, class: "hover:underline" %>
-            <span class="text-white/50">·</span>
-            <%= link_to "Channels", channels_path, class: "hover:underline" %>
-            <span class="text-white/50">·</span>
-            <%= link_to "Items", items_path, class: "hover:underline" %>
-            <span class="text-white/50">·</span>
-            <%= link_to "Channel Groups", channel_groups_path, class: "hover:underline" %>
-          </div>
-          <div class="flex justify-center items-center gap-2 text-white/70">
-            <%= link_to "Terms", terms_path, class: "hover:underline" %>
-            <span class="text-white/50">·</span>
-            <%= link_to "Privacy", privacy_path, class: "hover:underline" %>
-            <span class="text-white/50">·</span>
-            <span>© rururu</span>
-          </div>
-        </div>
+    <%# Desktop: Sidebar %>
+    <%= render(partial: "layouts/sidebar") %>
+
+    <%# Mobile: Header %>
+    <%= render(partial: "layouts/mobile_header") %>
+
+    <%# Main content %>
+    <div class="min-h-screen pt-14 pb-16 md:pt-0 md:pb-0 md:ml-60">
+      <div class="w-full max-w-[1440px] mx-auto px-5 pb-6">
+        <%= render(partial: "layouts/flash_messages") %>
+        <%= yield %>
       </div>
-    </footer>
+    </div>
+
+    <%# Channel registration FAB %>
+    <%= render(partial: "channels/preview/form") %>
+
+    <%# Mobile: Bottom tab + Bottom sheet (single Stimulus controller scope) %>
+    <div class="md:hidden" data-controller="bottom-sheet">
+      <%= render(partial: "layouts/mobile_bottom_tab") %>
+      <%= render(partial: "layouts/bottom_sheet") %>
+    </div>
   </body>
 </html>
