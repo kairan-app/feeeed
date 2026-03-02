@@ -17,12 +17,6 @@
   <%# Main Navigation %>
   <nav class="flex-1 overflow-y-auto px-3 py-2">
     <ul class="space-y-0.5">
-      <li>
-        <%= link_to(root_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
-          <span class="material-symbols-outlined !m-0 text-[20px]">home</span>
-          <span>Home</span>
-        <% end %>
-      </li>
       <% if logged_in? %>
       <li>
         <%= link_to(pawprints_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
@@ -36,86 +30,95 @@
           <span>Unreads</span>
         <% end %>
       </li>
-      <li>
-        <%= link_to(my_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
-          <span class="material-symbols-outlined !m-0 text-[20px]">settings</span>
-          <span>Settings</span>
-        <% end %>
-      </li>
 
-      <li class="!mt-4 pt-3 border-t border-gray-200">
-        <%= link_to(guides_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
-          <span class="material-symbols-outlined !m-0 text-[20px]">info</span>
-          <span>Guides</span>
-        <% end %>
-      </li>
-      <li>
-        <%= link_to(my_subscriptions_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
-          <span class="material-symbols-outlined !m-0 text-[20px]">bookmark</span>
-          <span>Subscriptions</span>
-        <% end %>
-      </li>
-      <li>
-        <%= link_to(user_path(user_name: current_user.name), class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
-          <span class="material-symbols-outlined !m-0 text-[20px]">account_circle</span>
-          <span>My Page</span>
-        <% end %>
-      </li>
-      <% if current_user.admin? %>
-      <li>
-        <%= link_to(admin_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
-          <span class="material-symbols-outlined !m-0 text-[20px]">admin_panel_settings</span>
-          <span>Admin</span>
-        <% end %>
+      <%# Explore Dropdown %>
+      <li data-controller="dropdown" class="relative">
+        <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+          <span class="material-symbols-outlined !m-0 text-[20px]">explore</span>
+          <span>Explore</span>
+          <span class="material-symbols-outlined !m-0 text-[16px] ml-auto">expand_more</span>
+        </button>
+        <ul data-dropdown-target="menu" class="hidden ml-4 space-y-0.5 mt-1">
+          <li>
+            <%= link_to(channels_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors") do %>
+              <span class="material-symbols-outlined !m-0 text-[18px]">rss_feed</span>
+              <span>Channels</span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to(items_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors") do %>
+              <span class="material-symbols-outlined !m-0 text-[18px]">article</span>
+              <span>Items</span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to(channel_groups_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors") do %>
+              <span class="material-symbols-outlined !m-0 text-[18px]">folder</span>
+              <span>Channel Groups</span>
+            <% end %>
+          </li>
+        </ul>
       </li>
       <% end %>
-      <% end %>
-    </ul>
-
-    <%# Secondary Links %>
-    <div class="mt-4 pt-3 border-t border-gray-200">
-      <ul class="space-y-0.5">
-        <li>
-          <%= link_to(channels_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors") do %>
-            <span class="material-symbols-outlined !m-0 text-[20px]">rss_feed</span>
-            <span>Channels</span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to(items_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors") do %>
-            <span class="material-symbols-outlined !m-0 text-[20px]">article</span>
-            <span>Items</span>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to(channel_groups_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors") do %>
-            <span class="material-symbols-outlined !m-0 text-[20px]">folder</span>
-            <span>Channel Groups</span>
-          <% end %>
-        </li>
-      </ul>
-    </div>
   </nav>
 
   <%# Footer %>
   <div class="shrink-0 border-t border-gray-200 px-3 py-3">
-    <div class="flex flex-wrap gap-x-3 gap-y-1 px-2.5 mb-2 text-xs text-gray-400">
-      <%= link_to "About", about_path, class: "hover:text-gray-600" %>
-      <%= link_to "Terms", terms_path, class: "hover:text-gray-600" %>
-      <%= link_to "Privacy", privacy_path, class: "hover:text-gray-600" %>
-    </div>
     <% if logged_in? %>
-    <div class="flex items-center gap-2.5 px-2.5 py-2">
-      <%= user_avatar_tag(current_user, size: :xs) %>
-      <span class="text-sm text-gray-700 truncate"><%= current_user.name %></span>
-      <%= link_to(session_path, data: { turbo_method: :delete }, class: "ml-auto text-gray-400 hover:text-gray-600") do %>
-        <span class="material-symbols-outlined !m-0 text-[20px]">logout</span>
+      <% if current_user.admin? %>
+        <div class="mb-2">
+          <%= link_to(admin_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">admin_panel_settings</span>
+            <span>Admin</span>
+          <% end %>
+        </div>
       <% end %>
-    </div>
+
+      <div data-controller="dropdown" class="relative">
+        <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-gray-100 transition-colors">
+          <%= user_avatar_tag(current_user, size: :xs) %>
+          <span class="text-sm text-gray-700 truncate flex-1 text-left"><%= current_user.name %></span>
+          <span class="material-symbols-outlined !m-0 text-[20px] text-gray-400">expand_more</span>
+        </button>
+
+        <%# Dropup Menu %>
+        <div data-dropdown-target="menu" class="hidden absolute bottom-full left-0 right-0 mb-2 bg-white border border-gray-200 rounded-md shadow-lg py-1">
+          <%= link_to(user_path(user_name: current_user.name), class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">account_circle</span>
+            <span>My Page</span>
+          <% end %>
+          <%= link_to(my_path, class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">settings</span>
+            <span>Settings</span>
+          <% end %>
+          <%= link_to(guides_path, class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">info</span>
+            <span>Guides</span>
+          <% end %>
+          <div class="border-t border-gray-200 my-1"></div>
+          <%= link_to(about_path, class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">help</span>
+            <span>About</span>
+          <% end %>
+          <%= link_to(terms_path, class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">gavel</span>
+            <span>Terms</span>
+          <% end %>
+          <%= link_to(privacy_path, class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">shield</span>
+            <span>Privacy</span>
+          <% end %>
+          <div class="border-t border-gray-200 my-1"></div>
+          <%= link_to(session_path, data: { turbo_method: :delete }, class: "flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors") do %>
+            <span class="material-symbols-outlined !m-0 text-[20px]">logout</span>
+            <span>Logout</span>
+          <% end %>
+        </div>
+      </div>
     <% else %>
-    <div class="px-2.5">
-      <%= link_to "Login", login_path, class: "inline-flex items-center justify-center w-full px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
-    </div>
+      <div class="px-2.5">
+        <%= link_to "Login", login_path, class: "inline-flex items-center justify-center w-full px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+      </div>
     <% end %>
     <p class="text-center text-xs text-gray-400 mt-2">© rururu</p>
   </div>
