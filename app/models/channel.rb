@@ -160,7 +160,15 @@ class Channel < ApplicationRecord
         channel = Channel.find_by(feed_url: feed_url)
         if channel
           Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating existing channel ##{channel.id}"
-          channel.update!(parameters.merge(feed_url: final_feed_url))
+          begin
+            channel.update!(parameters.merge(feed_url: final_feed_url))
+          rescue ActiveRecord::RecordInvalid => e
+            raise unless e.message.include?("Feed url has already been taken")
+
+            # リダイレクト先URLで既にChannelが存在する場合は、そちらを更新
+            channel = Channel.find_by!(feed_url: final_feed_url)
+            channel.update(parameters)
+          end
         else
           # 旧URLのチャンネルが存在しない場合は、新URLでチャンネルを作成
           channel = Channel.find_or_initialize_by(feed_url: final_feed_url)
@@ -335,7 +343,13 @@ class Channel < ApplicationRecord
     if redirect_info&.dig(:redirected)
       final_feed_url = redirect_info[:final_url]
       Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating channel ##{id}"
-      update!(feed_url: final_feed_url)
+      begin
+        update!(feed_url: final_feed_url)
+      rescue ActiveRecord::RecordInvalid => e
+        raise unless e.message.include?("Feed url has already been taken")
+
+        Rails.logger.warn "[Channel] Redirect target #{final_feed_url} already exists, skipping feed_url update for channel ##{id}"
+      end
     end
 
     entries =
