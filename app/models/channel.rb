@@ -152,7 +152,11 @@ class Channel < ApplicationRecord
 
       # 認識できないフィード形式の場合はスキップ
       if parameters.nil?
-        Rails.logger.warn "[Channel] Unrecognized feed format: #{feed.class.name} for #{feed_url}"
+        Sentry.capture_message(
+          "Skipped channel update: unrecognized feed format",
+          level: :warning,
+          extra: { feed_url: feed_url, feed_class: feed.class.name, skip_reason: "unrecognized_feed_format" }
+        )
         return Channel.find_by(feed_url: feed_url)
       end
 
@@ -381,7 +385,14 @@ class Channel < ApplicationRecord
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
               self.site_url.presence
 
-        next if url.blank?
+        if url.blank?
+          Sentry.capture_message(
+            "Skipped entry: no URL available",
+            level: :warning,
+            extra: { channel_id: self.id, channel_title: self.title, item_title: entry.title, skip_reason: "no_url" }
+          )
+          next
+        end
 
         url = url.strip
 
@@ -396,7 +407,14 @@ class Channel < ApplicationRecord
         }.join
 
         guid = entry.entry_id || entry.url
-        next if guid.nil?
+        if guid.nil?
+          Sentry.capture_message(
+            "Skipped entry: no guid (entry_id and url both nil)",
+            level: :warning,
+            extra: { channel_id: self.id, channel_title: self.title, item_title: entry.title, skip_reason: "no_guid" }
+          )
+          next
+        end
 
         image_url =
           if entry.respond_to?(:itunes_image) && entry.itunes_image
@@ -429,10 +447,28 @@ class Channel < ApplicationRecord
 
         item.update!(parameters)
         success_count += 1
+      rescue ActiveRecord::RecordInvalid => e
+        error_count += 1
+
+        # バリデーションエラーはデータ品質の問題なのでwarningレベルで送信
+        Sentry.capture_message(
+          "Skipped entry: validation failed - #{e.message}",
+          level: :warning,
+          extra: {
+            channel_id: self.id,
+            channel_title: self.title,
+            item_title: entry.title,
+            item_guid: entry.entry_id || entry.url,
+            skip_reason: "validation_failed",
+            validation_errors: e.message
+          }
+        )
+
+        Rails.logger.warn "[Channel] Skipped item (validation) - Channel: #{self.id}, Item: #{entry.title} - #{e.message}"
       rescue StandardError => e
         error_count += 1
 
-        # Sentryにエラーを送信
+        # 予期しないエラーはerrorレベルで送信
         Sentry.capture_exception(e, extra: {
           channel_id: self.id,
           channel_title: self.title,
@@ -442,7 +478,6 @@ class Channel < ApplicationRecord
           success_count: success_count
         })
 
-        # コンパクトなログ出力
         Rails.logger.error "[Channel] Failed to save item - Channel: #{self.id}, Item: #{entry.title} - Error: #{e.class.name}: #{e.message}"
       end
     end
