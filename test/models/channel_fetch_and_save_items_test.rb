@@ -167,6 +167,29 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
     end
   end
 
+  # FEEEED-87: fetch_and_save_items で一部のItemがバリデーションエラーで失敗した後に
+  # mark_items_checked! を呼ぶと、association キャッシュに残った無効なItemが
+  # Channel#update! に巻き込まれて "Items is invalid" が発生する
+  describe "fetch_and_save_items 後の mark_items_checked! (FEEEED-87)" do
+    test "一部のエントリが保存失敗しても mark_items_checked! が成功する" do
+      entries = [
+        build_mock_entry(entry_id: "good-entry", url: "https://example.com/good", published: 1.hour.ago, title: "Good Entry"),
+        build_mock_entry(entry_id: "bad-entry", url: "https://example.com/bad", published: nil, title: "Bad Entry")
+      ]
+      stub_feed_with_entries(entries)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_nothing_raised do
+        @channel.mark_items_checked!
+      end
+
+      @channel.reload
+      assert_not_nil @channel.last_items_checked_at
+    end
+  end
+
   # FEEEED-90: build_from が nil を返すフィード形式の場合、
   # save_from 内の parameters.merge! で NoMethodError が発生する
   describe "認識できないフィード形式の場合 (FEEEED-90)" do

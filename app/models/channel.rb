@@ -511,7 +511,11 @@ class Channel < ApplicationRecord
   end
 
   def mark_items_checked!
-    update!(last_items_checked_at: Time.current)
+    # update! ではなく update_column を使う。
+    # fetch_and_save_items 後にassociationキャッシュに無効なItemが残っていると
+    # update! が関連レコードのバリデーションを巻き込んで失敗するため。
+    # last_items_checked_at の更新にvalidation/callbackは不要。
+    update_column(:last_items_checked_at, Time.current)
   end
 
   def set_check_interval!
