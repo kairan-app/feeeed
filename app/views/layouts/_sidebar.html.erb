@@ -5,7 +5,7 @@
   </div>
 
   <%# Search %>
-  <div class="px-3 mb-2">
+  <div class="px-5 mb-2">
     <%= search_form_for((@channel_q || Channel.ransack), url: channels_path, as: :channel_q, html: { class: "flex" }) do |form| %>
       <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels", class: "w-full py-1.5 px-2.5 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-[#3d8bcd] focus:border-[#3d8bcd]") %>
       <%= button_tag type: "submit", class: "px-2 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-50 cursor-pointer" do %>
