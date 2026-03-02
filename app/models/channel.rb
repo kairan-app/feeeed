@@ -388,6 +388,9 @@ class Channel < ApplicationRecord
             OpenGraph.new(encoded_url).image rescue nil
           end
 
+        # 不正なimage_urlはnilに落としてItem保存を失敗させない
+        image_url = nil if image_url.present? && image_url !~ URI.regexp(%w[http https])
+
         parameters = {
           guid: guid,
           title: entry.title,
