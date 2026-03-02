@@ -149,6 +149,13 @@ class Channel < ApplicationRecord
       final_feed_url = redirect_info&.dig(:redirected) ? redirect_info[:final_url] : feed_url
 
       parameters = build_from(feed, final_feed_url)
+
+      # 認識できないフィード形式の場合はスキップ
+      if parameters.nil?
+        Rails.logger.warn "[Channel] Unrecognized feed format: #{feed.class.name} for #{feed_url}"
+        return Channel.find_by(feed_url: feed_url)
+      end
+
       parameters.merge!(
         applied_filters: normalization_result[:applied_filters],
         filter_details: normalization_result[:filter_details]
