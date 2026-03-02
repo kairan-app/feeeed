@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["menu"]
+  static targets = ["menu", "icon"]
 
   connect() {
     this.boundClose = this.closeOnClickOutside.bind(this)
@@ -20,11 +20,17 @@ export default class extends Controller {
 
   open() {
     this.menuTarget.classList.remove("hidden")
+    if (this.hasIconTarget) {
+      this.iconTarget.textContent = "remove"
+    }
     document.addEventListener("click", this.boundClose)
   }
 
   close() {
     this.menuTarget.classList.add("hidden")
+    if (this.hasIconTarget) {
+      this.iconTarget.textContent = "add"
+    }
     document.removeEventListener("click", this.boundClose)
   }
 

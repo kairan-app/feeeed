@@ -108,7 +108,7 @@
         <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-gray-100 transition-colors">
           <%= user_avatar_tag(current_user, size: :xs) %>
           <span class="text-sm text-gray-700 truncate flex-1 text-left"><%= current_user.name %></span>
-          <span class="material-symbols-outlined !m-0 text-[20px] text-gray-400">expand_more</span>
+          <span data-dropdown-target="icon" class="material-symbols-outlined !m-0 text-[20px] text-gray-400">add</span>
         </button>
 
         <%# Dropup Menu %>
