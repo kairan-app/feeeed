@@ -27,6 +27,9 @@ class FeedNormalizer
   end
 
   def normalize_and_parse
+    # Step 0: エンコーディングをUTF-8に正規化（HTTPレスポンスがBINARYの場合がある）
+    ensure_utf8_encoding!
+
     # Step 1: Pre-parseフィルタを適用（XML文字列レベル）
     normalized_xml = apply_pre_parse_filters(@raw_xml)
 
@@ -50,6 +53,15 @@ class FeedNormalizer
   end
 
   private
+
+  def ensure_utf8_encoding!
+    return if @raw_xml.encoding == Encoding::UTF_8
+
+    # HTTPレスポンスはASCII-8BIT（BINARY）で返ることがある。
+    # 実際のバイト列はほぼUTF-8なので、まずforce_encodingでUTF-8として解釈し、
+    # 不正なバイト列があればreplaceで除去する。
+    @raw_xml = @raw_xml.dup.force_encoding("UTF-8").encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+  end
 
   def apply_pre_parse_filters(xml_content)
     normalized_xml = xml_content
