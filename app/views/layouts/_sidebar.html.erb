@@ -20,23 +20,23 @@
       <% if logged_in? %>
       <%# Pawprints with submenu %>
       <li>
-        <div class="flex items-center gap-2.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
+        <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
           <span class="material-symbols-outlined !m-0 !text-[16px]"><%= image_tag("icon-pawprints-b.svg", alt: "pawprints", loading: "lazy", width: 16, height: 16) %></span>
           <span>Pawprints</span>
         </div>
-        <ul class="ml-4 space-y-0.5">
+        <ul class="ml-3 mr-2 space-y-0.5">
           <li>
-            <%= link_to(pawprints_path(scope: "all"), class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(pawprints_path(scope: "all"), class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>All
             <% end %>
           </li>
           <li>
-            <%= link_to(pawprints_path(scope: "my"), class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(pawprints_path(scope: "my"), class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>My
             <% end %>
           </li>
           <li>
-            <%= link_to(pawprints_path(scope: "to_me"), class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(pawprints_path(scope: "to_me"), class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>To me
             <% end %>
           </li>
@@ -45,19 +45,19 @@
 
       <%# Unreads with submenu %>
       <li>
-        <div class="flex items-center gap-2.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
+        <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
           <span class="material-symbols-outlined !m-0 !text-[16px]">inbox</span>
           <span>Unreads</span>
         </div>
-        <ul class="ml-4 space-y-0.5">
+        <ul class="ml-3 mr-2 space-y-0.5">
           <li>
-            <%= link_to(unreads_path, class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(unreads_path, class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>All
             <% end %>
           </li>
           <% current_user.subscription_tags.joins(:subscriptions).distinct.ordered.each do |tag| %>
             <li>
-              <%= link_to(unreads_path(subscription_tag_id: tag.id), class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+              <%= link_to(unreads_path(subscription_tag_id: tag.id), class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
                 <span class="text-gray-400 mr-1.5">•</span><%= tag.name %>
               <% end %>
             </li>
@@ -67,23 +67,23 @@
 
       <%# Explore with submenu %>
       <li>
-        <div class="flex items-center gap-2.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
+        <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
           <span class="material-symbols-outlined !m-0 !text-[16px]">explore</span>
           <span>Explore</span>
         </div>
-        <ul class="ml-4 space-y-0.5">
+        <ul class="ml-3 mr-2 space-y-0.5">
           <li>
-            <%= link_to(channels_path, class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(channels_path, class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>Channels
             <% end %>
           </li>
           <li>
-            <%= link_to(items_path, class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(items_path, class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>Items
             <% end %>
           </li>
           <li>
-            <%= link_to(channel_groups_path, class: "px-2.5 py-2 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
+            <%= link_to(channel_groups_path, class: "px-2 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors block") do %>
               <span class="text-gray-400 mr-1.5">•</span>Channel Groups
             <% end %>
           </li>
