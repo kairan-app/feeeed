@@ -396,6 +396,7 @@ class Channel < ApplicationRecord
         }.join
 
         guid = entry.entry_id || entry.url
+        next if guid.nil?
 
         image_url =
           if entry.respond_to?(:itunes_image) && entry.itunes_image
