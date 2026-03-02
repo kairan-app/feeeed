@@ -10,3 +10,4 @@
   - `/dev/login?user_id=1`のようにして任意のUserでログインできて便利です
 - Herokuのアプリ名は`feedhub`です
 - Sentryの`feeeed`orgに`feeeed`projectがあります
+- Sentry CLIが使える: `sentry-cli issues list --status unresolved` など（`.sentryclirc`でorg/project設定済み）
