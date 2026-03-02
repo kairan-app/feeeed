@@ -369,13 +369,13 @@ class Channel < ApplicationRecord
         }
       else
         # only_recent
-        feed.entries.sort_by(&:published).reverse.take(10)
+        feed.entries.sort_by { _1.published || Time.at(0) }.reverse.take(10)
       end
 
     success_count = 0
     error_count = 0
 
-    entries.sort_by(&:published).each do |entry|
+    entries.sort_by { _1.published || Time.at(0) }.each do |entry|
       begin
         url = entry.url.presence ||
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
