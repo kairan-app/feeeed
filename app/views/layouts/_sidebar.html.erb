@@ -18,108 +18,11 @@
   <nav class="flex-1 overflow-y-auto px-3 py-2">
     <ul class="space-y-0.5">
       <% if logged_in? %>
-      <%# Pawprints with submenu %>
-      <li>
-        <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
-          <span class="material-symbols-outlined !m-0 !text-[16px]"><%= image_tag("icon-pawprints-b.svg", alt: "pawprints", loading: "lazy", width: 16, height: 16) %></span>
-          <span>Pawprints</span>
-        </div>
-        <ul class="ml-2 mr-2 space-y-0.5">
-          <%
-            pawprints_all_active = current_page?(pawprints_path) && params[:scope].blank?
-          %>
-          <li>
-            <%= link_to(pawprints_path, class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{pawprints_all_active ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{pawprints_all_active ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">All</span>
-            <% end %>
-          </li>
-          <li>
-            <%= link_to(pawprints_path(scope: "my"), class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{current_page?(pawprints_path(scope: "my")) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{current_page?(pawprints_path(scope: "my")) ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">My</span>
-            <% end %>
-          </li>
-          <li>
-            <%= link_to(pawprints_path(scope: "to_me"), class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{current_page?(pawprints_path(scope: "to_me")) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{current_page?(pawprints_path(scope: "to_me")) ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">To me</span>
-            <% end %>
-          </li>
-        </ul>
-      </li>
-
-      <%# Unreads with submenu %>
-      <li>
-        <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
-          <span class="material-symbols-outlined !m-0 !text-[16px]">inbox</span>
-          <span>Unreads</span>
-        </div>
-        <ul class="ml-2 mr-2 space-y-0.5">
-          <%
-            # Unreadsページにいるかどうかをパスで判定
-            on_unreads_page = request.path == unreads_path
-            unreads_all_active = on_unreads_page && params[:subscription_tag_id].blank? && params[:channel_group_id].blank?
-          %>
-          <li>
-            <%= link_to(unreads_path, class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{unreads_all_active ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{unreads_all_active ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">All</span>
-            <% end %>
-          </li>
-          <% current_user.subscription_tags.joins(:subscriptions).distinct.ordered.each do |tag| %>
-            <%
-              tag_active = on_unreads_page && params[:subscription_tag_id].to_s == tag.id.to_s
-            %>
-            <li>
-              <%= link_to(unreads_path(subscription_tag_id: tag.id), class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{tag_active ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-                <span class="mr-1.5 shrink-0 #{tag_active ? "text-blue-400" : "text-gray-400"}">•</span>
-                <span class="truncate"><%= tag.name %></span>
-              <% end %>
-            </li>
-          <% end %>
-          <% current_user.own_and_joined_channel_groups.order(id: :desc).each do |channel_group| %>
-            <%
-              group_active = on_unreads_page && params[:channel_group_id].to_s == channel_group.id.to_s
-            %>
-            <li>
-              <%= link_to(unreads_path(channel_group_id: channel_group.id), class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{group_active ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-                <span class="mr-1.5 shrink-0 #{group_active ? "text-blue-400" : "text-gray-400"}">•</span>
-                <span class="truncate"><%= channel_group.name %></span>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
-      </li>
-
-      <%# Explore with submenu %>
-      <li>
-        <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
-          <span class="material-symbols-outlined !m-0 !text-[16px]">explore</span>
-          <span>Explore</span>
-        </div>
-        <ul class="ml-2 mr-2 space-y-0.5">
-          <li>
-            <%= link_to(channels_path, class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{current_page?(channels_path) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{current_page?(channels_path) ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">Channels</span>
-            <% end %>
-          </li>
-          <li>
-            <%= link_to(items_path, class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{current_page?(items_path) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{current_page?(items_path) ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">Items</span>
-            <% end %>
-          </li>
-          <li>
-            <%= link_to(channel_groups_path, class: "px-2 py-1.5 rounded-md text-sm transition-colors flex items-center #{current_page?(channel_groups_path) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100"}") do %>
-              <span class="mr-1.5 shrink-0 #{current_page?(channel_groups_path) ? "text-blue-400" : "text-gray-400"}">•</span>
-              <span class="truncate">Channel Groups</span>
-            <% end %>
-          </li>
-        </ul>
-      </li>
+        <%= render 'layouts/sidebar/pawprints_menu' %>
+        <%= render 'layouts/sidebar/unreads_menu' %>
+        <%= render 'layouts/sidebar/explore_menu' %>
       <% end %>
+    </ul>
   </nav>
 
   <%# Footer %>
