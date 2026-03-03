@@ -372,14 +372,21 @@ class Channel < ApplicationRecord
           self.items.exists?(guid: _1.url)
         }
       else
-        # only_recent
+        # only_recent: ソートして新しい順に10件取得
         feed.entries.sort_by { _1.published || Time.at(0) }.reverse.take(10)
       end
 
     success_count = 0
     error_count = 0
 
-    entries.sort_by { _1.published || Time.at(0) }.each do |entry|
+    # only_recentは既にソート済みなのでreverseだけで昇順になる
+    sorted_entries = if mode == :only_recent
+      entries.reverse
+    else
+      entries.sort_by { _1.published || Time.at(0) }
+    end
+
+    sorted_entries.each do |entry|
       begin
         url = entry.url.presence ||
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
