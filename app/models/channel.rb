@@ -359,7 +359,15 @@ class Channel < ApplicationRecord
       rescue ActiveRecord::RecordInvalid => e
         raise unless e.record.errors.of_kind?(:feed_url, :taken)
 
-        Rails.logger.warn "[Channel] Redirect target #{final_feed_url} already exists, skipping feed_url update for channel ##{id}"
+        existing_channel = Channel.find_by(feed_url: final_feed_url)
+        Rails.logger.warn "[Channel] Redirect target #{final_feed_url} already exists as channel ##{existing_channel&.id}, stopping channel ##{id}"
+
+        # 旧チャンネルを停止して、リダイレクト先チャンネルに処理を委譲
+        ChannelStopper.find_or_create_by!(channel: self) do |stopper|
+          stopper.reason = "Redirect target #{final_feed_url} already exists as channel ##{existing_channel&.id}"
+        end
+
+        return # items保存をスキップ
       end
     end
 
