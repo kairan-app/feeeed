@@ -31,7 +31,7 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
   end
 
   # fetch_and_normalize_feedのスタブ用ヘルパー
-  def stub_feed_with_entries(entries, feed_class: Feedjira::Parser::Atom, redirected: false)
+  def stub_feed_with_entries(entries, feed_class: Feedjira::Parser::Atom, redirected: false, final_url: nil)
     feed = OpenStruct.new(
       entries: entries,
       title: "Test Feed",
@@ -46,7 +46,7 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
       feed: feed,
       applied_filters: [],
       filter_details: {},
-      redirect_info: { redirected: redirected, final_url: @channel.feed_url }
+      redirect_info: { redirected: redirected, final_url: final_url || @channel.feed_url }
     }
     Channel.stubs(:fetch_and_normalize_feed).returns(normalization_result)
     feed
@@ -187,6 +187,78 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
 
       @channel.reload
       assert_not_nil @channel.last_items_checked_at
+    end
+  end
+
+  # リダイレクト先に既存Channelがある場合、旧チャンネルのitems保存をスキップして停止する
+  describe "リダイレクト先に既存Channelがある場合" do
+    setup do
+      @existing_channel = Channel.create!(
+        title: "Existing Channel",
+        feed_url: "https://example.com/new-feed.xml",
+        site_url: "https://example.com"
+      )
+    end
+
+    test "旧チャンネルにitemsが保存されないこと" do
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1")
+      ]
+      stub_feed_with_entries(entries, redirected: true, final_url: @existing_channel.feed_url)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_equal 0, @channel.items.count, "旧チャンネルにitemsが保存されてはいけない"
+    end
+
+    test "旧チャンネルにChannelStopperが作成されること" do
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1")
+      ]
+      stub_feed_with_entries(entries, redirected: true, final_url: @existing_channel.feed_url)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+
+      assert_nil @channel.stopper, "テスト前にはstopperがないこと"
+
+      @channel.fetch_and_save_items(:all)
+
+      @channel.reload
+      assert_not_nil @channel.stopper, "ChannelStopperが作成されていること"
+      assert_includes @channel.stopper.reason, @existing_channel.feed_url
+      assert_includes @channel.stopper.reason, @existing_channel.id.to_s
+    end
+
+    test "既にChannelStopperがある場合でもエラーにならないこと" do
+      ChannelStopper.create!(channel: @channel, reason: "previously stopped")
+
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1")
+      ]
+      stub_feed_with_entries(entries, redirected: true, final_url: @existing_channel.feed_url)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+
+      assert_nothing_raised do
+        @channel.fetch_and_save_items(:all)
+      end
+
+      assert_equal 0, @channel.items.count
+    end
+
+    test "リダイレクト先Channelが存在しない場合はfeed_urlが更新されitemsが保存されること" do
+      new_url = "https://example.com/brand-new-feed.xml"
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1")
+      ]
+      stub_feed_with_entries(entries, redirected: true, final_url: new_url)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+
+      @channel.fetch_and_save_items(:all)
+
+      @channel.reload
+      assert_equal new_url, @channel.feed_url, "feed_urlが更新されること"
+      assert_equal 1, @channel.items.count, "itemsが正常に保存されること"
+      assert_nil @channel.stopper, "ChannelStopperは作成されないこと"
     end
   end
 
