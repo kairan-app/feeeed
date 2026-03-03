@@ -8,15 +8,14 @@ Sentryの未解決issueをトリアージしてください。`.sentryclirc` で
 ## 手順
 
 ### 1. 現状把握
-- `sentry-cli issues list --status unresolved` で未解決issueを取得
-- `sentry-cli issues list --status unresolved --query "level:warning"` でwarningレベルも確認
+- `sentry-cli issues list --status unresolved` で未解決issueを取得（全レベルが含まれるので、出力からレベルを判別する）
 
 ### 2. 分類
 issueをイベント数と種類で以下のTierに分類して一覧表示:
 
 - **Tier 1（コード修正で対応可能）**: バリデーションエラー、nil参照、型エラーなど
 - **Tier 2（調査が必要）**: N+1クエリ、パフォーマンス系
-- **Tier 3（外部要因）**: HTTP 4xx/5xx、タイムアウト、接続エラーなど
+- **Tier 3（外部要因・要監視）**: HTTP 4xx/5xx、タイムアウト、接続エラーなど
 - **Tier 4（無視可能）**: 外部サービスの一時的障害
 
 ### 3. 対応提案
