@@ -174,7 +174,7 @@ class Channel < ApplicationRecord
           begin
             channel.update!(parameters.merge(feed_url: final_feed_url))
           rescue ActiveRecord::RecordInvalid => e
-            raise unless e.message.include?("Feed url has already been taken")
+            raise unless e.record.errors.of_kind?(:feed_url, :taken)
 
             # リダイレクト先URLで既にChannelが存在する場合は、そちらを更新
             channel = Channel.find_by!(feed_url: final_feed_url)
@@ -357,7 +357,7 @@ class Channel < ApplicationRecord
       begin
         update!(feed_url: final_feed_url)
       rescue ActiveRecord::RecordInvalid => e
-        raise unless e.message.include?("Feed url has already been taken")
+        raise unless e.record.errors.of_kind?(:feed_url, :taken)
 
         Rails.logger.warn "[Channel] Redirect target #{final_feed_url} already exists, skipping feed_url update for channel ##{id}"
       end
