@@ -149,6 +149,17 @@ class Channel < ApplicationRecord
       final_feed_url = redirect_info&.dig(:redirected) ? redirect_info[:final_url] : feed_url
 
       parameters = build_from(feed, final_feed_url)
+
+      # 認識できないフィード形式の場合はスキップ
+      if parameters.nil?
+        Sentry.capture_message(
+          "Skipped channel update: unrecognized feed format",
+          level: :warning,
+          extra: { feed_url: feed_url, feed_class: feed.class.name, skip_reason: "unrecognized_feed_format" }
+        )
+        return Channel.find_by(feed_url: feed_url)
+      end
+
       parameters.merge!(
         applied_filters: normalization_result[:applied_filters],
         filter_details: normalization_result[:filter_details]
@@ -160,7 +171,15 @@ class Channel < ApplicationRecord
         channel = Channel.find_by(feed_url: feed_url)
         if channel
           Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating existing channel ##{channel.id}"
-          channel.update!(parameters.merge(feed_url: final_feed_url))
+          begin
+            channel.update!(parameters.merge(feed_url: final_feed_url))
+          rescue ActiveRecord::RecordInvalid => e
+            raise unless e.record.errors.of_kind?(:feed_url, :taken)
+
+            # リダイレクト先URLで既にChannelが存在する場合は、そちらを更新
+            channel = Channel.find_by!(feed_url: final_feed_url)
+            channel.update(parameters)
+          end
         else
           # 旧URLのチャンネルが存在しない場合は、新URLでチャンネルを作成
           channel = Channel.find_or_initialize_by(feed_url: final_feed_url)
@@ -335,7 +354,13 @@ class Channel < ApplicationRecord
     if redirect_info&.dig(:redirected)
       final_feed_url = redirect_info[:final_url]
       Rails.logger.info "[Channel] Detected redirect from #{feed_url} to #{final_feed_url}, updating channel ##{id}"
-      update!(feed_url: final_feed_url)
+      begin
+        update!(feed_url: final_feed_url)
+      rescue ActiveRecord::RecordInvalid => e
+        raise unless e.record.errors.of_kind?(:feed_url, :taken)
+
+        Rails.logger.warn "[Channel] Redirect target #{final_feed_url} already exists, skipping feed_url update for channel ##{id}"
+      end
     end
 
     entries =
@@ -347,20 +372,34 @@ class Channel < ApplicationRecord
           self.items.exists?(guid: _1.url)
         }
       else
-        # only_recent
-        feed.entries.sort_by(&:published).reverse.take(10)
+        # only_recent: ソートして新しい順に10件取得
+        feed.entries.sort_by { _1.published || Time.at(0) }.reverse.take(10)
       end
 
     success_count = 0
     error_count = 0
 
-    entries.sort_by(&:published).each do |entry|
+    # only_recentは既にソート済みなのでreverseだけで昇順になる
+    sorted_entries = if mode == :only_recent
+      entries.reverse
+    else
+      entries.sort_by { _1.published || Time.at(0) }
+    end
+
+    sorted_entries.each do |entry|
       begin
         url = entry.url.presence ||
               (entry.respond_to?(:enclosure_url) && entry.enclosure_url.presence) ||
               self.site_url.presence
 
-        next if url.blank?
+        if url.blank?
+          Sentry.capture_message(
+            "Skipped entry: no URL available",
+            level: :warning,
+            extra: { channel_id: self.id, channel_title: self.title, item_title: entry.title, skip_reason: "no_url" }
+          )
+          next
+        end
 
         url = url.strip
 
@@ -375,6 +414,14 @@ class Channel < ApplicationRecord
         }.join
 
         guid = entry.entry_id || entry.url
+        if guid.nil?
+          Sentry.capture_message(
+            "Skipped entry: no guid (entry_id and url both nil)",
+            level: :warning,
+            extra: { channel_id: self.id, channel_title: self.title, item_title: entry.title, skip_reason: "no_guid" }
+          )
+          next
+        end
 
         image_url =
           if entry.respond_to?(:itunes_image) && entry.itunes_image
@@ -387,6 +434,9 @@ class Channel < ApplicationRecord
             sleep 2
             OpenGraph.new(encoded_url).image rescue nil
           end
+
+        # 不正なimage_urlはnilに落としてItem保存を失敗させない
+        image_url = nil if image_url.present? && image_url !~ URI.regexp(%w[http https])
 
         parameters = {
           guid: guid,
@@ -404,10 +454,28 @@ class Channel < ApplicationRecord
 
         item.update!(parameters)
         success_count += 1
+      rescue ActiveRecord::RecordInvalid => e
+        error_count += 1
+
+        # バリデーションエラーはデータ品質の問題なのでwarningレベルで送信
+        Sentry.capture_message(
+          "Skipped entry: validation failed - #{e.message}",
+          level: :warning,
+          extra: {
+            channel_id: self.id,
+            channel_title: self.title,
+            item_title: entry.title,
+            item_guid: entry.entry_id || entry.url,
+            skip_reason: "validation_failed",
+            validation_errors: e.message
+          }
+        )
+
+        Rails.logger.warn "[Channel] Skipped item (validation) - Channel: #{self.id}, Item: #{entry.title} - #{e.message}"
       rescue StandardError => e
         error_count += 1
 
-        # Sentryにエラーを送信
+        # 予期しないエラーはerrorレベルで送信
         Sentry.capture_exception(e, extra: {
           channel_id: self.id,
           channel_title: self.title,
@@ -417,7 +485,6 @@ class Channel < ApplicationRecord
           success_count: success_count
         })
 
-        # コンパクトなログ出力
         Rails.logger.error "[Channel] Failed to save item - Channel: #{self.id}, Item: #{entry.title} - Error: #{e.class.name}: #{e.message}"
       end
     end
@@ -451,7 +518,11 @@ class Channel < ApplicationRecord
   end
 
   def mark_items_checked!
-    update!(last_items_checked_at: Time.current)
+    # update! ではなく update_column を使う。
+    # fetch_and_save_items 後にassociationキャッシュに無効なItemが残っていると
+    # update! が関連レコードのバリデーションを巻き込んで失敗するため。
+    # last_items_checked_at の更新にvalidation/callbackは不要。
+    update_column(:last_items_checked_at, Time.current)
   end
 
   def set_check_interval!

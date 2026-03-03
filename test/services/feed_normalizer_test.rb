@@ -98,6 +98,47 @@ class FeedNormalizerTest < ActiveSupport::TestCase
     assert_empty result[:filter_details]
   end
 
+  # FEEEED-8Z: HTTPレスポンスがBINARYエンコーディングで返ってくるとpre-parseフィルタで
+  # Encoding::CompatibilityError: incompatible character encodings: UTF-8 and BINARY が発生する
+  test "BINARY (ASCII-8BIT) エンコーディングの入力でもパースできる" do
+    # pre-parseフィルタが発火するケース（copyrightタグにHTMLエンティティ）
+    xml = <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <rss version="2.0">
+        <channel>
+          <title>Test Feed</title>
+          <link>http://example.com</link>
+          <copyright>&copy; 2024 Example</copyright>
+          <item>
+            <title>Test Item</title>
+            <link>http://example.com/post/1</link>
+          </item>
+        </channel>
+      </rss>
+    XML
+
+    # HTTPレスポンスのようにBINARYエンコーディングにする
+    binary_xml = xml.dup.force_encoding("ASCII-8BIT")
+    assert_equal Encoding::ASCII_8BIT, binary_xml.encoding
+
+    result = FeedNormalizer.normalize_and_parse(binary_xml, "http://example.com/feed.xml")
+
+    assert_not_nil result[:feed]
+    assert_equal "Test Feed", result[:feed].title
+  end
+
+  test "日本語を含むBINARYエンコーディングの入力でもパースできる" do
+    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\">\n<channel>\n<title>テストフィード</title>\n<link>http://example.com</link>\n<item>\n<title>テスト記事</title>\n<link>http://example.com/post/1</link>\n</item>\n</channel>\n</rss>"
+
+    binary_xml = xml.encode("UTF-8").force_encoding("ASCII-8BIT")
+    assert_equal Encoding::ASCII_8BIT, binary_xml.encoding
+
+    result = FeedNormalizer.normalize_and_parse(binary_xml, "http://example.com/feed.xml")
+
+    assert_not_nil result[:feed]
+    assert_equal "テストフィード", result[:feed].title
+  end
+
   test "raises error for invalid XML that cannot be parsed" do
     invalid_xml = "This is not valid XML at all"
 
