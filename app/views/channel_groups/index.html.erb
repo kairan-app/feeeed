@@ -1,5 +1,5 @@
 <section>
-  <h2 class="text-2xl font-bold mt-4 mb-4">Channel Groups</h2>
+  <h2 class="text-2xl font-bold mb-4">Channel Groups</h2>
   <%= link_to("New Channel Group", new_channel_group_path) %>
   <%= paginate(@channel_groups) %>
   <%= render(partial: "channel_groups/grid_cards", locals: { channel_groups: @channel_groups }) %>
