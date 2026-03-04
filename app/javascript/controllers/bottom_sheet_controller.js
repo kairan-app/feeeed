@@ -38,6 +38,12 @@ export default class extends Controller {
     }, 300)
   }
 
+  disconnect() {
+    if (this.isOpen) {
+      document.body.style.overflow = ""
+    }
+  }
+
   closeOnOverlay(event) {
     if (event.target === this.overlayTarget) {
       this.close()
