@@ -1,0 +1,22 @@
+<li>
+  <div class="flex items-center gap-1.5 px-2.5 py-2 text-sm text-gray-700 font-medium">
+    <span class="material-symbols-outlined m-0! text-[16px]!">
+      <%= image_tag("icon-pawprints-b.svg", alt: "pawprints", loading: "lazy", width: 16, height: 16) %>
+    </span>
+    <span>Pawprints</span>
+  </div>
+  <ul class="ml-2 mr-2 space-y-0.5">
+    <%= render 'layouts/sidebar/submenu_item',
+               url: pawprints_path,
+               label: 'All',
+               active: pawprints_page_active? %>
+    <%= render 'layouts/sidebar/submenu_item',
+               url: pawprints_path(scope: 'my'),
+               label: 'My',
+               active: pawprints_page_active?(scope: 'my') %>
+    <%= render 'layouts/sidebar/submenu_item',
+               url: pawprints_path(scope: 'to_me'),
+               label: 'To me',
+               active: pawprints_page_active?(scope: 'to_me') %>
+  </ul>
+</li>

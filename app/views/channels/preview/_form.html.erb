@@ -2,7 +2,7 @@
 <nav>
   <input type="checkbox" name="channel-registration-form" id="channel-registration-form" class="hidden peer"/>
   <label for="channel-registration-form" class="hidden peer-checked:block fixed top-0 left-[-20px] w-[calc(100%+40px)] h-screen bg-black opacity-70 z-[2]"></label>
-  <div class="fixed top-[calc(50%-44px)] left-[5%] flex flex-col items-start w-[90%] m-0 p-5 bg-[#3d8bcd] translate-y-0 opacity-0 transition-[opacity] duration-200 z-[-1] peer-checked:translate-y-0 peer-checked:opacity-100 peer-checked:transition-[opacity] peer-checked:duration-200 peer-checked:z-[2]">
+  <div class="fixed top-[calc(50%-44px)] left-[5%] flex flex-col items-start w-[90%] md:left-[calc(15rem+5%)] md:w-[calc(90%-15rem)] m-0 p-5 bg-[#3d8bcd] translate-y-0 opacity-0 transition-[opacity] duration-200 z-[-1] peer-checked:translate-y-0 peer-checked:opacity-100 peer-checked:transition-[opacity] peer-checked:duration-200 peer-checked:z-[2]">
     <div class="w-full m-0 p-0">
       <%= form_tag(channel_preview_path, method: :get, class: "flex items-center gap-2") do %>
         <%= text_field_tag(:url, nil, placeholder: "https://example.com or https://example.com/feed.xml", class: "flex-1 min-w-0", id: "channel-url-input", oninput: "document.getElementById('channel-add-button').disabled = this.value.trim() === ''") %>

@@ -1,6 +1,6 @@
 <% item_count_threshold = 3 %>
 
-<h2 class="mt-[1em] mb-[0.5em] text-2xl font-bold">Unreads</h2>
+<h2 class="mb-[0.5em] text-2xl font-bold">Unreads</h2>
 
 <p class="flex flex-wrap w-full m-0 mb-2 p-0">Showing unreads from the last <%= @range_days %> days</p>
 <div class="flex m-0 mb-4">
@@ -8,7 +8,7 @@
   <%= link_to((@range_days + 1).to_s + " days →", unreads_path(@unreads_params.merge(range_days: @range_days + 1)), class: "block mr-1 py-1 px-3 bg-white border border-[#cccccc] rounded hover:bg-[#3d8bcd] hover:text-white") %>
 </div>
 
-<div class="flex flex-wrap gap-6 mb-4">
+<div class="flex flex-wrap gap-6 mb-4 md:hidden">
   <% if @subscription_tags.exists? %>
   <div class="max-w-full overflow-hidden">
     <div class="flex items-center gap-2 mb-2">
