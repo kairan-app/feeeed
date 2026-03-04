@@ -20,8 +20,8 @@
       <% if logged_in? %>
         <%= render 'layouts/sidebar/unreads_menu' %>
         <%= render 'layouts/sidebar/pawprints_menu' %>
-        <%= render 'layouts/sidebar/explore_menu' %>
       <% end %>
+      <%= render 'layouts/sidebar/explore_menu' %>
     </ul>
   </nav>
 
@@ -81,6 +81,13 @@
     <% else %>
       <div class="px-2.5">
         <%= link_to "Login", login_path, class: "inline-flex items-center justify-center w-full px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+      </div>
+      <div class="flex justify-center items-center gap-2 mt-3 text-xs text-gray-400">
+        <%= link_to "About", about_path, class: "hover:text-gray-600" %>
+        <span>·</span>
+        <%= link_to "Terms", terms_path, class: "hover:text-gray-600" %>
+        <span>·</span>
+        <%= link_to "Privacy", privacy_path, class: "hover:text-gray-600" %>
       </div>
     <% end %>
     <p class="text-center text-xs text-gray-400 mt-2">© rururu</p>
