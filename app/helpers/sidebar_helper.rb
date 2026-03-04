@@ -25,4 +25,12 @@ module SidebarHelper
       params[:scope].blank?
     end
   end
+
+  def sidebar_subscription_tags
+    @_sidebar_subscription_tags ||= current_user.subscription_tags.joins(:subscriptions).distinct.ordered
+  end
+
+  def sidebar_channel_groups
+    @_sidebar_channel_groups ||= current_user.own_and_joined_channel_groups.order(id: :desc)
+  end
 end

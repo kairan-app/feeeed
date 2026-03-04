@@ -8,13 +8,13 @@
                 url: unreads_path,
                 label: 'All',
                 active: unreads_page_active? %>
-    <% current_user.subscription_tags.joins(:subscriptions).distinct.ordered.each do |tag| %>
+    <% sidebar_subscription_tags.each do |tag| %>
       <%= render 'layouts/sidebar/submenu_item',
                 url: unreads_path(subscription_tag_id: tag.id),
                 label: tag.name,
                 active: unreads_page_active?(tag_id: tag.id) %>
     <% end %>
-    <% current_user.own_and_joined_channel_groups.order(id: :desc).each do |channel_group| %>
+    <% sidebar_channel_groups.each do |channel_group| %>
       <%= render 'layouts/sidebar/submenu_item',
                 url: unreads_path(channel_group_id: channel_group.id),
                 label: channel_group.name,
