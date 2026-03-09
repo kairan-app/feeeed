@@ -1,0 +1,116 @@
+<%# Bottom sheet for mobile "More" menu — controlled by bottom-sheet Stimulus controller %>
+<div class="fixed inset-0 z-[60] pointer-events-none" data-bottom-sheet-target="container" data-action="click->bottom-sheet#closeOnOverlay">
+  <%# Overlay %>
+  <div class="absolute inset-0 bg-black/0 transition-colors duration-300 pointer-events-none" data-bottom-sheet-target="overlay"></div>
+
+  <%# Sheet %>
+  <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl translate-y-full transition-transform duration-300 ease-out pointer-events-auto" data-bottom-sheet-target="sheet">
+    <%# Handle %>
+    <div class="flex justify-center pt-3 pb-2">
+      <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+    </div>
+
+    <%# Grid of menu items %>
+    <div class="grid grid-cols-4 gap-y-6 px-6 pt-2 pb-8">
+      <%= link_to(channels_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">rss_feed</span>
+        </span>
+        <span class="text-xs">Channels</span>
+      <% end %>
+
+      <%= link_to(items_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">article</span>
+        </span>
+        <span class="text-xs">Items</span>
+      <% end %>
+
+      <%= link_to(channel_groups_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">folder</span>
+        </span>
+        <span class="text-xs">Groups</span>
+      <% end %>
+
+      <%= link_to(guides_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">info</span>
+        </span>
+        <span class="text-xs">Guides</span>
+      <% end %>
+
+      <% if logged_in? %>
+      <%= link_to(my_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">settings</span>
+        </span>
+        <span class="text-xs">Settings</span>
+      <% end %>
+
+      <%= link_to(my_subscriptions_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">bookmark</span>
+        </span>
+        <span class="text-xs">Subs</span>
+      <% end %>
+
+      <%= link_to(user_path(user_name: current_user.name), class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">account_circle</span>
+        </span>
+        <span class="text-xs">My Page</span>
+      <% end %>
+
+      <% if current_user.admin? %>
+      <%= link_to(admin_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-[#3d8bcd]">admin_panel_settings</span>
+        </span>
+        <span class="text-xs">Admin</span>
+      <% end %>
+      <% end %>
+      <% end %>
+
+      <%= link_to(about_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-gray-500">help</span>
+        </span>
+        <span class="text-xs">About</span>
+      <% end %>
+
+      <%= link_to(terms_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-gray-500">description</span>
+        </span>
+        <span class="text-xs">Terms</span>
+      <% end %>
+
+      <%= link_to(privacy_path, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-gray-500">shield</span>
+        </span>
+        <span class="text-xs">Privacy</span>
+      <% end %>
+
+      <% if logged_in? %>
+      <%= link_to(session_path, data: { turbo_method: :delete }, class: "flex flex-col items-center gap-1.5 text-gray-700") do %>
+        <span class="flex items-center justify-center w-12 h-12 rounded-full bg-red-50">
+          <span class="material-symbols-outlined !m-0 text-[24px] text-red-400">logout</span>
+        </span>
+        <span class="text-xs">Log out</span>
+      <% end %>
+      <% end %>
+    </div>
+
+    <%# Search (mobile) %>
+    <div class="px-6 pb-6">
+      <%= search_form_for((@channel_q || Channel.ransack), url: channels_path, as: :channel_q, html: { class: "flex" }) do |form| %>
+        <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels", class: "w-full py-2 px-3 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-[#3d8bcd] focus:border-[#3d8bcd]") %>
+        <%= button_tag type: "submit", class: "px-3 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-50 cursor-pointer" do %>
+          <span class="material-symbols-outlined !m-0 text-gray-500 text-[20px]">search</span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
