@@ -1,6 +1,6 @@
 class My::Unreads::Channels::ItemsController < MyController
   def index
-    @channel = Channel.find(params[:channel_id])
+    @channel = current_user.subscribed_channels.find(params[:channel_id])
     @offset = params[:offset].to_i
     @limit = params[:limit].presence&.to_i || 3
     @range_days = params[:range_days].to_i
