@@ -21,7 +21,7 @@ export default class extends Controller {
   open() {
     this.menuTarget.classList.remove("hidden")
     if (this.hasIconTarget) {
-      this.iconTarget.textContent = "remove"
+      this.iconTarget.textContent = "expand_more"
     }
     document.addEventListener("click", this.boundClose)
   }
@@ -29,7 +29,7 @@ export default class extends Controller {
   close() {
     this.menuTarget.classList.add("hidden")
     if (this.hasIconTarget) {
-      this.iconTarget.textContent = "add"
+      this.iconTarget.textContent = "expand_less"
     }
     document.removeEventListener("click", this.boundClose)
   }
