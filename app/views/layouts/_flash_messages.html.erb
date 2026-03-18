@@ -1,7 +1,17 @@
-<% if flash[:notice] %>
-<div class="inline-block w-full mt-4 p-5 bg-white text-[#296fa8]"><%= flash[:notice] %></div>
-<% end %>
+<div class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-md:left-4">
+  <% if flash[:notice] %>
+    <div data-controller="toast" data-toast-duration-value="5000" data-action="click->toast#dismiss"
+         class="flex items-center gap-3 px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-lg text-sm text-[#296fa8] cursor-pointer translate-x-full opacity-0 transition-all duration-300 ease-out">
+      <span class="material-symbols-outlined !m-0 text-[20px]">check_circle</span>
+      <span class="flex-1"><%= flash[:notice] %></span>
+    </div>
+  <% end %>
 
-<% if flash[:alert] %>
-<div class="inline-block w-full mt-4 p-5 bg-white text-[#cc0f35]"><%= flash[:alert] %></div>
-<% end %>
+  <% if flash[:alert] %>
+    <div data-controller="toast" data-toast-duration-value="5000" data-action="click->toast#dismiss"
+         class="flex items-center gap-3 px-4 py-3 bg-white border border-red-200 rounded-lg shadow-lg text-sm text-[#cc0f35] cursor-pointer translate-x-full opacity-0 transition-all duration-300 ease-out">
+      <span class="material-symbols-outlined !m-0 text-[20px]">error</span>
+      <span class="flex-1"><%= flash[:alert] %></span>
+    </div>
+  <% end %>
+</div>
