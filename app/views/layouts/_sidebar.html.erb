@@ -4,16 +4,6 @@
     <%= link_to image_tag("logo.svg", class: "w-[120px] h-auto"), root_path, class: "leading-none" %>
   </div>
 
-  <%# Search %>
-  <div class="px-5 mb-2">
-    <%= search_form_for((@channel_q || Channel.ransack), url: channels_path, as: :channel_q, html: { class: "flex" }) do |form| %>
-      <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels", class: "w-full py-1.5 px-2.5 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-[#3d8bcd] focus:border-[#3d8bcd]") %>
-      <%= button_tag type: "submit", class: "px-2 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-50 cursor-pointer" do %>
-        <span class="material-symbols-outlined !m-0 text-gray-500 text-[20px]">search</span>
-      <% end %>
-    <% end %>
-  </div>
-
   <%# Main Navigation %>
   <nav class="flex-1 overflow-y-auto px-3 py-2">
     <ul class="space-y-0.5">
@@ -24,6 +14,16 @@
       <%= render 'layouts/sidebar/explore_menu' %>
     </ul>
   </nav>
+
+  <%# Search or Add Channel trigger %>
+  <% if logged_in? %>
+    <div class="px-3 mb-3">
+      <label for="channel-registration-form" class="flex items-center gap-2 w-full px-2.5 py-2 text-sm text-gray-400 border border-gray-300 rounded-md hover:border-gray-400 hover:bg-gray-50 cursor-pointer transition-colors">
+        <span class="material-symbols-outlined !m-0 text-[18px]">search</span>
+        <span>Search or Add Channel</span>
+      </label>
+    </div>
+  <% end %>
 
   <%# Footer %>
   <div class="shrink-0 border-t border-gray-200 px-3 py-3">
@@ -41,7 +41,7 @@
         <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md hover:bg-gray-100 transition-colors">
           <%= user_avatar_tag(current_user, size: :xs) %>
           <span class="text-sm text-gray-700 truncate flex-1 text-left"><%= current_user.name %></span>
-          <span data-dropdown-target="icon" class="material-symbols-outlined !m-0 text-[20px] text-gray-400">add</span>
+          <span data-dropdown-target="icon" class="material-symbols-outlined !m-0 text-[20px] text-gray-400">expand_less</span>
         </button>
 
         <%# Dropup Menu %>

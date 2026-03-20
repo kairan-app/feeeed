@@ -29,16 +29,18 @@
     <%# Mobile: Header %>
     <%= render(partial: "layouts/mobile_header") %>
 
+    <%# Flash messages (toast) %>
+    <%= render(partial: "layouts/flash_messages") %>
+
     <%# Main content %>
     <div class="min-h-screen pt-14 pb-16 md:pt-0 md:pb-0 md:ml-60">
       <div class="w-full max-w-[1440px] mx-auto px-6 pt-4 pb-20">
-        <%= render(partial: "layouts/flash_messages") %>
         <%= yield %>
       </div>
     </div>
 
-    <%# Channel registration FAB %>
-    <%= render(partial: "channels/preview/form") %>
+    <%# Channel search/add modal %>
+    <%= render(partial: "layouts/channel_modal") %>
 
     <%# Mobile: Bottom tab + Bottom sheet (single Stimulus controller scope) %>
     <div class="md:hidden" data-controller="bottom-sheet">
