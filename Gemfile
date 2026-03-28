@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.4.5"
 
-gem "rails", "~> 8.1.2"
+gem "rails", "~> 8.1.3"
 
 gem "ahoy_matey"
 gem "aws-sdk-s3", require: false
