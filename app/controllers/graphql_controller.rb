@@ -27,9 +27,10 @@ class GraphqlController < ActionController::API
   end
 
   # API経路のGraphQLリクエストには visit という概念が無いので、visitなしでイベントだけを記録する。
+  # 記録の失敗(DBトラブル等)でGraphQL本体のレスポンスを巻き添えにしないよう`create`を使用する。
   def track_graphql_event(user:, query:, operation_name:)
     parsed = parse_query(query)
-    Ahoy::Event.create!(
+    Ahoy::Event.create(
       name: "graphql#execute",
       user_id: user&.id,
       properties: {
