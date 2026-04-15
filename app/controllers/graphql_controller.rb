@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-class GraphqlController < ApplicationController
-  skip_before_action :verify_authenticity_token
-  skip_before_action :set_subscribed_channel_ids
-
+class GraphqlController < ActionController::API
   def execute
     variables = prepare_variables(params[:variables])
     query = params[:query]
