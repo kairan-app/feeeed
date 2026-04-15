@@ -15,8 +15,12 @@ import (
 
 var authLoginCmd = &cobra.Command{
 	Use:   "login",
-	Short: "App Passwordを登録する",
-	RunE:  runAuthLogin,
+	Short: "App Passwordを登録する(プロファイル別)",
+	Long: `App Passwordを登録する。
+
+--profile でプロファイル名を指定できる(指定しなければ "default")。
+新規プロファイルを作成した場合、デフォルトプロファイルが未設定なら自動で設定される。`,
+	RunE: runAuthLogin,
 }
 
 func init() {
@@ -24,10 +28,16 @@ func init() {
 }
 
 func runAuthLogin(cmd *cobra.Command, args []string) error {
-	existing, err := config.Load()
+	cfg, err := config.Load()
 	if err != nil {
 		return err
 	}
+
+	profileName := profileFlag
+	if profileName == "" {
+		profileName = config.DefaultProfileName
+	}
+	existing := cfg.Profiles[profileName]
 
 	defaultEndpoint := existing.Endpoint
 	if endpointOverride != "" {
@@ -39,6 +49,7 @@ func runAuthLogin(cmd *cobra.Command, args []string) error {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	fmt.Fprintf(cmd.OutOrStdout(), "Profile: %s\n", profileName)
 	fmt.Fprintf(cmd.OutOrStdout(), "Endpoint [%s]: ", defaultEndpoint)
 	line, err := reader.ReadString('\n')
 	if err != nil {
@@ -77,12 +88,19 @@ func runAuthLogin(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to authenticate: the App Password may be invalid or revoked")
 	}
 
-	cfg := &config.Config{Endpoint: endpoint, AppPassword: appPassword}
+	if cfg.Profiles == nil {
+		cfg.Profiles = map[string]config.Profile{}
+	}
+	cfg.Profiles[profileName] = config.Profile{Endpoint: endpoint, AppPassword: appPassword}
+	if cfg.Default == "" {
+		cfg.Default = profileName
+	}
+
 	if err := config.Save(cfg); err != nil {
 		return fmt.Errorf("failed to save config: %w", err)
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "Logged in as %s\n", resp.Viewer.Name)
+	fmt.Fprintf(cmd.OutOrStdout(), "Logged in as %s (profile: %s)\n", resp.Viewer.Name, profileName)
 	return nil
 }
 

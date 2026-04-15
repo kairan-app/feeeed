@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/kairan-app/feeeed/cli/internal/config"
-	"github.com/kairan-app/feeeed/cli/internal/graphql"
 	"github.com/spf13/cobra"
 )
 
@@ -19,23 +17,11 @@ func init() {
 }
 
 func runWhoami(cmd *cobra.Command, args []string) error {
-	cfg, err := config.Load()
+	client, profileName, err := authedClient()
 	if err != nil {
 		return err
 	}
-	if cfg.AppPassword == "" {
-		return fmt.Errorf("not logged in. Run 'rururu auth login' first")
-	}
 
-	endpoint := cfg.Endpoint
-	if endpointOverride != "" {
-		endpoint = endpointOverride
-	}
-	if endpoint == "" {
-		endpoint = config.DefaultEndpoint
-	}
-
-	client := &graphql.Client{Endpoint: endpoint, AppPassword: cfg.AppPassword}
 	var resp struct {
 		Viewer *struct {
 			Name  string `json:"name"`
@@ -46,9 +32,9 @@ func runWhoami(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if resp.Viewer == nil {
-		return fmt.Errorf("not authenticated (the App Password may be revoked)")
+		return fmt.Errorf("not authenticated (the App Password may be revoked) [profile: %s]", profileName)
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "%s <%s>\n", resp.Viewer.Name, resp.Viewer.Email)
+	fmt.Fprintf(cmd.OutOrStdout(), "%s <%s> (profile: %s)\n", resp.Viewer.Name, resp.Viewer.Email, profileName)
 	return nil
 }
