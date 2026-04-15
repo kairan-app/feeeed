@@ -36,6 +36,23 @@ rururu whoami
 # june29 <june29x@gmail.com>
 ```
 
+### 足あと(Pawprint)を見る
+
+```sh
+rururu pawprints list
+# 2026-04-15 21:30  88  june29  「タイトル」  (チャンネル名)  💬 メモ
+
+# スコープ指定 (my=自分(デフォルト) / all=全員 / to_me=自分の所有チャンネルへ)
+rururu pawprints list --scope all
+
+# 件数指定 + ページング(末尾の --before <id> をコピペするだけ)
+rururu pawprints list --limit 100
+rururu pawprints list --before 81
+
+# 構造化出力
+rururu pawprints list --json
+```
+
 ### ログアウト
 
 保存された App Password を削除する。API側でトークンを revoke したい場合は Web 画面から行う。

@@ -89,4 +89,54 @@ class GraphqlTest < ActionDispatch::IntegrationTest
     assert_equal false, event.properties["authenticated"]
     assert_equal [ "viewer" ], event.properties["root_fields"]
   end
+
+  test "pawprints with scope MY returns only pawprints of the current user" do
+    other = create(:user)
+    item_a = create(:item, channel: @channel)
+    item_b = create(:item, channel: @channel)
+    @user.paw(item_a, memo: "mine")
+    other.paw(item_b, memo: "theirs")
+
+    query = "{ pawprints(scope: MY) { memo user { id } item { title } } }"
+    post_graphql(query, token: @plain)
+
+    body = JSON.parse(response.body)
+    pps = body.dig("data", "pawprints")
+    assert_equal [ "mine" ], pps.map { |p| p["memo"] }
+    assert_equal [ @user.id.to_s ], pps.map { |p| p.dig("user", "id") }
+  end
+
+  test "pawprints orders by id desc and respects first" do
+    items = Array.new(3) { create(:item, channel: @channel) }
+    items.each { |i| @user.paw(i, memo: nil) }
+
+    query = "{ pawprints(scope: MY, first: 2) { item { title } } }"
+    post_graphql(query, token: @plain)
+
+    body = JSON.parse(response.body)
+    titles = body.dig("data", "pawprints").map { |p| p.dig("item", "title") }
+    assert_equal [ items[2].title, items[1].title ], titles
+  end
+
+  test "pawprints supports keyset pagination via before" do
+    items = Array.new(3) { create(:item, channel: @channel) }
+    pps = items.map { |i| @user.paw(i, memo: nil) }
+    middle_id = pps[1].id
+
+    query = "{ pawprints(scope: MY, before: \"#{middle_id}\") { id } }"
+    post_graphql(query, token: @plain)
+
+    body = JSON.parse(response.body)
+    ids = body.dig("data", "pawprints").map { |p| p["id"] }
+    assert_equal [ pps[0].id.to_s ], ids
+  end
+
+  test "pawprints with scope MY returns empty when unauthenticated" do
+    @user.paw(create(:item, channel: @channel), memo: "x")
+
+    post_graphql("{ pawprints(scope: MY) { id } }")
+
+    body = JSON.parse(response.body)
+    assert_equal [], body.dig("data", "pawprints")
+  end
 end
