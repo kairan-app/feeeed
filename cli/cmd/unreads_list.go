@@ -109,8 +109,15 @@ func runUnreadsList(cmd *cobra.Command, args []string) error {
 
 	if len(resp.UnreadItems) == unreadsListLimit {
 		oldest := resp.UnreadItems[len(resp.UnreadItems)-1].ID
-		fmt.Fprintf(out, "\n次のページ: rururu unreads list --range-days %d --limit %d --before %s\n",
+		next := fmt.Sprintf("rururu unreads list --range-days %d --limit %d --before %q",
 			unreadsListRangeDays, unreadsListLimit, oldest)
+		if unreadsListChannelGroupID != "" {
+			next += fmt.Sprintf(" --channel-group %q", unreadsListChannelGroupID)
+		}
+		if unreadsListSubscriptionTagID != "" {
+			next += fmt.Sprintf(" --tag %q", unreadsListSubscriptionTagID)
+		}
+		fmt.Fprintf(out, "\n次のページ: %s\n", next)
 	}
 	return nil
 }

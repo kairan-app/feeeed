@@ -192,4 +192,26 @@ class GraphqlTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal [], body.dig("data", "unreadItems")
   end
+
+  test "unreadItems with channelGroupId returns items only from groups the user can access" do
+    own_group = create(:channel_group, owner: @user)
+    own_group.channels << @channel
+    item_in_own = create(:item, channel: @channel)
+
+    other_user = create(:user)
+    other_group = create(:channel_group, owner: other_user)
+    other_channel = create(:channel)
+    other_group.channels << other_channel
+    create(:item, channel: other_channel)
+
+    query = "{ unreadItems(channelGroupId: \"#{own_group.id}\") { id } }"
+    post_graphql(query, token: @plain)
+    ids = JSON.parse(response.body).dig("data", "unreadItems").map { |i| i["id"] }
+    assert_equal [ item_in_own.id.to_s ], ids
+
+    query = "{ unreadItems(channelGroupId: \"#{other_group.id}\") { id } }"
+    post_graphql(query, token: @plain)
+    ids = JSON.parse(response.body).dig("data", "unreadItems").map { |i| i["id"] }
+    assert_equal [], ids, "他人所有のChannelGroupから記事が取れてはいけない"
+  end
 end
