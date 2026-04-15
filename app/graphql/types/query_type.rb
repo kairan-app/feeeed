@@ -23,8 +23,7 @@ module Types
       when "to_me"
         return [] unless user
         Pawprint
-          .joins(item: :channel)
-          .joins("INNER JOIN ownerships ON ownerships.channel_id = channels.id")
+          .joins(item: { channel: :ownerships })
           .where(ownerships: { user_id: user.id })
       else
         Pawprint.all
@@ -56,7 +55,7 @@ module Types
       range_days = range_days.clamp(1, 365)
 
       base = if channel_group_id.present?
-        channel_group = ChannelGroup.find_by(id: channel_group_id)
+        channel_group = user.own_and_joined_channel_groups.find_by(id: channel_group_id)
         return [] unless channel_group
         channel_group.items
       elsif subscription_tag_id.present?
