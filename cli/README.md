@@ -53,6 +53,27 @@ rururu pawprints list --before 81
 rururu pawprints list --json
 ```
 
+### 未読記事を見る
+
+```sh
+rururu unreads list
+# 2026-04-15 21:24  34686  「タイトル」  (チャンネル名)  https://example.com/...
+
+# 期間指定 (デフォルト3日)
+rururu unreads list --range-days 7
+
+# ChannelGroup / SubscriptionTag で絞り込み
+rururu unreads list --channel-group 12
+rururu unreads list --tag 5
+
+# 件数指定 + ページング
+rururu unreads list --limit 100
+rururu unreads list --before 34683
+
+# 構造化出力
+rururu unreads list --json
+```
+
 ### ログアウト
 
 保存された App Password を削除する。API側でトークンを revoke したい場合は Web 画面から行う。

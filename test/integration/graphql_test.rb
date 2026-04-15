@@ -139,4 +139,57 @@ class GraphqlTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal [], body.dig("data", "pawprints")
   end
+
+  test "unreadItems returns subscribed items not pawprinted/skipped" do
+    fresh = create(:item, channel: @channel)
+    pawed = create(:item, channel: @channel)
+    @user.paw(pawed, memo: nil)
+    skipped = create(:item, channel: @channel)
+    ItemSkip.create!(user: @user, item: skipped)
+    other_channel = create(:channel)
+    create(:item, channel: other_channel)
+
+    query = "{ unreadItems { id title channel { id } } }"
+    post_graphql(query, token: @plain)
+
+    body = JSON.parse(response.body)
+    ids = body.dig("data", "unreadItems").map { |i| i["id"] }
+    assert_equal [ fresh.id.to_s ], ids
+  end
+
+  test "unreadItems excludes items older than rangeDays" do
+    recent = create(:item, channel: @channel)
+    old = create(:item, channel: @channel)
+    old.update_column(:created_at, 10.days.ago)
+
+    query = "{ unreadItems(rangeDays: 3) { id } }"
+    post_graphql(query, token: @plain)
+
+    body = JSON.parse(response.body)
+    ids = body.dig("data", "unreadItems").map { |i| i["id"] }
+    assert_equal [ recent.id.to_s ], ids
+  end
+
+  test "unreadItems orders by id desc and supports before" do
+    items = Array.new(3) { create(:item, channel: @channel) }
+
+    query = "{ unreadItems(first: 2) { id } }"
+    post_graphql(query, token: @plain)
+    ids = JSON.parse(response.body).dig("data", "unreadItems").map { |i| i["id"] }
+    assert_equal [ items[2].id.to_s, items[1].id.to_s ], ids
+
+    query = "{ unreadItems(before: \"#{items[1].id}\") { id } }"
+    post_graphql(query, token: @plain)
+    ids = JSON.parse(response.body).dig("data", "unreadItems").map { |i| i["id"] }
+    assert_equal [ items[0].id.to_s ], ids
+  end
+
+  test "unreadItems returns empty when unauthenticated" do
+    create(:item, channel: @channel)
+
+    post_graphql("{ unreadItems { id } }")
+
+    body = JSON.parse(response.body)
+    assert_equal [], body.dig("data", "unreadItems")
+  end
 end
