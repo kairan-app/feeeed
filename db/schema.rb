@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_20_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_045406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_20_100000) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
+  end
+
+  create_table "app_passwords", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "last_used_at"
+    t.string "name", null: false
+    t.datetime "revoked_at"
+    t.string "token_digest", null: false
+    t.string "token_last_4", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["token_digest"], name: "index_app_passwords_on_token_digest", unique: true
+    t.index ["user_id", "revoked_at"], name: "index_app_passwords_on_user_id_and_revoked_at"
+    t.index ["user_id"], name: "index_app_passwords_on_user_id"
   end
 
   create_table "channel_fixed_schedules", force: :cascade do |t|
@@ -433,6 +447,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_20_100000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "app_passwords", "users"
   add_foreign_key "channel_fixed_schedules", "channels"
   add_foreign_key "channel_group_webhooks", "channel_groups"
   add_foreign_key "channel_group_webhooks", "users"

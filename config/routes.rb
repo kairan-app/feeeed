@@ -131,6 +131,12 @@ Rails.application.routes.draw do
                                                    as: "move_up_my_profile_widget"
   post   "/my/profile_widgets/:id/move_down",      to: "my/profile_widgets#move_down",
                                                    as: "move_down_my_profile_widget"
+  get    "/my/app_passwords",                      to: "my/app_passwords#index",
+                                                   as: "my_app_passwords"
+  post   "/my/app_passwords",                      to: "my/app_passwords#create"
+  delete "/my/app_passwords/:id",                  to: "my/app_passwords#destroy",
+                                                   as: "my_app_password"
+  post   "/graphql",                               to: "graphql#execute"
   get    "/about",                                 to: "about#index",
                                                    as: "about"
   post   "/channel_group_webhooks",                to: "channel_group_webhooks#create"
