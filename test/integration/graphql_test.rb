@@ -66,4 +66,27 @@ class GraphqlTest < ActionDispatch::IntegrationTest
 
     assert_not_nil @app_password.reload.last_used_at
   end
+
+  test "authenticated request creates an Ahoy event tied to the user" do
+    assert_difference "Ahoy::Event.where(name: 'graphql#execute').count", 1 do
+      post_graphql("query GetViewer { viewer { id name } }", token: @plain)
+    end
+
+    event = Ahoy::Event.where(name: "graphql#execute").last
+    assert_equal @user.id, event.user_id
+    assert_equal "GetViewer", event.properties["operation_name"]
+    assert_equal [ "viewer" ], event.properties["root_fields"]
+    assert_equal true, event.properties["authenticated"]
+  end
+
+  test "unauthenticated request creates an Ahoy event without a user" do
+    assert_difference "Ahoy::Event.where(name: 'graphql#execute').count", 1 do
+      post_graphql("{ viewer { id } }")
+    end
+
+    event = Ahoy::Event.where(name: "graphql#execute").last
+    assert_nil event.user_id
+    assert_equal false, event.properties["authenticated"]
+    assert_equal [ "viewer" ], event.properties["root_fields"]
+  end
 end
