@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"net/url"
 	"os"
@@ -71,7 +70,7 @@ func runAuthLogin(cmd *cobra.Command, args []string) error {
 			Name string `json:"name"`
 		} `json:"viewer"`
 	}
-	if err := client.Query(context.Background(), `{ viewer { name } }`, nil, &resp); err != nil {
+	if err := client.Query(cmd.Context(), `{ viewer { name } }`, nil, &resp); err != nil {
 		return fmt.Errorf("failed to authenticate: %w", err)
 	}
 	if resp.Viewer == nil {

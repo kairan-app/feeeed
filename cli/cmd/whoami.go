@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/kairan-app/feeeed/cli/internal/config"
@@ -43,7 +42,7 @@ func runWhoami(cmd *cobra.Command, args []string) error {
 			Email string `json:"email"`
 		} `json:"viewer"`
 	}
-	if err := client.Query(context.Background(), `{ viewer { name email } }`, nil, &resp); err != nil {
+	if err := client.Query(cmd.Context(), `{ viewer { name email } }`, nil, &resp); err != nil {
 		return err
 	}
 	if resp.Viewer == nil {
