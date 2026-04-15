@@ -26,21 +26,21 @@ Web側の `/my/app_passwords` で発行した App Password を手元に控えて
 rururu auth login
 # Endpoint [https://fh.lvh.me/graphql]: (Enterでデフォルト、必要なら上書き)
 # App Password: (貼り付け、入力は画面に表示されない)
-# Logged in as june29
+# Logged in as juneboku
 ```
 
 ### 自分の情報を見る
 
 ```sh
 rururu whoami
-# june29 <june29x@gmail.com>
+# yourname <you@example.com>
 ```
 
 ### 足あと(Pawprint)を見る
 
 ```sh
 rururu pawprints list
-# 2026-04-15 21:30  88  june29  「タイトル」  (チャンネル名)  💬 メモ
+# 2026-04-15 21:30  88  juneboku  「タイトル」  (チャンネル名)  💬 メモ
 
 # スコープ指定 (my=自分(デフォルト) / all=全員 / to_me=自分の所有チャンネルへ)
 rururu pawprints list --scope all
