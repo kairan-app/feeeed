@@ -1,0 +1,30 @@
+<section>
+  <h2 class="mb-[0.5em] text-2xl font-bold">App Password Issued</h2>
+
+  <div class="card p-4 mb-6 bg-yellow-50 border border-yellow-300 rounded">
+    <p class="mb-2 font-bold text-yellow-900">
+      ⚠ この文字列はこの画面でしか表示されません。今すぐコピーして安全な場所に保管してください。
+    </p>
+    <p class="text-sm text-yellow-900">
+      もし控え忘れた場合は、一覧から revoke して、新しい App Password を発行し直してください。
+    </p>
+  </div>
+
+  <div class="mb-6">
+    <div class="text-sm text-gray-600 mb-1">Name</div>
+    <div class="font-bold mb-4"><%= @app_password.name %></div>
+
+    <div class="text-sm text-gray-600 mb-1">App Password</div>
+    <div class="relative" data-controller="clipboard">
+      <pre class="p-3 pr-24 bg-gray-900 text-green-300 rounded overflow-x-auto text-sm"><code data-clipboard-target="source"><%= @plain_token %></code></pre>
+      <button type="button"
+              data-clipboard-target="button"
+              data-action="click->clipboard#copy"
+              class="absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 text-white rounded hover:bg-gray-600 cursor-pointer">
+        Copy
+      </button>
+    </div>
+  </div>
+
+  <%= link_to "Back to App Passwords", my_app_passwords_path, class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+</section>

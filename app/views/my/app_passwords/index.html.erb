@@ -1,0 +1,61 @@
+<section>
+  <h2 class="mb-[0.5em] text-2xl font-bold">My App Passwords</h2>
+  <p class="mb-4 text-sm leading-6 text-gray-700">
+    App Password は、rururu の CLI や外部ツールから API にアクセスするためのパスワードです。<br/>
+    発行直後の 1 回だけ平文の文字列が表示されます。控え忘れた場合は revoke して再発行してください。
+  </p>
+
+  <div class="card p-4 mb-6 bg-white rounded shadow">
+    <h3 class="mb-2 text-lg font-bold">Issue a new App Password</h3>
+    <%= form_with(url: my_app_passwords_path, method: :post, data: { turbo: false }, class: "flex flex-col sm:flex-row gap-2") do %>
+      <%= label_tag "app_password[name]", "Name", class: "sr-only" %>
+      <%= text_field_tag "app_password[name]", nil,
+            placeholder: "e.g. MacBook",
+            required: true,
+            maxlength: 50,
+            class: "flex-1 border border-gray-300 rounded px-3 py-2" %>
+      <%= submit_tag "Issue", class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <h3 class="mb-2 text-lg font-bold">Active</h3>
+  <% if @active_app_passwords.any? %>
+    <ul class="mb-6">
+      <% @active_app_passwords.each do |ap| %>
+        <li class="flex items-center justify-between border-b border-gray-200 py-3">
+          <div>
+            <div class="font-bold"><%= ap.name %></div>
+            <div class="text-xs text-gray-500">
+              rururu_...<%= ap.token_last_4 %>
+              ・ Created <%= l ap.created_at, format: :long %>
+              <% if ap.last_used_at %>
+                ・ Last used <%= time_ago_in_words(ap.last_used_at) %> ago
+              <% else %>
+                ・ Never used
+              <% end %>
+            </div>
+          </div>
+          <%= button_to "Revoke", my_app_password_path(ap),
+                method: :delete,
+                data: { turbo_confirm: "Revoke \"#{ap.name}\"?" },
+                class: "px-3 py-1 text-sm border border-red-500 text-red-600 rounded hover:bg-red-50 cursor-pointer" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="mb-6 text-sm text-gray-500">No active App Passwords.</p>
+  <% end %>
+
+  <% if @revoked_app_passwords.any? %>
+    <h3 class="mb-2 text-lg font-bold text-gray-500">Revoked</h3>
+    <ul>
+      <% @revoked_app_passwords.each do |ap| %>
+        <li class="border-b border-gray-100 py-2 text-sm text-gray-500">
+          <span class="font-bold"><%= ap.name %></span>
+          ・ rururu_...<%= ap.token_last_4 %>
+          ・ Revoked <%= l ap.revoked_at, format: :long %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>
