@@ -14,6 +14,10 @@ export default class extends Controller {
     }
   }
 
+  disconnect() {
+    clearTimeout(this.resetTimeout)
+  }
+
   #flashLabel(label) {
     if (!this.hasButtonTarget) return
     const original = this.buttonTarget.dataset.originalLabel || this.buttonTarget.innerText
