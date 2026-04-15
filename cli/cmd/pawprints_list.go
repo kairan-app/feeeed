@@ -6,8 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kairan-app/feeeed/cli/internal/config"
-	"github.com/kairan-app/feeeed/cli/internal/graphql"
 	"github.com/spf13/cobra"
 )
 
@@ -59,28 +57,15 @@ type pawprintListItem struct {
 }
 
 func runPawprintsList(cmd *cobra.Command, args []string) error {
-	cfg, err := config.Load()
-	if err != nil {
-		return err
-	}
-	if cfg.AppPassword == "" {
-		return fmt.Errorf("not logged in. Run 'rururu auth login' first")
-	}
-
 	scopeEnum, err := pawprintScopeEnum(pawprintsListScope)
 	if err != nil {
 		return err
 	}
 
-	endpoint := cfg.Endpoint
-	if endpointOverride != "" {
-		endpoint = endpointOverride
+	client, _, err := authedClient()
+	if err != nil {
+		return err
 	}
-	if endpoint == "" {
-		endpoint = config.DefaultEndpoint
-	}
-
-	client := &graphql.Client{Endpoint: endpoint, AppPassword: cfg.AppPassword}
 	vars := map[string]any{
 		"scope": scopeEnum,
 		"first": pawprintsListLimit,

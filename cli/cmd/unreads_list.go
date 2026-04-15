@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/kairan-app/feeeed/cli/internal/config"
-	"github.com/kairan-app/feeeed/cli/internal/graphql"
 	"github.com/spf13/cobra"
 )
 
@@ -50,23 +48,10 @@ type unreadItem struct {
 }
 
 func runUnreadsList(cmd *cobra.Command, args []string) error {
-	cfg, err := config.Load()
+	client, _, err := authedClient()
 	if err != nil {
 		return err
 	}
-	if cfg.AppPassword == "" {
-		return fmt.Errorf("not logged in. Run 'rururu auth login' first")
-	}
-
-	endpoint := cfg.Endpoint
-	if endpointOverride != "" {
-		endpoint = endpointOverride
-	}
-	if endpoint == "" {
-		endpoint = config.DefaultEndpoint
-	}
-
-	client := &graphql.Client{Endpoint: endpoint, AppPassword: cfg.AppPassword}
 	vars := map[string]any{
 		"rangeDays": unreadsListRangeDays,
 		"first":     unreadsListLimit,
