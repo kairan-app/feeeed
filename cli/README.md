@@ -64,6 +64,10 @@ rururu pawprints list --scope all
 rururu pawprints list --limit 100
 rururu pawprints list --before 81
 
+# 期間フィルタ (YYYY-MM-DDはローカルtzの0:00〜23:59:59として解釈)
+rururu pawprints list --since 2026-04-01 --until 2026-04-15
+rururu pawprints list --since 2026-04-15T10:00:00+09:00
+
 # 構造化出力
 rururu pawprints list --json
 ```
