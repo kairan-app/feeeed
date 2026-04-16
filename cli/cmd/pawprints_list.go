@@ -190,12 +190,12 @@ func parseTimeFlag(s string, kind dateKind) (string, error) {
 	}
 	if t, err := time.ParseInLocation("2006-01-02", s, time.Local); err == nil {
 		if kind == endOfDay {
-			t = t.Add(24*time.Hour - time.Second)
+			t = t.AddDate(0, 0, 1).Add(-time.Nanosecond)
 		}
-		return t.Format(time.RFC3339), nil
+		return t.Format(time.RFC3339Nano), nil
 	}
-	if t, err := time.Parse(time.RFC3339, s); err == nil {
-		return t.Format(time.RFC3339), nil
+	if t, err := time.Parse(time.RFC3339Nano, s); err == nil {
+		return t.Format(time.RFC3339Nano), nil
 	}
 	return "", fmt.Errorf("invalid time %q (expected YYYY-MM-DD or RFC3339)", s)
 }
