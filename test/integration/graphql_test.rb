@@ -131,6 +131,24 @@ class GraphqlTest < ActionDispatch::IntegrationTest
     assert_equal [ pps[0].id.to_s ], ids
   end
 
+  test "pawprints filters by since and until on created_at" do
+    items = Array.new(3) { create(:item, channel: @channel) }
+    pps = items.map { |i| @user.paw(i, memo: nil) }
+    pps[0].update_column(:created_at, Time.zone.parse("2026-04-01 10:00:00"))
+    pps[1].update_column(:created_at, Time.zone.parse("2026-04-05 10:00:00"))
+    pps[2].update_column(:created_at, Time.zone.parse("2026-04-10 10:00:00"))
+
+    query = '{ pawprints(scope: MY, since: "2026-04-03T00:00:00+09:00", until: "2026-04-08T00:00:00+09:00") { id } }'
+    post_graphql(query, token: @plain)
+    ids = JSON.parse(response.body).dig("data", "pawprints").map { |p| p["id"] }
+    assert_equal [ pps[1].id.to_s ], ids
+
+    query = '{ pawprints(scope: MY, since: "2026-04-05T10:00:00+09:00") { id } }'
+    post_graphql(query, token: @plain)
+    ids = JSON.parse(response.body).dig("data", "pawprints").map { |p| p["id"] }
+    assert_equal [ pps[2].id.to_s, pps[1].id.to_s ], ids
+  end
+
   test "pawprints with scope MY returns empty when unauthenticated" do
     @user.paw(create(:item, channel: @channel), memo: "x")
 

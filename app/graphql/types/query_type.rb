@@ -11,8 +11,12 @@ module Types
       argument :scope, Types::PawprintScopeType, required: false, default_value: "all"
       argument :first, Integer, required: false, default_value: 50
       argument :before, ID, required: false, description: "このIDより古い足あとを返す(キーセットページング用)。"
+      argument :since, GraphQL::Types::ISO8601DateTime, required: false, as: :since_at,
+        description: "この日時以降(含む)に作成された足あとに絞る。"
+      argument :until, GraphQL::Types::ISO8601DateTime, required: false, as: :until_at,
+        description: "この日時以前(含む)に作成された足あとに絞る。"
     end
-    def pawprints(scope:, first:, before: nil)
+    def pawprints(scope:, first:, before: nil, since_at: nil, until_at: nil)
       first = first.clamp(1, 100)
       user = context[:current_user]
 
@@ -30,6 +34,8 @@ module Types
       end
 
       relation = relation.where("pawprints.id < ?", before) if before.present?
+      relation = relation.where("pawprints.created_at >= ?", since_at) if since_at.present?
+      relation = relation.where("pawprints.created_at <= ?", until_at) if until_at.present?
       relation
         .includes(:user, item: :channel)
         .order(id: :desc)
