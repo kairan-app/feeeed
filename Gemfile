@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.4.5"
+ruby "4.0.3"
 
 gem "rails", "~> 8.1.3"
 
@@ -8,8 +8,8 @@ gem "ahoy_matey"
 gem "aws-sdk-s3", require: false
 gem "bootsnap", require: false
 gem "faraday"
-gem "faraday_middleware"
 gem "faraday-cookie_jar"
+gem "faraday-follow_redirects"
 gem "feedbag"
 gem "feedjira"
 gem "googleauth"
