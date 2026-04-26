@@ -1,3 +1,10 @@
+# Atomフィードの<content>内CDATAにxmlns:itunes宣言を含むコードスニペット
+# (例: ポッドキャストの記事中のRSSサンプル)が混ざっていても、ITunesRSSパーサーで
+# 誤って判定・パースされないことを確認するリグレッションテスト。
+#
+# かつてはモンキーパッチ(config/initializers/feedjira_patches.rb)で
+# 修正していたが、feedjira 4.0.2で本家に取り込まれた。
+# 将来のバージョンアップで再びregressionしないかを検知する保険として残す。
 require "test_helper"
 
 class FeedjiraPatchesTest < ActiveSupport::TestCase
