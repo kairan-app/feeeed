@@ -1,5 +1,5 @@
 require "faraday"
-require "faraday_middleware"
+require "faraday/follow_redirects"
 require "faraday-cookie_jar"
 
 class Httpc
@@ -49,7 +49,7 @@ class Httpc
 
   def self.direct_get(url)
     connection = Faraday.new do |builder|
-      builder.use FaradayMiddleware::FollowRedirects
+      builder.response :follow_redirects
       builder.use :cookie_jar
       builder.adapter Faraday.default_adapter
     end
