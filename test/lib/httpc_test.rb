@@ -5,7 +5,7 @@ class HttpcTest < ActiveSupport::TestCase
     connection = mock("connection")
     connection.expects(:get).with(url).returns(response)
     Faraday.expects(:new).yields(mock("builder").tap do |builder|
-      builder.expects(:use).with(FaradayMiddleware::FollowRedirects)
+      builder.expects(:response).with(:follow_redirects)
       builder.expects(:use).with(:cookie_jar)
       builder.expects(:adapter).with(Faraday.default_adapter)
     end).returns(connection)
