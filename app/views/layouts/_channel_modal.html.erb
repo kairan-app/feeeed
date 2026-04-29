@@ -1,13 +1,13 @@
 <% if logged_in? %>
-<nav>
-  <input type="checkbox" name="channel-registration-form" id="channel-registration-form" class="hidden peer"/>
+<nav data-controller="channel-modal">
+  <input type="checkbox" name="channel-registration-form" id="channel-registration-form" class="hidden peer" data-channel-modal-target="toggle" data-action="change->channel-modal#focusSearchOnOpen"/>
   <label for="channel-registration-form" class="hidden peer-checked:block fixed top-0 left-[-20px] w-[calc(100%+40px)] h-screen bg-black opacity-70 z-[50]"></label>
   <div class="fixed top-[calc(50%-80px)] left-[5%] flex flex-col items-start w-[90%] md:left-[calc(15rem+5%)] md:w-[calc(90%-15rem)] m-0 p-5 bg-[#3d8bcd] rounded-lg translate-y-0 opacity-0 transition-[opacity] duration-200 z-[-1] peer-checked:translate-y-0 peer-checked:opacity-100 peer-checked:transition-[opacity] peer-checked:duration-200 peer-checked:z-[50]">
     <div class="w-full m-0 p-0 space-y-4">
       <%# Search Channels %>
       <%= search_form_for((@channel_q || Channel.ransack), url: channels_path, as: :channel_q, html: { class: "flex" }) do |form| %>
-        <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels", class: "flex-1 min-w-0 py-2 px-3 text-sm rounded-l-md focus:outline-none focus:ring-1 focus:ring-white", id: "channel-search-input") %>
-        <%= button_tag type: "submit", class: "px-3 bg-white/20 hover:bg-white/30 rounded-r-md cursor-pointer transition-colors" do %>
+        <%= form.search_field(:title_or_description_or_site_url_or_feed_url_cont, placeholder: "Search Channels", class: "flex-1 min-w-0 py-2 px-3 text-sm rounded-l-md focus:outline-none focus:ring-1 focus:ring-white", id: "channel-search-input", data: { channel_modal_target: "searchInput" }) %>
+        <%= button_tag type: "submit", class: "flex items-center justify-center w-14 shrink-0 bg-white/20 hover:bg-white/30 rounded-r-md cursor-pointer transition-colors" do %>
           <span class="material-symbols-outlined !m-0 text-white text-[20px]">search</span>
         <% end %>
       <% end %>
@@ -15,9 +15,9 @@
       <div class="border-t border-white/30"></div>
 
       <%# Add Channel by URL %>
-      <%= form_tag(channel_preview_path, method: :get, class: "flex items-center gap-2", data: { controller: "channel-modal" }) do %>
-        <%= text_field_tag(:url, nil, placeholder: "https://example.com or https://example.com/feed.xml", class: "flex-1 min-w-0 py-2 px-3 text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-white", id: "channel-url-input", data: { channel_modal_target: "urlInput", action: "input->channel-modal#validateUrl" }) %>
-        <%= submit_tag("Add", class: "px-4 py-2 border border-slate-500 rounded-xs bg-slate-100 hover:bg-slate-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0", id: "channel-add-button", disabled: true, data: { channel_modal_target: "addButton" }) %>
+      <%= form_tag(channel_preview_path, method: :get, class: "flex") do %>
+        <%= text_field_tag(:url, nil, placeholder: "https://example.com or https://example.com/feed.xml", class: "flex-1 min-w-0 py-2 px-3 text-sm rounded-l-md focus:outline-none focus:ring-1 focus:ring-white", id: "channel-url-input", data: { channel_modal_target: "urlInput", action: "input->channel-modal#validateUrl" }) %>
+        <%= submit_tag("Add", class: "w-14 shrink-0 text-sm text-white bg-white/20 hover:bg-white/30 rounded-r-md cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed", id: "channel-add-button", disabled: true, data: { channel_modal_target: "addButton" }) %>
       <% end %>
 
       <p class="text-center">
