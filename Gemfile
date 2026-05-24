@@ -26,6 +26,7 @@ gem "postmark-rails"
 gem "puma", ">= 5.0"
 gem "ransack"
 gem "redis"
+gem "ruby-vips", require: false
 gem "sentry-rails"
 gem "solid_queue"
 gem "sprockets-rails"
