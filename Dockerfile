@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1
 
-FROM ruby:4.0.3
+FROM ruby:4.0.5
 
 RUN apt-get update -qq && apt-get install -y nodejs postgresql-client libvips-dev
 
@@ -10,7 +10,8 @@ WORKDIR /app
 COPY Gemfile /app/Gemfile
 COPY Gemfile.lock /app/Gemfile.lock
 
-RUN gem install bundler -v 4.0.10
+RUN gem update --system 4.0.12
+RUN gem install bundler -v 4.0.12
 RUN bundle install
 
 COPY . /app
