@@ -9,6 +9,8 @@
     <meta name="robots" content="noindex">
     <% end %>
     <%= favicon_link_tag "square.png" %>
+    <link rel="apple-touch-icon" href="<%= image_path('square.png') %>">
+    <link rel="manifest" href="<%= pwa_manifest_path %>">
     <meta name="description" content="みんなの登録フィードや感想メモのシェアができる新しいフィードリーダー">
     <meta property="og:title" content="<%= [@title, 'rururu'].compact.join(' - ') %>">
     <meta property="og:description" content="みんなの登録フィードや感想メモのシェアができる新しいフィードリーダー">
