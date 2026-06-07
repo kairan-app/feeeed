@@ -14,6 +14,8 @@ class Item < ApplicationRecord
   validates :published_at, presence: true
   validates_url_http_format_of :url, :image_url
 
+  scope :published_before, ->(time) { where("published_at <= ?", time) }
+
   strip_before_save :title, :image_url
   empty_strings_are_aligned_to_nil :image_url
   before_validation :fill_blank_title

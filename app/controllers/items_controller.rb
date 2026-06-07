@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
   def index
     page = (params[:page].presence || 1).to_i
-    @items = Item.where("published_at <= ?", 1.month.from_now).preload(:pawprints).eager_load(:channel).order(published_at: :desc, title: :desc).page(page).per(48)
+    @items = Item.published_before(1.month.from_now).preload(:pawprints).eager_load(:channel).order(published_at: :desc, title: :desc).page(page).per(48)
 
     @title = page == 1 ? "Items" : "Items (Page #{page})"
   end
