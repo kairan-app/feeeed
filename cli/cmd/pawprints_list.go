@@ -57,10 +57,12 @@ type pawprintListItem struct {
 		Name string `json:"name"`
 	} `json:"user"`
 	Item struct {
-		Title   string `json:"title"`
-		URL     string `json:"url"`
-		Channel struct {
-			Title string `json:"title"`
+		Title    string `json:"title"`
+		URL      string `json:"url"`
+		ImageURL string `json:"imageUrl"`
+		Channel  struct {
+			Title    string `json:"title"`
+			ImageURL string `json:"imageUrl"`
 		} `json:"channel"`
 	} `json:"item"`
 }
@@ -104,7 +106,7 @@ func runPawprintsList(cmd *cobra.Command, args []string) error {
     memo
     createdAt
     user { id name }
-    item { title url channel { title } }
+    item { title url imageUrl channel { title imageUrl } }
   }
 }`
 
