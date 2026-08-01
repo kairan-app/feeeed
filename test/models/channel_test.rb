@@ -7,6 +7,16 @@ class ChannelTest < ActiveSupport::TestCase
       channel = Channel.new
       assert_not(channel.save, "保存に失敗する")
     end
+
+    test "descriptionは1400文字まで保存できる" do
+      channel = Channel.new(title: "foo", feed_url: "https://example.com/feed.xml", description: "a" * 1400)
+      assert(channel.save, "保存に成功する")
+    end
+
+    test "descriptionが1400文字を超えると保存に失敗する" do
+      channel = Channel.new(title: "foo", feed_url: "https://example.com/feed.xml", description: "a" * 1401)
+      assert_not(channel.save, "保存に失敗する")
+    end
   end
 
   describe "Add" do
