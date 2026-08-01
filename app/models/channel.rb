@@ -15,7 +15,7 @@ class Channel < ApplicationRecord
   has_many :fixed_schedules, class_name: "ChannelFixedSchedule", dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 256 }
-  validates :description, length: { maximum: 1024 }
+  validates :description, length: { maximum: 1400 }
   validates :feed_url, presence: true, uniqueness: true
   validates_url_http_format_of :feed_url, :site_url, :image_url
 
