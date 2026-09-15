@@ -47,11 +47,15 @@ class Channel < ApplicationRecord
 
   # トップページ用のスコープ
   scope :recent, -> { order(id: :desc) }
+  # 全itemsを集約せず、channelごとにindexの先頭1件だけを見て最新itemを特定する
   scope :with_recent_activity, -> {
-    joins(:items)
-      .select("channels.*, MAX(items.id) AS max_item_id")
-      .group("channels.id")
-      .order("max_item_id DESC")
+    select("channels.*, latest_item.max_item_id")
+      .joins(<<~SQL.squish)
+        JOIN LATERAL (
+          SELECT MAX(items.id) AS max_item_id FROM items WHERE items.channel_id = channels.id
+        ) latest_item ON latest_item.max_item_id IS NOT NULL
+      SQL
+      .order("latest_item.max_item_id DESC")
   }
 
   class << self
@@ -303,22 +307,22 @@ class Channel < ApplicationRecord
       channel_ids = channels.map(&:id)
       return channels if channel_ids.empty?
 
-      # Window関数で各Channelの上位N件を確実に取得
+      # LATERALで各Channelごとにindexの先頭N件だけを読む
+      # (Window関数だと対象Channelのitemsを全件読んでから絞ることになる)
       sql = Item.connection.execute(
         ActiveRecord::Base.sanitize_sql_array([
           <<~SQL,
-            WITH ranked_items AS (
-              SELECT id, channel_id, guid, title, url, published_at,
-                     created_at, updated_at, image_url, data,
-                     ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY id DESC) as rn
-              FROM items
-              WHERE channel_id = ANY(ARRAY[?]::bigint[])
-            )
-            SELECT id, channel_id, guid, title, url, published_at,
-                   created_at, updated_at, image_url, data
-            FROM ranked_items
-            WHERE rn <= ?
-            ORDER BY channel_id, id DESC
+            SELECT recent.id, recent.channel_id, recent.guid, recent.title, recent.url,
+                   recent.published_at, recent.created_at, recent.updated_at,
+                   recent.image_url, recent.data
+            FROM unnest(ARRAY[?]::bigint[]) AS target_channel_id
+            JOIN LATERAL (
+              SELECT * FROM items
+              WHERE items.channel_id = target_channel_id
+              ORDER BY items.id DESC
+              LIMIT ?
+            ) recent ON true
+            ORDER BY recent.channel_id, recent.id DESC
           SQL
           channel_ids,
           items_per_channel
