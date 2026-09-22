@@ -6,8 +6,9 @@
 - `rails`コマンドは`docker compose run --rm web rails`を使ってください
 - ただし、`grep` `find`といったコマンドはDocker内部じゃなくそのまま実行できます
 - ファイルを作成・編集したら`docker compose run --rm web bundle exec rubocop -c .rubocop.yml`の結果を確認してください
-- Development環境での動作確認にはDevTools MCPを積極的に使ってください
+- Development環境での動作確認にはブラウザ操作ツールを積極的に使ってください
   - `/dev/login?user_id=1`のようにして任意のUserでログインできて便利です
 - Herokuのアプリ名は`feedhub`です
 - Sentryの`feeeed`orgに`feeeed`projectがあります
-- Sentry CLIが使える: `sentry-cli issues list --status unresolved` など（`.sentryclirc`でorg/project設定済み）
+- Sentry CLIが使える: `sentry-cli issues list --status unresolved` など (`.sentryclirc`でorg/project設定済み)
+- `cli/`にGo製のCLI `rururu` がある (GraphQL APIクライアント)。ビルドは`cd cli && go build -o rururu`、詳細は`cli/README.md`
