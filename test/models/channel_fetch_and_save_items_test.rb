@@ -262,6 +262,59 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
     end
   end
 
+  # #809: 通知ジョブがフィードを取り直していたせいで 429 や nil の並べ替えで失敗していた。
+  # 取得済みのフィードで通知対象を決めて、通知ジョブへ渡す
+  describe "新着Itemの通知" do
+    include ActiveJob::TestHelper
+
+    setup do
+      ActiveJob::Base.queue_adapter = :test
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+      Httpc.expects(:get).never
+    end
+
+    test "フィードの新しい方から2件以内の新規Itemだけ通知ジョブが積まれる" do
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 3.hours.ago, title: "Entry 1"),
+        build_mock_entry(entry_id: "entry-2", url: "https://example.com/2", published: 1.hour.ago, title: "Entry 2"),
+        build_mock_entry(entry_id: "entry-3", url: "https://example.com/3", published: 2.hours.ago, title: "Entry 3")
+      ]
+      stub_feed_with_entries(entries)
+
+      @channel.fetch_and_save_items(:all)
+
+      notified_ids = enqueued_jobs.select { _1["job_class"] == "ItemCreationNotifierJob" }.map { _1["arguments"].first }
+      expected_ids = @channel.items.where(guid: %w[entry-2 entry-3]).pluck(:id)
+      assert_equal expected_ids.sort, notified_ids.sort
+    end
+
+    test "publishedがnilのエントリがあっても落ちずに通知対象を決められる" do
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1"),
+        build_mock_entry(entry_id: "entry-2", url: "https://example.com/2", published: nil, title: "Entry 2")
+      ]
+      stub_feed_with_entries(entries)
+
+      @channel.fetch_and_save_items(:all)
+
+      item = @channel.items.find_by!(guid: "entry-1")
+      assert_enqueued_with(job: ItemCreationNotifierJob, args: [ item.id ])
+    end
+
+    test "既存Itemの更新では通知ジョブが積まれない" do
+      @channel.items.create!(guid: "entry-1", title: "Entry 1", url: "https://example.com/1", published_at: 1.hour.ago)
+      clear_enqueued_jobs
+      entries = [
+        build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1 updated")
+      ]
+      stub_feed_with_entries(entries)
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_no_enqueued_jobs(only: ItemCreationNotifierJob)
+    end
+  end
+
   # FEEEED-90: build_from が nil を返すフィード形式の場合、
   # save_from 内の parameters.merge! で NoMethodError が発生する
   describe "認識できないフィード形式の場合 (FEEEED-90)" do
