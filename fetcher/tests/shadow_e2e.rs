@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use fetcher::http::HttpConfig;
+use fetcher::http::{DEFAULT_MAX_BODY_BYTES, HttpConfig};
 use fetcher::shadow::{ShadowOptions, run_shadow};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
@@ -47,14 +47,16 @@ async fn shadow_writes_one_report_line_per_channel() {
         .and(path("/shadow/channels/1/items"))
         .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({ "items": [
             { "guid": "ga", "title": "A (old)", "url": "https://e.example/a", "image_url": null, "published_at": "2026-09-24T00:00:00Z",
+              "created_at": "2026-09-24T00:05:00Z",
               "data": { "summary": null, "itunes_subtitle": null, "enclosure_url": null, "enclosure_type": null } }
         ] })))
         .mount(&api)
         .await;
 
+    // 出力先の親ディレクトリが無くても作って書く
     let dir = std::env::temp_dir().join(format!("shadow-test-{}", std::process::id()));
-    std::fs::create_dir_all(&dir).unwrap();
-    let out = dir.join("report.jsonl");
+    let _ = std::fs::remove_dir_all(&dir);
+    let out = dir.join("nested").join("report.jsonl");
     run_shadow(ShadowOptions {
         api_url: api.uri(),
         token: "t".into(),
@@ -68,6 +70,9 @@ async fn shadow_writes_one_report_line_per_channel() {
             total_timeout: Duration::from_secs(5),
             proxy: None,
             min_host_interval: Duration::from_millis(0),
+            max_body_bytes: DEFAULT_MAX_BODY_BYTES,
+            // モックサーバは 127.0.0.1 で動くので、テストでだけ許可する
+            allow_private_addresses: true,
         },
     })
     .await
@@ -83,8 +88,14 @@ async fn shadow_writes_one_report_line_per_channel() {
     assert_eq!(ok["status"], "ok");
     assert_eq!(ok["entries_in_feed"], 2);
     assert_eq!(ok["new_entries"], 1);
+    assert_eq!(ok["existing_flagged"], 1);
     assert_eq!(ok["entries_compared"], 1);
     assert_eq!(ok["diffs"][0]["field"], "title");
+    assert_eq!(ok["diffs"][0]["item_created_at"], "2026-09-24T00:05:00Z");
+    assert_eq!(
+        ok["new_guids"],
+        serde_json::json!([{ "guid": "gb", "published_at": "2026-09-24T01:00:00Z" }])
+    );
     let gone = lines.iter().find(|l| l["channel_id"] == 2).unwrap();
     assert_eq!(gone["status"], "fetch_error");
     assert_eq!(gone["error"], "http_status: HTTP status 404");
@@ -158,6 +169,9 @@ async fn continues_after_one_channels_dispatcher_error() {
             total_timeout: Duration::from_secs(5),
             proxy: None,
             min_host_interval: Duration::from_millis(0),
+            max_body_bytes: DEFAULT_MAX_BODY_BYTES,
+            // モックサーバは 127.0.0.1 で動くので、テストでだけ許可する
+            allow_private_addresses: true,
         },
     })
     .await
@@ -168,9 +182,15 @@ async fn continues_after_one_channels_dispatcher_error() {
         .lines()
         .map(|l| serde_json::from_str(l).unwrap())
         .collect();
-    // channel 1 は process() が Err で終わり、ログのみでレポート行は書かれない。
-    // channel 2 のレポート行はちゃんと書かれている。
-    assert_eq!(lines.len(), 1);
-    assert_eq!(lines[0]["channel_id"], 2);
-    assert_eq!(lines[0]["status"], "ok");
+    // channel 1 は dispatcher_error の行になり、channel 2 のレポート行もちゃんと書かれている。
+    assert_eq!(lines.len(), 2);
+    let broken = lines.iter().find(|l| l["channel_id"] == 1).unwrap();
+    assert_eq!(broken["status"], "dispatcher_error");
+    assert!(
+        broken["error"].as_str().unwrap().contains("500"),
+        "{}",
+        broken["error"]
+    );
+    let healthy = lines.iter().find(|l| l["channel_id"] == 2).unwrap();
+    assert_eq!(healthy["status"], "ok");
 }

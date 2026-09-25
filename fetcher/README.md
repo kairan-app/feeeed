@@ -44,35 +44,73 @@ dispatcher から「今取り込むべきチャンネル」を受け取り、フ
 ```bash
 export FETCHER_API_URL=https://feeeed-dispatcher.example.workers.dev
 export FETCHER_TOKEN=...   # 手元の秘密情報から読み込む
-target/release/fetcher shadow --max 50 --order random --out report.jsonl
+target/release/fetcher shadow --max 50 --order random --out tmp/shadow-report.jsonl
 ```
 
 - `--max`: 1回に処理するチャンネル数 (1〜100、既定 50)
 - `--order`: `priority` (Rails のスケジューラと同じ優先度順) か `random`
-- `--out`: レポートの出力先 (既定 `shadow-report.jsonl`)
+- `--out`: レポートの出力先 (既定 `tmp/shadow-report.jsonl`。親ディレクトリが無ければ作る)
+
+レポートには本番のフィード URL や保存済みの値が入るので**コミットしない**。
+`tmp/` と `*.jsonl` (リポジトリ直下と `fetcher/` 直下) は gitignore してある。
 
 ログは `RUST_LOG=info` などで出せる。
+
+取得先がループバック・プライベート (10/8, 172.16/12, 192.168/16)・リンクローカル (169.254/16, fe80::/10)・
+CGNAT (100.64/10)・ULA (fc00::/7) などのアドレスなら接続しない (IP を直接書いた URL も、名前解決の結果も、
+リダイレクト先も調べる)。応答本文は 20 MiB で打ち切る。
 
 ### レポートの読み方
 
 1行が1チャンネル。主なキー:
 
-- `status`: `ok` なら比較まで完了。`fetch_error` (取得の失敗。`error` は `種類: 詳細` の形) か `parse_error` (パースの失敗) のときは `error` に理由が入る
+- `status`: `ok` なら比較まで完了。それ以外のときは `error` に理由が入る
+  - `fetch_error`: 取得の失敗。`error` は `種類: 詳細` の形。種類は `http_status`・`timeout`・`connect`・`too_many_redirects`・`blocked_address` (内部ネットワークのアドレス)・`too_large` (20 MiB 超)・`other`
+  - `parse_error`: パースの失敗
+  - `dispatcher_error`: dispatcher の呼び出しの失敗 (`error` は `呼び出し: 詳細` の形)。フィード側の問題ではない
 - `format` / `applied_filters`: 判定したフィード形式と適用したフィルタ
-- `entries_in_feed` / `new_entries` / `entries_compared`: フィード内のエントリ数、未保存のエントリ数、保存済みと比べたエントリ数
+- `entries_in_feed` / `new_entries`: フィード内のエントリ数、dispatcher が未保存と判定したエントリ数
+- `existing_flagged`: dispatcher が保存済みと判定したエントリ数
+- `entries_compared`: そのうち、保存済みの item を guid で引けて項目ごとに比べたエントリ数。
+  `existing_flagged` より少なければ、その差の分だけ `field: "guid"` の差分が出る
+  (entry_id と url のどちらかで保存済みと判定されたが、Rails が保存した guid と Rust の guid が違う)
+- `new_guids`: 未保存と判定したエントリの `guid` と `published_at`。Rails が次の取り込みで同じものを保存したかを後で確かめられる
 - `skipped`: Rails と同じ規則で保存対象外にしたエントリ
-- `diffs`: 一致しなかった項目。`field`、`guid` (チャンネル単位の項目なら null)、`rust`、`rails` の値
+- `diffs`: 一致しなかった項目。`field`、`guid` (チャンネル単位の項目なら null)、`rust`、`rails` の値、
+  entry の差分なら `item_created_at` (Rails がその item を保存した時刻)
+
+entry の差分には、parser の違いのほかに、Rails が保存したあとでフィード側がタイトルや本文を書き換えた
+(drift) ものも混ざる。Rails は一度保存した item を更新しないので、古い item ほど drift の可能性が高い。
+parser の違いを探すときは、最近保存された item の差分に絞るとよい。
 
 項目ごとの差分の数:
 
 ```bash
-jq -s 'map(.diffs[]) | group_by(.field) | map({field: .[0].field, count: length})' report.jsonl
+jq -s 'map(.diffs[]) | group_by(.field) | map({field: .[0].field, count: length})' tmp/shadow-report.jsonl
+```
+
+guid がずれたエントリ (保存済みと判定されたのに保存済みの item を引けなかったもの):
+
+```bash
+jq -c 'select(.existing_flagged != .entries_compared) | {channel_id, feed_url, guids: [.diffs[] | select(.field == "guid") | .guid]}' tmp/shadow-report.jsonl
+```
+
+新規と判定したエントリの一覧:
+
+```bash
+jq -c '{channel_id} + (.new_guids[])' tmp/shadow-report.jsonl
+```
+
+最近 (直近7日) 保存された item の差分だけ (drift を除いて parser の違いを探す):
+
+```bash
+jq -c '.channel_id as $c | .diffs[] | select(.item_created_at != null and .item_created_at > (now - 7*86400 | todate)) | {channel_id: $c} + .' tmp/shadow-report.jsonl
 ```
 
 エラーの種類ごとの数:
 
 ```bash
-jq -s 'map(select(.status != "ok")) | group_by(.error | split(":")[0]) | map({kind: .[0].error, count: length})' report.jsonl
+jq -s 'map(select(.status != "ok")) | group_by([.status, (.error | split(":")[0])]) | map({status: .[0].status, kind: (.[0].error | split(":")[0]), count: length})' tmp/shadow-report.jsonl
 ```
 
 ## golden テスト
@@ -94,16 +132,19 @@ docker compose run --rm web rails "fetcher:golden[fetcher/testdata/fixtures]"
 本番のフィードを手元に落として、Rails と Rust の結果が一致するかを確かめる。
 `testdata/corpus/` と `tmp/` は gitignore 下。**本番のフィード本文はコミットしない** (リポジトリは public)。
 
-1. 本番から feed_url を選ぶ (読み取り専用)。フィルタが適用されているチャンネルは全件、ほかはホストがばらけるように選ぶ:
+1. 本番から feed_url を選ぶ (読み取り専用)。フィルタが適用されているチャンネルは全件、ほかはホストごとに1件ずつ選んでから、ホスト自体も無作為に20件選ぶ
+   (内側の `DISTINCT ON` だけだとホスト名のアルファベット順の先頭に偏るため、外側で `random()` で並べ替える):
 
    ```bash
    heroku pg:psql -a feedhub -c "
    SET default_transaction_read_only = on;
    (SELECT feed_url FROM channels WHERE applied_filters::text <> '[]')
    UNION ALL
-   (SELECT DISTINCT ON (substring(feed_url from '://([^/:]+)')) feed_url FROM channels c
-    WHERE NOT EXISTS (SELECT 1 FROM channel_stoppers s WHERE s.channel_id = c.id)
-    ORDER BY substring(feed_url from '://([^/:]+)'), random() LIMIT 20);" \
+   (SELECT feed_url FROM (
+      SELECT DISTINCT ON (substring(feed_url from '://([^/:]+)')) feed_url FROM channels c
+      WHERE NOT EXISTS (SELECT 1 FROM channel_stoppers s WHERE s.channel_id = c.id)
+      ORDER BY substring(feed_url from '://([^/:]+)'), random()
+    ) per_host ORDER BY random() LIMIT 20);" \
      | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' | grep -E '^https?://' > tmp/corpus-urls.txt
    ```
 

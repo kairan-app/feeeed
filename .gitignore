@@ -49,5 +49,9 @@
 /fetcher/target
 /fetcher/testdata/corpus/*
 !/fetcher/testdata/corpus/.keep
+# 影モードのレポート (本番の値を含むのでコミットしない)
+/fetcher/tmp/
+/fetcher/*.jsonl
+/*.jsonl
 /dispatcher/node_modules
 /dispatcher/.wrangler

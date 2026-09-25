@@ -1,4 +1,5 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
+use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -23,6 +24,27 @@ pub struct FieldDiff {
     pub guid: Option<String>,
     pub rust: Option<String>,
     pub rails: Option<String>,
+    /// entry の差分のとき、Rails がその item を保存した時刻。古い item ほど、差分が parser の違いではなく
+    /// 保存後にフィード側で書き換わったもの (drift) である可能性が高い
+    pub item_created_at: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct NewGuid {
+    pub guid: String,
+    pub published_at: String,
+}
+
+/// 保存済みの items との突き合わせの結果
+#[derive(Debug)]
+pub struct EntryComparison {
+    /// dispatcher が「保存済み」と判定したエントリの数
+    pub existing_flagged: usize,
+    /// そのうち、保存済みの item を guid で引けて項目ごとに比べられた数
+    pub entries_compared: usize,
+    /// dispatcher が「未保存」と判定したエントリ
+    pub new_guids: Vec<NewGuid>,
+    pub diffs: Vec<FieldDiff>,
 }
 
 #[derive(Debug, Serialize)]
@@ -35,7 +57,9 @@ pub struct ChannelReport {
     pub applied_filters: Vec<String>,
     pub entries_in_feed: usize,
     pub new_entries: usize,
+    pub existing_flagged: usize,
     pub entries_compared: usize,
+    pub new_guids: Vec<NewGuid>,
     pub skipped: Vec<Skipped>,
     pub diffs: Vec<FieldDiff>,
     pub elapsed_ms: u128,
@@ -62,7 +86,21 @@ fn diff(
         guid: guid.map(str::to_string),
         rust: rust.map(str::to_string),
         rails: rails.map(str::to_string),
+        item_created_at: None,
     })
+}
+
+/// Rails の Channel.build_from がチャンネル情報を作る形式か (それ以外の形式では Rails も nil を返すので、
+/// Rust 側で作れなくても差分ではない)
+fn rails_builds_channel(format: FeedFormat) -> bool {
+    matches!(
+        format,
+        FeedFormat::Rss
+            | FeedFormat::Atom
+            | FeedFormat::AtomGoogleAlerts
+            | FeedFormat::ItunesRss
+            | FeedFormat::AtomYoutube
+    )
 }
 
 pub fn compare_channel(
@@ -71,11 +109,15 @@ pub fn compare_channel(
     format: FeedFormat,
 ) -> Vec<FieldDiff> {
     let Some(meta) = rust else {
+        if !rails_builds_channel(format) {
+            return vec![];
+        }
         return vec![FieldDiff {
             field: "channel",
             guid: None,
             rust: None,
             rails: Some(stored.title.clone()),
+            item_created_at: None,
         }];
     };
     let mut out = Vec::new();
@@ -110,54 +152,90 @@ pub fn compare_channel(
     out
 }
 
-pub fn compare_entries(rust: &[ShapedEntry], stored: &[StoredItem]) -> Vec<FieldDiff> {
-    let by_guid: HashMap<&str, &ShapedEntry> = rust.iter().map(|e| (e.guid.as_str(), e)).collect();
-    let mut out = Vec::new();
-    for s in stored {
-        let Some(r) = by_guid.get(s.guid.as_str()) else {
+/// `is_new` は guid ごとの dispatcher の新規判定。保存済みと判定されたのに保存済みの item を guid で
+/// 引けないもの (entry_id と url のどちらで一致したかで guid がずれる) は `guid` の差分として出す。
+pub fn compare_entries(
+    rust: &[ShapedEntry],
+    is_new: &HashMap<String, bool>,
+    stored: &[StoredItem],
+) -> EntryComparison {
+    let stored_by_guid: HashMap<&str, &StoredItem> =
+        stored.iter().map(|s| (s.guid.as_str(), s)).collect();
+    let mut out = EntryComparison {
+        existing_flagged: 0,
+        entries_compared: 0,
+        new_guids: Vec::new(),
+        diffs: Vec::new(),
+    };
+    for r in rust {
+        match is_new.get(&r.guid) {
+            Some(true) => {
+                out.new_guids.push(NewGuid {
+                    guid: r.guid.clone(),
+                    published_at: r.published_at.clone(),
+                });
+                continue;
+            }
+            Some(false) => out.existing_flagged += 1,
+            None => continue,
+        }
+        let Some(s) = stored_by_guid.get(r.guid.as_str()) else {
+            out.diffs.push(FieldDiff {
+                field: "guid",
+                guid: Some(r.guid.clone()),
+                rust: Some(r.guid.clone()),
+                rails: None,
+                item_created_at: None,
+            });
             continue;
         };
+        out.entries_compared += 1;
         let g = Some(s.guid.as_str());
-        out.extend(diff("title", g, Some(&r.title), Some(&s.title)));
-        out.extend(diff("url", g, Some(&r.url), Some(&s.url)));
-        out.extend(diff(
+        let mut diffs = Vec::new();
+        diffs.extend(diff("title", g, Some(&r.title), Some(&s.title)));
+        diffs.extend(diff("url", g, Some(&r.url), Some(&s.url)));
+        diffs.extend(diff(
             "published_at",
             g,
             Some(&r.published_at),
             Some(&s.published_at),
         ));
-        out.extend(diff(
+        diffs.extend(diff(
             "summary",
             g,
             r.data.summary.as_deref(),
             s.data.summary.as_deref(),
         ));
-        out.extend(diff(
+        diffs.extend(diff(
             "itunes_subtitle",
             g,
             r.data.itunes_subtitle.as_deref(),
             s.data.itunes_subtitle.as_deref(),
         ));
-        out.extend(diff(
+        diffs.extend(diff(
             "enclosure_url",
             g,
             r.data.enclosure_url.as_deref(),
             s.data.enclosure_url.as_deref(),
         ));
-        out.extend(diff(
+        diffs.extend(diff(
             "enclosure_type",
             g,
             r.data.enclosure_type.as_deref(),
             s.data.enclosure_type.as_deref(),
         ));
         if !r.image_pending_ogp {
-            out.extend(diff(
+            diffs.extend(diff(
                 "image_url",
                 g,
                 r.image_url.as_deref(),
                 s.image_url.as_deref(),
             ));
         }
+        for d in &mut diffs {
+            d.item_created_at = s.created_at.clone();
+        }
+        out.diffs.extend(diffs);
     }
     out
 }
@@ -177,33 +255,26 @@ fn empty_report(
         applied_filters: vec![],
         entries_in_feed: 0,
         new_entries: 0,
+        existing_flagged: 0,
         entries_compared: 0,
+        new_guids: vec![],
         skipped: vec![],
         diffs: vec![],
         elapsed_ms: started.elapsed().as_millis(),
     }
 }
 
-async fn process(
-    ch: ShadowChannel,
-    http: &HttpClient,
-    api: &DispatcherClient,
-) -> anyhow::Result<ChannelReport> {
+async fn process(ch: ShadowChannel, http: &HttpClient, api: &DispatcherClient) -> ChannelReport {
     let started = Instant::now();
     let res = match http.get_feed(&ch.feed_url, ch.use_proxy).await {
         Ok(r) => r,
         Err(e) => {
-            return Ok(empty_report(
-                &ch,
-                "fetch_error",
-                format!("{}: {e}", e.kind()),
-                started,
-            ));
+            return empty_report(&ch, "fetch_error", format!("{}: {e}", e.kind()), started);
         }
     };
     let prepared = match crate::prepare(&res.body, &ch.feed_url) {
         Ok(p) => p,
-        Err(e) => return Ok(empty_report(&ch, "parse_error", e.to_string(), started)),
+        Err(e) => return empty_report(&ch, "parse_error", e.to_string(), started),
     };
     let format = prepared.feed.format;
     let meta = shape::channel::channel_meta(&prepared.feed, &ch.feed_url, None);
@@ -224,7 +295,10 @@ async fn process(
         .collect();
     let mut flags = Vec::with_capacity(queries.len());
     for chunk in queries.chunks(CHUNK) {
-        flags.extend(api.new_flags(ch.channel_id, chunk).await?);
+        match api.new_flags(ch.channel_id, chunk).await {
+            Ok(f) => flags.extend(f),
+            Err(e) => return dispatcher_error(&ch, "new-guids", e, started),
+        }
     }
     let new_entries = flags.iter().filter(|f| **f).count();
 
@@ -251,13 +325,17 @@ async fn process(
         .collect();
     let mut stored = Vec::new();
     for chunk in existing.chunks(CHUNK) {
-        stored.extend(api.stored_items(ch.channel_id, chunk).await?);
+        match api.stored_items(ch.channel_id, chunk).await {
+            Ok(items) => stored.extend(items),
+            Err(e) => return dispatcher_error(&ch, "stored items", e, started),
+        }
     }
 
     let mut diffs = compare_channel(&ch.stored, meta.as_ref(), format);
-    diffs.extend(compare_entries(&entries, &stored));
+    let cmp = compare_entries(&entries, &is_new, &stored);
+    diffs.extend(cmp.diffs);
 
-    Ok(ChannelReport {
+    ChannelReport {
         channel_id: ch.channel_id,
         feed_url: ch.feed_url,
         status: "ok",
@@ -266,25 +344,45 @@ async fn process(
         applied_filters: prepared.applied_filters,
         entries_in_feed,
         new_entries,
-        entries_compared: stored.len(),
+        existing_flagged: cmp.existing_flagged,
+        entries_compared: cmp.entries_compared,
+        new_guids: cmp.new_guids,
         skipped,
         diffs,
         elapsed_ms: started.elapsed().as_millis(),
-    })
+    }
+}
+
+fn dispatcher_error(
+    ch: &ShadowChannel,
+    call: &str,
+    e: anyhow::Error,
+    started: Instant,
+) -> ChannelReport {
+    tracing::error!(channel_id = ch.channel_id, call, error = %e, "dispatcher call failed");
+    empty_report(ch, "dispatcher_error", format!("{call}: {e:#}"), started)
+}
+
+/// 出力先の親ディレクトリが無ければ作る (既定の `tmp/` が無い環境でも動くように)
+async fn create_parent_dir(path: &Path) -> std::io::Result<()> {
+    match path.parent() {
+        Some(parent) if !parent.as_os_str().is_empty() => tokio::fs::create_dir_all(parent).await,
+        _ => Ok(()),
+    }
 }
 
 pub async fn run_shadow(opts: ShadowOptions) -> anyhow::Result<()> {
     let api = Arc::new(DispatcherClient::new(&opts.api_url, &opts.token)?);
     let http = Arc::new(HttpClient::new(opts.http.clone())?);
     let batch = api.shadow_channels(opts.max, &opts.order).await?;
-    let _proxy_domains: HashSet<String> = batch.proxy_required_domains.into_iter().collect();
 
+    create_parent_dir(&opts.out).await?;
     let file = tokio::fs::File::create(&opts.out).await?;
     let writer = Arc::new(Mutex::new(file));
     let semaphore = Arc::new(Semaphore::new(opts.concurrency));
     // レポート行の書き込みに一度でも失敗したチャンネルが無いか (シリアライズ失敗・書き込み失敗・タスクの
     // パニックやキャンセルを含む)。1チャンネル分のレポートが確実に失われたことを意味するので、実行全体を
-    // 非ゼロ終了させる。dispatcher の呼び出し失敗など、チャンネル単体の処理失敗はこれまで通りログのみ。
+    // 非ゼロ終了させる。dispatcher の呼び出し失敗など、チャンネル単体の処理失敗は status の違う行として書く。
     let write_failed = Arc::new(AtomicBool::new(false));
     let mut tasks = tokio::task::JoinSet::new();
 
@@ -302,22 +400,18 @@ pub async fn run_shadow(opts: ShadowOptions) -> anyhow::Result<()> {
                 .await
                 .expect("semaphore is never closed");
             let channel_id = ch.channel_id;
-            match process(ch, &http, &api).await {
-                Ok(report) => {
-                    let line = match serde_json::to_string(&report) {
-                        Ok(s) => s + "\n",
-                        Err(e) => {
-                            tracing::error!(channel_id, error = %e, "failed to serialize shadow report");
-                            write_failed.store(true, Ordering::Relaxed);
-                            return;
-                        }
-                    };
-                    if let Err(e) = writer.lock().await.write_all(line.as_bytes()).await {
-                        tracing::error!(channel_id, error = %e, "failed to write shadow report line");
-                        write_failed.store(true, Ordering::Relaxed);
-                    }
+            let report = process(ch, &http, &api).await;
+            let line = match serde_json::to_string(&report) {
+                Ok(s) => s + "\n",
+                Err(e) => {
+                    tracing::error!(channel_id, error = %e, "failed to serialize shadow report");
+                    write_failed.store(true, Ordering::Relaxed);
+                    return;
                 }
-                Err(e) => tracing::error!(channel_id, error = %e, "shadow failed"),
+            };
+            if let Err(e) = writer.lock().await.write_all(line.as_bytes()).await {
+                tracing::error!(channel_id, error = %e, "failed to write shadow report line");
+                write_failed.store(true, Ordering::Relaxed);
             }
         });
     }
@@ -358,8 +452,13 @@ mod tests {
             url: format!("https://e/{guid}"),
             image_url: image.map(str::to_string),
             published_at: "2026-09-24T00:00:00Z".into(),
+            created_at: Some(format!("2026-09-2{}T00:00:00Z", guid.len())),
             data: EntryData::default(),
         }
+    }
+
+    fn flags(pairs: &[(&str, bool)]) -> HashMap<String, bool> {
+        pairs.iter().map(|(g, f)| (g.to_string(), *f)).collect()
     }
 
     #[test]
@@ -369,11 +468,45 @@ mod tests {
             stored("g1", "same", Some("https://e/ogp.png")),
             stored("g2", "rails title", None),
         ];
-        let diffs = compare_entries(&rust, &rails);
-        assert_eq!(diffs.len(), 1);
-        assert_eq!(diffs[0].field, "title");
-        assert_eq!(diffs[0].guid.as_deref(), Some("g2"));
-        assert_eq!(diffs[0].rails.as_deref(), Some("rails title"));
+        let cmp = compare_entries(&rust, &flags(&[("g1", false), ("g2", false)]), &rails);
+        assert_eq!(cmp.diffs.len(), 1);
+        assert_eq!(cmp.diffs[0].field, "title");
+        assert_eq!(cmp.diffs[0].guid.as_deref(), Some("g2"));
+        assert_eq!(cmp.diffs[0].rails.as_deref(), Some("rails title"));
+        assert_eq!(
+            cmp.diffs[0].item_created_at.as_deref(),
+            Some("2026-09-22T00:00:00Z")
+        );
+        assert_eq!(cmp.existing_flagged, 2);
+        assert_eq!(cmp.entries_compared, 2);
+    }
+
+    #[test]
+    fn existing_flagged_entries_without_a_stored_row_are_guid_diffs() {
+        // g2 は entry_id ではなく url で保存済みと判定されたが、保存済みの guid が違うので取れなかった
+        let rust = vec![
+            entry("g1", "t", false),
+            entry("g2", "t", false),
+            entry("g3", "t", false),
+        ];
+        let rails = vec![stored("g1", "t", None)];
+        let cmp = compare_entries(
+            &rust,
+            &flags(&[("g1", false), ("g2", false), ("g3", true)]),
+            &rails,
+        );
+        assert_eq!(cmp.existing_flagged, 2);
+        assert_eq!(cmp.entries_compared, 1);
+        assert_eq!(cmp.diffs.len(), 1);
+        let d = &cmp.diffs[0];
+        assert_eq!(d.field, "guid");
+        assert_eq!(d.guid.as_deref(), Some("g2"));
+        assert_eq!(d.rust.as_deref(), Some("g2"));
+        assert_eq!(d.rails, None);
+        assert_eq!(d.item_created_at, None);
+        assert_eq!(cmp.new_guids.len(), 1);
+        assert_eq!(cmp.new_guids[0].guid, "g3");
+        assert_eq!(cmp.new_guids[0].published_at, "2026-09-24T00:00:00Z");
     }
 
     #[test]
@@ -399,5 +532,39 @@ mod tests {
             compare_channel(&stored, None, FeedFormat::Rss)[0].field,
             "channel"
         );
+    }
+
+    #[test]
+    fn missing_channel_meta_is_not_a_diff_for_formats_rails_does_not_build() {
+        let stored = StoredChannel {
+            title: "T".into(),
+            description: None,
+            site_url: None,
+            image_url: None,
+        };
+        for format in [
+            FeedFormat::RssFeedburner,
+            FeedFormat::AtomFeedburner,
+            FeedFormat::GoogleDocsAtom,
+            FeedFormat::JsonFeed,
+        ] {
+            assert!(
+                compare_channel(&stored, None, format).is_empty(),
+                "{format:?}"
+            );
+        }
+        for format in [
+            FeedFormat::Rss,
+            FeedFormat::Atom,
+            FeedFormat::AtomGoogleAlerts,
+            FeedFormat::ItunesRss,
+            FeedFormat::AtomYoutube,
+        ] {
+            assert_eq!(
+                compare_channel(&stored, None, format)[0].field,
+                "channel",
+                "{format:?}"
+            );
+        }
     }
 }

@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use clap::{Parser, Subcommand};
-use fetcher::http::{HttpConfig, ProxyConfig};
+use fetcher::http::{DEFAULT_MAX_BODY_BYTES, HttpConfig, ProxyConfig};
 
 #[derive(Parser)]
 #[command(name = "fetcher")]
@@ -25,7 +25,8 @@ enum Command {
         order: String,
         #[arg(long, env = "FETCHER_CONCURRENCY", default_value_t = 8)]
         concurrency: usize,
-        #[arg(long, default_value = "shadow-report.jsonl")]
+        /// レポートの出力先。本番の値を含むのでコミットしないこと (既定の tmp/ は gitignore 下)
+        #[arg(long, default_value = "tmp/shadow-report.jsonl")]
         out: PathBuf,
         #[arg(long, env = "FETCHER_USER_AGENT", default_value = "Faraday v2.14.3")]
         user_agent: String,
@@ -71,6 +72,9 @@ async fn main() -> anyhow::Result<()> {
                     total_timeout: Duration::from_secs(30),
                     proxy,
                     min_host_interval: Duration::from_secs(1),
+                    max_body_bytes: DEFAULT_MAX_BODY_BYTES,
+                    // 内部ネットワークへの取得を防ぐ。CLI からは許可しない
+                    allow_private_addresses: false,
                 },
             })
             .await

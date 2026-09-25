@@ -38,6 +38,9 @@ pub struct StoredItem {
     pub url: String,
     pub image_url: Option<String>,
     pub published_at: String,
+    /// Rails がこの item を保存した時刻 (UTC、`...Z`)。古い dispatcher は返さないので省略可
+    #[serde(default)]
+    pub created_at: Option<String>,
     pub data: EntryData,
 }
 
