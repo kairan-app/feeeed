@@ -21,10 +21,10 @@ pub fn ruby_strip(s: &str) -> &str {
     s.trim_matches(|c| matches!(c, '\0' | '\t' | '\n' | '\x0b' | '\x0c' | '\r' | ' '))
 }
 
-// Ruby の URI.regexp(%w[http https]) は位置を固定しない部分一致なので、
-// 「http: か https: の後に URI の文字が1つ以上続く箇所があるか」で近似する。
-static URI_HTTP: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"(?i)https?:[A-Za-z0-9\-_.!~*'();/?:@&=+$,%\[\]#]").unwrap());
+// Ruby の URI.regexp(%w[http https]) は位置を固定しない部分一致で、
+// スキームだけの "http:" でも真になる (`"http:" =~ URI.regexp(%w[http https])` は真)。
+// ここでは「http: か https: (大小文字問わず) を含むか」で近似する。
+static URI_HTTP: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?i)https?:").unwrap());
 
 pub fn matches_uri_http(s: &str) -> bool {
     URI_HTTP.is_match(s)
@@ -58,6 +58,7 @@ mod tests {
         assert!(matches_uri_http("https://example.com/a"));
         assert!(matches_uri_http("see http://example.com"));
         assert!(matches_uri_http("HTTP://EXAMPLE.COM"));
+        assert!(matches_uri_http("http:"));
         assert!(!matches_uri_http("javascript:alert(1)"));
         assert!(!matches_uri_http("mailto:someone@example.com"));
         assert!(!matches_uri_http("/relative/path"));
