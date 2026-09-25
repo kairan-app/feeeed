@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use fetcher::http::{DEFAULT_MAX_BODY_BYTES, HttpConfig};
 use fetcher::shadow::{ShadowOptions, run_shadow};
-use wiremock::matchers::{method, path};
+use wiremock::matchers::{method, path, query_param};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
 #[tokio::test]
@@ -33,6 +33,7 @@ async fn shadow_writes_one_report_line_per_channel() {
     });
     Mock::given(method("GET"))
         .and(path("/shadow/channels"))
+        .and(query_param("scope", "all"))
         .respond_with(ResponseTemplate::new(200).set_body_json(batch))
         .mount(&api)
         .await;
@@ -62,6 +63,7 @@ async fn shadow_writes_one_report_line_per_channel() {
         token: "t".into(),
         max: 10,
         order: "priority".into(),
+        scope: "all".into(),
         concurrency: 4,
         out: out.clone(),
         http: HttpConfig {
@@ -161,6 +163,7 @@ async fn continues_after_one_channels_dispatcher_error() {
         token: "t".into(),
         max: 10,
         order: "priority".into(),
+        scope: "due".into(),
         concurrency: 4,
         out: out.clone(),
         http: HttpConfig {

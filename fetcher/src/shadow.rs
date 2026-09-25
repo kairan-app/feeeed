@@ -70,6 +70,8 @@ pub struct ShadowOptions {
     pub token: String,
     pub max: u32,
     pub order: String,
+    /// dispatcher に渡す `scope` (`due` か `all`)。検証時は `all` で停止中を除く全チャンネルからサンプルする
+    pub scope: String,
     pub concurrency: usize,
     pub out: PathBuf,
     pub http: HttpConfig,
@@ -374,7 +376,9 @@ async fn create_parent_dir(path: &Path) -> std::io::Result<()> {
 pub async fn run_shadow(opts: ShadowOptions) -> anyhow::Result<()> {
     let api = Arc::new(DispatcherClient::new(&opts.api_url, &opts.token)?);
     let http = Arc::new(HttpClient::new(opts.http.clone())?);
-    let batch = api.shadow_channels(opts.max, &opts.order).await?;
+    let batch = api
+        .shadow_channels(opts.max, &opts.order, &opts.scope)
+        .await?;
 
     create_parent_dir(&opts.out).await?;
     let file = tokio::fs::File::create(&opts.out).await?;

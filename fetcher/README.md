@@ -47,8 +47,17 @@ export FETCHER_TOKEN=...   # 手元の秘密情報から読み込む
 target/release/fetcher shadow --max 50 --order random --out tmp/shadow-report.jsonl
 ```
 
+本番では同時に「今取り込むべき」チャンネルはごく少数しかなく、既定 (`--scope due`) のままだと
+毎回ほぼ同じ数件しか比較できない。多めのチャンネルで検証したいときは `--scope all` を使う
+(停止中を除く全チャンネルから、ホストごとに1件ずつサンプルする):
+
+```bash
+target/release/fetcher shadow --max 50 --order random --scope all --out tmp/shadow-report.jsonl
+```
+
 - `--max`: 1回に処理するチャンネル数 (1〜100、既定 50)
 - `--order`: `priority` (Rails のスケジューラと同じ優先度順) か `random`
+- `--scope`: `due` (既定、今取り込むべきものだけ) か `all` (停止中を除く全チャンネルから検証用にサンプル)
 - `--out`: レポートの出力先 (既定 `tmp/shadow-report.jsonl`。親ディレクトリが無ければ作る)
 
 レポートには本番のフィード URL や保存済みの値が入るので**コミットしない**。

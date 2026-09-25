@@ -23,6 +23,10 @@ enum Command {
         max: u32,
         #[arg(long, default_value = "random")]
         order: String,
+        /// dispatcher に渡すチャンネルの絞り込み。`due` (既定、今取り込むべきものだけ) か
+        /// `all` (停止中を除く全チャンネルから検証用にサンプル)
+        #[arg(long, default_value = "due")]
+        scope: String,
         #[arg(long, env = "FETCHER_CONCURRENCY", default_value_t = 8)]
         concurrency: usize,
         /// レポートの出力先。本番の値を含むのでコミットしないこと (既定の tmp/ は gitignore 下)
@@ -50,6 +54,7 @@ async fn main() -> anyhow::Result<()> {
             token,
             max,
             order,
+            scope,
             concurrency,
             out,
             user_agent,
@@ -64,6 +69,7 @@ async fn main() -> anyhow::Result<()> {
                 token,
                 max,
                 order,
+                scope,
                 concurrency,
                 out,
                 http: HttpConfig {

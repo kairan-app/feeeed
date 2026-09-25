@@ -61,11 +61,20 @@ impl DispatcherClient {
         })
     }
 
-    pub async fn shadow_channels(&self, max: u32, order: &str) -> anyhow::Result<ShadowBatch> {
+    pub async fn shadow_channels(
+        &self,
+        max: u32,
+        order: &str,
+        scope: &str,
+    ) -> anyhow::Result<ShadowBatch> {
         Ok(self
             .client
             .get(format!("{}/shadow/channels", self.base_url))
-            .query(&[("max", max.to_string()), ("order", order.to_string())])
+            .query(&[
+                ("max", max.to_string()),
+                ("order", order.to_string()),
+                ("scope", scope.to_string()),
+            ])
             .bearer_auth(&self.token)
             .send()
             .await?
