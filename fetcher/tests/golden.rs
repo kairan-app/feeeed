@@ -31,7 +31,6 @@ macro_rules! golden_tests {
     ($($name:ident),* $(,)?) => {
         $(
             #[test]
-            #[ignore = "Task 6 で有効にする"]
             fn $name() { check(stringify!($name)); }
         )*
     };
