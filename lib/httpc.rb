@@ -10,6 +10,8 @@ class Httpc
 
   PROXY_TRIGGERING_STATUSES = [ 403 ].freeze
 
+  ERROR_BODY_LENGTH_LIMIT = 200
+
   def self.get(url)
     if proxy_available? && ProxyRequiredDomain.required?(url)
       return handle_response(request_via_proxy(url))
@@ -81,12 +83,18 @@ class Httpc
     response
   end
 
+  # 本文はBINARYで非ASCIIを含むことがあるので、UTF-8に正規化して切り詰めてから例外メッセージに入れる
+  def self.raise_http_error(response)
+    body = response.body.to_s.dup.force_encoding(Encoding::UTF_8).scrub.truncate(ERROR_BODY_LENGTH_LIMIT)
+    raise "HTTP request failed with status #{response.status}: #{body}"
+  end
+
   def self.handle_response(response)
     case response.status
     when 200..299
       response.body
     else
-      raise "HTTP request failed with status #{response.status}: #{response.body}"
+      raise_http_error(response)
     end
   end
 
@@ -100,7 +108,7 @@ class Httpc
         redirected: final_url != original_url
       }
     else
-      raise "HTTP request failed with status #{response.status}: #{response.body}"
+      raise_http_error(response)
     end
   end
 
@@ -114,7 +122,7 @@ class Httpc
         redirected: final_url != original_url
       }
     else
-      raise "HTTP request failed with status #{response.status}: #{response.body}"
+      raise_http_error(response)
     end
   end
 end

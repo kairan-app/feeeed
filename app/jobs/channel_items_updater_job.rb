@@ -47,6 +47,8 @@ class ChannelItemsUpdaterJob < ApplicationJob
     })
 
     # コンパクトなログ出力
-    logger.error "[ChannelItemsUpdaterJob] #{context} - Channel: #{channel.id} (#{channel.title}) - Error: #{error.class.name}: #{error.message}"
+    # エラーメッセージはBINARYのことがあり、UTF-8のタイトルと混ぜると落ちるのでUTF-8に正規化する
+    message = error.message.dup.force_encoding(Encoding::UTF_8).scrub
+    logger.error "[ChannelItemsUpdaterJob] #{context} - Channel: #{channel.id} (#{channel.title}) - Error: #{error.class.name}: #{message}"
   end
 end
