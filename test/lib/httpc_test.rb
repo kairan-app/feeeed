@@ -66,6 +66,28 @@ class HttpcTest < ActiveSupport::TestCase
         Httpc.get_with_redirect_info(url)
       end
     end
+
+    test "HTTP エラーの例外メッセージは本文を切り詰めたUTF-8にする" do
+      url = "https://example.com/feed.xml"
+      body = ("<html>見つかりません</html>" * 100).b + "\xFF".b
+
+      response = OpenStruct.new(
+        status: 404,
+        body: body,
+        env: OpenStruct.new(url: url)
+      )
+
+      stub_direct_get(url, response)
+
+      error = assert_raises(RuntimeError) do
+        Httpc.get_with_redirect_info(url)
+      end
+
+      assert_equal Encoding::UTF_8, error.message.encoding
+      assert error.message.valid_encoding?
+      assert error.message.start_with?("HTTP request failed with status 404: <html>見つかりません</html>")
+      assert_operator error.message.length, :<, 300
+    end
   end
 
   describe ".get" do
