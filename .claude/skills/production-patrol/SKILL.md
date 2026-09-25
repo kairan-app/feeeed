@@ -26,6 +26,7 @@ heroku pg:psql -a feedhub --file .claude/skills/production-patrol/queries.sql
 - **止まったチャンネル**: 停止中 (`channel_stoppers`) を除いて、チェック間隔の3倍かつ24時間以上チェックされていないチャンネル。失敗ジョブの `channel_id` と重なるなら同じ原因の可能性が高い
 - **キュー**: ready が溜まっている、一番古い ready が数十分以上前、claimed が長く残っている、などは詰まりのサイン
 - **ワーカー**: heartbeat が数分以上途絶えているプロセス
+- **DB 接続数**: Heroku Postgres essential-1 の上限は20。使い切ると worker の heartbeat が書けなくなり、ジョブも recurring タスクも止まる (Hyperdrive 経由の影モード検証で一度起きた)。15を超えていたら要対応、どの `application_name` が多いかも見る
 - **recurring タスク**: `config/recurring.yml` のスケジュールと見比べて、最終実行が遅れているもの。worker は1プロセスで scheduler も兼ねているので、worker が止まると全タスクが同じ時刻から揃って途切れる
 - **`SolidQueue::Processes::ProcessPrunedError`**: 実行中の worker プロセスが heartbeat を失って刈り取られた印。その時刻を recurring タスクの途切れや Heroku の dyno の再起動・crash と突き合わせる
 

@@ -53,7 +53,18 @@ SELECT kind, hostname, last_heartbeat_at, NOW() - last_heartbeat_at AS since
 FROM solid_queue_processes
 ORDER BY kind;
 
-\echo '== 3c. recurringタスクの最終実行'
+\echo '== 3c. DB接続数 (Heroku Postgres essential-1 の上限は20。この巡回自身の接続も1つ含む)'
+SELECT count(*) AS total FROM pg_stat_activity WHERE datname = current_database();
+
+SELECT coalesce(nullif(application_name, ''), '(なし)') AS application_name,
+       state,
+       count(*) AS n
+FROM pg_stat_activity
+WHERE datname = current_database()
+GROUP BY 1, 2
+ORDER BY n DESC;
+
+\echo '== 3d. recurringタスクの最終実行'
 SELECT task_key, max(run_at) AS last_run_at, NOW() - max(run_at) AS since
 FROM solid_queue_recurring_executions
 GROUP BY 1
