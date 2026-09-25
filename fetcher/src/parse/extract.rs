@@ -39,7 +39,9 @@ pub struct RawFeed {
     pub description: Option<String>,
     /// Feedjira の feed.url (Atom は `@url || (links - [feed_url]).last`)
     pub url: Option<String>,
-    /// Atom の links (build_from_atom の site_url に使う)
+    /// Atom / AtomGoogleAlerts の links (build_from_atom の site_url に使う)。
+    /// それ以外のフォーマット (Rss / ItunesRss / RssFeedburner / AtomFeedburner) は
+    /// 汎用の links 収集ルール自体が無いので常に空
     pub links: Vec<String>,
     pub itunes_image: Option<String>,
     pub entries: Vec<RawEntry>,
@@ -256,6 +258,51 @@ mod tests {
         assert_eq!(e.enclosure_url.as_deref(), Some("https://e/1.mp3"));
         assert_eq!(e.enclosure_type.as_deref(), Some("audio/mpeg"));
         assert_eq!(e.itunes_subtitle.as_deref(), Some("s"));
+    }
+
+    #[test]
+    fn google_alerts_feed_url_comes_from_rel_self_link() {
+        let xml = r#"<feed xmlns="http://www.w3.org/2005/Atom"><id>tag:google.com,2005:reader/user/1/state/com.google/alerts/2</id>
+            <link href="https://alerts/feed" rel="self"/>
+            <entry><link href="https://n.example/b"/></entry>
+        </feed>"#;
+        let feed = parse_feed(xml).unwrap();
+        assert_eq!(feed.url.as_deref(), Some("https://alerts/feed"));
+    }
+
+    #[test]
+    fn rss_feedburner_feed_url_and_entry_prefers_orig_link() {
+        let xml = r#"<rss><channel><title>T</title><link>https://feed/</link>
+            <item><title>E</title><link>https://e/1</link><feedburner:origLink>https://orig/1</feedburner:origLink></item>
+            <!-- feedburner -->
+        </channel></rss>"#;
+        let feed = parse_feed(xml).unwrap();
+        assert_eq!(feed.format, FeedFormat::RssFeedburner);
+        assert_eq!(feed.url.as_deref(), Some("https://feed/"));
+        assert_eq!(feed.entries[0].url.as_deref(), Some("https://orig/1"));
+    }
+
+    #[test]
+    fn atom_feedburner_feed_url_prefers_text_html_link() {
+        let xml = r#"<feed>Atom feedburner<title>T</title>
+            <link href="https://notype/"/>
+            <link href="https://texthtml/" type="text/html"/>
+            <entry><title>E</title></entry>
+        </feed>"#;
+        let feed = parse_feed(xml).unwrap();
+        assert_eq!(feed.format, FeedFormat::AtomFeedburner);
+        assert_eq!(feed.url.as_deref(), Some("https://texthtml/"));
+    }
+
+    #[test]
+    fn atom_feedburner_feed_url_falls_back_to_no_type_link() {
+        let xml = r#"<feed>Atom feedburner<title>T</title>
+            <link href="https://notype/"/>
+            <entry><title>E</title></entry>
+        </feed>"#;
+        let feed = parse_feed(xml).unwrap();
+        assert_eq!(feed.format, FeedFormat::AtomFeedburner);
+        assert_eq!(feed.url.as_deref(), Some("https://notype/"));
     }
 
     #[test]
