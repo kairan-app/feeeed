@@ -1,0 +1,26 @@
+{
+  "format": "atom_youtube",
+  "channel": {
+    "title": "Example Channel",
+    "description": null,
+    "site_url": "https://www.youtube.com/channel/UCexample",
+    "image_url": null
+  },
+  "applied_filters": [],
+  "entries": [
+    {
+      "guid": "yt:video:VIDEO00001",
+      "title": "Video 1",
+      "url": "https://www.youtube.com/watch?v=VIDEO00001",
+      "image_url": "https://img.youtube.com/vi/VIDEO00001/maxresdefault.jpg",
+      "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

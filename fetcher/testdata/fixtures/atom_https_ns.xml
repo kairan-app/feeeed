@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="https://www.w3.org/2005/Atom">
+  <title>Wrong Namespace</title>
+  <link href="https://example.com/ns/" rel="alternate" type="text/html"/>
+  <entry>
+    <title>ns entry</title>
+    <link href="https://example.com/ns/1" rel="alternate" type="text/html"/>
+    <id>ns-1</id>
+    <published>2026-09-24T01:00:00Z</published>
+  </entry>
+</feed>

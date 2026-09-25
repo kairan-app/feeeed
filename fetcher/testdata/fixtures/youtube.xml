@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+  <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=UCexample"/>
+  <id>yt:channel:UCexample</id>
+  <yt:channelId>UCexample</yt:channelId>
+  <title>Example Channel</title>
+  <link rel="alternate" href="https://www.youtube.com/channel/UCexample"/>
+  <author><name>Example Channel</name><uri>https://www.youtube.com/channel/UCexample</uri></author>
+  <published>2020-01-01T00:00:00+00:00</published>
+  <entry>
+    <id>yt:video:VIDEO00001</id>
+    <yt:videoId>VIDEO00001</yt:videoId>
+    <yt:channelId>UCexample</yt:channelId>
+    <title>Video 1</title>
+    <link rel="alternate" href="https://www.youtube.com/watch?v=VIDEO00001"/>
+    <author><name>Example Channel</name></author>
+    <published>2026-09-24T00:00:00+00:00</published>
+    <updated>2026-09-24T01:00:00+00:00</updated>
+    <media:group>
+      <media:title>Video 1</media:title>
+      <media:content url="https://www.youtube.com/v/VIDEO00001" type="application/x-shockwave-flash" width="640" height="390"/>
+      <media:thumbnail url="https://i1.ytimg.com/vi/VIDEO00001/hqdefault.jpg" width="480" height="360"/>
+      <media:description>video description</media:description>
+    </media:group>
+  </entry>
+</feed>

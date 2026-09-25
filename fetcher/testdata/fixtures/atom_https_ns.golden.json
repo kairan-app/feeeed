@@ -1,0 +1,28 @@
+{
+  "format": "atom",
+  "channel": {
+    "title": "Wrong Namespace",
+    "description": null,
+    "site_url": "https://example.com/ns/",
+    "image_url": null
+  },
+  "applied_filters": [
+    "AtomNamespaceFixer"
+  ],
+  "entries": [
+    {
+      "guid": "ns-1",
+      "title": "ns entry",
+      "url": "https://example.com/ns/1",
+      "image_url": null,
+      "published_at": "2026-09-24T01:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

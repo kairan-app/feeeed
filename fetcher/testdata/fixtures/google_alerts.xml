@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:idx="urn:atom-extension:indexing">
+  <id>tag:google.com,2005:reader/user/00000000000000000000/state/com.google/alerts/1234567890</id>
+  <title>Google Alert - example</title>
+  <link href="https://www.google.com/alerts/feeds/00000000000000000000/1234567890" rel="self"/>
+  <updated>2026-09-24T00:00:00Z</updated>
+  <entry>
+    <id>tag:google.com,2013:googlealerts/feed:1</id>
+    <title type="html">&lt;b&gt;example&lt;/b&gt; news</title>
+    <link href="https://www.google.com/url?rct=j&amp;sa=t&amp;url=https://news.example.com/a&amp;ct=ga"/>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <content type="html">content</content>
+  </entry>
+  <entry>
+    <id>tag:google.com,2013:googlealerts/feed:2</id>
+    <title>direct link</title>
+    <link href="https://news.example.com/b"/>
+    <published>2026-09-24T01:00:00Z</published>
+  </entry>
+</feed>

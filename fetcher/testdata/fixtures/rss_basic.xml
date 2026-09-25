@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Basic RSS</title>
+    <link>https://example.com/</link>
+    <description><![CDATA[<p>desc</p>]]></description>
+    <image><title>ignored image title</title><url>https://example.com/logo.png</url><link>https://example.com/ignored</link></image>
+    <item>
+      <title>Permalink guid only</title>
+      <guid>https://example.com/posts/1</guid>
+      <pubDate>Mon, 22 Sep 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[<p>hello <b>world</b></p>]]></description>
+      <media:thumbnail url="https://example.com/1.jpg"/>
+    </item>
+    <item>
+      <title>Non-permalink guid with link</title>
+      <link>https://example.com/posts/2</link>
+      <guid isPermaLink="false">post-2</guid>
+      <dc:date>2026-09-22T10:00:00+09:00</dc:date>
+      <enclosure url="https://example.com/2.png" type="image/png" length="10"/>
+    </item>
+    <item>
+      <title>日本語のURL</title>
+      <link>https://example.com/posts/日本語?q="x"</link>
+      <guid isPermaLink="false">post-3</guid>
+      <pubDate>Mon, 22 Sep 2026 11:00:00 GMT</pubDate>
+      <pubDate>Mon, 22 Sep 2026 08:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>No guid, link only</title>
+      <link>https://example.com/posts/4</link>
+      <pubDate>22 Sep 2026 12:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

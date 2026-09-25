@@ -1,0 +1,44 @@
+{
+  "format": "itunes_rss",
+  "channel": {
+    "title": "Podcast",
+    "description": "A podcast",
+    "site_url": "https://example.com/podcast",
+    "image_url": "https://example.com/cover.jpg"
+  },
+  "applied_filters": [],
+  "entries": [
+    {
+      "guid": "ep1",
+      "title": "Episode 1",
+      "url": "https://example.com/podcast/1",
+      "image_url": "https://example.com/ep1.jpg",
+      "published_at": "2026-09-24T06:00:00Z",
+      "data": {
+        "summary": "episode one",
+        "itunes_subtitle": "sub one",
+        "enclosure_url": "https://example.com/ep1.mp3",
+        "enclosure_type": "audio/mpeg"
+      }
+    },
+    {
+      "guid": "ep2",
+      "title": "Episode 2 without link",
+      "url": "https://example.com/ep2.mp3",
+      "image_url": null,
+      "published_at": "2026-09-25T06:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": "https://example.com/ep2.mp3",
+        "enclosure_type": "audio/mpeg"
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "title": "Episode 3 without date",
+      "reason": "validation_failed"
+    }
+  ]
+}

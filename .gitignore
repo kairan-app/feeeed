@@ -44,3 +44,8 @@
 
 # Cloudflare Workers proxy
 /proxy/node_modules
+
+# fetcher / dispatcher
+/fetcher/target
+/fetcher/testdata/corpus/*
+!/fetcher/testdata/corpus/.keep

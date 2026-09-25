@@ -1,0 +1,28 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Entity Copyright",
+    "description": "entity desc",
+    "site_url": "https://example.com/entity",
+    "image_url": null
+  },
+  "applied_filters": [
+    "HtmlEntityFixer"
+  ],
+  "entries": [
+    {
+      "guid": "entity-1",
+      "title": "entity item",
+      "url": "https://example.com/entity/1",
+      "image_url": null,
+      "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

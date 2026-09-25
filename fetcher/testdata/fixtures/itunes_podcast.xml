@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title><![CDATA[Podcast]]></title>
+    <link>https://example.com/podcast</link>
+    <description>A podcast</description>
+    <itunes:image href="https://example.com/cover.jpg"/>
+    <itunes:owner><itunes:name>owner</itunes:name><itunes:email>owner@example.com</itunes:email></itunes:owner>
+    <itunes:category text="Technology"><itunes:category text="Podcasting"/></itunes:category>
+    <item>
+      <title>Episode 1</title>
+      <link>https://example.com/podcast/1</link>
+      <guid isPermaLink="false">ep1</guid>
+      <pubDate>Wed, 24 Sep 2026 06:00:00 +0000</pubDate>
+      <description>episode one</description>
+      <itunes:subtitle>sub one</itunes:subtitle>
+      <itunes:image href="https://example.com/ep1.jpg"/>
+      <enclosure url="https://example.com/ep1.mp3" type="audio/mpeg" length="123"/>
+    </item>
+    <item>
+      <title>Episode 2 without link</title>
+      <guid isPermaLink="false">ep2</guid>
+      <pubDate>Thu, 25 Sep 2026 06:00:00 +0000</pubDate>
+      <enclosure url="https://example.com/ep2.mp3" type="audio/mpeg" length="456"/>
+    </item>
+    <item>
+      <title>Episode 3 without date</title>
+      <link>https://example.com/podcast/3</link>
+      <guid isPermaLink="false">ep3</guid>
+      <enclosure url="https://example.com/ep3.mp3" type="audio/mpeg" length="789"/>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+  <title>Atom Basic</title>
+  <subtitle>atom subtitle</subtitle>
+  <link href="https://example.com/atom/feed.xml" rel="self"/>
+  <link href="https://example.com/atom/" rel="alternate" type="text/html"/>
+  <id>tag:example.com,2026:atom</id>
+  <updated>2026-09-24T00:00:00Z</updated>
+  <author><name>author</name></author>
+  <entry>
+    <title type="html">&lt;b&gt;Bold&lt;/b&gt;   title</title>
+    <link href="https://example.com/atom/1" rel="alternate" type="text/html"/>
+    <id>tag:example.com,2026:1</id>
+    <published>2026-09-24T01:00:00+09:00</published>
+    <updated>2026-09-24T02:00:00+09:00</updated>
+    <summary>summary one</summary>
+    <media:thumbnail url="https://example.com/atom/1.jpg"/>
+  </entry>
+  <entry>
+    <title>Updated only</title>
+    <link href="https://example.com/atom/2"/>
+    <id>tag:example.com,2026:2</id>
+    <updated>2026-09-24T03:00:00Z</updated>
+    <updated>2026-09-24T04:00:00Z</updated>
+  </entry>
+</feed>
