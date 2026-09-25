@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Instant;
 
 use serde::Serialize;
@@ -281,30 +282,55 @@ pub async fn run_shadow(opts: ShadowOptions) -> anyhow::Result<()> {
     let file = tokio::fs::File::create(&opts.out).await?;
     let writer = Arc::new(Mutex::new(file));
     let semaphore = Arc::new(Semaphore::new(opts.concurrency));
+    // レポート行の書き込みに一度でも失敗したチャンネルが無いか (シリアライズ失敗・書き込み失敗・タスクの
+    // パニックやキャンセルを含む)。1チャンネル分のレポートが確実に失われたことを意味するので、実行全体を
+    // 非ゼロ終了させる。dispatcher の呼び出し失敗など、チャンネル単体の処理失敗はこれまで通りログのみ。
+    let write_failed = Arc::new(AtomicBool::new(false));
     let mut tasks = tokio::task::JoinSet::new();
 
     for ch in batch.channels {
-        let (api, http, writer, semaphore) =
-            (api.clone(), http.clone(), writer.clone(), semaphore.clone());
+        let (api, http, writer, semaphore, write_failed) = (
+            api.clone(),
+            http.clone(),
+            writer.clone(),
+            semaphore.clone(),
+            write_failed.clone(),
+        );
         tasks.spawn(async move {
-            let _slot = semaphore.acquire_owned().await.unwrap();
+            let _slot = semaphore
+                .acquire_owned()
+                .await
+                .expect("semaphore is never closed");
             let channel_id = ch.channel_id;
             match process(ch, &http, &api).await {
                 Ok(report) => {
-                    let line = serde_json::to_string(&report).unwrap() + "\n";
-                    writer
-                        .lock()
-                        .await
-                        .write_all(line.as_bytes())
-                        .await
-                        .unwrap();
+                    let line = match serde_json::to_string(&report) {
+                        Ok(s) => s + "\n",
+                        Err(e) => {
+                            tracing::error!(channel_id, error = %e, "failed to serialize shadow report");
+                            write_failed.store(true, Ordering::Relaxed);
+                            return;
+                        }
+                    };
+                    if let Err(e) = writer.lock().await.write_all(line.as_bytes()).await {
+                        tracing::error!(channel_id, error = %e, "failed to write shadow report line");
+                        write_failed.store(true, Ordering::Relaxed);
+                    }
                 }
                 Err(e) => tracing::error!(channel_id, error = %e, "shadow failed"),
             }
         });
     }
-    while tasks.join_next().await.is_some() {}
+    while let Some(res) = tasks.join_next().await {
+        if let Err(e) = res {
+            tracing::error!(error = %e, "shadow task panicked or was cancelled, its report line was lost");
+            write_failed.store(true, Ordering::Relaxed);
+        }
+    }
     writer.lock().await.flush().await?;
+    if write_failed.load(Ordering::Relaxed) {
+        anyhow::bail!("shadow: failed to write one or more channel report lines");
+    }
     Ok(())
 }
 
