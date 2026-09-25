@@ -50,6 +50,39 @@ jobs:
         run: |
           bin/rails test
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: dispatcher/package-lock.json
+
+      - name: Run dispatcher tests
+        working-directory: dispatcher
+        env:
+          TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/feeeed_test
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+
+  fetcher:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fetcher
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: fetcher
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+
   lint:
     runs-on: ubuntu-latest
     steps:

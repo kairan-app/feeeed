@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Entity Char Refs</title>
+    <link>https://example.com/charrefs</link>
+    <description>copyright has only char refs and predefined entities</description>
+    <copyright>&#8471; &amp; &#xA9; 2026 Example</copyright>
+    <generator>Gen &#x2122; &lt;1.0&gt;</generator>
+    <item>
+      <title>char refs item</title>
+      <link>https://example.com/charrefs/1</link>
+      <guid isPermaLink="false">charrefs-1</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

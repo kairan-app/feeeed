@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Edge RSS</title>
+    <link>https://example.com/edge</link>
+    <description>edge cases</description>
+    <item>
+      <title>   </title>
+      <link>https://example.com/blank-title</link>
+      <guid isPermaLink="false">blank-title</guid>
+      <pubDate>Tue, 23 Sep 2026 09:00:00 +0900</pubDate>
+    </item>
+    <item>
+      <title>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</title>
+      <link>https://example.com/long-title</link>
+      <guid isPermaLink="false">long-title</guid>
+      <pubDate>Tue, 23 Sep 2026 09:10:00 +0900</pubDate>
+    </item>
+    <item>
+      <title>Bad image</title>
+      <link>https://example.com/bad-image</link>
+      <guid isPermaLink="false">bad-image</guid>
+      <pubDate>Tue, 23 Sep 2026 09:20:00 +0900</pubDate>
+      <media:thumbnail url="javascript:alert(1)"/>
+    </item>
+    <item>
+      <title>No url no guid</title>
+      <pubDate>Tue, 23 Sep 2026 09:40:00 +0900</pubDate>
+    </item>
+    <item>
+      <title>Mailto link</title>
+      <link>mailto:someone@example.com</link>
+      <guid isPermaLink="false">mailto</guid>
+      <pubDate>Tue, 23 Sep 2026 09:50:00 +0900</pubDate>
+    </item>
+    <item>
+      <title>Unparseable date</title>
+      <link>https://example.com/bad-date</link>
+      <guid isPermaLink="false">bad-date</guid>
+      <pubDate>not a date</pubDate>
+    </item>
+    <item>
+      <title>JST date</title>
+      <link>https://example.com/jst</link>
+      <guid isPermaLink="false">jst</guid>
+      <pubDate>Tue, 23 Sep 2026 10:00:00 JST</pubDate>
+    </item>
+  </channel>
+</rss>

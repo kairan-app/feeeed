@@ -1,0 +1,26 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Entity Char Refs",
+    "description": "copyright has only char refs and predefined entities",
+    "site_url": "https://example.com/charrefs",
+    "image_url": null
+  },
+  "applied_filters": [],
+  "entries": [
+    {
+      "guid": "charrefs-1",
+      "title": "char refs item",
+      "url": "https://example.com/charrefs/1",
+      "image_url": null,
+      "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

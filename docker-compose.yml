@@ -25,5 +25,16 @@ services:
     depends_on:
       - database
     command: bin/jobs
+  dispatcher:
+    image: node:24
+    working_dir: /app/dispatcher
+    volumes:
+      - .:/app
+      - dispatcher_node_modules:/app/dispatcher/node_modules
+    environment:
+      TEST_DATABASE_URL: postgres://postgres:password@database:5432/feeeed_test
+    depends_on:
+      - database
 volumes:
   bundle:
+  dispatcher_node_modules:

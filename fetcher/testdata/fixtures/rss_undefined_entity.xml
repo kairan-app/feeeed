@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Undefined Entity RSS</title>
+    <link>https://example.com/undefined-entity</link>
+    <description>pins the truncation behavior</description>
+    <item>
+      <title>before</title>
+      <link>https://example.com/before</link>
+      <guid isPermaLink="false">before</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>entity</title>
+      <link>https://example.com/entity</link>
+      <guid isPermaLink="false">entity</guid>
+      <pubDate>Wed, 24 Sep 2026 01:00:00 +0000</pubDate>
+      <description>a&nbsp;b &amp; c &#x3042;</description>
+    </item>
+    <item>
+      <title>after</title>
+      <link>https://example.com/after</link>
+      <guid isPermaLink="false">after</guid>
+      <pubDate>Wed, 24 Sep 2026 02:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,71 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Edge RSS",
+    "description": "edge cases",
+    "site_url": "https://example.com/edge",
+    "image_url": null
+  },
+  "applied_filters": [
+    "RelativeUrlResolver"
+  ],
+  "entries": [
+    {
+      "guid": "blank-title",
+      "title": "〓",
+      "url": "https://example.com/blank-title",
+      "image_url": null,
+      "published_at": "2026-09-23T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "bad-image",
+      "title": "Bad image",
+      "url": "https://example.com/bad-image",
+      "image_url": null,
+      "published_at": "2026-09-23T00:20:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "jst",
+      "title": "JST date",
+      "url": "https://example.com/jst",
+      "image_url": null,
+      "published_at": "2026-09-23T01:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "title": "No url no guid",
+      "reason": "no_guid"
+    },
+    {
+      "title": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "reason": "validation_failed"
+    },
+    {
+      "title": "Mailto link",
+      "reason": "validation_failed"
+    },
+    {
+      "title": "Unparseable date",
+      "reason": "validation_failed"
+    }
+  ]
+}

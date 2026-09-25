@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <copyright>&copy; 2026 Example</copyright>
+    <generator>Gen &trade;</generator>
+    <title>Entity Copyright</title>
+    <link>https://example.com/entity</link>
+    <description>entity desc</description>
+    <item>
+      <title>entity item</title>
+      <link>https://example.com/entity/1</link>
+      <guid isPermaLink="false">entity-1</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

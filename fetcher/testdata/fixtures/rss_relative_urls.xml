@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Relative URLs</title>
+    <link>/</link>
+    <description>relative</description>
+    <item>
+      <title>root relative</title>
+      <link>/post/1/</link>
+      <guid isPermaLink="false">rel-1</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>path relative</title>
+      <link>post/2/</link>
+      <guid isPermaLink="false">rel-2</guid>
+      <pubDate>Wed, 24 Sep 2026 01:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

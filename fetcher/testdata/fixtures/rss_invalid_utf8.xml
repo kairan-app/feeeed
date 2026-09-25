@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Invalid ÿþ bytes</title><link>https://example.com/bytes</link><description>d</description><item><title>item Ã( x</title><link>https://example.com/bytes/1</link><guid isPermaLink="false">bytes-1</guid><pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate></item></channel></rss>
