@@ -1,0 +1,13 @@
+name = "feeeed-dispatcher"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+# id は Task 12 で `wrangler hyperdrive create` した結果に置き換える
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "00000000000000000000000000000000"
+localConnectionString = "postgres://postgres:password@localhost:5432/feeeed_development"

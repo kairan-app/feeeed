@@ -49,3 +49,5 @@
 /fetcher/target
 /fetcher/testdata/corpus/*
 !/fetcher/testdata/corpus/.keep
+/dispatcher/node_modules
+/dispatcher/.wrangler
