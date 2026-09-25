@@ -74,7 +74,8 @@ impl ShapedFeed {
         self.skipped.sort_by(|a, b| {
             let ra = serde_json::to_string(&a.reason).unwrap();
             let rb = serde_json::to_string(&b.reason).unwrap();
-            (ra, a.title.clone().unwrap_or_default()).cmp(&(rb, b.title.clone().unwrap_or_default()))
+            (ra, a.title.clone().unwrap_or_default())
+                .cmp(&(rb, b.title.clone().unwrap_or_default()))
         });
     }
 }
