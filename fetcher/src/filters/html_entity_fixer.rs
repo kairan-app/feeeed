@@ -50,6 +50,43 @@ fn xml_escape_text(s: &str) -> String {
         .replace('>', "&gt;")
 }
 
+static ENTITY_REF: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z][a-zA-Z0-9]*);").unwrap());
+
+/// Nokogiri (libxml2) が元の要素を書き出したときの形に揃える。
+/// XML の定義済みエンティティと文字参照は文字に直してから & < > だけをエスケープし直し、
+/// それ以外の名前付きエンティティ (未定義) は参照のまま残す。
+fn nokogiri_serialized_text(raw: &str) -> String {
+    let mut out = String::with_capacity(raw.len());
+    let mut last_end = 0usize;
+    for caps in ENTITY_REF.captures_iter(raw) {
+        let whole = caps.get(0).unwrap();
+        out.push_str(&xml_escape_text(&raw[last_end..whole.start()]));
+        let name = &caps[1];
+        let decoded = match name {
+            "amp" => Some('&'),
+            "lt" => Some('<'),
+            "gt" => Some('>'),
+            "quot" => Some('"'),
+            "apos" => Some('\''),
+            _ if name.starts_with("#x") || name.starts_with("#X") => {
+                u32::from_str_radix(&name[2..], 16)
+                    .ok()
+                    .and_then(char::from_u32)
+            }
+            _ if name.starts_with('#') => name[1..].parse().ok().and_then(char::from_u32),
+            _ => None,
+        };
+        match decoded {
+            Some(c) => out.push_str(&xml_escape_text(&c.to_string())),
+            None => out.push_str(whole.as_str()),
+        }
+        last_end = whole.end();
+    }
+    out.push_str(&xml_escape_text(&raw[last_end..]));
+    out
+}
+
 /// channel の中身 (channel 開始タグ〜終了タグまで) のうち、item の外側にある
 /// 対象タグだけをデコードして書き換える。
 fn rewrite_channel(channel: &str) -> (String, Vec<&'static str>) {
@@ -66,9 +103,13 @@ fn rewrite_channel(channel: &str) -> (String, Vec<&'static str>) {
             if in_item(whole.start()) {
                 continue;
             }
-            let decoded = html_escape::decode_html_entities(&caps[2]).to_string();
-            let replacement = format!("{}{}{}", &caps[1], xml_escape_text(&decoded), &caps[3]);
-            if replacement != whole.as_str() {
+            // Ruby 版は書き換え前後の to_xml を比べて「変更があったか」を決めるので、
+            // 生の文字列ではなく Nokogiri が書き出す形同士で比べる
+            let original = nokogiri_serialized_text(&caps[2]);
+            let decoded = html_escape::decode_html_entities(&original).to_string();
+            let escaped = xml_escape_text(&decoded);
+            if escaped != original {
+                let replacement = format!("{}{}{}", &caps[1], escaped, &caps[3]);
                 edits.push((whole.start(), whole.end(), replacement, tag));
             }
         }
@@ -161,6 +202,20 @@ mod tests {
         let xml = "<rss><channel><copyright>&copy; A &lt; B</copyright></channel></rss>";
         let (fixed, _) = HtmlEntityFixer.apply(xml).unwrap();
         assert!(fixed.contains("<copyright>© A &lt; B</copyright>"));
+    }
+
+    #[test]
+    fn not_applied_when_only_xml_escapes_and_char_refs() {
+        // Nokogiri 上は文字参照も &amp; も元のまま同じ形で書き出されるので「変更なし」になる
+        let xml = "<rss><channel><copyright>&#8471; &amp; &#xA9; 2026</copyright></channel></rss>";
+        assert!(HtmlEntityFixer.apply(xml).is_none());
+    }
+
+    #[test]
+    fn applied_when_named_entity_mixed_with_char_refs() {
+        let xml = "<rss><channel><copyright>&#xA9; &amp; &trade;</copyright></channel></rss>";
+        let (fixed, _) = HtmlEntityFixer.apply(xml).unwrap();
+        assert!(fixed.contains("<copyright>© &amp; ™</copyright>"));
     }
 
     #[test]
