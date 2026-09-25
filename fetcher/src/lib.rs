@@ -1,3 +1,4 @@
+pub mod dispatcher_client;
 pub mod encoding;
 pub mod filters;
 pub mod http;
@@ -5,6 +6,7 @@ pub mod model;
 pub mod ogp;
 pub mod parse;
 pub mod ruby;
+pub mod shadow;
 pub mod shape;
 
 use model::ShapedFeed;
@@ -52,4 +54,43 @@ pub fn golden_output(body: &[u8], feed_url: &str) -> anyhow::Result<ShapedFeed> 
     };
     out.normalize_order();
     Ok(out)
+}
+
+/// DIR/*.xml ごとに golden_output と DIR/<name>.golden.json を比べ、一致しないものを表示する。
+pub fn golden_check(dir: &std::path::Path) -> anyhow::Result<()> {
+    let mut failures = 0;
+    let mut total = 0;
+    let mut paths: Vec<_> = std::fs::read_dir(dir)?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.extension().is_some_and(|x| x == "xml"))
+        .collect();
+    paths.sort();
+    for xml in paths {
+        let name = xml.file_stem().unwrap().to_string_lossy().to_string();
+        let golden_path = dir.join(format!("{name}.golden.json"));
+        let Ok(golden) = std::fs::read_to_string(&golden_path) else {
+            continue;
+        };
+        total += 1;
+        let url_path = dir.join(format!("{name}.url"));
+        let feed_url = std::fs::read_to_string(&url_path)
+            .map(|s| s.lines().next().unwrap_or_default().trim().to_string())
+            .unwrap_or_else(|_| format!("https://example.com/{name}/feed.xml"));
+        let expected: model::ShapedFeed = serde_json::from_str(&golden)?;
+        match golden_output(&std::fs::read(&xml)?, &feed_url) {
+            Ok(actual) if actual == expected => {}
+            Ok(actual) => {
+                failures += 1;
+                println!("MISMATCH {name}");
+                println!("  expected: {}", serde_json::to_string(&expected)?);
+                println!("  actual:   {}", serde_json::to_string(&actual)?);
+            }
+            Err(e) => {
+                failures += 1;
+                println!("ERROR {name}: {e}");
+            }
+        }
+    }
+    println!("{} / {} matched", total - failures, total);
+    Ok(())
 }
