@@ -16,7 +16,7 @@ DB へは Hyperdrive 経由で接続する。今のエンドポイントはす�
 
 | メソッドとパス | 説明 |
 | --- | --- |
-| `GET /shadow/channels?max=20&order=priority` | 今取り込むべきチャンネルと保存済みのチャンネル情報、プロキシ必須ドメインの一覧を返す。`max` は 1〜100、`order` は `priority` か `random`。同じホストのチャンネルは1回に1件まで |
+| `GET /shadow/channels?max=20&order=priority&scope=due` | 今取り込むべきチャンネルと保存済みのチャンネル情報、プロキシ必須ドメインの一覧を返す。`max` は 1〜100、`order` は `priority` か `random`、`scope` は `due` (既定、今取り込むべきものだけ) か `all` (停止中を除く全チャンネルから検証用にサンプル)。同じホストのチャンネルは1回に1件まで |
 | `POST /channels/:channel_id/new-guids` | `{ "entries": [{ "entry_id", "url" }] }` を受け取り、それぞれが未保存 (新規) かどうかを返す (最大1000件) |
 | `POST /shadow/channels/:channel_id/items` | `{ "guids": [...] }` を受け取り、保存済みの items を返す (最大1000件)。各 item の `created_at` は Rails が保存した時刻 (UTC、`...Z`) |
 

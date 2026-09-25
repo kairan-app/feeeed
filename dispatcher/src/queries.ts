@@ -36,15 +36,18 @@ export type StoredItem = {
   data: { summary: string | null; itunes_subtitle: string | null; enclosure_url: string | null; enclosure_type: string | null };
 };
 
-export async function selectDueChannels(sql: Db, opts: { max: number; order: "priority" | "random" }): Promise<DueChannel[]> {
+export async function selectDueChannels(
+  sql: Db,
+  opts: { max: number; order: "priority" | "random"; scope?: "due" | "all" },
+): Promise<DueChannel[]> {
   const orderBy = opts.order === "random" ? sql`random()` : sql`check_interval_hours, last_items_checked_at`;
-  const rows = await sql`
-    WITH due AS (
-      SELECT c.id, c.feed_url, c.site_url, c.title, c.description, c.image_url,
-             c.check_interval_hours, c.last_items_checked_at,
-             lower(substring(c.feed_url from '^[a-zA-Z][a-zA-Z0-9+.-]*://([^/:?#]+)')) AS host
-      FROM channels c
-      WHERE NOT EXISTS (SELECT 1 FROM channel_stoppers s WHERE s.channel_id = c.id)
+  // scope: "due" (既定) は Rails の needs_check_now と同じ「今取り込むべきか」の条件を足す。
+  // "all" は本番の影モード検証用に、停止中を除く全チャンネルから (ホストごとに1件) サンプルするため、
+  // この条件を丸ごと外す。SQL 全体を複製しないよう、postgres.js のフラグメントで条件だけ差し替える
+  const dueFilter =
+    (opts.scope ?? "due") === "all"
+      ? sql``
+      : sql`
         AND (
           c.last_items_checked_at IS NULL
           OR c.last_items_checked_at < (now() AT TIME ZONE 'UTC')
@@ -55,7 +58,15 @@ export async function selectDueChannels(sql: Db, opts: { max: number; order: "pr
               AND fs.day_of_week = EXTRACT(DOW FROM now() AT TIME ZONE 'Asia/Tokyo')
               AND fs.hour = EXTRACT(HOUR FROM now() AT TIME ZONE 'Asia/Tokyo')
           )
-        )
+        )`;
+  const rows = await sql`
+    WITH due AS (
+      SELECT c.id, c.feed_url, c.site_url, c.title, c.description, c.image_url,
+             c.check_interval_hours, c.last_items_checked_at,
+             lower(substring(c.feed_url from '^[a-zA-Z][a-zA-Z0-9+.-]*://([^/:?#]+)')) AS host
+      FROM channels c
+      WHERE NOT EXISTS (SELECT 1 FROM channel_stoppers s WHERE s.channel_id = c.id)
+        ${dueFilter}
     ),
     per_host AS (
       SELECT DISTINCT ON (host) * FROM due

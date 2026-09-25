@@ -63,11 +63,13 @@ export function createApp(deps: Deps) {
   app.get("/shadow/channels", async (c) => {
     const max = Number(c.req.query("max") ?? "20");
     const order = c.req.query("order") ?? "priority";
+    const scope = c.req.query("scope") ?? "due";
     if (!Number.isInteger(max) || max < 1 || max > 100) return c.json({ error: "max must be 1..100" }, 400);
     if (order !== "priority" && order !== "random") return c.json({ error: "order must be priority or random" }, 400);
+    if (scope !== "due" && scope !== "all") return c.json({ error: "scope must be due or all" }, 400);
     const sql = c.get("sql");
     const [channels, domains] = await Promise.all([
-      selectDueChannels(sql, { max, order }),
+      selectDueChannels(sql, { max, order, scope }),
       proxyRequiredDomains(sql),
     ]);
     return c.json({ channels, proxy_required_domains: domains });

@@ -54,6 +54,39 @@ describe("selectDueChannels", () => {
     expect(blocked.stored).toEqual({ title: "T", description: null, site_url: "https://blocked.example/", image_url: null });
     expect(await proxyRequiredDomains(sql)).toEqual(["blocked.example"]);
   });
+
+  it("scope: all は間隔内 (未到来) のチャンネルも含むが、停止中は除く", async () => {
+    const due = await insertChannel({ feed_url: "https://a.example/feed" });
+    const notDue = await insertChannel({
+      feed_url: "https://b.example/feed",
+      check_interval_hours: 24,
+      last_items_checked_at: hoursAgo(5 / 60),
+    });
+    const stopped = await insertChannel({ feed_url: "https://c.example/feed" });
+    await sql`INSERT INTO channel_stoppers (channel_id, reason, created_at, updated_at) VALUES (${stopped}, 'x', now(), now())`;
+
+    const dueIds = (await selectDueChannels(sql, { max: 10, order: "priority", scope: "due" })).map((c) => c.channel_id).sort();
+    expect(dueIds).toEqual([due].sort());
+
+    const allIds = (await selectDueChannels(sql, { max: 10, order: "priority", scope: "all" })).map((c) => c.channel_id).sort();
+    expect(allIds).toEqual([due, notDue].sort());
+  });
+
+  it("scope: all でも同じホストからは1件だけ選ぶ", async () => {
+    const due = await insertChannel({
+      feed_url: "https://www.youtube.com/feeds/1",
+      check_interval_hours: 1,
+      last_items_checked_at: hoursAgo(5),
+    });
+    const notDueSameHost = await insertChannel({
+      feed_url: "https://www.youtube.com/feeds/2",
+      check_interval_hours: 24,
+      last_items_checked_at: hoursAgo(1),
+    });
+    const rows = await selectDueChannels(sql, { max: 10, order: "priority", scope: "all" });
+    expect(rows.map((r) => r.channel_id)).toEqual([due]);
+    expect(rows.map((r) => r.channel_id)).not.toContain(notDueSameHost);
+  });
 });
 
 describe("newFlags", () => {
