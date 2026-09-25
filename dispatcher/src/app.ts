@@ -1,14 +1,22 @@
 import { Hono } from "hono";
 import { authenticate, WorkerTokensConfigError } from "./auth";
-import type { Sql } from "./db";
+import type { Db, Sql } from "./db";
 import { newFlags, proxyRequiredDomains, selectDueChannels, storedItems } from "./queries";
 
 export type Env = { HYPERDRIVE: { connectionString: string }; WORKER_TOKENS: string };
 export type Deps = { openSql: (env: Env) => { sql: Sql; close: () => Promise<void> } };
-export type Vars = { sql: Sql; workerName: string };
+export type Vars = { sql: Db; workerName: string };
 
 export function createApp(deps: Deps) {
   const app = new Hono<{ Bindings: Env; Variables: Vars }>();
+
+  // 1リクエスト1行のアクセスログ (Workers Logs で見る)。トークンやクエリ文字列は出さない
+  app.use("*", async (c, next) => {
+    await next();
+    console.log(
+      JSON.stringify({ worker: c.get("workerName") ?? null, method: c.req.method, path: c.req.path, status: c.res.status }),
+    );
+  });
 
   app.use("*", async (c, next) => {
     let workerName: string | null;
@@ -22,11 +30,19 @@ export function createApp(deps: Deps) {
     }
     if (!workerName) return c.json({ error: "unauthorized" }, 401);
     c.set("workerName", workerName);
+    await next();
+  });
 
+  // dispatcher は本番 DB に書き込まない。コードの約束だけに頼らず、すべてのルートを
+  // READ ONLY トランザクションの中で動かし、書き込みを DB 側で拒否させる。
+  // ルートは c.get("sql") (= このトランザクション) だけを使うこと。
+  app.use("*", async (c, next) => {
     const { sql, close } = deps.openSql(c.env);
-    c.set("sql", sql);
     try {
-      await next();
+      await sql.begin("read only", async (tx) => {
+        c.set("sql", tx);
+        await next();
+      });
     } finally {
       const closing = close();
       try {

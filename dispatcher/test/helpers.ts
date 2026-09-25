@@ -2,7 +2,27 @@ import postgres from "postgres";
 import { createApp, type Env } from "../src/app";
 import { sha256Hex } from "../src/auth";
 
-export const sql = postgres(process.env.TEST_DATABASE_URL!, {
+/**
+ * テストはテーブルを TRUNCATE するので、テスト用 DB (名前が `_test` で終わるもの) 以外では動かさない。
+ * 開発用や本番の DB を指した URL を誤って渡したときに、何かを消す前に止める。
+ */
+export function assertTestDatabaseUrl(url: string | undefined): string {
+  if (!url) throw new Error("TEST_DATABASE_URL is not set");
+  let dbName: string;
+  try {
+    dbName = decodeURIComponent(new URL(url).pathname.replace(/^\//, ""));
+  } catch {
+    throw new Error("TEST_DATABASE_URL is not a valid URL");
+  }
+  if (!dbName.endsWith("_test")) {
+    throw new Error(`TEST_DATABASE_URL must point to a database whose name ends with _test (got "${dbName}")`);
+  }
+  return url;
+}
+
+const TEST_DATABASE_URL = assertTestDatabaseUrl(process.env.TEST_DATABASE_URL);
+
+export const sql = postgres(TEST_DATABASE_URL, {
   max: 2,
   fetch_types: false,
   connection: { TimeZone: "UTC" },
@@ -13,7 +33,7 @@ export const TOKEN = "test-token";
 
 export async function testEnv(): Promise<Env> {
   return {
-    HYPERDRIVE: { connectionString: process.env.TEST_DATABASE_URL! },
+    HYPERDRIVE: { connectionString: TEST_DATABASE_URL },
     WORKER_TOKENS: JSON.stringify({ "test-machine": await sha256Hex(TOKEN) }),
   };
 }
@@ -48,11 +68,16 @@ export async function insertChannel(attrs: {
   return Number(row.id);
 }
 
-export async function insertItem(channelId: number, guid: string, attrs: { title?: string; url?: string; published_at?: Date; data?: object } = {}) {
+export async function insertItem(
+  channelId: number,
+  guid: string,
+  attrs: { title?: string; url?: string; published_at?: Date; created_at?: Date; data?: object } = {},
+) {
   await sql`
     INSERT INTO items (channel_id, guid, title, url, published_at, data, created_at, updated_at)
     VALUES (${channelId}, ${guid}, ${attrs.title ?? guid}, ${attrs.url ?? `https://example.com/${guid}`},
-            ${attrs.published_at ?? new Date("2026-09-24T00:00:00Z")}, ${sql.json((attrs.data ?? {}) as any)}, now(), now())`;
+            ${attrs.published_at ?? new Date("2026-09-24T00:00:00Z")}, ${sql.json((attrs.data ?? {}) as any)},
+            ${attrs.created_at ?? new Date()}, now())`;
 }
 
 export function hoursAgo(h: number) {

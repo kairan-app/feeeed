@@ -1,4 +1,4 @@
-import type { Sql } from "./db";
+import type { Db } from "./db";
 
 /**
  * postgres.js の `sql.array(...)` / 生の JS 配列 + `::text[]` キャストは、
@@ -13,7 +13,7 @@ import type { Sql } from "./db";
  * そのため配列は自前で PostgreSQL のテキストリテラル形式 (`{"a","b",NULL}`) に組み立て、
  * ただの文字列パラメータとして渡して `::text[]` でキャストする。
  */
-function pgTextArrayLiteral(values: (string | null)[]): string {
+export function pgTextArrayLiteral(values: (string | null)[]): string {
   return "{" + values.map((v) => (v === null ? "NULL" : `"${v.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`)).join(",") + "}";
 }
 
@@ -31,10 +31,12 @@ export type StoredItem = {
   url: string;
   image_url: string | null;
   published_at: string;
+  /** Rails がこの item を保存した時刻 (UTC、`...Z`)。フィード側の書き換えと parser の差を見分けるため */
+  created_at: string;
   data: { summary: string | null; itunes_subtitle: string | null; enclosure_url: string | null; enclosure_type: string | null };
 };
 
-export async function selectDueChannels(sql: Sql, opts: { max: number; order: "priority" | "random" }): Promise<DueChannel[]> {
+export async function selectDueChannels(sql: Db, opts: { max: number; order: "priority" | "random" }): Promise<DueChannel[]> {
   const orderBy = opts.order === "random" ? sql`random()` : sql`check_interval_hours, last_items_checked_at`;
   const rows = await sql`
     WITH due AS (
@@ -75,7 +77,7 @@ export async function selectDueChannels(sql: Sql, opts: { max: number; order: "p
 }
 
 export async function newFlags(
-  sql: Sql,
+  sql: Db,
   channelId: number,
   entries: { entry_id: string | null; url: string | null }[],
 ): Promise<boolean[]> {
@@ -92,11 +94,12 @@ export async function newFlags(
   return rows.map((r) => r.is_new as boolean);
 }
 
-export async function storedItems(sql: Sql, channelId: number, guids: string[]): Promise<StoredItem[]> {
+export async function storedItems(sql: Db, channelId: number, guids: string[]): Promise<StoredItem[]> {
   if (guids.length === 0) return [];
   const rows = await sql`
     SELECT guid, title, url, image_url,
            to_char(published_at, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS published_at,
+           to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS created_at,
            data->>'summary' AS summary, data->>'itunes_subtitle' AS itunes_subtitle,
            data->>'enclosure_url' AS enclosure_url, data->>'enclosure_type' AS enclosure_type
     FROM items
@@ -108,6 +111,7 @@ export async function storedItems(sql: Sql, channelId: number, guids: string[]):
     url: r.url,
     image_url: r.image_url,
     published_at: r.published_at,
+    created_at: r.created_at,
     data: {
       summary: r.summary,
       itunes_subtitle: r.itunes_subtitle,
@@ -117,7 +121,7 @@ export async function storedItems(sql: Sql, channelId: number, guids: string[]):
   }));
 }
 
-export async function proxyRequiredDomains(sql: Sql): Promise<string[]> {
+export async function proxyRequiredDomains(sql: Db): Promise<string[]> {
   const rows = await sql`SELECT lower(domain) AS domain FROM proxy_required_domains ORDER BY domain`;
   return rows.map((r) => r.domain as string);
 }

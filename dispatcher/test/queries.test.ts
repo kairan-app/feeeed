@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { newFlags, proxyRequiredDomains, selectDueChannels, storedItems } from "../src/queries";
+import { newFlags, pgTextArrayLiteral, proxyRequiredDomains, selectDueChannels, storedItems } from "../src/queries";
 import { hoursAgo, insertChannel, insertItem, resetTables, sql } from "./helpers";
 
 function tokyoNow() {
@@ -81,14 +81,29 @@ describe("newFlags", () => {
 describe("storedItems", () => {
   it("guid で保存済みの item を返す", async () => {
     const id = await insertChannel({ feed_url: "https://a.example/feed" });
-    await insertItem(id, "g1", { title: "one", data: { summary: "s", enclosure_url: "https://a.example/1.mp3", other: "x" } });
+    await insertItem(id, "g1", { title: "one", created_at: new Date("2026-09-20T12:34:56Z"), data: { summary: "s", enclosure_url: "https://a.example/1.mp3", other: "x" } });
     const items = await storedItems(sql, id, ["g1", "missing"]);
     expect(items).toEqual([
       {
         guid: "g1", title: "one", url: "https://example.com/g1", image_url: null,
         published_at: "2026-09-24T00:00:00Z",
+        created_at: "2026-09-20T12:34:56Z",
         data: { summary: "s", itunes_subtitle: null, enclosure_url: "https://a.example/1.mp3", enclosure_type: null },
       },
     ]);
+  });
+});
+
+describe("pgTextArrayLiteral", () => {
+  it("PostgreSQL の text[] として元の値に戻る", async () => {
+    const values = ['a"b', "c\\d", "{x,y}", "NULL", "", null, "日本語🍣", '\\"', "line1\nline2", " spaced "];
+    const rows = await sql`
+      SELECT v, v IS NULL AS is_null FROM unnest(${pgTextArrayLiteral(values)}::text[]) WITH ORDINALITY AS t(v, ord) ORDER BY ord`;
+    expect(rows.map((r) => (r.is_null ? null : r.v))).toEqual(values);
+  });
+
+  it("空配列は空の text[]", async () => {
+    const [row] = await sql`SELECT cardinality(${pgTextArrayLiteral([])}::text[]) AS n`;
+    expect(Number(row.n)).toBe(0);
   });
 });
