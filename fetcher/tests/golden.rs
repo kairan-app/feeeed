@@ -48,4 +48,5 @@ golden_tests!(
     youtube,
     google_alerts,
     rss_invalid_utf8,
+    rss_undefined_entity,
 );

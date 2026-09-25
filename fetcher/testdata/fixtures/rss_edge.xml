@@ -24,13 +24,6 @@
       <media:thumbnail url="javascript:alert(1)"/>
     </item>
     <item>
-      <title>Entity in description</title>
-      <link>https://example.com/entity</link>
-      <guid isPermaLink="false">entity</guid>
-      <pubDate>Tue, 23 Sep 2026 09:30:00 +0900</pubDate>
-      <description>a&nbsp;b &amp; c &#x3042;</description>
-    </item>
-    <item>
       <title>No url no guid</title>
       <pubDate>Tue, 23 Sep 2026 09:40:00 +0900</pubDate>
     </item>

@@ -1,0 +1,26 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Undefined Entity RSS",
+    "description": "pins the truncation behavior",
+    "site_url": "https://example.com/undefined-entity",
+    "image_url": null
+  },
+  "applied_filters": [],
+  "entries": [
+    {
+      "guid": "before",
+      "title": "before",
+      "url": "https://example.com/before",
+      "image_url": null,
+      "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}
