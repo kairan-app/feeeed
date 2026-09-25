@@ -388,6 +388,9 @@ class Channel < ApplicationRecord
         feed.entries.sort_by { _1.published || Time.at(0) }.reverse.take(10)
       end
 
+    # 新しい方から見て2件以内のエントリだけ、新規Itemとして保存できたら通知する
+    notifiable_guids = feed.entries.select(&:published).sort_by(&:published).last(2).flat_map { [ _1.entry_id, _1.url ] }.compact
+
     success_count = 0
     error_count = 0
 
@@ -459,13 +462,16 @@ class Channel < ApplicationRecord
           data: entry.to_h
         }
         item = self.items.find_or_initialize_by(guid: guid)
+        new_item = item.new_record?
 
-        if item.new_record?
+        if new_item
           Rails.logger.info "[Channel] Saving new item: #{entry.title} (#{encoded_url})"
         end
 
         item.update!(parameters)
         success_count += 1
+
+        ItemCreationNotifierJob.perform_later(item.id) if new_item && guid.in?(notifiable_guids)
       rescue ActiveRecord::RecordInvalid => e
         error_count += 1
 

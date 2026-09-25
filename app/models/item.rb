@@ -20,7 +20,6 @@ class Item < ApplicationRecord
   strip_before_save :title, :image_url
   empty_strings_are_aligned_to_nil :image_url
   before_validation :fill_blank_title
-  after_create_commit { ItemCreationNotifierJob.perform_later(self.id) }
 
   class << self
     def ransackable_attributes(auth_object = nil)
