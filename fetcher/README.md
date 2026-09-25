@@ -29,7 +29,7 @@ cargo test
 | --- | --- | --- |
 | `FETCHER_API_URL` | yes | dispatcher のベース URL (例: `https://feeeed-dispatcher.example.workers.dev`) |
 | `FETCHER_TOKEN` | yes | このマシン用のワーカートークン (dispatcher の `WORKER_TOKENS` にハッシュを登録したもの) |
-| `FETCHER_CONCURRENCY` | no | 同時に処理するチャンネル数。既定 `8`。同じホストへは常に同時1本・1秒以上の間隔 |
+| `FETCHER_CONCURRENCY` | no | 同時に処理するチャンネル数。既定 `2`。dispatcher への同時リクエスト数もこれに比例し、本番 DB の接続を使うので上げすぎない (dispatcher の README の Hyperdrive の節を参照)。同じホストへは常に同時1本・1秒以上の間隔 |
 | `FETCHER_USER_AGENT` | no | フィード・OGP 取得時の User-Agent。既定 `Faraday v2.14.3` (Rails と同じ) |
 | `FEED_PROXY_URL` | no | プロキシ必須ドメイン向けのプロキシ URL。`FEED_PROXY_SECRET` とセットで使う |
 | `FEED_PROXY_SECRET` | no | プロキシの共有シークレット |

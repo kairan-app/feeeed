@@ -55,13 +55,19 @@ npx wrangler secret put WORKER_TOKENS
 作成 (出力された id を `wrangler.toml` の `[[hyperdrive]]` の `id` に書く):
 
 ```bash
-npx wrangler hyperdrive create feeeed-db --caching-disabled --connection-string="$(heroku config:get DATABASE_URL -a feedhub)"
+npx wrangler hyperdrive create feeeed-db --caching-disabled --origin-connection-limit 3 --connection-string="$(heroku config:get DATABASE_URL -a feedhub)"
 ```
 
 `--caching-disabled` を付けてクエリ結果のキャッシュを切る。Hyperdrive は既定で読み取りクエリの結果を
 しばらくキャッシュするため、そのままだと「今取り込むべきチャンネル」や「この guid は保存済みか」が
 古い結果で返り、Rails の取り込みと突き合わせる意味が薄れる (新規判定がずれる)。
 既存の設定なら `npx wrangler hyperdrive update <id> --caching-disabled` で切り替える。
+
+`--origin-connection-limit` は必ず小さく付ける。Heroku Postgres の essential プランは接続数の上限が 20 で、
+Rails の web / worker もこの枠を使う。Hyperdrive は負荷に応じて接続を増やし、しばらく保持するため、
+上限を付けずに fetcher から並列で叩くと枠を使い切り、Rails の worker が DB に接続できず落ちる
+(実際に起きた。復旧には Hyperdrive 設定の削除、`heroku pg:killall`、`heroku restart worker` が必要だった)。
+作成前に Rails がふだん使っている接続数を `heroku pg:info` で確かめ、余裕の範囲に収める。
 
 Heroku Postgres の認証情報が変わったとき (Heroku 側の定期的なローテーションなど):
 

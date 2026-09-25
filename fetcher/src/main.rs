@@ -27,7 +27,7 @@ enum Command {
         /// `all` (停止中を除く全チャンネルから検証用にサンプル)
         #[arg(long, default_value = "due")]
         scope: String,
-        #[arg(long, env = "FETCHER_CONCURRENCY", default_value_t = 8)]
+        #[arg(long, env = "FETCHER_CONCURRENCY", default_value_t = 2)]
         concurrency: usize,
         /// レポートの出力先。本番の値を含むのでコミットしないこと (既定の tmp/ は gitignore 下)
         #[arg(long, default_value = "tmp/shadow-report.jsonl")]
