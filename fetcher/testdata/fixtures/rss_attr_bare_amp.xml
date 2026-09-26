@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Attribute Bare Ampersand RSS</title>
+    <link>https://example.com/</link>
+    <description>probe</description>
+    <item>
+      <title>before</title>
+      <link>https://example.com/before</link>
+      <guid isPermaLink="false">before</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>amp</title>
+      <link>https://example.com/amp</link>
+      <guid isPermaLink="false">amp</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://example.com/a.mp3?x=1&y=2" length="1" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>after</title>
+      <link>https://example.com/after</link>
+      <guid isPermaLink="false">after</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
