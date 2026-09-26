@@ -51,4 +51,5 @@ golden_tests!(
     rss_entity_char_refs,
     rss_attr_bare_amp,
     atom_content_bare_amp,
+    rss_invalid_xml_char,
 );
