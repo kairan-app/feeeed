@@ -11,7 +11,7 @@ class ChannelGroupsController < ApplicationController
   def show
     @channel_group = ChannelGroup.find(params[:id])
     @channels = @channel_group.channels.order("channel_groupings.id DESC")
-    @items = @channel_group.items.order(published_at: :desc, title: :desc).limit(48)
+    @items = @channel_group.items.preload(:pawprints, :channel).order(published_at: :desc, title: :desc).limit(48)
     @noindex = true
 
     @title = @channel_group.name
