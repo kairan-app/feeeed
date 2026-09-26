@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Atom Content Bare Ampersand</title>
+  <link rel="alternate" type="text/html" href="https://example.com/"/>
+  <id>tag:example.com,2026:probe</id>
+  <updated>2026-09-24T00:00:00Z</updated>
+  <entry>
+    <title>before</title>
+    <link rel="alternate" type="text/html" href="https://example.com/before"/>
+    <id>tag:example.com,2026:before</id>
+    <published>2026-09-24T00:00:00Z</published>
+  </entry>
+  <entry>
+    <title>amp</title>
+    <link rel="alternate" type="text/html" href="https://example.com/amp"/>
+    <id>tag:example.com,2026:amp</id>
+    <published>2026-09-24T01:00:00Z</published>
+    <content type="html">
+<p><iframe src="https://example.com/embed?x=1&si=2" width="100%"></iframe></p>
+    </content>
+  </entry>
+  <entry>
+    <title>after</title>
+    <link rel="alternate" type="text/html" href="https://example.com/after"/>
+    <id>tag:example.com,2026:after</id>
+    <published>2026-09-24T02:00:00Z</published>
+  </entry>
+</feed>

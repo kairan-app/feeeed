@@ -49,4 +49,6 @@ golden_tests!(
     rss_invalid_utf8,
     rss_undefined_entity,
     rss_entity_char_refs,
+    rss_attr_bare_amp,
+    atom_content_bare_amp,
 );

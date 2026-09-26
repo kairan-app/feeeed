@@ -9,5 +9,5 @@ enabled = true
 # id は `wrangler hyperdrive create` の出力に置き換える (README の Hyperdrive の節を参照)
 [[hyperdrive]]
 binding = "HYPERDRIVE"
-id = "00000000000000000000000000000000"
+id = "18b8b7f40d1a4201bcb949ec9bd23f69"
 localConnectionString = "postgres://postgres:password@localhost:5432/feeeed_development"

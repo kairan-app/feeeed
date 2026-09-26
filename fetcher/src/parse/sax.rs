@@ -148,19 +148,15 @@ fn conds_match(conds: &[Cond], attrs: &HashMap<String, String>) -> bool {
     })
 }
 
-/// 属性の値。未定義のエンティティなどで展開できないときは書かれたままの値を使う
-/// (属性ではパースを止めない)。
-fn read_attrs(e: &BytesStart) -> HashMap<String, String> {
+/// 属性の値。未定義のエンティティ・`;` の無い `&`・値の無い属性・重複した属性があれば None。
+/// libxml2 はどれも致命的なエラーとしてそこで止まるので、呼び出し側もパースを止める。
+fn read_attrs(e: &BytesStart) -> Option<HashMap<String, String>> {
     e.attributes()
-        .with_checks(false)
-        .flatten()
         .map(|a| {
+            let a = a.ok()?;
             let key = String::from_utf8_lossy(a.key.as_ref()).to_string();
-            let value = a
-                .unescape_value()
-                .map(|v| v.to_string())
-                .unwrap_or_else(|_| String::from_utf8_lossy(&a.value).to_string());
-            (key, value)
+            let value = a.unescape_value().ok()?.to_string();
+            Some((key, value))
         })
         .collect()
 }
@@ -348,7 +344,7 @@ impl Engine {
 
 /// XML を読み、root クラスの規則で値を集める。
 ///
-/// Nokogiri の SAX は未定義のエンティティ (`&nbsp;` など) や読めない箇所に出会うとそこで止まる。
+/// Nokogiri の SAX は未定義のエンティティ (`&nbsp;` など) や読めない箇所 (壊れた属性を含む) に出会うとそこで止まる。
 /// そのときは開いている区切りを閉じずに捨て、それまでに閉じ終わった値だけを返す
 /// (testdata/fixtures/rss_undefined_entity.golden.json)。
 pub fn parse(xml: &str, root: &'static Class) -> Obj {
@@ -371,7 +367,9 @@ pub fn parse(xml: &str, root: &'static Class) -> Obj {
         match reader.read_event() {
             Ok(Event::Start(e)) => {
                 let name = String::from_utf8_lossy(e.name().as_ref()).to_string();
-                let attrs = read_attrs(&e);
+                let Some(attrs) = read_attrs(&e) else {
+                    break false;
+                };
                 engine.start(&name, attrs);
             }
             Ok(Event::End(e)) => {
@@ -586,11 +584,34 @@ mod tests {
     }
 
     #[test]
-    fn undefined_entity_in_attribute_falls_back_to_raw_value() {
-        let xml = r#"<rss><item><link href="https://e/?a=1&nbsp;b"/><title>t</title></item></rss>"#;
+    fn broken_attribute_stops_parsing_like_undefined_entity() {
+        // 未定義のエンティティ、`;` の無い素の `&`、値の無い属性、重複した属性。
+        // どれも libxml2 は致命的なエラーとしてそこで止まる
+        for attr in [
+            r#"href="https://e/?a=1&nbsp;b""#,
+            r#"href="https://e/?a=1&b=2""#,
+            r#"href="https://e/" hidden"#,
+            r#"href="https://e/1" href="https://e/2""#,
+        ] {
+            let xml = format!(
+                r#"<rss><channel><item><title>ok</title></item><item><link {attr}/><title>t</title></item></channel></rss>"#
+            );
+            let feed = parse(&xml, &FEED);
+            let titles: Vec<_> = feed
+                .list("entries")
+                .iter()
+                .map(|e| e.get("title"))
+                .collect();
+            assert_eq!(titles, vec![Some("ok")], "{attr}");
+        }
+    }
+
+    #[test]
+    fn predefined_entities_and_char_refs_in_attribute_are_decoded() {
+        let xml = r#"<rss><item><link href="https://e/?a=1&amp;b=&#x3042;"/><title>t</title></item></rss>"#;
         let feed = parse(xml, &FEED);
         let entry = &feed.list("entries")[0];
-        assert_eq!(entry.all("links"), &["https://e/?a=1&nbsp;b".to_string()]);
+        assert_eq!(entry.all("links"), &["https://e/?a=1&b=あ".to_string()]);
         assert_eq!(entry.get("title"), Some("t"));
     }
 }

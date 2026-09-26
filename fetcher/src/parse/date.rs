@@ -2,6 +2,8 @@
 //! 読めない形式は None (Feedjira も nil にする)。
 
 use chrono::{DateTime, FixedOffset, NaiveDate, NaiveDateTime, TimeZone, Utc};
+use regex::Regex;
+use std::sync::LazyLock;
 
 const ZONES: [(&str, &str); 12] = [
     ("JST", "+0900"),
@@ -54,6 +56,23 @@ fn strip_weekday(s: &str) -> &str {
     }
 }
 
+/// 「金, 25 9月 2026 16:07:00 GMT」のように曜日と月を日本語にした RFC 822 形式
+/// (Bing の検索フィードが日本からのアクセスに返す) を英語の表記に直す。
+static JA_RFC822: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"^(?:[日月火水木金土], )?(\d{1,2}) (\d{1,2})月 (\d{4} .*)$").unwrap()
+});
+
+const MONTHS: [&str; 12] = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+fn englishize_japanese(s: &str) -> Option<String> {
+    let c = JA_RFC822.captures(s)?;
+    let month: usize = c[2].parse().ok()?;
+    let name = MONTHS.get(month.checked_sub(1)?)?;
+    Some(format!("{} {name} {}", &c[1], &c[3]))
+}
+
 fn to_utc(d: DateTime<FixedOffset>) -> DateTime<Utc> {
     d.with_timezone(&Utc)
 }
@@ -66,7 +85,8 @@ pub fn parse_datetime(s: &str) -> Option<DateTime<Utc>> {
     if let Ok(d) = DateTime::parse_from_rfc3339(t) {
         return Some(to_utc(d));
     }
-    let normalized = replace_zone_abbrev(t);
+    let englishized = englishize_japanese(t);
+    let normalized = replace_zone_abbrev(englishized.as_deref().unwrap_or(t));
     let candidates = [normalized.as_str(), strip_weekday(&normalized)];
     for c in candidates {
         if let Ok(d) = DateTime::parse_from_rfc2822(c) {
@@ -121,6 +141,20 @@ mod tests {
         assert_eq!(iso("2026-09-24"), "2026-09-24T00:00:00Z");
         // rss_edge.golden.json の jst item
         assert_eq!(iso("Tue, 23 Sep 2026 10:00:00 JST"), "2026-09-23T01:00:00Z");
+    }
+
+    #[test]
+    fn parses_japanese_localized_rfc822() {
+        // Bing の検索フィードは日本からのアクセスに曜日と月を日本語にして返す。
+        // Ruby の DateTime.parse は 10月以降を読み違え (1 10月 → 9月10日)、
+        // 1月は曜日の「月」に引きずられて読めないので、Rails には合わせず正しく読む
+        assert_eq!(iso("金, 25 9月 2026 16:07:00 GMT"), "2026-09-25T16:07:00Z");
+        assert_eq!(iso("木, 1 10月 2026 01:02:03 GMT"), "2026-10-01T01:02:03Z");
+        assert_eq!(
+            iso("土, 26 12月 2026 04:10:00 +0900"),
+            "2026-12-25T19:10:00Z"
+        );
+        assert_eq!(iso("月, 5 1月 2026 04:10:00 GMT"), "2026-01-05T04:10:00Z");
     }
 
     #[test]
