@@ -315,6 +315,41 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
     end
   end
 
+  # #812: 保存済みのItemにも毎回 sleep 2 して OpenGraph を取りに行っていた
+  describe "画像の無いエントリのOpenGraph取得" do
+    setup do
+      @channel.stubs(:sleep)
+      @entry = build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1")
+      stub_feed_with_entries([ @entry ])
+    end
+
+    test "新しいItemならOpenGraphから画像を取る" do
+      OpenGraph.expects(:new).once.returns(OpenStruct.new(image: "https://example.com/og.jpg"))
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_equal "https://example.com/og.jpg", @channel.items.find_by!(guid: "entry-1").image_url
+    end
+
+    test "保存済みのItemならOpenGraphを取りに行かず、今の画像を使い回す" do
+      item = @channel.items.create!(guid: "entry-1", title: "Entry 1", url: "https://example.com/1", published_at: 1.hour.ago, image_url: "https://example.com/saved.jpg")
+      OpenGraph.expects(:new).never
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_equal "https://example.com/saved.jpg", item.reload.image_url
+    end
+
+    test "保存済みのItemに画像が無くてもOpenGraphを取り直さない" do
+      item = @channel.items.create!(guid: "entry-1", title: "Entry 1", url: "https://example.com/1", published_at: 1.hour.ago)
+      OpenGraph.expects(:new).never
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_nil item.reload.image_url
+    end
+  end
+
   # FEEEED-90: build_from が nil を返すフィード形式の場合、
   # save_from 内の parameters.merge! で NoMethodError が発生する
   describe "認識できないフィード形式の場合 (FEEEED-90)" do

@@ -438,6 +438,9 @@ class Channel < ApplicationRecord
           next
         end
 
+        item = self.items.find_or_initialize_by(guid: guid)
+        new_item = item.new_record?
+
         image_url =
           if entry.respond_to?(:itunes_image) && entry.itunes_image
             entry.itunes_image
@@ -445,6 +448,9 @@ class Channel < ApplicationRecord
             entry.image
           elsif guid.start_with?("yt:video:")
             "https://img.youtube.com/vi/%s/maxresdefault.jpg" % guid.sub("yt:video:", "")
+          elsif !new_item
+            # 保存済みのItemは、画像が見つからなかった場合も含めて取り直さない
+            item.image_url
           else
             sleep 2
             OpenGraph.new(encoded_url).image rescue nil
@@ -461,9 +467,6 @@ class Channel < ApplicationRecord
           published_at: entry.published,
           data: entry.to_h
         }
-        item = self.items.find_or_initialize_by(guid: guid)
-        new_item = item.new_record?
-
         if new_item
           Rails.logger.info "[Channel] Saving new item: #{entry.title} (#{encoded_url})"
         end
