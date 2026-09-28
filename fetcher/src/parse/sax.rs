@@ -148,7 +148,18 @@ fn conds_match(conds: &[Cond], attrs: &HashMap<String, String>) -> bool {
     })
 }
 
-/// 属性の値。未定義のエンティティ・`;` の無い `&`・値の無い属性・重複した属性があれば None。
+/// XML 1.0 で使える文字か。タブ・LF・CR 以外の制御文字と U+FFFE/U+FFFF は使えない
+/// (libxml2 はこれらに出会うと致命的なエラーとしてそこで止まる)。
+fn is_xml_char(c: char) -> bool {
+    !matches!(c, '\u{0}'..='\u{8}' | '\u{b}' | '\u{c}' | '\u{e}'..='\u{1f}' | '\u{fffe}' | '\u{ffff}')
+}
+
+fn all_xml_chars(s: &str) -> bool {
+    s.chars().all(is_xml_char)
+}
+
+/// 属性の値。未定義のエンティティ・`;` の無い `&`・値の無い属性・重複した属性・
+/// XML で使えない文字があれば None。
 /// libxml2 はどれも致命的なエラーとしてそこで止まるので、呼び出し側もパースを止める。
 fn read_attrs(e: &BytesStart) -> Option<HashMap<String, String>> {
     e.attributes()
@@ -156,7 +167,7 @@ fn read_attrs(e: &BytesStart) -> Option<HashMap<String, String>> {
             let a = a.ok()?;
             let key = String::from_utf8_lossy(a.key.as_ref()).to_string();
             let value = a.unescape_value().ok()?.to_string();
-            Some((key, value))
+            all_xml_chars(&value).then_some((key, value))
         })
         .collect()
 }
@@ -172,10 +183,10 @@ fn new_object(class: &'static Class, attrs: &HashMap<String, String>) -> Obj {
 }
 
 /// 文字参照 (`&#...;`) と定義済みエンティティ (`&amp;` など) を展開する。
-/// それ以外 (未定義のエンティティや不正な文字参照) は None。
+/// それ以外 (未定義のエンティティや不正な文字参照、XML で使えない文字を指す文字参照) は None。
 fn resolve_ref(r: &BytesRef) -> Option<String> {
     match r.resolve_char_ref() {
-        Ok(Some(ch)) => Some(ch.to_string()),
+        Ok(Some(ch)) => is_xml_char(ch).then(|| ch.to_string()),
         Ok(None) => {
             let name = r.decode().ok()?;
             quick_xml::escape::resolve_predefined_entity(&name).map(str::to_string)
@@ -344,7 +355,7 @@ impl Engine {
 
 /// XML を読み、root クラスの規則で値を集める。
 ///
-/// Nokogiri の SAX は未定義のエンティティ (`&nbsp;` など) や読めない箇所 (壊れた属性を含む) に出会うとそこで止まる。
+/// Nokogiri の SAX は未定義のエンティティ (`&nbsp;` など) や読めない箇所 (壊れた属性や XML で使えない文字を含む) に出会うとそこで止まる。
 /// そのときは開いている区切りを閉じずに捨て、それまでに閉じ終わった値だけを返す
 /// (testdata/fixtures/rss_undefined_entity.golden.json)。
 pub fn parse(xml: &str, root: &'static Class) -> Obj {
@@ -379,11 +390,17 @@ pub fn parse(xml: &str, root: &'static Class) -> Obj {
             // XML 1.0 の改行の正規化 (\r\n → \n) は libxml2 と同じく行う
             Ok(Event::Text(t)) => {
                 if let Ok(text) = t.xml10_content() {
+                    if !all_xml_chars(&text) {
+                        break false;
+                    }
                     engine.characters(&text);
                 }
             }
             Ok(Event::CData(c)) => {
                 if let Ok(text) = c.xml10_content() {
+                    if !all_xml_chars(&text) {
+                        break false;
+                    }
                     engine.characters(&text);
                 }
             }
@@ -551,6 +568,37 @@ mod tests {
         let xml = "<rss><item><media-title>m</media-title></item></rss>";
         let feed = parse(xml, &FEED);
         assert_eq!(feed.list("entries")[0].get("media_title"), Some("m"));
+    }
+
+    #[test]
+    fn char_not_allowed_in_xml_stops_parsing() {
+        // XML 1.0 で使えない文字 (タブ・LF・CR 以外の制御文字、U+FFFE/U+FFFF) は、
+        // 本文・CDATA・属性・文字参照のどこにあっても libxml2 はそこで止まる
+        for part in [
+            "<description>a\u{8}b</description>",
+            "<description><![CDATA[a\u{8}b]]></description>",
+            "<description>a&#8;b</description>",
+            "<description>a\u{fffe}b</description>",
+            "<link href=\"https://e/\u{1f}\"/>",
+        ] {
+            let xml = format!(
+                "<rss><channel><item><title>ok</title></item><item><title>t</title>{part}</item></channel></rss>"
+            );
+            let feed = parse(&xml, &FEED);
+            let titles: Vec<_> = feed
+                .list("entries")
+                .iter()
+                .map(|e| e.get("title"))
+                .collect();
+            assert_eq!(titles, vec![Some("ok")], "{part}");
+        }
+    }
+
+    #[test]
+    fn tab_lf_cr_are_allowed() {
+        let xml = "<rss><item><title>a\tb\r\nc</title></item></rss>";
+        let feed = parse(xml, &FEED);
+        assert_eq!(feed.list("entries")[0].get("title"), Some("a\tb\nc"));
     }
 
     #[test]

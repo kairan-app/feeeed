@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Invalid XML Char RSS</title>
+    <link>https://example.com/</link>
+    <description>probe</description>
+    <item>
+      <title>before</title>
+      <link>https://example.com/before</link>
+      <guid isPermaLink="false">before</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>ctrl</title>
+      <link>https://example.com/ctrl</link>
+      <guid isPermaLink="false">ctrl</guid>
+      <pubDate>Wed, 24 Sep 2026 01:00:00 +0000</pubDate>
+      <description><![CDATA[ab]]></description>
+    </item>
+    <item>
+      <title>after</title>
+      <link>https://example.com/after</link>
+      <guid isPermaLink="false">after</guid>
+      <pubDate>Wed, 24 Sep 2026 02:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
