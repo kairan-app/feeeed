@@ -19,21 +19,33 @@ module FeedFilters
         removed_chars = 0
         removed_refs = 0
 
-        without_chars = xml_content.gsub(INVALID_CHAR) do
-          removed_chars += 1
-          ""
-        end
-        fixed = XmlSegments.map_unprotected(without_chars) do |text|
-          text.gsub(CHAR_REF) do |ref|
-            code = $1 ? $1.to_i(16) : $2.to_i
-            next ref if self.class.xml_char?(code)
-
-            removed_refs += 1
+        # match?でまず確認し、該当が無ければgsubによる全体コピーを避ける
+        without_chars = if xml_content.match?(INVALID_CHAR)
+          xml_content.gsub(INVALID_CHAR) do
+            removed_chars += 1
             ""
           end
+        else
+          xml_content
         end
 
-        mark_as_applied!(removed_chars: removed_chars, removed_refs: removed_refs) if removed_chars + removed_refs > 0
+        fixed = if without_chars.include?("&#")
+          XmlSegments.map_unprotected(without_chars) do |text|
+            text.gsub(CHAR_REF) do |ref|
+              code = $1 ? $1.to_i(16) : $2.to_i
+              next ref if self.class.xml_char?(code)
+
+              removed_refs += 1
+              ""
+            end
+          end
+        else
+          without_chars
+        end
+
+        return xml_content unless removed_chars + removed_refs > 0
+
+        mark_as_applied!(removed_chars: removed_chars, removed_refs: removed_refs)
         fixed
       end
     end

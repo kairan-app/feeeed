@@ -39,4 +39,11 @@ class FeedFilters::PreParse::LocalizedDateFixerTest < ActiveSupport::TestCase
     date = out[%r{<pubDate>(.*)</pubDate>}, 1]
     assert_equal Time.utc(2026, 10, 1, 1, 2, 3), DateTime.parse(date).to_time.utc
   end
+
+  test "何も変わらない場合は、元のオブジェクトをそのまま返す (巨大な入力でのメモリ増幅を避ける)" do
+    xml = "<item><title>9月の予定 25 9月 2026</title><pubDate>Fri, 25 Sep 2026 16:07:00 GMT</pubDate></item>"
+    out, filter = run_filter(xml)
+    assert_same xml, out
+    assert_not filter.applied
+  end
 end

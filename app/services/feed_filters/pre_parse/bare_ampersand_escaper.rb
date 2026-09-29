@@ -19,7 +19,9 @@ module FeedFilters
           end
         end
 
-        mark_as_applied!(escaped: escaped) if escaped > 0
+        return xml_content unless escaped > 0
+
+        mark_as_applied!(escaped: escaped)
         fixed
       end
     end

@@ -34,7 +34,9 @@ module FeedFilters
           end
         end
 
-        mark_as_applied!(replaced: replaced, unknown: unknown) if replaced + unknown > 0
+        return xml_content unless replaced + unknown > 0
+
+        mark_as_applied!(replaced: replaced, unknown: unknown)
         fixed
       end
     end

@@ -28,7 +28,9 @@ module FeedFilters
           end
         end
 
-        mark_as_applied!(fixed: fixed_count) if fixed_count > 0
+        return xml_content unless fixed_count > 0
+
+        mark_as_applied!(fixed: fixed_count)
         fixed
       end
     end

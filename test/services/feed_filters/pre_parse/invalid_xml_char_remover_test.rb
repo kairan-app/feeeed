@@ -26,4 +26,11 @@ class FeedFilters::PreParse::InvalidXmlCharRemoverTest < ActiveSupport::TestCase
     assert_equal xml, out
     assert_not filter.applied
   end
+
+  test "何も変わらない場合は、元のオブジェクトをそのまま返す (巨大な入力でのメモリ増幅を避ける)" do
+    xml = "<a>\t\n\r&#9;&#xA;&#x3042;&#65;</a>"
+    out, filter = run_filter(xml)
+    assert_same xml, out
+    assert_not filter.applied
+  end
 end

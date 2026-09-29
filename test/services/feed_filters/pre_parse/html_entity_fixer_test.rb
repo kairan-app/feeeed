@@ -48,4 +48,11 @@ class FeedFilters::PreParse::HtmlEntityFixerTest < ActiveSupport::TestCase
     out, = run_filter(xml)
     assert_equal "<rss><channel><copyright>&#xA9; 2025</copyright><title>t</title></channel></rss>", out
   end
+
+  test "何も変わらない場合は、元のオブジェクトをそのまま返す (巨大な入力でのメモリ増幅を避ける)" do
+    xml = "<a>&amp;&lt;&gt;&quot;&apos;&#65;&#x41;</a>"
+    out, filter = run_filter(xml)
+    assert_same xml, out
+    assert_not filter.applied
+  end
 end

@@ -31,4 +31,11 @@ class FeedFilters::PreParse::BareAmpersandEscaperTest < ActiveSupport::TestCase
     assert_equal xml, out
     assert_not filter.applied
   end
+
+  test "何も変わらない場合は、元のオブジェクトをそのまま返す (巨大な入力でのメモリ増幅を避ける)" do
+    xml = "<a>&amp;&foo;&#65;&#x41;</a>"
+    out, filter = run_filter(xml)
+    assert_same xml, out
+    assert_not filter.applied
+  end
 end
