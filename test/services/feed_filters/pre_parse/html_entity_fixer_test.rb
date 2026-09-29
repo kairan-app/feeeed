@@ -1,162 +1,58 @@
 require "test_helper"
 
-module FeedFilters
-  module PreParse
-    class HtmlEntityFixerTest < ActiveSupport::TestCase
-      test "applicable? returns true when copyright tag contains HTML entities" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test Feed</title>
-              <copyright>&copy; 2025 Example Corp</copyright>
-            </channel>
-          </rss>
-        XML
+class FeedFilters::PreParse::HtmlEntityFixerTest < ActiveSupport::TestCase
+  def run_filter(xml)
+    filter = FeedFilters::PreParse::HtmlEntityFixer.new
+    out = filter.applicable?(xml) ? filter.apply(xml) : xml
+    [ out, filter ]
+  end
 
-        filter = HtmlEntityFixer.new
-        assert filter.applicable?(xml)
-      end
+  test "HTML のエンティティを本文と属性の両方で数値の文字参照にする" do
+    out, filter = run_filter(%(<a href="/?x=&nbsp;">&copy; 2026&hellip;</a>))
+    assert_equal %(<a href="/?x=&#xA0;">&#xA9; 2026&#x2026;</a>), out
+    assert_equal({ replaced: 3, unknown: 0 }, filter.details)
+  end
 
-      test "applicable? returns true when generator tag contains HTML entities" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test Feed</title>
-              <generator>WordPress &copy; &reg;</generator>
-            </channel>
-          </rss>
-        XML
+  test "2文字に展開されるエンティティは2つの文字参照にする" do
+    out, = run_filter("<a>&NotEqualTilde;</a>")
+    assert_equal "<a>&#x2242;&#x338;</a>", out
+  end
 
-        filter = HtmlEntityFixer.new
-        assert filter.applicable?(xml)
-      end
+  test "表に無い名前は &amp;name; にして文字として残す" do
+    out, filter = run_filter("<a>&foo; &bar;</a>")
+    assert_equal "<a>&amp;foo; &amp;bar;</a>", out
+    assert_equal({ replaced: 0, unknown: 2 }, filter.details)
+  end
 
-      test "applicable? returns false when target tags do not contain HTML entities" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test Feed</title>
-              <copyright>Copyright 2025</copyright>
-            </channel>
-          </rss>
-        XML
+  test "XML の定義済みエンティティと数値の文字参照はそのまま" do
+    xml = "<a>&amp;&lt;&gt;&quot;&apos;&#65;&#x41;</a>"
+    out, filter = run_filter(xml)
+    assert_equal xml, out
+    assert_not filter.applied
+  end
 
-        filter = HtmlEntityFixer.new
-        assert_not filter.applicable?(xml)
-      end
+  test "CDATA とコメントの中は書き換えない" do
+    xml = "<a><![CDATA[&nbsp;]]><!-- &copy; --></a>"
+    out, filter = run_filter(xml)
+    assert_equal xml, out
+    assert_not filter.applied
+  end
 
-      test "applicable? returns false when HTML entities are only in non-target tags" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Tech &amp; Design</title>
-              <description>News &amp; Updates</description>
-              <copyright>Copyright 2025</copyright>
-            </channel>
-          </rss>
-        XML
+  test "独自のエンティティを宣言している文書には適用しない" do
+    xml = %(<!DOCTYPE rss [<!ENTITY myent "x">]><a>&myent;&nbsp;</a>)
+    assert_not FeedFilters::PreParse::HtmlEntityFixer.new.applicable?(xml)
+  end
 
-        filter = HtmlEntityFixer.new
-        assert_not filter.applicable?(xml)
-      end
+  test "これまでの対象だった channel の copyright も直る" do
+    xml = "<rss><channel><copyright>&copy; 2025</copyright><title>t</title></channel></rss>"
+    out, = run_filter(xml)
+    assert_equal "<rss><channel><copyright>&#xA9; 2025</copyright><title>t</title></channel></rss>", out
+  end
 
-      test "applicable? returns false when target tags do not exist" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test &amp; Feed</title>
-            </channel>
-          </rss>
-        XML
-
-        filter = HtmlEntityFixer.new
-        assert_not filter.applicable?(xml)
-      end
-
-      test "apply converts HTML entities in copyright tag" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test Feed</title>
-              <copyright>&copy; 2025 Example Corp</copyright>
-            </channel>
-          </rss>
-        XML
-
-        filter = HtmlEntityFixer.new
-        result = filter.apply(xml)
-
-        assert filter.applied
-        assert_equal [ "copyright" ], filter.details[:fixed_tags]
-        # HTMLエンティティ(&copy;)が実際の文字(©)に変換される
-        assert_includes result, "©"
-        assert_not_includes result, "&copy;"
-      end
-
-      test "apply converts HTML entities in generator tag" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test Feed</title>
-              <generator>WordPress &reg;</generator>
-            </channel>
-          </rss>
-        XML
-
-        filter = HtmlEntityFixer.new
-        result = filter.apply(xml)
-
-        assert filter.applied
-        assert_equal [ "generator" ], filter.details[:fixed_tags]
-        # HTMLエンティティ(&reg;)が実際の文字(®)に変換される
-        assert_includes result, "®"
-        assert_not_includes result, "&reg;"
-      end
-
-      test "apply preserves HTML entities in non-target tags" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Tech &amp; Design</title>
-              <copyright>&copy; 2025</copyright>
-            </channel>
-          </rss>
-        XML
-
-        filter = HtmlEntityFixer.new
-        result = filter.apply(xml)
-
-        # copyrightタグのエンティティは実際の文字に変換される
-        assert_includes result, "©"
-        # titleタグのエンティティは保持される
-        assert_includes result, "Tech &amp; Design"
-      end
-
-      test "apply does not mark as applied when no changes are made" do
-        xml = <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <rss version="2.0">
-            <channel>
-              <title>Test Feed</title>
-              <copyright>Copyright 2025</copyright>
-            </channel>
-          </rss>
-        XML
-
-        filter = HtmlEntityFixer.new
-        filter.apply(xml)
-
-        assert_not filter.applied
-        assert_empty filter.details
-      end
-    end
+  test "何も変わらない場合は、元のオブジェクトをそのまま返す (巨大な入力でのメモリ増幅を避ける)" do
+    xml = "<a>&amp;&lt;&gt;&quot;&apos;&#65;&#x41;</a>"
+    out, filter = run_filter(xml)
+    assert_same xml, out
+    assert_not filter.applied
   end
 end

@@ -18,7 +18,7 @@ module FeedFilters
         return feed unless applicable?(feed, metadata)
 
         feed_url = metadata[:feed_url]
-        base_url = extract_base_url(feed_url)
+        base_url = feed_url
         converted_urls = []
 
         # フィード自体のURLを修正
@@ -74,29 +74,20 @@ module FeedFilters
 
       private
 
+      # 前後の空白・改行は取り除いてから判定する (<link> の中身が改行で始まるフィードがある)
       def has_relative_url?(url)
         return false if url.blank?
-        # URLが相対パス（/で始まる）または、プロトコルが含まれていない場合
-        url.start_with?("/") || !url.start_with?("http://", "https://")
+
+        !url.to_s.strip.start_with?("http://", "https://")
       end
 
-      def extract_base_url(feed_url)
-        uri = Addressable::URI.parse(feed_url)
-        port_str = (uri.port && uri.port != uri.default_port) ? ":#{uri.port}" : ""
-        "#{uri.scheme}://#{uri.host}#{port_str}"
-      end
-
+      # フィードの URL を基準に RFC 3986 のとおり解決する
       def resolve_url(url, base_url)
-        # 既に絶対URLの場合はそのまま返す
-        return url if url.start_with?("http://", "https://")
-
-        # /で始まる絶対パスの場合
-        if url.start_with?("/")
-          "#{base_url}#{url}"
-        else
-          # 相対パスの場合（./やディレクトリ名で始まる）
-          Addressable::URI.join(base_url, url).to_s
-        end
+        Addressable::URI.join(base_url, url.to_s.strip).to_s
+      rescue Addressable::URI::InvalidURIError
+        # scheme として解釈できないリンク ("[::1]/ep1" など) は、Rust 版の join と同じく
+        # 書き換えずに元の値のまま返す
+        url.to_s.strip
       end
     end
   end

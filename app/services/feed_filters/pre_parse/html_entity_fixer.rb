@@ -1,64 +1,43 @@
-require "nokogiri"
-
 module FeedFilters
   module PreParse
-    # 特定のRSSタグ内に含まれるHTMLエンティティを実際の文字に変換するフィルタ
-    #
-    # 一部のフィードでは<copyright>や<generator>などのタグに&copy;等のHTMLエンティティが
-    # 含まれており、Feedjira/SAXMachineが正しく処理できず、以降の<title>や<description>を
-    # パースできなくなる問題がある。
-    #
-    # このフィルタはタグ自体は残したまま、タグ内のHTMLエンティティのみを実際の文字に変換する。
-    # これにより、フィルタの適用有無で「問題のあるフィード」を判定できる。
+    # 名前付きのエンティティ (&nbsp; など) を直すフィルタ。
+    # XML で定義されているのは amp/lt/gt/quot/apos だけなので、それ以外の名前があると
+    # libxml2 はそこで読むのをやめ、以降の entry が捨てられてしまう。
+    # HTML の表にある名前は数値の文字参照に置き換え、表に無い名前は &amp;name; にして文字として残す。
+    # 以前は channel の copyright と generator だけを対象にしていた。
     class HtmlEntityFixer < Base
-      # HTMLエンティティが問題を起こす可能性のあるタグ
-      # これらのタグはアプリケーションで使用しないが、タグ自体は残す
-      TARGET_TAGS = %w[
-        copyright
-        generator
-      ].freeze
+      NAMED_REF = /&([A-Za-z][A-Za-z0-9]*);/
+      PREDEFINED = %w[amp lt gt quot apos].freeze
 
       def applicable?(xml_content, metadata = {})
-        # 対象タグ内にHTMLエンティティが含まれている場合のみ適用
-        TARGET_TAGS.any? do |tag|
-          # まずタグが存在するかを単純な文字列検索で高速にチェック
-          next false unless xml_content.include?("<#{tag}")
-
-          # タグが存在する場合のみ、タグ内容を抽出してHTMLエンティティをチェック
-          # 注: [^<]* を使うことで、巨大なファイルでのバックトラッキングを防止
-          # copyright/generatorタグは通常テキストのみなのでこれで十分
-          xml_content.match?(/<#{tag}[^>]*>([^<]*)&[a-zA-Z]+;/)
-        end
+        # 独自のエンティティを宣言している文書は、宣言済みの名前を壊さないよう対象外にする
+        xml_content.match?(NAMED_REF) && !xml_content.include?("<!ENTITY")
       end
 
       def apply(xml_content, metadata = {})
-        doc = Nokogiri::XML(xml_content)
-        fixed_tags = []
+        replaced = 0
+        unknown = 0
 
-        TARGET_TAGS.each do |tag|
-          elements = doc.xpath("//channel/#{tag}")
-          elements.each do |element|
-            original_xml = element.to_xml
-            # HTMLエンティティをデコードして実際の文字に変換
-            # Nokogiri::HTML::DocumentFragmentを使ってHTMLとしてパースし、textで変換
-            decoded_text = Nokogiri::HTML::DocumentFragment.parse(element.inner_html).text
-            element.content = decoded_text
-
-            # 変更があった場合のみ記録
-            if element.to_xml != original_xml
-              fixed_tags << tag unless fixed_tags.include?(tag)
+        fixed = XmlSegments.map_unprotected(xml_content) do |text|
+          text.gsub(NAMED_REF) do |ref|
+            name = $1
+            chars = HtmlEntities::TABLE[name]
+            if PREDEFINED.include?(name)
+              ref
+            elsif chars
+              replaced += 1
+              chars.codepoints.map { format("&#x%X;", _1) }.join
+            else
+              unknown += 1
+              "&amp;#{name};"
             end
           end
         end
 
-        if fixed_tags.any?
-          mark_as_applied!(
-            fixed_tags: fixed_tags,
-            reason: "HTML entities in tags converted to actual characters"
-          )
-        end
+        return xml_content unless replaced + unknown > 0
 
-        doc.to_xml
+        mark_as_applied!(replaced: replaced, unknown: unknown)
+        fixed
       end
     end
   end

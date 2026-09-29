@@ -1,11 +1,12 @@
 class FeedNormalizer
-  # Pre-parseフィルタ（XML文字列に対して適用）
+  # Pre-parseフィルタ（XML文字列に対して適用）。順番に意味がある:
+  # 使えない文字を消す → 名前付きエンティティを直す → 残った素の&を直す → 日時を直す
   PRE_PARSE_FILTERS = [
+    FeedFilters::PreParse::InvalidXmlCharRemover,
     FeedFilters::PreParse::HtmlEntityFixer,
+    FeedFilters::PreParse::BareAmpersandEscaper,
+    FeedFilters::PreParse::LocalizedDateFixer,
     FeedFilters::PreParse::AtomNamespaceFixer
-    # 将来的に追加予定:
-    # FeedFilters::PreParse::InvalidXmlFixer,
-    # FeedFilters::PreParse::CharacterEncodingFixer
   ].freeze
 
   # Post-parseフィルタ（パース済みオブジェクトに対して適用）
@@ -63,14 +64,28 @@ class FeedNormalizer
     @raw_xml = @raw_xml.dup.force_encoding("UTF-8").encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
   end
 
+  # 先頭 (UTF-8 の BOM と ASCII の空白を無視) が "<" で始まるものだけをXMLとみなす。
+  # Feedjira は JSON Feed もパースできるが、pre-parseフィルタはXML前提 (&amp; へのエスケープ等) なので
+  # JSON に適用すると壊れる。また、エンコーディングが不正な文字列にmatch?を呼ぶとArgumentErrorになるので、
+  # その場合もフィルタ全体を適用しない
+  LOOKS_LIKE_XML = /\A﻿?[ \t\r\n]*</
+
+  def looks_like_xml?(xml_content)
+    xml_content.valid_encoding? && xml_content.match?(LOOKS_LIKE_XML)
+  end
+
   def apply_pre_parse_filters(xml_content)
+    return xml_content unless looks_like_xml?(xml_content)
+
     normalized_xml = xml_content
 
     PRE_PARSE_FILTERS.each do |filter_class|
       filter = filter_class.new
       metadata = { feed_url: @feed_url }
 
-      if filter.applicable?(normalized_xml, metadata)
+      begin
+        next unless filter.applicable?(normalized_xml, metadata)
+
         Rails.logger.info "[FeedNormalizer] Applying pre-parse filter: #{filter_class.name}"
         normalized_xml = filter.apply(normalized_xml, metadata)
 
@@ -78,6 +93,10 @@ class FeedNormalizer
           @applied_filters << filter_class.name.demodulize
           @filter_details[filter_class.name.demodulize] = filter.details
         end
+      rescue StandardError => e
+        # フィルタのバグで取り込み全体を止めない。直す前の文字列のまま次のフィルタに進む
+        Rails.logger.error "[FeedNormalizer] Pre-parse filter #{filter_class.name} failed: #{e.class}: #{e.message}"
+        Sentry.capture_exception(e, extra: { feed_url: @feed_url, filter: filter_class.name })
       end
     end
 
@@ -91,7 +110,9 @@ class FeedNormalizer
       filter = filter_class.new
       metadata = { feed_url: @feed_url }
 
-      if filter.applicable?(normalized_feed, metadata)
+      begin
+        next unless filter.applicable?(normalized_feed, metadata)
+
         Rails.logger.info "[FeedNormalizer] Applying post-parse filter: #{filter_class.name}"
         normalized_feed = filter.apply(normalized_feed, metadata)
 
@@ -99,6 +120,11 @@ class FeedNormalizer
           @applied_filters << filter_class.name.demodulize
           @filter_details[filter_class.name.demodulize] = filter.details
         end
+      rescue StandardError => e
+        # フィルタのバグで取り込み全体を止めない。次のフィルタに進むが、RelativeUrlResolverなどは
+        # feedオブジェクトを直接書き換えるため、例外が起きた時点までの変更は残ったままになりうる
+        Rails.logger.error "[FeedNormalizer] Post-parse filter #{filter_class.name} failed: #{e.class}: #{e.message}"
+        Sentry.capture_exception(e, extra: { feed_url: @feed_url, filter: filter_class.name })
       end
     end
 

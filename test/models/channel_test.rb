@@ -573,5 +573,36 @@ class ChannelTest < ActiveSupport::TestCase
         assert_equal @feed_url, channel.feed_url
       end
     end
+
+    describe "相対URLの解決基準" do
+      test "リダイレクト後のURLを基準に相対URLを解決する" do
+        old_url = "https://example.com/old/feed.xml"
+        new_url = "https://example.com/new/feed.xml"
+        xml = <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <rss version="2.0">
+            <channel>
+              <title>Test Feed</title>
+              <link>https://example.com/</link>
+              <item>
+                <title>Post 1</title>
+                <link>post/1</link>
+                <guid>1</guid>
+              </item>
+            </channel>
+          </rss>
+        XML
+
+        Httpc.stubs(:get_with_redirect_info).with(old_url).returns({
+          body: xml,
+          final_url: new_url,
+          redirected: true
+        })
+
+        result = Channel.fetch_and_normalize_feed(old_url)
+
+        assert_equal "https://example.com/new/post/1", result[:feed].entries.first.url
+      end
+    end
   end
 end
