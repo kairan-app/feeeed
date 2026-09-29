@@ -64,7 +64,19 @@ class FeedNormalizer
     @raw_xml = @raw_xml.dup.force_encoding("UTF-8").encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
   end
 
+  # 先頭 (UTF-8 の BOM と ASCII の空白を無視) が "<" で始まるものだけをXMLとみなす。
+  # Feedjira は JSON Feed もパースできるが、pre-parseフィルタはXML前提 (&amp; へのエスケープ等) なので
+  # JSON に適用すると壊れる。また、エンコーディングが不正な文字列にmatch?を呼ぶとArgumentErrorになるので、
+  # その場合もフィルタ全体を適用しない
+  LOOKS_LIKE_XML = /\A﻿?[ \t\r\n]*</
+
+  def looks_like_xml?(xml_content)
+    xml_content.valid_encoding? && xml_content.match?(LOOKS_LIKE_XML)
+  end
+
   def apply_pre_parse_filters(xml_content)
+    return xml_content unless looks_like_xml?(xml_content)
+
     normalized_xml = xml_content
 
     PRE_PARSE_FILTERS.each do |filter_class|

@@ -227,4 +227,40 @@ class FeedNormalizerTest < ActiveSupport::TestCase
     assert_equal 1, result[:feed].entries.size
     assert_not_includes result[:applied_filters], "RelativeUrlResolver"
   end
+
+  test "JSON Feed の本文には pre-parse フィルタを適用しない" do
+    json = <<~JSON
+      {"version":"https://jsonfeed.org/version/1.1","title":"t","items":[{"id":"https://e.com/p?a=1&b=2","url":"https://e.com/p?a=1&b=2","title":"A & B &nbsp;","date_published":"2026-09-24T00:00:00Z"}]}
+    JSON
+
+    result = FeedNormalizer.normalize_and_parse(json, "https://e.com/feed.json")
+
+    entry = result[:feed].entries.first
+    assert_equal "https://e.com/p?a=1&b=2", entry.entry_id
+    assert_equal "https://e.com/p?a=1&b=2", entry.url
+    assert_equal "A & B &nbsp;", entry.title
+    assert_empty result[:applied_filters]
+  end
+
+  test "先頭に BOM と空白があっても XML なら pre-parse フィルタを適用する" do
+    xml = "﻿ \n<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>t</title>" \
+          "<link>https://example.com/</link><copyright>&copy; 2026</copyright></channel></rss>"
+
+    result = FeedNormalizer.normalize_and_parse(xml, "https://example.com/feed.xml")
+
+    assert_includes result[:applied_filters], "HtmlEntityFixer"
+  end
+
+  test "UTF-8 と自称しつつ不正なバイト列を含む本文では pre-parse フィルタを適用しない (Sentry も飛ばない)" do
+    xml = "<rss>\xFF</rss>".dup.force_encoding("UTF-8")
+    assert_not xml.valid_encoding?
+
+    Sentry.expects(:capture_exception).never
+
+    begin
+      FeedNormalizer.normalize_and_parse(xml, "https://example.com/feed.xml")
+    rescue StandardError
+      # Feedjiraのパース自体が失敗するのは許容する。フィルタ由来のSentry通知が無いことだけ確認する
+    end
+  end
 end
