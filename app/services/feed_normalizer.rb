@@ -1,11 +1,12 @@
 class FeedNormalizer
-  # Pre-parseフィルタ（XML文字列に対して適用）
+  # Pre-parseフィルタ（XML文字列に対して適用）。順番に意味がある:
+  # 使えない文字を消す → 名前付きエンティティを直す → 残った素の&を直す → 日時を直す
   PRE_PARSE_FILTERS = [
+    FeedFilters::PreParse::InvalidXmlCharRemover,
     FeedFilters::PreParse::HtmlEntityFixer,
+    FeedFilters::PreParse::BareAmpersandEscaper,
+    FeedFilters::PreParse::LocalizedDateFixer,
     FeedFilters::PreParse::AtomNamespaceFixer
-    # 将来的に追加予定:
-    # FeedFilters::PreParse::InvalidXmlFixer,
-    # FeedFilters::PreParse::CharacterEncodingFixer
   ].freeze
 
   # Post-parseフィルタ（パース済みオブジェクトに対して適用）
@@ -70,7 +71,9 @@ class FeedNormalizer
       filter = filter_class.new
       metadata = { feed_url: @feed_url }
 
-      if filter.applicable?(normalized_xml, metadata)
+      begin
+        next unless filter.applicable?(normalized_xml, metadata)
+
         Rails.logger.info "[FeedNormalizer] Applying pre-parse filter: #{filter_class.name}"
         normalized_xml = filter.apply(normalized_xml, metadata)
 
@@ -78,6 +81,10 @@ class FeedNormalizer
           @applied_filters << filter_class.name.demodulize
           @filter_details[filter_class.name.demodulize] = filter.details
         end
+      rescue StandardError => e
+        # フィルタのバグで取り込み全体を止めない。直す前の文字列のまま次のフィルタに進む
+        Rails.logger.error "[FeedNormalizer] Pre-parse filter #{filter_class.name} failed: #{e.class}: #{e.message}"
+        Sentry.capture_exception(e, extra: { feed_url: @feed_url, filter: filter_class.name })
       end
     end
 

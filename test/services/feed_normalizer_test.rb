@@ -171,4 +171,40 @@ class FeedNormalizerTest < ActiveSupport::TestCase
     assert_equal "http://myblog.com/blog/first-post", feed.entries[0].url
     assert_equal "This is my first post", feed.entries[0].summary
   end
+
+  test "壊れたところを直して、すべての entry を読めるようにする" do
+    xml = <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <rss version="2.0">
+        <channel>
+          <title>Broken Feed</title>
+          <link>https://example.com/</link>
+          <item><title>one&nbsp;1</title><link>https://example.com/1</link><guid>1</guid><pubDate>金, 25 9月 2026 16:07:00 GMT</pubDate></item>
+          <item><title>two</title><link>https://example.com/2?a=1&b=2</link><guid>2</guid><pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate></item>
+          <item><title>three\u0008</title><link>https://example.com/3</link><guid>3</guid><pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate></item>
+          <item><title>four</title><link>https://example.com/4</link><guid>4</guid><pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate></item>
+        </channel>
+      </rss>
+    XML
+
+    result = FeedNormalizer.normalize_and_parse(xml, "https://example.com/feed.xml")
+
+    assert_equal %w[1 2 3 4], result[:feed].entries.map(&:entry_id)
+    assert_equal "one 1", result[:feed].entries[0].title
+    assert_equal "https://example.com/2?a=1&b=2", result[:feed].entries[1].url
+    assert_equal Time.utc(2026, 9, 25, 16, 7, 0), result[:feed].entries[0].published
+    assert_equal %w[InvalidXmlCharRemover HtmlEntityFixer BareAmpersandEscaper LocalizedDateFixer],
+                 result[:applied_filters]
+  end
+
+  test "フィルタが例外を出しても、そのフィルタを飛ばして読み進める" do
+    FeedFilters::PreParse::HtmlEntityFixer.any_instance.stubs(:apply).raises(RuntimeError, "boom")
+    Sentry.expects(:capture_exception).once
+    xml = %(<?xml version="1.0"?><rss version="2.0"><channel><title>t&amp;u</title><link>https://example.com/</link></channel></rss>)
+
+    result = FeedNormalizer.normalize_and_parse(xml, "https://example.com/feed.xml")
+
+    assert_equal "t&u", result[:feed].title
+    assert_not_includes result[:applied_filters], "HtmlEntityFixer"
+  end
 end
