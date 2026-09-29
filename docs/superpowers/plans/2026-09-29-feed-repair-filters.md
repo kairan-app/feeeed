@@ -989,6 +989,24 @@ git push -u origin design/feed-repair-filters
 
 作業ブランチは Part 1 のマージ後に `main` から `feat/fetcher-repair-filters` を切る。
 
+Part 1 の最終レビュー後の修正で、以下の Ruby 側の挙動が変わった。Rust 側もこれに合わせる
+(それぞれ該当する Task に反映済み):
+
+- 本文の先頭 (UTF-8 の BOM と ASCII の空白を無視) が `<` で始まらないものには、pre-parse フィルタを
+  一切適用しない (`FeedNormalizer#apply_pre_parse_filters` / Rust は `fetcher/src/lib.rs` の
+  `prepare`)。JSON Feed に XML 前提の書き換えをかけてしまう事故を防ぐため → Task 12
+- 各フィルタは、何も変わらなければ `None` を返す (Rust は元々この形なので変更不要) → Task 12
+- 桁が大きすぎて `u64` に収まらない数値文字参照も、使えない文字として取り除く
+  (`InvalidXmlCharRemover`、Rust は元々この実装なのでテストを足すだけ) → Task 12
+- `&#X41;` (大文字の X) は `BareAmpersandEscaper` でエスケープする (Rust は既にテスト済み) → Task 12
+- `RelativeUrlResolver` の基準はリダイレクト後のフィードURL。golden を作る側 (fetcher の
+  golden 生成やシャドーモード) は、リダイレクト前のURLを渡さないよう注意する → Task 10, 13
+- 空白だけの `entry_id` (`<guid> </guid>` など) も無いものとして扱い、url にフォールバックする
+  → Task 10, 12
+- `"HTTPS://"` のような大文字のスキームや `"tag:"` のようなURLスキームを持つリンクは、
+  `RelativeUrlResolver` にとって「相対URLではない」が、`Addressable::URI.join` はスキーム付きの
+  文字列をそのまま返すので、結果としてこれらは書き換えずにそのまま通る → Task 13
+
 ### Task 10: 合成フィクスチャを足し、フィルタ入りの Rails で golden を作り直す
 
 **Files:**
@@ -1079,6 +1097,12 @@ printf '%s\n' \
       <guid></guid>
       <pubDate>Wed, 24 Sep 2026 02:00:00 +0000</pubDate>
     </item>
+    <item>
+      <title>whitespace guid</title>
+      <link>https://example.com/ws/4</link>
+      <guid> </guid>
+      <pubDate>Wed, 24 Sep 2026 03:00:00 +0000</pubDate>
+    </item>
   </channel>
 </rss>
 ```
@@ -1121,7 +1145,7 @@ jq -c '.applied_filters' fetcher/testdata/fixtures/*.golden.json | sort | uniq -
 
 Expected:
 - `rss_repair_entities`: `["one","two","three"]`。`rss_undefined_entity`: before/entity/after の3件
-- `rss_link_whitespace_and_empty_guid`: `ws-1`、`https://example.com/ws/2`、`https://example.com/ws/3`
+- `rss_link_whitespace_and_empty_guid`: `ws-1`、`https://example.com/ws/2`、`https://example.com/ws/3`、`https://example.com/ws/4` (空白だけの guid も無いものとして扱われ、url にフォールバックする)
 - `rss_localized_dates`: `2026-09-25T16:07:00Z`、`2026-10-01T01:02:03Z`、`2026-12-25T19:10:00Z`、`2026-01-05T04:10:00Z` (published_at 順)
 - `rss_relative_urls_subdir`: `https://example.com/post/1`、`https://example.com/blog/post/2`、`https://example.com/post/3`、`https://example.com/blog/feed.xml?page=2`、`https://example.com/blog/post/5`
 - 変更が出るのは、壊れたフィードのフィクスチャ (`rss_undefined_entity`、`rss_attr_bare_amp`、`atom_content_bare_amp`、`rss_invalid_xml_char`、`rss_entity_copyright`) と、`applied_filters` が変わるものだけ。それ以外の golden に差分が出たら、理由を調べて報告する
@@ -1283,6 +1307,8 @@ git commit -m "fetcherにXMLの書き換え範囲の切り出しと、Railsと�
 - Create: `fetcher/src/filters/bare_ampersand_escaper.rs`
 - Create: `fetcher/src/filters/localized_date_fixer.rs`
 - Modify: `fetcher/src/filters/mod.rs` (`apply_pre_parse` の並び)
+- Modify: `fetcher/src/lib.rs` (`prepare`: XMLに見えない本文には pre-parse フィルタを適用しない)
+- Modify: `fetcher/src/shape/entry.rs` (空白だけの entry_id を無いものとして扱う)
 - Modify: `fetcher/src/parse/date.rs` (`englishize_japanese` と関連するテストを削除)
 
 **Interfaces:**
@@ -1319,6 +1345,14 @@ mod tests {
         let (out, d) = run(r#"<a b="&#x1F;">&#8;&#xD800;&#1114112;<![CDATA[&#8;]]></a>"#);
         assert_eq!(out, r#"<a b=""><![CDATA[&#8;]]></a>"#);
         assert_eq!(d.unwrap(), serde_json::json!({"removed_chars": 0, "removed_refs": 4}));
+    }
+
+    #[test]
+    fn removes_char_refs_too_large_for_u64() {
+        // 桁が多すぎて u64 に収まらない数値文字参照も、使えない文字として取り除く
+        let (out, d) = run("<a>&#99999999999999999999;</a>");
+        assert_eq!(out, "<a></a>");
+        assert_eq!(d.unwrap(), serde_json::json!({"removed_chars": 0, "removed_refs": 1}));
     }
 
     #[test]
@@ -1707,6 +1741,32 @@ impl PreParseFilter for LocalizedDateFixer {
 }
 ```
 
+`fetcher/src/shape/entry.rs` の guid 算出で、空白だけの `entry_id` (`<guid> </guid>` 等) も
+無いものとして扱い `entry.url` にフォールバックする (Ruby の `Channel#entry_id_of` の
+`id.to_s.strip.empty?` と同じ。`ruby_strip` は ASCII の空白だけを見るので `is_blank`
+(Unicode の空白も見る) ではなくこちらを使う):
+
+```rust
+        let entry_id = entry
+            .entry_id
+            .clone()
+            .filter(|id| !crate::ruby::ruby_strip(id).is_empty());
+        let Some(guid) = entry_id.or_else(|| entry.url.clone()) else {
+```
+
+`fetcher/src/shape/entry.rs` の `mod tests` (203行目付近) にテストを足す:
+
+```rust
+    #[test]
+    fn whitespace_only_entry_id_falls_back_to_url() {
+        let entry = raw_entry(Some(" "), Some("https://e.com/1"));
+        let (drafts, _) = draft_entries(&feed_with([entry]), None);
+        assert_eq!(drafts[0].guid, "https://e.com/1");
+    }
+```
+
+(既存のヘルパー名に合わせて `raw_entry`/`feed_with` は調整する)
+
 `mod.rs` の `apply_pre_parse` の並びを置き換える:
 
 ```rust
@@ -1723,6 +1783,43 @@ pub fn apply_pre_parse(xml: String) -> (String, Vec<String>, Map<String, Value>)
 
 (以降のループはそのまま。Rust のフィルタは panic しない実装なので、Ruby の「例外を捕まえて飛ばす」に相当する処理は入れない)
 
+`fetcher/src/lib.rs` の `prepare` で、本文が XML に見えない場合は `apply_pre_parse` を呼ばずに
+スキップする (Ruby の `FeedNormalizer#looks_like_xml?` と同じ判定。UTF-8 の BOM と ASCII の
+空白 (` \t\r\n`) を無視した先頭が `<` かどうかで見る):
+
+```rust
+fn looks_like_xml(xml: &str) -> bool {
+    xml.trim_start_matches('\u{feff}')
+        .trim_start_matches([' ', '\t', '\r', '\n'])
+        .starts_with('<')
+}
+
+pub fn prepare(body: &[u8], feed_url: &str) -> Result<Prepared, ParseError> {
+    let xml = encoding::to_utf8_dropping_invalid(body);
+    let (xml, mut applied, mut details) = if looks_like_xml(&xml) {
+        filters::apply_pre_parse(xml)
+    } else {
+        (xml, Vec::new(), Map::new())
+    };
+    let mut feed = parse_feed(&xml)?;
+    // (以下は変更なし)
+```
+
+JSON Feed (`{"version":"https://jsonfeed.org/version/1.1", ...}`) に XML 前提の書き換え
+(`&` のエスケープ等) をかけて `entry_id`/`url`/`title` を壊さないためのガード。テストは
+`fetcher/src/lib.rs` の `mod tests` に足す:
+
+```rust
+    #[test]
+    fn json_feed_body_skips_pre_parse_filters() {
+        let json = br#"{"version":"https://jsonfeed.org/version/1.1","title":"t","items":[{"id":"https://e.com/p?a=1&b=2","url":"https://e.com/p?a=1&b=2","title":"A & B &nbsp;","date_published":"2026-09-24T00:00:00Z"}]}"#;
+        let prepared = prepare(json, "https://e.com/feed.json").unwrap();
+        assert!(prepared.applied_filters.is_empty());
+        let entry = &prepared.feed.entries[0];
+        assert_eq!(entry.entry_id.as_deref(), Some("https://e.com/p?a=1&b=2"));
+    }
+```
+
 `fetcher/src/parse/date.rs` から `JA_RFC822`、`MONTHS`、`englishize_japanese`、`parse_datetime` の中の `englishized` の行、テスト `parses_japanese_localized_rfc822`、使われなくなった `use regex::Regex;` と `use std::sync::LazyLock;` を消す。`parse_datetime` の該当箇所は次に戻す:
 
 ```rust
@@ -1738,7 +1835,7 @@ Expected: PASS (golden テストは次の Task で扱う)
 
 ```bash
 cd fetcher && cargo fmt && cargo clippy --all-targets -- -D warnings && cd ..
-git add fetcher/src/filters fetcher/src/parse/date.rs
+git add fetcher/src/filters fetcher/src/lib.rs fetcher/src/shape/entry.rs fetcher/src/parse/date.rs
 git commit -m "fetcherに壊れたフィードを直すパース前フィルタをRailsと同じ順番で入れる"
 ```
 
@@ -1747,6 +1844,7 @@ git commit -m "fetcherに壊れたフィードを直すパース前フィルタ�
 **Files:**
 - Modify: `fetcher/src/filters/relative_url_resolver.rs`
 - Modify: `fetcher/tests/golden.rs` (`golden_tests!` に Task 10 のフィクスチャ名を足す)
+- Modify: `fetcher/src/shadow.rs` (`prepare` に渡す feed_url をリダイレクト後のURLにする)
 
 **Interfaces:**
 - Produces: `relative_url_resolver::join_like_addressable(base: &str, url: &str) -> String` (base のパスを RFC 3986 5.2.2 のとおり扱う。`resolve_like_rails` は `Channel.normalize_url` 用にそのまま残し、中で使う)
@@ -1774,6 +1872,20 @@ git commit -m "fetcherに壊れたフィードを直すパース前フィルタ�
         assert_eq!(f.entries[0].url.as_deref(), Some("\n  https://example.com/a\n"));
         assert_eq!(f.entries[1].url.as_deref(), Some("https://example.com/b"));
         assert_eq!(details["base_url"], "https://example.com/blog/feed.xml");
+    }
+
+    #[test]
+    fn uppercase_scheme_and_tag_links_are_left_as_is() {
+        // "HTTPS://" は has_relative_url の判定 (小文字の "http://"/"https://" のみ) では
+        // 相対URL扱いになるが、スキーム付きなので join_like_addressable はそのまま返す。
+        // "tag:" も同様。Ruby の Addressable::URI.join と同じ挙動
+        let mut f = feed(
+            Some("https://example.com/"),
+            &["HTTPS://example.com/upper", "tag:example.com,2026:1"],
+        );
+        apply(&mut f, "https://example.com/blog/feed.xml");
+        assert_eq!(f.entries[0].url.as_deref(), Some("HTTPS://example.com/upper"));
+        assert_eq!(f.entries[1].url.as_deref(), Some("tag:example.com,2026:1"));
     }
 ```
 
@@ -1861,6 +1973,17 @@ fn has_relative_url(url: Option<&str>) -> bool {
 
 既存のテスト `resolves_against_scheme_and_host_only` など、RelativeUrlResolver の基準が `scheme://host` であることを前提にしたものは、Rails の Task 7 と同じ期待値に直す。
 
+`fetcher/src/shadow.rs` の `process` は `crate::prepare(&res.body, &ch.feed_url)` と、DBに保存された
+(リダイレクト前の) `feed_url` を渡している。`res: FetchResponse` は `final_url` を持っている
+(`fetcher/src/http/mod.rs`) ので、そちらを使うように直す:
+
+```rust
+    let prepared = match crate::prepare(&res.body, &res.final_url) {
+```
+
+(golden 生成側 (`golden_output` / `fetcher/testdata/fixtures/*.url`) は実際のHTTP取得をしないため
+リダイレクトが起きず、この修正の影響を受けない)
+
 - [ ] **Step 4: テストと golden が通ることを確かめる**
 
 Run:
@@ -1874,7 +1997,7 @@ Expected: すべて PASS。コーパスは Task 10 Step 3 で作り直した gol
 
 ```bash
 cd fetcher && cargo fmt && cargo clippy --all-targets -- -D warnings && cd ..
-git add fetcher/src/filters/relative_url_resolver.rs fetcher/tests/golden.rs
+git add fetcher/src/filters/relative_url_resolver.rs fetcher/src/shadow.rs fetcher/tests/golden.rs
 git commit -m "fetcherのRelativeUrlResolverをフィードのURL基準にし、フィルタ入りのRailsのgoldenと一致させる"
 git push -u origin feat/fetcher-repair-filters
 ```
