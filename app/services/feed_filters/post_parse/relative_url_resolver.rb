@@ -84,6 +84,10 @@ module FeedFilters
       # フィードの URL を基準に RFC 3986 のとおり解決する
       def resolve_url(url, base_url)
         Addressable::URI.join(base_url, url.to_s.strip).to_s
+      rescue Addressable::URI::InvalidURIError
+        # scheme として解釈できないリンク ("[::1]/ep1" など) は、Rust 版の join と同じく
+        # 書き換えずに元の値のまま返す
+        url.to_s.strip
       end
     end
   end

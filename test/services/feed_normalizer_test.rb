@@ -207,4 +207,24 @@ class FeedNormalizerTest < ActiveSupport::TestCase
     assert_equal "t&u", result[:feed].title
     assert_not_includes result[:applied_filters], "HtmlEntityFixer"
   end
+
+  test "post-parseフィルタが例外を出しても、そのフィルタを飛ばして読み進める" do
+    FeedFilters::PostParse::RelativeUrlResolver.any_instance.stubs(:apply).raises(RuntimeError, "boom")
+    Sentry.expects(:capture_exception).once
+    xml = <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <rss version="2.0">
+        <channel>
+          <title>Test Feed</title>
+          <link>https://example.com/</link>
+          <item><title>Item</title><link>/post/1</link><guid>1</guid></item>
+        </channel>
+      </rss>
+    XML
+
+    result = FeedNormalizer.normalize_and_parse(xml, "https://example.com/feed.xml")
+
+    assert_equal 1, result[:feed].entries.size
+    assert_not_includes result[:applied_filters], "RelativeUrlResolver"
+  end
 end

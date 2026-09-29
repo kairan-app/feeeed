@@ -98,7 +98,9 @@ class FeedNormalizer
       filter = filter_class.new
       metadata = { feed_url: @feed_url }
 
-      if filter.applicable?(normalized_feed, metadata)
+      begin
+        next unless filter.applicable?(normalized_feed, metadata)
+
         Rails.logger.info "[FeedNormalizer] Applying post-parse filter: #{filter_class.name}"
         normalized_feed = filter.apply(normalized_feed, metadata)
 
@@ -106,6 +108,10 @@ class FeedNormalizer
           @applied_filters << filter_class.name.demodulize
           @filter_details[filter_class.name.demodulize] = filter.details
         end
+      rescue StandardError => e
+        # フィルタのバグで取り込み全体を止めない。直す前のfeedオブジェクトのまま次のフィルタに進む
+        Rails.logger.error "[FeedNormalizer] Post-parse filter #{filter_class.name} failed: #{e.class}: #{e.message}"
+        Sentry.capture_exception(e, extra: { feed_url: @feed_url, filter: filter_class.name })
       end
     end
 

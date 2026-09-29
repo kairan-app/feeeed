@@ -177,6 +177,21 @@ class FeedFilters::PostParse::RelativeUrlResolverTest < ActiveSupport::TestCase
     assert_equal "https://example.com/post/1", result.entries[0].url
   end
 
+  test "壊れたリンクは書き換えずそのまま残し、例外を起こさない" do
+    feed = create_mock_feed(
+      feed_url: "https://example.com/",
+      entries: [
+        { url: "[::1]/ep1", title: "invalid scheme" },
+        { url: "/ok", title: "valid relative" }
+      ]
+    )
+
+    result = @filter.apply(feed, { feed_url: "https://example.com/feed.xml" })
+
+    assert_equal "[::1]/ep1", result.entries[0].url
+    assert_equal "https://example.com/ok", result.entries[1].url
+  end
+
   private
 
   def create_mock_feed(feed_url:, entries:)
