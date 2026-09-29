@@ -76,4 +76,12 @@ class ChannelNotificationTest < ActiveSupport::TestCase
       )
     end
   end
+
+  test "notify_channel_change ignores applied_filters changes" do
+    clear_enqueued_jobs
+
+    @channel.update!(applied_filters: [ "HtmlEntityFixer" ], filter_details: { "HtmlEntityFixer" => { replaced: 1 } })
+
+    assert_enqueued_jobs 0, only: DiscoPosterJob
+  end
 end

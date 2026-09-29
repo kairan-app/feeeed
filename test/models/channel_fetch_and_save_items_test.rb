@@ -13,6 +13,34 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
     Sentry.stubs(:capture_exception)
   end
 
+  describe "空の guid (Feedjira では :no_buffer になる)" do
+    test "entry_id が無いものとして url を guid にする" do
+      entries = [
+        build_mock_entry(entry_id: :no_buffer, url: "https://example.com/1", title: "one"),
+        build_mock_entry(entry_id: :no_buffer, url: "https://example.com/2", title: "two"),
+        build_mock_entry(entry_id: "", url: "https://example.com/3", title: "three")
+      ]
+      stub_feed_with_entries(entries)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+      @channel.stubs(:sleep)
+
+      @channel.fetch_and_save_items
+
+      assert_equal %w[https://example.com/1 https://example.com/2 https://example.com/3], @channel.items.order(:guid).pluck(:guid)
+    end
+
+    test "既に no_buffer の guid で保存された item があっても、新しい記事を取りこぼさない" do
+      @channel.items.create!(guid: "no_buffer", title: "old", url: "https://example.com/old", published_at: 1.day.ago)
+      stub_feed_with_entries([ build_mock_entry(entry_id: :no_buffer, url: "https://example.com/new", title: "new") ])
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+      @channel.stubs(:sleep)
+
+      @channel.fetch_and_save_items
+
+      assert @channel.items.exists?(guid: "https://example.com/new")
+    end
+  end
+
   private
 
   # テスト用のモックエントリを作成するヘルパー

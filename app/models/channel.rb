@@ -380,7 +380,7 @@ class Channel < ApplicationRecord
         feed.entries
       elsif mode == :only_non_existing
         feed.entries.reject {
-          self.items.exists?(guid: _1.entry_id) ||
+          self.items.exists?(guid: entry_id_of(_1)) ||
           self.items.exists?(guid: _1.url)
         }
       else
@@ -389,7 +389,7 @@ class Channel < ApplicationRecord
       end
 
     # 新しい方から見て2件以内のエントリだけ、新規Itemとして保存できたら通知する
-    notifiable_guids = feed.entries.select(&:published).sort_by(&:published).last(2).flat_map { [ _1.entry_id, _1.url ] }.compact
+    notifiable_guids = feed.entries.select(&:published).sort_by(&:published).last(2).flat_map { [ entry_id_of(_1), _1.url ] }.compact
 
     success_count = 0
     error_count = 0
@@ -428,7 +428,7 @@ class Channel < ApplicationRecord
           end
         }.join
 
-        guid = entry.entry_id || entry.url
+        guid = entry_id_of(entry) || entry.url
         if guid.nil?
           Sentry.capture_message(
             "Skipped entry: no guid (entry_id and url both nil)",
@@ -486,7 +486,7 @@ class Channel < ApplicationRecord
             channel_id: self.id,
             channel_title: self.title,
             item_title: entry.title,
-            item_guid: entry.entry_id || entry.url,
+            item_guid: entry_id_of(entry) || entry.url,
             skip_reason: "validation_failed",
             validation_errors: e.message
           }
@@ -501,7 +501,7 @@ class Channel < ApplicationRecord
           channel_id: self.id,
           channel_title: self.title,
           item_title: entry.title,
-          item_guid: entry.entry_id || entry.url,
+          item_guid: entry_id_of(entry) || entry.url,
           error_count: error_count,
           success_count: success_count
         })
@@ -678,8 +678,8 @@ class Channel < ApplicationRecord
 
   def notify_channel_change
     prefix = previous_changes.key?(:id) ? "New channel created" : "Channel updated"
-    # last_items_checked_atとupdated_atの変更は無視する
-    ignored_fields = %w[last_items_checked_at filter_details updated_at created_at]
+    # last_items_checked_at・updated_at・フィルタの適用状況の変更は無視する
+    ignored_fields = %w[last_items_checked_at applied_filters filter_details updated_at created_at]
     significant_changes = previous_changes.except(*ignored_fields)
 
     changed_fields = significant_changes.keys.map { |field| "# #{field}\n- [Old] #{significant_changes[field].first}\n- [New] #{significant_changes[field].last}" }
@@ -730,5 +730,13 @@ class Channel < ApplicationRecord
 
   def day_of_week_name(day)
     %w[Sun Mon Tue Wed Thu Fri Sat][day]
+  end
+
+  # RSS の空の <guid/> は Feedjira (sax-machine) で :no_buffer になるので、無いものとして扱う
+  def entry_id_of(entry)
+    id = entry.entry_id
+    return nil if id.nil? || id == :no_buffer || id.to_s.empty?
+
+    id
   end
 end
