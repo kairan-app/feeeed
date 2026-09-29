@@ -121,7 +121,8 @@ class FeedNormalizer
           @filter_details[filter_class.name.demodulize] = filter.details
         end
       rescue StandardError => e
-        # フィルタのバグで取り込み全体を止めない。直す前のfeedオブジェクトのまま次のフィルタに進む
+        # フィルタのバグで取り込み全体を止めない。次のフィルタに進むが、RelativeUrlResolverなどは
+        # feedオブジェクトを直接書き換えるため、例外が起きた時点までの変更は残ったままになりうる
         Rails.logger.error "[FeedNormalizer] Post-parse filter #{filter_class.name} failed: #{e.class}: #{e.message}"
         Sentry.capture_exception(e, extra: { feed_url: @feed_url, filter: filter_class.name })
       end
