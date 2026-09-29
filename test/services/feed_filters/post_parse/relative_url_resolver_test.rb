@@ -49,7 +49,7 @@ class FeedFilters::PostParse::RelativeUrlResolverTest < ActiveSupport::TestCase
 
     assert @filter.applied
     assert_equal 3, @filter.details[:converted_count]
-    assert_equal "http://example.com", @filter.details[:base_url]
+    assert_equal "http://example.com/feed.xml", @filter.details[:base_url]
     assert_equal 3, @filter.details[:sample_urls].size
     assert_not @filter.details[:has_more]
   end
@@ -69,7 +69,7 @@ class FeedFilters::PostParse::RelativeUrlResolverTest < ActiveSupport::TestCase
     assert_equal "http://example.com:8080/post/1", result.entries[0].url
 
     assert @filter.applied
-    assert_equal "http://example.com:8080", @filter.details[:base_url]
+    assert_equal "http://example.com:8080/feed.xml", @filter.details[:base_url]
   end
 
   test "handles HTTPS URLs correctly" do
@@ -84,7 +84,7 @@ class FeedFilters::PostParse::RelativeUrlResolverTest < ActiveSupport::TestCase
     result = @filter.apply(feed, metadata)
 
     assert_equal "https://secure.example.com/post/1", result.entries[0].url
-    assert_equal "https://secure.example.com", @filter.details[:base_url]
+    assert_equal "https://secure.example.com/feed.xml", @filter.details[:base_url]
   end
 
   test "limits sample URLs to 5 when many URLs are converted" do
@@ -133,6 +133,48 @@ class FeedFilters::PostParse::RelativeUrlResolverTest < ActiveSupport::TestCase
 
     assert @filter.applied
     assert_equal 1, @filter.details[:converted_count]
+  end
+
+  test "フィードの URL を基準に RFC 3986 のとおり解決する" do
+    feed = create_mock_feed(
+      feed_url: "/",
+      entries: [
+        { url: "/post/1", title: "abs path" },
+        { url: "post/2", title: "rel path" },
+        { url: "../post/3", title: "parent" },
+        { url: "?page=2", title: "query only" }
+      ]
+    )
+
+    result = @filter.apply(feed, { feed_url: "https://example.com/blog/feed.xml" })
+
+    assert_equal "https://example.com/", result.url
+    assert_equal "https://example.com/post/1", result.entries[0].url
+    assert_equal "https://example.com/blog/post/2", result.entries[1].url
+    assert_equal "https://example.com/post/3", result.entries[2].url
+    assert_equal "https://example.com/blog/feed.xml?page=2", result.entries[3].url
+    assert_equal "https://example.com/blog/feed.xml", @filter.details[:base_url]
+  end
+
+  test "前後に改行がある絶対 URL は相対 URL とみなさず、書き換えない" do
+    feed = create_mock_feed(
+      feed_url: "https://example.com/",
+      entries: [ { url: "\n  https://example.com/post/1\n", title: "newline" } ]
+    )
+
+    assert_not @filter.applicable?(feed, { feed_url: "https://example.com/feed.xml" })
+    assert_equal "\n  https://example.com/post/1\n", feed.entries[0].url
+  end
+
+  test "前後に改行がある相対 URL は、取り除いてから解決する" do
+    feed = create_mock_feed(
+      feed_url: "https://example.com/",
+      entries: [ { url: "\n/post/1\n", title: "newline" } ]
+    )
+
+    result = @filter.apply(feed, { feed_url: "https://example.com/feed.xml" })
+
+    assert_equal "https://example.com/post/1", result.entries[0].url
   end
 
   private
