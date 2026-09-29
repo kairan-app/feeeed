@@ -130,7 +130,8 @@ class Channel < ApplicationRecord
     # フィードを取得し、正規化・パースを行う共通メソッド
     def fetch_and_normalize_feed(feed_url)
       http_response = Httpc.get_with_redirect_info(feed_url)
-      normalization_result = FeedNormalizer.normalize_and_parse(http_response[:body], feed_url)
+      # 相対URLの解決基準は、リダイレクト後のURLを使う
+      normalization_result = FeedNormalizer.normalize_and_parse(http_response[:body], http_response[:final_url] || feed_url)
 
       # リダイレクト情報を追加
       normalization_result[:redirect_info] = {
