@@ -19,14 +19,19 @@ class FeedFilters::PreParse::XmlSegmentsTest < ActiveSupport::TestCase
     assert_equal "<A><![CDATA[B", upcase_outside("<a><![CDATA[b")
   end
 
-  test "巨大な文書でも速く終わる" do
+  test "巨大な文書 (ASCII) でも線形時間で処理する" do
     xml = "<a>" + ("<b>x &amp; y</b><![CDATA[z]]>" * 200_000) + "</a>"
-    start = Time.now
+    start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     FeedFilters::PreParse::XmlSegments.map_unprotected(xml) { _1 }
-    elapsed = Time.now - start
-    # Ruby's substring creation is O(n) for each substring, making this O(n²) for very large documents.
-    # The Rust implementation should be faster. We test that it completes in a reasonable time
-    # for a 5.8MB document with 200k matches rather than an aggressive 5s requirement.
-    assert_operator elapsed, :<, 25
+    elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+    assert_operator elapsed, :<, 5
+  end
+
+  test "巨大な文書 (日本語) でも線形時間で処理する" do
+    xml = "<a>" + ("<b>日本語のテキスト &amp; y</b><![CDATA[z]]>" * 200_000) + "</a>"
+    start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    FeedFilters::PreParse::XmlSegments.map_unprotected(xml) { _1 }
+    elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+    assert_operator elapsed, :<, 5
   end
 end
