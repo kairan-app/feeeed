@@ -733,10 +733,12 @@ class Channel < ApplicationRecord
     %w[Sun Mon Tue Wed Thu Fri Sat][day]
   end
 
-  # RSS の空の <guid/> は Feedjira (sax-machine) で :no_buffer になるので、無いものとして扱う
+  # RSS の空の <guid/> は Feedjira (sax-machine) で :no_buffer になるので、無いものとして扱う。
+  # 空白だけのguid (<guid> </guid> 等) も無いものとして扱うが、判定のためだけにstripし、
+  # 保存されるguid自体は (このメソッドの呼び出し元で) stripしない
   def entry_id_of(entry)
     id = entry.entry_id
-    return nil if id.nil? || id == :no_buffer || id.to_s.empty?
+    return nil if id.nil? || id == :no_buffer || id.to_s.strip.empty?
 
     id
   end

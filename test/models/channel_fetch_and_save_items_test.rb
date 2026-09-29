@@ -39,6 +39,20 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
 
       assert @channel.items.exists?(guid: "https://example.com/new")
     end
+
+    test "空白だけの guid も無いものとして扱う" do
+      entries = [
+        build_mock_entry(entry_id: " ", url: "https://example.com/1", title: "one"),
+        build_mock_entry(entry_id: "\n", url: "https://example.com/2", title: "two")
+      ]
+      stub_feed_with_entries(entries)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+      @channel.stubs(:sleep)
+
+      @channel.fetch_and_save_items
+
+      assert_equal %w[https://example.com/1 https://example.com/2], @channel.items.order(:guid).pluck(:guid)
+    end
   end
 
   private
