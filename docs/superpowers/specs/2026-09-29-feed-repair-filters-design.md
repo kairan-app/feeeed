@@ -59,7 +59,8 @@ guid の判定は約21万件ですべて一致した。いっぽうで、Rails �
 
 Rails (`Channel.fetch_and_save_items`、`RelativeUrlResolver`) と Rust (`fetcher/src/shape/`) の両方で次のように変える。
 
-- **`<link>` の前後の空白**: entry とフィードの url は、`RelativeUrlResolver` の判定より前に前後の空白・改行を取り除く
+- **`<link>` の前後の空白**: `RelativeUrlResolver` は、前後の空白・改行を取り除いた値で相対 URL かどうかを判定し、取り除いた値を解決する。絶対 URL だった場合は url を書き換えない (guid が url を兼ねているフィードで guid を変えないため。保存する url の strip は今までどおり `Channel.fetch_and_save_items` が行う)
+- **空要素の値**: Ruby では RSS の `<guid/>` と `<guid></guid>` が `:no_buffer` になる。Atom の `<id/>` は nil で問題ない
 - **空の `<guid/>`**: entry_id が空 (Ruby では `:no_buffer`、または空文字) のときは entry_id が無いものとして扱い、url にフォールバックする。既存の item の guid は `no_buffer` になっているので、該当するチャンネルでは直した直後に過去の記事が一度だけ新着として入る。これは受け入れる (今は同じ guid で上書きし続けていて、壊れているため)
 - **相対 URL の解決基準**: `RelativeUrlResolver` の基準を `scheme://host` からフィードの URL (リダイレクト後) に変え、RFC 3986 の通りに解決する
   - guid が url を兼ねているチャンネルで、基準の変更によって url が変わると、既存の記事が二重に保存される。2026-09-28 時点で `RelativeUrlResolver` が適用されているチャンネルは8件、うち guid が url を兼ねているものは3件で、3件ともフィードがドメイン直下にあるため結果は変わらない (確認済み)
