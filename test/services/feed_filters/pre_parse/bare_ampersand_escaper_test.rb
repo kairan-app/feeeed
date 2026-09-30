@@ -38,4 +38,20 @@ class FeedFilters::PreParse::BareAmpersandEscaperTest < ActiveSupport::TestCase
     assert_same xml, out
     assert_not filter.applied
   end
+
+  # #827: 文字参照の & が大量にあって、エスケープする & が無い (または少ない) 巨大な文書では、
+  # 次の一致を探す1回の検索が文書の最後まで走り、Regexp.timeout を超える
+  test "文字参照の多い巨大な文書でも Regexp.timeout を超えない" do
+    xml = "<rss>" + ("<item><title>日本語 &amp; タイトル&#65;</title></item>" * 50_000) + "<link>/?a=1&b=2</link></rss>"
+    expected = xml.sub("&b=", "&amp;b=")
+    original = Regexp.timeout
+    Regexp.timeout = 0.01
+    begin
+      out, filter = run_filter(xml)
+      assert_equal expected, out
+      assert_equal({ escaped: 1 }, filter.details)
+    ensure
+      Regexp.timeout = original
+    end
+  end
 end

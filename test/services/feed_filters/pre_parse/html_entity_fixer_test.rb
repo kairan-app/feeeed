@@ -55,4 +55,20 @@ class FeedFilters::PreParse::HtmlEntityFixerTest < ActiveSupport::TestCase
     assert_same xml, out
     assert_not filter.applied
   end
+
+  # #827: 名前付きのエンティティが少ない巨大な文書では、次の一致を探す1回の検索が文書の最後まで走り、
+  # Regexp.timeout を超える
+  test "名前付きのエンティティの少ない巨大な文書でも Regexp.timeout を超えない" do
+    xml = "<rss>" + ("<item><title>日本語 &#65; タイトル&#x41; /?a=1&b=2</title></item>" * 50_000) + "<a>&nbsp;</a></rss>"
+    expected = xml.sub("&nbsp;", "&#xA0;")
+    original = Regexp.timeout
+    Regexp.timeout = 0.01
+    begin
+      out, filter = run_filter(xml)
+      assert_equal expected, out
+      assert_equal({ replaced: 1, unknown: 0 }, filter.details)
+    ensure
+      Regexp.timeout = original
+    end
+  end
 end

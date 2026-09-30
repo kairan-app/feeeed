@@ -13,7 +13,7 @@ module FeedFilters
         escaped = 0
 
         fixed = XmlSegments.map_unprotected(xml_content) do |text|
-          text.gsub(BARE_AMP) do
+          Ampersands.gsub(text, BARE_AMP) do
             escaped += 1
             "&amp;"
           end
