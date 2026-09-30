@@ -263,4 +263,21 @@ class FeedNormalizerTest < ActiveSupport::TestCase
       # Feedjiraのパース自体が失敗するのは許容する。フィルタ由来のSentry通知が無いことだけ確認する
     end
   end
+  # #825: どの pre-parse フィルタも、巨大な文書を1回の正規表現で最後まで走査しないこと
+  test "巨大な文書でも、どの pre-parse フィルタも Regexp.timeout を超えない" do
+    items = "<item><title>日本語のタイトル&nbsp;</title><link>https://example.com/p?a=1&b=2</link>" \
+            "<pubDate>金, 25 9月 2026 16:07:00 GMT</pubDate><description>本文 &amp; 説明</description></item>"
+    xml = %(<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>t</title><link>https://example.com/</link>) +
+          (items * 20_000) + "</channel></rss>"
+    Sentry.expects(:capture_exception).never
+    original = Regexp.timeout
+    Regexp.timeout = 0.01
+    begin
+      normalizer = FeedNormalizer.new(xml, "https://example.com/feed.xml")
+      normalizer.send(:apply_pre_parse_filters, xml)
+      assert_equal %w[HtmlEntityFixer BareAmpersandEscaper LocalizedDateFixer], normalizer.instance_variable_get(:@applied_filters)
+    ensure
+      Regexp.timeout = original
+    end
+  end
 end

@@ -33,4 +33,28 @@ class FeedFilters::PreParse::InvalidXmlCharRemoverTest < ActiveSupport::TestCase
     assert_same xml, out
     assert_not filter.applied
   end
+  test "U+FFFF と U+FFFE の生の文字も取り除き、その件数を数える" do
+    out, filter = run_filter("<a>x\uFFFFy\uFFFEz\u001F</a>")
+    assert_equal "<a>xyz</a>", out
+    assert_equal({ removed_chars: 3, removed_refs: 0 }, filter.details)
+  end
+
+  # #825: 57MB のフィードで、文書全体に正規表現をかける判定が Regexp.timeout (1秒) を超えていた
+  test "巨大な文書でも、文書全体を1回の正規表現で走査しない (Regexp.timeout を超えない)" do
+    xml = "<rss>" + ("<item><title>日本語のタイトル</title><description>本文 &amp; 説明</description></item>" * 50_000) + "</rss>"
+    original = Regexp.timeout
+    Regexp.timeout = 0.01
+    begin
+      out, filter = run_filter(xml)
+      assert_same xml, out
+      assert_not filter.applied
+
+      broken = xml.sub("本文", "本\u0008文")
+      out, filter = run_filter(broken)
+      assert_equal xml, out
+      assert_equal({ removed_chars: 1, removed_refs: 0 }, filter.details)
+    ensure
+      Regexp.timeout = original
+    end
+  end
 end
