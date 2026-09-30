@@ -274,7 +274,7 @@ async fn process(ch: ShadowChannel, http: &HttpClient, api: &DispatcherClient) -
             return empty_report(&ch, "fetch_error", format!("{}: {e}", e.kind()), started);
         }
     };
-    let prepared = match crate::prepare(&res.body, &ch.feed_url) {
+    let prepared = match crate::prepare(&res.body, &res.final_url) {
         Ok(p) => p,
         Err(e) => return empty_report(&ch, "parse_error", e.to_string(), started),
     };
