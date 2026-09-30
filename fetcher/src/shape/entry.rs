@@ -85,7 +85,11 @@ pub fn draft_entries(feed: &RawFeed, site_url: Option<&str>) -> (Vec<EntryDraft>
         };
         let encoded = encode_url_like_rails(ruby_strip(url));
 
-        let Some(guid) = entry.entry_id.clone().or_else(|| entry.url.clone()) else {
+        let entry_id = entry
+            .entry_id
+            .clone()
+            .filter(|id| !ruby_strip(id).is_empty());
+        let Some(guid) = entry_id.clone().or_else(|| entry.url.clone()) else {
             skipped.push(Skipped {
                 title: entry.title.clone(),
                 reason: SkipReason::NoGuid,
@@ -104,7 +108,7 @@ pub fn draft_entries(feed: &RawFeed, site_url: Option<&str>) -> (Vec<EntryDraft>
         };
 
         drafts.push(EntryDraft {
-            raw_entry_id: entry.entry_id.clone(),
+            raw_entry_id: entry_id,
             raw_url: entry.url.clone(),
             guid,
             title_raw: entry.title.clone(),
@@ -223,6 +227,26 @@ mod tests {
             drafts[0].data_extra.published.as_deref(),
             Some("2026-09-22T00:00:00.000Z")
         );
+    }
+
+    #[test]
+    fn whitespace_only_entry_id_falls_back_to_url() {
+        let feed = RawFeed {
+            format: crate::model::FeedFormat::Rss,
+            title: None,
+            description: None,
+            url: None,
+            links: vec![],
+            itunes_image: None,
+            entries: vec![crate::parse::extract::RawEntry {
+                entry_id: Some(" ".into()),
+                url: Some("https://e.com/1".into()),
+                ..Default::default()
+            }],
+        };
+        let (drafts, _) = draft_entries(&feed, None);
+        assert_eq!(drafts[0].guid, "https://e.com/1");
+        assert_eq!(drafts[0].raw_entry_id, None);
     }
 
     #[test]

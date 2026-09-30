@@ -20,9 +20,19 @@ pub struct Prepared {
 }
 
 /// 文字コードの修正 → パース前フィルタ → パース → パース後フィルタ (FeedNormalizer と同じ流れ)
+fn looks_like_xml(xml: &str) -> bool {
+    xml.trim_start_matches('\u{feff}')
+        .trim_start_matches([' ', '\t', '\r', '\n'])
+        .starts_with('<')
+}
+
 pub fn prepare(body: &[u8], feed_url: &str) -> Result<Prepared, ParseError> {
     let xml = encoding::to_utf8_dropping_invalid(body);
-    let (xml, mut applied, mut details) = filters::apply_pre_parse(xml);
+    let (xml, mut applied, mut details) = if looks_like_xml(&xml) {
+        filters::apply_pre_parse(xml)
+    } else {
+        (xml, Vec::new(), Map::new())
+    };
     let mut feed = parse_feed(&xml)?;
     if let Some(detail) = filters::relative_url_resolver::apply(&mut feed, feed_url) {
         applied.push("RelativeUrlResolver".to_string());
@@ -93,4 +103,29 @@ pub fn golden_check(dir: &std::path::Path) -> anyhow::Result<()> {
     }
     println!("{} / {} matched", total - failures, total);
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn json_feed_body_is_not_treated_as_xml() {
+        // Rust のパーサは JSON Feed を扱わないので prepare は Unsupported を返すが、
+        // その前に XML 前提の書き換えがかからないこと (looks_like_xml が false) を確かめる
+        let json =
+            br#"{"version":"https://jsonfeed.org/version/1.1","items":[{"id":"a?x=1&y=2"}]}"#;
+        assert!(!looks_like_xml(std::str::from_utf8(json).unwrap()));
+        assert!(matches!(
+            prepare(json, "https://e.com/feed.json"),
+            Err(ParseError::Unsupported(_))
+        ));
+    }
+
+    #[test]
+    fn looks_like_xml_ignores_bom_and_ascii_whitespace() {
+        assert!(looks_like_xml("\u{feff} \t\r\n<rss/>"));
+        assert!(!looks_like_xml("\u{3000}<rss/>"));
+        assert!(!looks_like_xml("plain text"));
+    }
 }

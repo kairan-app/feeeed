@@ -1,6 +1,9 @@
 pub mod atom_namespace_fixer;
+pub mod bare_ampersand_escaper;
 pub mod html_entities;
 pub mod html_entity_fixer;
+pub mod invalid_xml_char_remover;
+pub mod localized_date_fixer;
 pub mod relative_url_resolver;
 pub mod segments;
 
@@ -14,8 +17,11 @@ pub trait PreParseFilter {
 
 /// Ruby の FeedNormalizer::PRE_PARSE_FILTERS と同じ順番でかける。
 pub fn apply_pre_parse(xml: String) -> (String, Vec<String>, Map<String, Value>) {
-    let filters: [&dyn PreParseFilter; 2] = [
+    let filters: [&dyn PreParseFilter; 5] = [
+        &invalid_xml_char_remover::InvalidXmlCharRemover,
         &html_entity_fixer::HtmlEntityFixer,
+        &bare_ampersand_escaper::BareAmpersandEscaper,
+        &localized_date_fixer::LocalizedDateFixer,
         &atom_namespace_fixer::AtomNamespaceFixer,
     ];
     let mut current = xml;
