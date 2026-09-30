@@ -17,7 +17,7 @@ pub fn normalize_site_url(url: Option<&str>, feed_url: &str) -> String {
     match url {
         None => feed_url.to_string(),
         Some(u) if is_blank(u) => feed_url.to_string(),
-        Some(u) => resolve_like_rails(u, feed_url),
+        Some(u) => resolve_like_rails(ruby_strip(u), feed_url),
     }
 }
 
@@ -88,4 +88,23 @@ pub fn channel_meta(feed: &RawFeed, feed_url: &str, ogp: Option<&Ogp>) -> Option
         site_url,
         image_url,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const FEED_URL: &str = "https://example.com/feed.xml";
+
+    #[test]
+    fn site_url_strips_surrounding_whitespace() {
+        assert_eq!(
+            normalize_site_url(Some("\n    https://example.com/\n"), FEED_URL),
+            "https://example.com/"
+        );
+        assert_eq!(
+            normalize_site_url(Some("  /about  "), FEED_URL),
+            "https://example.com/about"
+        );
+    }
 }

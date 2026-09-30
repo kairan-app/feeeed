@@ -262,6 +262,9 @@ class Channel < ApplicationRecord
     def normalize_url(url, feed_url)
       return feed_url if url.blank?
 
+      # <link> の前後に改行や空白が入っているフィードがあるので取り除く
+      url = url.strip
+
       # 絶対URLの場合はそのまま返す
       return url if url.start_with?("http://", "https://")
 
@@ -277,6 +280,9 @@ class Channel < ApplicationRecord
       else
         Addressable::URI.join(base_url, url).to_s
       end
+    rescue Addressable::URI::InvalidURIError
+      # 解決できない文字列はそのまま返す (取り込み全体を止めない)
+      url
     end
 
     def similar_to(channel)
