@@ -281,7 +281,9 @@ class Channel < ApplicationRecord
         Addressable::URI.join(base_url, url).to_s
       end
     rescue Addressable::URI::InvalidURIError
-      # 解決できない文字列はそのまま返す (取り込み全体を止めない)
+      # 解決できない文字列はそのまま返す (取り込み全体を止めない)。あとで保存に失敗しても
+      # 気づけるよう Sentry に知らせる
+      Sentry.capture_message("Unresolvable channel link", level: :warning, extra: { url: url, feed_url: feed_url })
       url
     end
 

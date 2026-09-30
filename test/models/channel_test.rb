@@ -615,6 +615,8 @@ class ChannelTest < ActiveSupport::TestCase
     end
 
     test "解決できない文字列は例外を出さずそのまま返す" do
+      Sentry.expects(:capture_message).with("Unresolvable channel link", has_entries(level: :warning)).once
+
       assert_equal "[::1]/x", Channel.normalize_url("[::1]/x", feed_url)
     end
 
