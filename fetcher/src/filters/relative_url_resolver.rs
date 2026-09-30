@@ -1,5 +1,6 @@
 //! RelativeUrlResolver と Channel.normalize_url の再現。
-//! Ruby 版と同じく、フィードのディレクトリではなく scheme://host[:port] を基準に解決する。
+//! RelativeUrlResolver はフィードの URL を基準に RFC 3986 のとおり解決する。
+//! Channel.normalize_url 用の resolve_like_rails は scheme://host[:port] 基準のまま。
 
 use std::sync::LazyLock;
 
@@ -7,13 +8,17 @@ use regex::Regex;
 use serde_json::json;
 
 use crate::parse::extract::RawFeed;
-use crate::ruby::is_blank;
+use crate::ruby::{is_blank, ruby_strip};
 
 fn has_relative_url(url: Option<&str>) -> bool {
     match url {
         None => false,
+        // Ruby の blank? は NBSP や U+3000 も空白とみなす (strip はしない)
         Some(u) if is_blank(u) => false,
-        Some(u) => u.starts_with('/') || !(u.starts_with("http://") || u.starts_with("https://")),
+        Some(u) => {
+            let u = ruby_strip(u);
+            !(u.starts_with("http://") || u.starts_with("https://"))
+        }
     }
 }
 
@@ -129,9 +134,9 @@ pub fn base_url(feed_url: &str) -> Option<String> {
     Some(format!("{scheme}://{host}{port}"))
 }
 
-/// Addressable::URI.join(base, url) (base はパスの無い `scheme://host[:port]`)。
+/// Addressable::URI.join(base, url) を RFC 3986 5.2.2 のとおりに再現する。
 /// Addressable と同じく文字のエンコードや大文字小文字の正規化はしない。
-fn join_like_addressable(base: &str, url: &str) -> String {
+pub fn join_like_addressable(base: &str, url: &str) -> String {
     let r = split_uri(url);
     let rest = r.query_and_fragment();
     if let Some(scheme) = r.scheme {
@@ -143,22 +148,44 @@ fn join_like_addressable(base: &str, url: &str) -> String {
         let authority = r.authority.map(|a| format!("//{a}")).unwrap_or_default();
         return format!("{scheme}:{authority}{}{rest}", remove_dot_segments(r.path));
     }
+    let b = split_uri(base);
+    let scheme = b.scheme.unwrap_or_default();
     if let Some(authority) = r.authority {
-        let scheme = split_uri(base).scheme.unwrap_or_default();
+        // authority も path も空 ("//", "//?q", "//#f") は Addressable が InvalidURIError を投げ、
+        // Ruby の rescue が元の値を返す
+        if authority.is_empty() && r.path.is_empty() {
+            return url.to_string();
+        }
         return format!(
             "{scheme}://{authority}{}{rest}",
             remove_dot_segments(r.path)
         );
     }
+    let prefix = match b.authority {
+        Some(a) => format!("{scheme}://{a}"),
+        None => format!("{scheme}:"),
+    };
     if r.path.is_empty() {
-        return format!("{base}{rest}");
+        let mut out = format!("{prefix}{}", b.path);
+        if let Some(q) = r.query.or(b.query) {
+            out.push('?');
+            out.push_str(q);
+        }
+        if let Some(f) = r.fragment {
+            out.push('#');
+            out.push_str(f);
+        }
+        return out;
     }
     let path = if r.path.starts_with('/') {
-        r.path.to_string()
+        remove_dot_segments(r.path)
+    } else if b.authority.is_some() && b.path.is_empty() {
+        remove_dot_segments(&format!("/{}", r.path))
     } else {
-        format!("/{}", r.path)
+        let dir = b.path.rfind('/').map_or("", |i| &b.path[..=i]);
+        remove_dot_segments(&format!("{dir}{}", r.path))
     };
-    format!("{base}{}{rest}", remove_dot_segments(&path))
+    format!("{prefix}{path}{rest}")
 }
 
 pub fn resolve_like_rails(url: &str, feed_url: &str) -> String {
@@ -186,13 +213,13 @@ pub fn apply(feed: &mut RawFeed, feed_url: &str) -> Option<serde_json::Value> {
 
     let mut converted = Vec::new();
     if let Some(from) = feed.url.clone().filter(|u| has_relative_url(Some(u))) {
-        let to = resolve_like_rails(&from, feed_url);
+        let to = join_like_addressable(feed_url, ruby_strip(&from));
         converted.push(json!({ "from": from, "to": to, "target": "feed" }));
         feed.url = Some(to);
     }
     for entry in &mut feed.entries {
         if let Some(from) = entry.url.clone().filter(|u| has_relative_url(Some(u))) {
-            let to = resolve_like_rails(&from, feed_url);
+            let to = join_like_addressable(feed_url, ruby_strip(&from));
             converted.push(json!({ "from": from, "to": to, "target": "entry" }));
             entry.url = Some(to);
         }
@@ -200,7 +227,7 @@ pub fn apply(feed: &mut RawFeed, feed_url: &str) -> Option<serde_json::Value> {
 
     let count = converted.len();
     Some(json!({
-        "base_url": base_url(feed_url),
+        "base_url": feed_url,
         "converted_count": count,
         "sample_urls": converted.into_iter().take(5).collect::<Vec<_>>(),
         "has_more": count > 5,
@@ -232,7 +259,85 @@ mod tests {
     }
 
     #[test]
-    fn resolves_against_scheme_and_host_only() {
+    fn resolves_against_feed_url_like_rfc3986() {
+        let base = "https://example.com/blog/feed.xml";
+        assert_eq!(
+            join_like_addressable(base, "/post/1"),
+            "https://example.com/post/1"
+        );
+        assert_eq!(
+            join_like_addressable(base, "post/2"),
+            "https://example.com/blog/post/2"
+        );
+        assert_eq!(
+            join_like_addressable(base, "../post/3"),
+            "https://example.com/post/3"
+        );
+        assert_eq!(
+            join_like_addressable(base, "?page=2"),
+            "https://example.com/blog/feed.xml?page=2"
+        );
+        assert_eq!(
+            join_like_addressable(base, "#top"),
+            "https://example.com/blog/feed.xml#top"
+        );
+        assert_eq!(
+            join_like_addressable(base, "//cdn.example.com/x"),
+            "https://cdn.example.com/x"
+        );
+    }
+
+    #[test]
+    fn unicode_blank_link_is_not_relative() {
+        for blank in ["\u{a0}", "\u{3000}"] {
+            let mut f = feed(Some(blank), &[blank]);
+            assert!(apply(&mut f, "https://example.com/feed.xml").is_none());
+            assert_eq!(f.url.as_deref(), Some(blank));
+            assert_eq!(f.entries[0].url.as_deref(), Some(blank));
+        }
+    }
+
+    // 期待値は Rails の Addressable::URI.join の実際の結果 (InvalidURIError -> 元の値)
+    #[test]
+    fn empty_authority_and_path_is_returned_unchanged() {
+        let base = "https://example.com/a/feed.xml";
+        for url in ["//", "//?q", "//#f"] {
+            assert_eq!(join_like_addressable(base, url), url);
+        }
+        assert_eq!(join_like_addressable(base, "//x"), "https://x");
+    }
+
+    #[test]
+    fn surrounding_whitespace_is_ignored() {
+        let mut f = feed(
+            Some("https://example.com/"),
+            &["\n  https://example.com/a\n", "\n/b\n"],
+        );
+        let details = apply(&mut f, "https://example.com/blog/feed.xml").unwrap();
+        assert_eq!(
+            f.entries[0].url.as_deref(),
+            Some("\n  https://example.com/a\n")
+        );
+        assert_eq!(f.entries[1].url.as_deref(), Some("https://example.com/b"));
+        assert_eq!(details["base_url"], "https://example.com/blog/feed.xml");
+    }
+
+    #[test]
+    fn uppercase_scheme_and_tag_links_are_left_as_is() {
+        let mut f = feed(
+            Some("https://example.com/"),
+            &["HTTPS://example.com/upper", "tag:example.com,2026:1"],
+        );
+        apply(&mut f, "https://example.com/blog/feed.xml");
+        assert_eq!(
+            f.entries[0].url.as_deref(),
+            Some("HTTPS://example.com/upper")
+        );
+        assert_eq!(f.entries[1].url.as_deref(), Some("tag:example.com,2026:1"));
+    }
+
+    #[test]
+    fn resolves_against_feed_url() {
         let mut f = feed(
             Some("/"),
             &["/post/1", "post/2", "http://example.com/post/3"],
@@ -245,14 +350,14 @@ mod tests {
         );
         assert_eq!(
             f.entries[1].url.as_deref(),
-            Some("http://example.com/post/2")
+            Some("http://example.com/blog/post/2")
         );
         assert_eq!(
             f.entries[2].url.as_deref(),
             Some("http://example.com/post/3")
         );
         assert_eq!(details["converted_count"], 3);
-        assert_eq!(details["base_url"], "http://example.com");
+        assert_eq!(details["base_url"], "http://example.com/blog/feed.xml");
     }
 
     #[test]

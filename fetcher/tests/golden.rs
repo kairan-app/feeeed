@@ -52,4 +52,8 @@ golden_tests!(
     rss_attr_bare_amp,
     atom_content_bare_amp,
     rss_invalid_xml_char,
+    rss_repair_entities,
+    rss_localized_dates,
+    rss_link_whitespace_and_empty_guid,
+    rss_relative_urls_subdir,
 );

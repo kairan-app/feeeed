@@ -1,0 +1,80 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Relative Subdir RSS",
+    "description": "relative urls against a feed in a subdirectory",
+    "site_url": "https://example.com/blog/",
+    "image_url": null
+  },
+  "applied_filters": [
+    "RelativeUrlResolver"
+  ],
+  "entries": [
+    {
+      "guid": "r1",
+      "title": "abs path",
+      "url": "https://example.com/post/1",
+      "image_url": null,
+      "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "r2",
+      "title": "rel path",
+      "url": "https://example.com/blog/post/2",
+      "image_url": null,
+      "published_at": "2026-09-24T01:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "r3",
+      "title": "parent",
+      "url": "https://example.com/post/3",
+      "image_url": null,
+      "published_at": "2026-09-24T02:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "r4",
+      "title": "query",
+      "url": "https://example.com/blog/feed.xml?page=2",
+      "image_url": null,
+      "published_at": "2026-09-24T03:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "https://example.com/blog/post/5",
+      "title": "no guid",
+      "url": "https://example.com/blog/post/5",
+      "image_url": null,
+      "published_at": "2026-09-24T04:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

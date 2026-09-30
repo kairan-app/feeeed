@@ -1,45 +1,47 @@
 {
   "format": "rss",
   "channel": {
-    "title": "Undefined Entity RSS",
-    "description": "pins the truncation behavior",
-    "site_url": "https://example.com/undefined-entity",
+    "title": "Repair Entities RSS",
+    "description": "entities & ampersands",
+    "site_url": "https://example.com/repair",
     "image_url": null
   },
   "applied_filters": [
-    "HtmlEntityFixer"
+    "InvalidXmlCharRemover",
+    "HtmlEntityFixer",
+    "BareAmpersandEscaper"
   ],
   "entries": [
     {
-      "guid": "before",
-      "title": "before",
-      "url": "https://example.com/before",
-      "image_url": null,
+      "guid": "one",
+      "title": "nbsp and…",
+      "url": "https://example.com/1?a=1&b=2",
+      "image_url": "https://example.com/a.mp3?x=1&y=2",
       "published_at": "2026-09-24T00:00:00Z",
       "data": {
-        "summary": null,
+        "summary": "unknown &foo; and bare & and ctrl ref",
         "itunes_subtitle": null,
         "enclosure_url": null,
         "enclosure_type": null
       }
     },
     {
-      "guid": "entity",
-      "title": "entity",
-      "url": "https://example.com/entity",
+      "guid": "two",
+      "title": "ctrlchar",
+      "url": "https://example.com/2",
       "image_url": null,
       "published_at": "2026-09-24T01:00:00Z",
       "data": {
-        "summary": "a b & c あ",
+        "summary": "keep & and &nbsp; as is",
         "itunes_subtitle": null,
         "enclosure_url": null,
         "enclosure_type": null
       }
     },
     {
-      "guid": "after",
+      "guid": "three",
       "title": "after",
-      "url": "https://example.com/after",
+      "url": "https://example.com/3",
       "image_url": null,
       "published_at": "2026-09-24T02:00:00Z",
       "data": {

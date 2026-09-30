@@ -1,0 +1,78 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Link Whitespace RSS",
+    "description": "newline in link and empty guid",
+    "site_url": "https://example.com/ws",
+    "image_url": null
+  },
+  "applied_filters": [],
+  "entries": [
+    {
+      "guid": "ws-1",
+      "title": "newline link with guid",
+      "url": "https://example.com/ws/1",
+      "image_url": null,
+      "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "https://example.com/ws/2",
+      "title": "empty guid a",
+      "url": "https://example.com/ws/2",
+      "image_url": null,
+      "published_at": "2026-09-24T01:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "https://example.com/ws/3",
+      "title": "empty guid b",
+      "url": "https://example.com/ws/3",
+      "image_url": null,
+      "published_at": "2026-09-24T02:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "https://example.com/ws/4",
+      "title": "whitespace guid",
+      "url": "https://example.com/ws/4",
+      "image_url": null,
+      "published_at": "2026-09-24T03:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "ws-5",
+      "title": "ideographic space link",
+      "url": "https://example.com/ws",
+      "image_url": null,
+      "published_at": "2026-09-24T04:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

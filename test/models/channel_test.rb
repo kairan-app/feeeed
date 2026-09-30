@@ -605,4 +605,27 @@ class ChannelTest < ActiveSupport::TestCase
       end
     end
   end
+
+  describe ".normalize_url" do
+    let(:feed_url) { "https://example.com/feed.xml" }
+
+    test "前後の空白と改行は取り除く" do
+      assert_equal "https://example.com/", Channel.normalize_url("\n    https://example.com/\n", feed_url)
+      assert_equal "https://example.com/about", Channel.normalize_url("  /about  ", feed_url)
+    end
+
+    test "解決できない文字列は例外を出さずそのまま返す" do
+      Sentry.expects(:capture_message).with("Unresolvable channel link", has_entries(level: :warning)).once
+
+      assert_equal "[::1]/x", Channel.normalize_url("[::1]/x", feed_url)
+    end
+
+    test "既存の挙動は変わらない" do
+      assert_equal feed_url, Channel.normalize_url("  ", feed_url)
+      assert_equal feed_url, Channel.normalize_url(nil, feed_url)
+      assert_equal "https://other.example.org/a", Channel.normalize_url("https://other.example.org/a", feed_url)
+      assert_equal "https://example.com/x/y", Channel.normalize_url("/x/y", "https://example.com/a/feed.xml")
+      assert_equal "https://example.com/rel", Channel.normalize_url("rel", feed_url)
+    end
+  end
 end

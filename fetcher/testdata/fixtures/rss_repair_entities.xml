@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Repair Entities RSS</title>
+    <link>https://example.com/repair</link>
+    <description>entities &amp; ampersands</description>
+    <copyright>&copy; 2026 Example</copyright>
+    <item>
+      <title>nbsp&nbsp;and&hellip;</title>
+      <link>https://example.com/1?a=1&b=2</link>
+      <guid isPermaLink="false">one</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+      <description>unknown &foo; and bare & and ctrl&#8; ref</description>
+      <enclosure url="https://example.com/a.mp3?x=1&y=2" length="1" type="audio/mpeg"/>
+    </item>
+      <item><title>ctrlchar</title><link>https://example.com/2</link><guid isPermaLink="false">two</guid><pubDate>Wed, 24 Sep 2026 01:00:00 +0000</pubDate><description><![CDATA[keep & and &nbsp; as is]]></description></item>
+    <item>
+      <title>after</title>
+      <link>https://example.com/3</link>
+      <guid isPermaLink="false">three</guid>
+      <pubDate>Wed, 24 Sep 2026 02:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
