@@ -1,6 +1,8 @@
 pub mod atom_namespace_fixer;
+pub mod html_entities;
 pub mod html_entity_fixer;
 pub mod relative_url_resolver;
+pub mod segments;
 
 use serde_json::{Map, Value};
 
