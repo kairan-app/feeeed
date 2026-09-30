@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Localized Dates RSS</title>
+    <link>https://example.com/dates</link>
+    <description>dates in Japanese</description>
+    <item><title>sep</title><link>https://example.com/sep</link><guid isPermaLink="false">sep</guid><pubDate>金, 25 9月 2026 16:07:00 GMT</pubDate></item>
+    <item><title>oct</title><link>https://example.com/oct</link><guid isPermaLink="false">oct</guid><pubDate>木, 1 10月 2026 01:02:03 GMT</pubDate></item>
+    <item><title>dec</title><link>https://example.com/dec</link><guid isPermaLink="false">dec</guid><pubDate>土, 26 12月 2026 04:10:00 +0900</pubDate></item>
+    <item><title>jan</title><link>https://example.com/jan</link><guid isPermaLink="false">jan</guid><pubDate>月, 5 1月 2026 04:10:00 GMT</pubDate></item>
+  </channel>
+</rss>

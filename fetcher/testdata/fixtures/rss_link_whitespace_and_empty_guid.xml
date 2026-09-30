@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Link Whitespace RSS</title>
+    <link>https://example.com/ws</link>
+    <description>newline in link and empty guid</description>
+    <item>
+      <title>newline link with guid</title>
+      <link>
+        https://example.com/ws/1
+      </link>
+      <guid isPermaLink="false">ws-1</guid>
+      <pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>empty guid a</title>
+      <link>https://example.com/ws/2</link>
+      <guid/>
+      <pubDate>Wed, 24 Sep 2026 01:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>empty guid b</title>
+      <link>https://example.com/ws/3</link>
+      <guid></guid>
+      <pubDate>Wed, 24 Sep 2026 02:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>whitespace guid</title>
+      <link>https://example.com/ws/4</link>
+      <guid> </guid>
+      <pubDate>Wed, 24 Sep 2026 03:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

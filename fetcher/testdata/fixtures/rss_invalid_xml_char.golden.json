@@ -6,7 +6,9 @@
     "site_url": "https://example.com/",
     "image_url": null
   },
-  "applied_filters": [],
+  "applied_filters": [
+    "InvalidXmlCharRemover"
+  ],
   "entries": [
     {
       "guid": "before",
@@ -14,6 +16,32 @@
       "url": "https://example.com/before",
       "image_url": null,
       "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "ctrl",
+      "title": "ctrl",
+      "url": "https://example.com/ctrl",
+      "image_url": null,
+      "published_at": "2026-09-24T01:00:00Z",
+      "data": {
+        "summary": "ab",
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "after",
+      "title": "after",
+      "url": "https://example.com/after",
+      "image_url": null,
+      "published_at": "2026-09-24T02:00:00Z",
       "data": {
         "summary": null,
         "itunes_subtitle": null,

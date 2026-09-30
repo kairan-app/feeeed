@@ -26,7 +26,7 @@
     {
       "guid": "rel-2",
       "title": "path relative",
-      "url": "https://example.com:8080/post/2/",
+      "url": "https://example.com:8080/blog/post/2/",
       "image_url": null,
       "published_at": "2026-09-24T01:00:00Z",
       "data": {

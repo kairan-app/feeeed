@@ -1,0 +1,67 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Localized Dates RSS",
+    "description": "dates in Japanese",
+    "site_url": "https://example.com/dates",
+    "image_url": null
+  },
+  "applied_filters": [
+    "LocalizedDateFixer"
+  ],
+  "entries": [
+    {
+      "guid": "jan",
+      "title": "jan",
+      "url": "https://example.com/jan",
+      "image_url": null,
+      "published_at": "2026-01-05T04:10:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "sep",
+      "title": "sep",
+      "url": "https://example.com/sep",
+      "image_url": null,
+      "published_at": "2026-09-25T16:07:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "oct",
+      "title": "oct",
+      "url": "https://example.com/oct",
+      "image_url": null,
+      "published_at": "2026-10-01T01:02:03Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "dec",
+      "title": "dec",
+      "url": "https://example.com/dec",
+      "image_url": null,
+      "published_at": "2026-12-25T19:10:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

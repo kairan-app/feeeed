@@ -6,7 +6,9 @@
     "site_url": "https://example.com/",
     "image_url": null
   },
-  "applied_filters": [],
+  "applied_filters": [
+    "BareAmpersandEscaper"
+  ],
   "entries": [
     {
       "guid": "tag:example.com,2026:before",
@@ -14,6 +16,32 @@
       "url": "https://example.com/before",
       "image_url": null,
       "published_at": "2026-09-24T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "tag:example.com,2026:amp",
+      "title": "amp",
+      "url": "https://example.com/amp",
+      "image_url": null,
+      "published_at": "2026-09-24T01:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "tag:example.com,2026:after",
+      "title": "after",
+      "url": "https://example.com/after",
+      "image_url": null,
+      "published_at": "2026-09-24T02:00:00Z",
       "data": {
         "summary": null,
         "itunes_subtitle": null,

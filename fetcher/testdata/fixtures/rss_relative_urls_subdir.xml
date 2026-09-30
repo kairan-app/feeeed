@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Relative Subdir RSS</title>
+    <link>./</link>
+    <description>relative urls against a feed in a subdirectory</description>
+    <item><title>abs path</title><link>/post/1</link><guid isPermaLink="false">r1</guid><pubDate>Wed, 24 Sep 2026 00:00:00 +0000</pubDate></item>
+    <item><title>rel path</title><link>post/2</link><guid isPermaLink="false">r2</guid><pubDate>Wed, 24 Sep 2026 01:00:00 +0000</pubDate></item>
+    <item><title>parent</title><link>../post/3</link><guid isPermaLink="false">r3</guid><pubDate>Wed, 24 Sep 2026 02:00:00 +0000</pubDate></item>
+    <item><title>query</title><link>?page=2</link><guid isPermaLink="false">r4</guid><pubDate>Wed, 24 Sep 2026 03:00:00 +0000</pubDate></item>
+    <item><title>no guid</title><link>post/5</link><pubDate>Wed, 24 Sep 2026 04:00:00 +0000</pubDate></item>
+  </channel>
+</rss>
