@@ -104,3 +104,10 @@ Rails (`Channel.fetch_and_save_items`、`RelativeUrlResolver`) と Rust (`fetche
 - 本文サイズの上限、`items.data` の形、dispatcher 呼び出しの再試行 (2b で扱う)
 - 値の無い属性や閉じていないタグを直すフィルタ (本番でまだ見つかっていない)
 - 既存の item (guid が `no_buffer` のものなど) の掃除
+
+### 2b に持ち越す論点
+
+- 本文が不正な UTF-8 で charset=utf-8 のとき、Rails は Feedjira が ArgumentError を出してフィード全体の取り込みに失敗するが、Rust は不正なバイトを捨てて取り込む。2b で Rust だけが item を保存することになる (Rust の方が望ましい)
+- shadow.rs の channel_meta はリダイレクト後も ch.feed_url を使っている (Rails の save_from は final_feed_url)。2b で揃える
+- フィルタが届かない場所 (CDATA で包んだ <pubDate>、属性付きの <pubDate>、Atom の <updated>) の日本語の日時は、Rust では読めず None になる (Rails は1〜9月なら読める)
+- Task 12b により、<link> が空白で始まる/終わるチャンネルでは、site_url が strip 後の値に変わり Discord の「Channel updated」が一度だけ飛ぶ
