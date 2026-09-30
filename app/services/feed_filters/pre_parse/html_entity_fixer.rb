@@ -11,7 +11,7 @@ module FeedFilters
 
       def applicable?(xml_content, metadata = {})
         # 独自のエンティティを宣言している文書は、宣言済みの名前を壊さないよう対象外にする
-        xml_content.match?(NAMED_REF) && !xml_content.include?("<!ENTITY")
+        Ampersands.match?(xml_content, NAMED_REF) && !xml_content.include?("<!ENTITY")
       end
 
       def apply(xml_content, metadata = {})
@@ -19,8 +19,9 @@ module FeedFilters
         unknown = 0
 
         fixed = XmlSegments.map_unprotected(xml_content) do |text|
-          text.gsub(NAMED_REF) do |ref|
-            name = $1
+          Ampersands.gsub(text, NAMED_REF) do |match|
+            ref = match.matched
+            name = match[1]
             chars = HtmlEntities::TABLE[name]
             if PREDEFINED.include?(name)
               ref
