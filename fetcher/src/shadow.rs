@@ -274,7 +274,14 @@ async fn process(ch: ShadowChannel, http: &HttpClient, api: &DispatcherClient) -
             return empty_report(&ch, "fetch_error", format!("{}: {e}", e.kind()), started);
         }
     };
-    let prepared = match crate::prepare(&res.body, &res.final_url) {
+    // Rails は response.env.url をそのまま渡す。リダイレクトしていなければ要求した feed_url と同じで、
+    // res.final_url は url::Url で正規化 (ホストの小文字化・dot segments 除去など) されてしまうため使い分ける
+    let base_url = if res.redirected {
+        &res.final_url
+    } else {
+        &ch.feed_url
+    };
+    let prepared = match crate::prepare(&res.body, base_url) {
         Ok(p) => p,
         Err(e) => return empty_report(&ch, "parse_error", e.to_string(), started),
     };

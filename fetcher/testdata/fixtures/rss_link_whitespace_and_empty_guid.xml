@@ -30,5 +30,11 @@
       <guid> </guid>
       <pubDate>Wed, 24 Sep 2026 03:00:00 +0000</pubDate>
     </item>
+    <item>
+      <title>ideographic space link</title>
+      <link>　</link>
+      <guid isPermaLink="false">ws-5</guid>
+      <pubDate>Wed, 24 Sep 2026 04:00:00 +0000</pubDate>
+    </item>
   </channel>
 </rss>

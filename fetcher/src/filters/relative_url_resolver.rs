@@ -8,13 +8,17 @@ use regex::Regex;
 use serde_json::json;
 
 use crate::parse::extract::RawFeed;
-use crate::ruby::ruby_strip;
+use crate::ruby::{is_blank, ruby_strip};
 
 fn has_relative_url(url: Option<&str>) -> bool {
-    match url.map(ruby_strip) {
+    match url {
         None => false,
-        Some("") => false,
-        Some(u) => !(u.starts_with("http://") || u.starts_with("https://")),
+        // Ruby の blank? は NBSP や U+3000 も空白とみなす (strip はしない)
+        Some(u) if is_blank(u) => false,
+        Some(u) => {
+            let u = ruby_strip(u);
+            !(u.starts_with("http://") || u.starts_with("https://"))
+        }
     }
 }
 
@@ -147,6 +151,11 @@ pub fn join_like_addressable(base: &str, url: &str) -> String {
     let b = split_uri(base);
     let scheme = b.scheme.unwrap_or_default();
     if let Some(authority) = r.authority {
+        // authority も path も空 ("//", "//?q", "//#f") は Addressable が InvalidURIError を投げ、
+        // Ruby の rescue が元の値を返す
+        if authority.is_empty() && r.path.is_empty() {
+            return url.to_string();
+        }
         return format!(
             "{scheme}://{authority}{}{rest}",
             remove_dot_segments(r.path)
@@ -276,6 +285,26 @@ mod tests {
             join_like_addressable(base, "//cdn.example.com/x"),
             "https://cdn.example.com/x"
         );
+    }
+
+    #[test]
+    fn unicode_blank_link_is_not_relative() {
+        for blank in ["\u{a0}", "\u{3000}"] {
+            let mut f = feed(Some(blank), &[blank]);
+            assert!(apply(&mut f, "https://example.com/feed.xml").is_none());
+            assert_eq!(f.url.as_deref(), Some(blank));
+            assert_eq!(f.entries[0].url.as_deref(), Some(blank));
+        }
+    }
+
+    // 期待値は Rails の Addressable::URI.join の実際の結果 (InvalidURIError -> 元の値)
+    #[test]
+    fn empty_authority_and_path_is_returned_unchanged() {
+        let base = "https://example.com/a/feed.xml";
+        for url in ["//", "//?q", "//#f"] {
+            assert_eq!(join_like_addressable(base, url), url);
+        }
+        assert_eq!(join_like_addressable(base, "//x"), "https://x");
     }
 
     #[test]

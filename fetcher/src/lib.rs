@@ -19,13 +19,14 @@ pub struct Prepared {
     pub filter_details: Map<String, Value>,
 }
 
-/// 文字コードの修正 → パース前フィルタ → パース → パース後フィルタ (FeedNormalizer と同じ流れ)
+/// Ruby の `\A\uFEFF?[ \t\r\n]*<` と同じ (BOM は高々1つ)
 fn looks_like_xml(xml: &str) -> bool {
-    xml.trim_start_matches('\u{feff}')
-        .trim_start_matches([' ', '\t', '\r', '\n'])
+    let xml = xml.strip_prefix('\u{feff}').unwrap_or(xml);
+    xml.trim_start_matches([' ', '\t', '\r', '\n'])
         .starts_with('<')
 }
 
+/// 文字コードの修正 → パース前フィルタ → パース → パース後フィルタ (FeedNormalizer と同じ流れ)
 pub fn prepare(body: &[u8], feed_url: &str) -> Result<Prepared, ParseError> {
     let xml = encoding::to_utf8_dropping_invalid(body);
     let (xml, mut applied, mut details) = if looks_like_xml(&xml) {
@@ -126,6 +127,7 @@ mod tests {
     fn looks_like_xml_ignores_bom_and_ascii_whitespace() {
         assert!(looks_like_xml("\u{feff} \t\r\n<rss/>"));
         assert!(!looks_like_xml("\u{3000}<rss/>"));
+        assert!(!looks_like_xml("\u{feff}\u{feff}<rss/>"));
         assert!(!looks_like_xml("plain text"));
     }
 }
