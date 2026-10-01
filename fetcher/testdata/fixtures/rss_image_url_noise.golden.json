@@ -1,0 +1,104 @@
+{
+  "format": "rss",
+  "channel": {
+    "title": "Image URL noise",
+    "description": "image_url with garbage around the URL",
+    "site_url": "https://example.com/",
+    "image_url": null
+  },
+  "applied_filters": [],
+  "entries": [
+    {
+      "guid": "obj-replacement",
+      "title": "obj-replacement",
+      "url": "https://example.com/posts/obj-replacement",
+      "image_url": "https://example.com/images/a.png",
+      "published_at": "2026-10-01T00:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "leading-newline",
+      "title": "leading-newline",
+      "url": "https://example.com/posts/leading-newline",
+      "image_url": "https://example.com/images/b.png",
+      "published_at": "2026-10-01T01:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "prefixed-text",
+      "title": "prefixed-text",
+      "url": "https://example.com/posts/prefixed-text",
+      "image_url": "https://example.com/images/c.png",
+      "published_at": "2026-10-01T02:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "uppercase-scheme",
+      "title": "uppercase-scheme",
+      "url": "https://example.com/posts/uppercase-scheme",
+      "image_url": "HTTPS://example.com/images/d.png",
+      "published_at": "2026-10-01T03:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "trailing-ideographic-space",
+      "title": "trailing-ideographic-space",
+      "url": "https://example.com/posts/trailing-ideographic-space",
+      "image_url": "https://example.com/images/e.png",
+      "published_at": "2026-10-01T04:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "no-url",
+      "title": "no-url",
+      "url": "https://example.com/posts/no-url",
+      "image_url": null,
+      "published_at": "2026-10-01T05:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "scheme-only",
+      "title": "scheme-only",
+      "url": "https://example.com/posts/scheme-only",
+      "image_url": null,
+      "published_at": "2026-10-01T06:00:00Z",
+      "data": {
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "skipped": []
+}

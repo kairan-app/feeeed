@@ -56,4 +56,5 @@ golden_tests!(
     rss_localized_dates,
     rss_link_whitespace_and_empty_guid,
     rss_relative_urls_subdir,
+    rss_image_url_noise,
 );
