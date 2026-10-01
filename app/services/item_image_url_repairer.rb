@@ -1,5 +1,6 @@
 # 保存済みの、URL になっていない Item#image_url を直す (#830)。
 # 先頭に U+FFFC や改行が付いたものは URL の部分だけにし、/ で始まる相対パスは Item の URL を基準に絶対 URL にする。
+# 相対パスから作った URL は実際に取りに行き、取れなければ nil にする (壊れた画像よりプレースホルダを出す)。
 # どちらにもならないものは nil にする。lib/tasks/items.rake から使う。
 class ItemImageUrlRepairer
   def self.targets
@@ -12,9 +13,15 @@ class ItemImageUrlRepairer
     return nil unless item.image_url.start_with?("/")
 
     joined = Addressable::URI.parse(item.url).join(item.image_url).to_s
-    joined if joined.match?(Item::DISPLAYABLE_IMAGE_URL)
+    joined if joined.match?(Item::DISPLAYABLE_IMAGE_URL) && reachable?(joined)
   rescue Addressable::URI::InvalidURIError
     nil
+  end
+
+  def self.reachable?(url)
+    Httpc.direct_get(url).status.between?(200, 299)
+  rescue Faraday::Error
+    false
   end
 
   def self.run(apply:, io: $stdout)
