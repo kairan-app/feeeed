@@ -16,8 +16,25 @@ class ItemImageUrlRepairerTest < ActiveSupport::TestCase
   end
 
   test "/ で始まる相対パスは、Item の URL を基準に絶対 URL にする" do
+    ItemImageUrlRepairer.expects(:reachable?).with("https://example.com/wp-content/uploads/a.png").returns(true)
     item = item_with_image_url("/wp-content/uploads/a.png")
     assert_equal "https://example.com/wp-content/uploads/a.png", ItemImageUrlRepairer.repaired_image_url(item)
+  end
+
+  test "相対パスを補った URL が取れなければ nil にする (壊れた画像よりプレースホルダを出す)" do
+    ItemImageUrlRepairer.stubs(:reachable?).returns(false)
+    item = item_with_image_url("/wp-content/uploads/a.jpg")
+    assert_nil ItemImageUrlRepairer.repaired_image_url(item)
+  end
+
+  test "reachable? は 2xx なら true、それ以外や通信の失敗なら false" do
+    Httpc.stubs(:direct_get).with("https://example.com/ok.png").returns(stub(status: 200))
+    Httpc.stubs(:direct_get).with("https://example.com/missing.jpg").returns(stub(status: 404))
+    Httpc.stubs(:direct_get).with("https://example.com/down.png").raises(Faraday::ConnectionFailed.new("Connection refused"))
+
+    assert ItemImageUrlRepairer.reachable?("https://example.com/ok.png")
+    assert_not ItemImageUrlRepairer.reachable?("https://example.com/missing.jpg")
+    assert_not ItemImageUrlRepairer.reachable?("https://example.com/down.png")
   end
 
   test "URL にできないものは nil にする" do
@@ -35,6 +52,7 @@ class ItemImageUrlRepairerTest < ActiveSupport::TestCase
   end
 
   test "apply: false では書き換えず、直す内容だけを出力する" do
+    ItemImageUrlRepairer.stubs(:reachable?).returns(true)
     item = item_with_image_url("/wp-content/a.png")
     io = StringIO.new
 
