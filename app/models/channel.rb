@@ -465,9 +465,6 @@ class Channel < ApplicationRecord
             OpenGraph.new(encoded_url).image rescue nil
           end
 
-        # 不正なimage_urlはnilに落としてItem保存を失敗させない
-        image_url = nil if image_url.present? && image_url !~ URI.regexp(%w[http https])
-
         parameters = {
           guid: guid,
           title: entry.title,
@@ -544,7 +541,9 @@ class Channel < ApplicationRecord
   end
 
   def image_url_or_placeholder
-    image_url.presence || "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{URI.encode_www_form_component(self.title)}"
+    return image_url if image_url&.match?(Item::DISPLAYABLE_IMAGE_URL)
+
+    "https://placehold.jp/30/cccccc/ffffff/300x300.png?text=#{URI.encode_www_form_component(self.title)}"
   end
 
   def mark_items_checked!
