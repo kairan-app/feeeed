@@ -628,4 +628,16 @@ class ChannelTest < ActiveSupport::TestCase
       assert_equal "https://example.com/rel", Channel.normalize_url("rel", feed_url)
     end
   end
+
+  # #830
+  describe "image_url_or_placeholder" do
+    test "URL になっていない image_url が保存済みでも、プレースホルダを返す" do
+      channel = Channel.create!(title: "t", feed_url: "https://example.com/feed.xml")
+      channel.update_column(:image_url, "\uFFFC https://example.com/a.png")
+      assert channel.image_url_or_placeholder.start_with?("https://placehold.jp/")
+
+      channel.update_column(:image_url, "https://example.com/a.png")
+      assert_equal "https://example.com/a.png", channel.image_url_or_placeholder
+    end
+  end
 end

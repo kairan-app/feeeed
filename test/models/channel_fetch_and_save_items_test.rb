@@ -190,6 +190,24 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
       assert_nil item.image_url
     end
 
+    # #830
+    test "先頭に見えない文字の付いた image_url は、URL の部分だけを保存する" do
+      entries = [
+        build_mock_entry(
+          entry_id: "entry-fffc-img",
+          url: "https://example.com/1",
+          title: "FFFC Image Entry",
+          published: 1.hour.ago,
+          image: "\uFFFC\uFFFC https://example.com/image.webp"
+        )
+      ]
+      stub_feed_with_entries(entries)
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_equal "https://example.com/image.webp", @channel.items.first.image_url
+    end
+
     test "有効な image_url はそのまま保存される" do
       entries = [
         build_mock_entry(
