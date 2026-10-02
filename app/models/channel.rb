@@ -573,7 +573,10 @@ class Channel < ApplicationRecord
                  24  # 24時間毎（デフォルト）
     end
 
-    update!(check_interval_hours: interval)
+    # update! ではなく update_column を使う (mark_items_checked! と同じ理由、#828)。
+    # fetch_and_save_items 後に association キャッシュに無効な Item が残っていると、
+    # update! が関連レコードのバリデーションを巻き込んで失敗するため。
+    update_column(:check_interval_hours, interval)
   end
 
   def add_schedule(day_of_week:, hour:)

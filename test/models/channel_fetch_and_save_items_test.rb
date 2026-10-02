@@ -250,6 +250,30 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
     end
   end
 
+  # #828: mark_items_checked! と同じ原因で、set_check_interval! の update! も
+  # association キャッシュに残った無効な Item に巻き込まれて "Items is invalid" になる
+  describe "fetch_and_save_items 後の set_check_interval! (#828)" do
+    test "一部のエントリが保存失敗しても set_check_interval! が成功し、間隔が更新される" do
+      @channel.update_column(:check_interval_hours, 24)
+      entries = [
+        build_mock_entry(entry_id: "good-1", url: "https://example.com/good-1", published: 1.hour.ago, title: "Good 1"),
+        build_mock_entry(entry_id: "good-2", url: "https://example.com/good-2", published: 2.days.ago, title: "Good 2"),
+        build_mock_entry(entry_id: "good-3", url: "https://example.com/good-3", published: 3.days.ago, title: "Good 3"),
+        build_mock_entry(entry_id: "bad-entry", url: "https://example.com/bad", published: nil, title: "Bad Entry")
+      ]
+      stub_feed_with_entries(entries)
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+      @channel.stubs(:sleep)
+
+      @channel.fetch_and_save_items(:all)
+
+      assert_nothing_raised do
+        @channel.set_check_interval!
+      end
+      assert_equal 1, @channel.reload.check_interval_hours
+    end
+  end
+
   # リダイレクト先に既存Channelがある場合、旧チャンネルのitems保存をスキップして停止する
   describe "リダイレクト先に既存Channelがある場合" do
     setup do
