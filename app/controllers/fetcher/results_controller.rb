@@ -4,7 +4,7 @@ class Fetcher::ResultsController < Fetcher::BaseController
     payload = json_body
     raise InvalidBody unless FetchResultApplier.valid_payload?(payload)
 
-    channel_id = params[:channel_id].to_i
+    channel_id = request.path_parameters[:channel_id].to_i
     return head :conflict unless ChannelLease.renew(channel_id:, worker_name:)
 
     applier = FetchResultApplier.new(channel: Channel.find(channel_id))

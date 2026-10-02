@@ -8,6 +8,14 @@ class Fetcher::BaseController < ActionController::API
     head :unprocessable_content
   end
 
+  # body (数MBになる) は json_body で自分で解釈する。Rails にも解釈させると、ログの Parameters を作るとき
+  # (ActionController::Instrumentation) と ParamsWrapper で同じ body をもう一度 JSON.parse してしまい、
+  # body 全体がログにも出る。空の request_parameters を先に置いて、Rails には body を読ませない
+  def process_action(...)
+    request.request_parameters = {}
+    super
+  end
+
   private
 
   attr_reader :worker_name

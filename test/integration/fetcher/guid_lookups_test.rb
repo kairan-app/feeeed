@@ -32,6 +32,13 @@ class Fetcher::GuidLookupsTest < ActionDispatch::IntegrationTest
     assert_equal [ false, false, false, true, true ], response.parsed_body["new"]
   end
 
+  test "body は Rails の params には読み込まない (自分で JSON.parse するので、2回解釈しない)" do
+    post "/fetcher/channels/#{@channel.id}/guid_lookups", params: { entries: [] }.to_json, headers: fetcher_headers
+
+    assert_response :ok
+    assert_not request.params.key?("entries")
+  end
+
   test "空の entries には空を返す" do
     post "/fetcher/channels/#{@channel.id}/guid_lookups", params: { entries: [] }.to_json, headers: fetcher_headers
 

@@ -14,7 +14,7 @@ class Fetcher::GuidLookupsController < Fetcher::BaseController
       e.is_a?(Hash) && (e["entry_id"].nil? || e["entry_id"].is_a?(String)) && (e["url"].nil? || e["url"].is_a?(String))
     }
 
-    channel_id = params[:channel_id].to_i
+    channel_id = request.path_parameters[:channel_id].to_i
     keys = entries.flat_map { [ _1["entry_id"], _1["url"] ] }.compact.uniq
     existing = keys.each_slice(SLICE).flat_map { Item.where(channel_id:, guid: _1).pluck(:guid) }.to_set
 
