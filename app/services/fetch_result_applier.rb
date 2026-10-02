@@ -6,6 +6,10 @@ class FetchResultApplier
   # これより多い entries は、リクエストの中では保存せず FetchResultApplyJob に任せる (Heroku のルーターは30秒で打ち切る)
   ITEMS_IN_REQUEST_LIMIT = 200
   CHANNEL_ATTRIBUTES = %w[title description site_url image_url applied_filters filter_details].freeze
+  # 取得に失敗しても last_items_checked_at は進むので、遅れの監視では気づけない。
+  # 何度やっても同じように失敗しそうな種類 (フィードを解釈できない・大きすぎる・時間内に処理しきれない) だけを Sentry に送る。
+  # http_status・timeout・connect などはサイト側の一時的な不調が多く、数も多いのでログだけにする
+  REPORTED_FAILURE_KINDS = %w[parse too_large deadline].freeze
 
   def self.valid_payload?(payload)
     return false unless payload.is_a?(Hash) && [ true, false ].include?(payload["fetched"])
@@ -26,6 +30,7 @@ class FetchResultApplier
     unless payload["fetched"]
       error = payload["error"] || {}
       Rails.logger.info "[FetchResultApplier] Channel #{@channel.id} fetch failed - #{error['kind']}: #{error['message']}"
+      report_failure(error["kind"], error["message"]) if REPORTED_FAILURE_KINDS.include?(error["kind"])
       return false
     end
 
@@ -98,6 +103,15 @@ class FetchResultApplier
     return if attributes.nil?
 
     @channel.update(attributes.slice(*CHANNEL_ATTRIBUTES))
+  end
+
+  def report_failure(kind, message)
+    Sentry.capture_message(
+      "Fetcher could not process the feed: #{kind}",
+      level: :warning,
+      fingerprint: [ "fetcher-feed-failure", kind, @channel.id.to_s ],
+      extra: { channel_id: @channel.id, feed_url: @channel.feed_url, kind:, message: }
+    )
   end
 
   def report_invalid(entry, item)

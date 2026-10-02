@@ -60,6 +60,21 @@ class FetchResultApplierTest < ActiveSupport::TestCase
       assert_equal "Old Title", @channel.reload.title
     end
 
+    test "フィードを解釈できなかった失敗は Sentry に warning を送る" do
+      Sentry.expects(:capture_message).with(
+        "Fetcher could not process the feed: parse",
+        has_entries(level: :warning, fingerprint: [ "fetcher-feed-failure", "parse", @channel.id.to_s ])
+      ).once
+
+      assert_not @applier.apply_channel!({ "fetched" => false, "error" => { "kind" => "parse", "message" => "bad xml" } })
+    end
+
+    test "タイムアウトのような一時的な失敗は Sentry に送らない" do
+      Sentry.expects(:capture_message).never
+
+      assert_not @applier.apply_channel!({ "fetched" => false, "error" => { "kind" => "timeout", "message" => "t" } })
+    end
+
     test "リダイレクトしていたら feed_url を更新する" do
       assert @applier.apply_channel!(payload(final_url: "https://a.example.com/new.xml"))
       assert_equal "https://a.example.com/new.xml", @channel.reload.feed_url
