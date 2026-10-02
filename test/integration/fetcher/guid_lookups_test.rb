@@ -45,5 +45,11 @@ class Fetcher::GuidLookupsTest < ActionDispatch::IntegrationTest
 
     post "/fetcher/channels/#{@channel.id}/guid_lookups", params: { entries: [ "x" ] }.to_json, headers: fetcher_headers
     assert_response :unprocessable_content
+
+    post "/fetcher/channels/#{@channel.id}/guid_lookups", params: { entries: [ { entry_id: 1, url: nil } ] }.to_json, headers: fetcher_headers
+    assert_response :unprocessable_content
+
+    post "/fetcher/channels/#{@channel.id}/guid_lookups", params: { entries: [ { entry_id: nil, url: [ "x" ] } ] }.to_json, headers: fetcher_headers
+    assert_response :unprocessable_content
   end
 end

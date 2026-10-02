@@ -10,7 +10,9 @@ class Fetcher::GuidLookupsController < Fetcher::BaseController
 
   def create
     entries = json_body["entries"]
-    raise InvalidBody unless entries.is_a?(Array) && entries.size <= MAX_ENTRIES && entries.all?(Hash)
+    raise InvalidBody unless entries.is_a?(Array) && entries.size <= MAX_ENTRIES && entries.all? { |e|
+      e.is_a?(Hash) && (e["entry_id"].nil? || e["entry_id"].is_a?(String)) && (e["url"].nil? || e["url"].is_a?(String))
+    }
 
     channel_id = params[:channel_id].to_i
     keys = entries.flat_map { [ _1["entry_id"], _1["url"] ] }.compact.uniq
