@@ -54,7 +54,12 @@ class ChannelLease < ApplicationRecord
 
     # ホストごとに優先度の一番高いチャンネルを1つずつ選び、その中から優先度順に max 件
     def due_channels_one_per_host(max:, rollout_percent:)
+      # needs_check_now は「今の時間帯に予定があるチャンネル」を last_items_checked_at を見ずに含める。
+      # Rails のスケジューラは1時間に2回しか評価しないので困らないが、貸し出しは枠が空くたびに評価するので、
+      # 最近チェックしたものを除かないと、予定のあるチャンネルをその1時間ずっと貸し出し続けてしまう。
+      # 間隔ベースのチャンネルの閾値は最短でも50分なので、この条件では落ちない
       due = Channel.not_stopped.needs_check_now
+        .where("channels.last_items_checked_at IS NULL OR channels.last_items_checked_at < ?", 30.minutes.ago)
         .where("channels.id % 100 < ?", rollout_percent)
         .select(:id, :feed_url, :site_url, :check_interval_hours, :last_items_checked_at)
         .select(Arel.sql("#{HOST_SQL} AS host"))

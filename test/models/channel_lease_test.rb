@@ -28,6 +28,22 @@ class ChannelLeaseTest < ActiveSupport::TestCase
     assert_empty grant
   end
 
+  test "今の時間帯に予定があっても、30分以内にチェックしたチャンネルは貸し出さない" do
+    channel = due_channel("a.example.com", last_items_checked_at: 1.minute.ago, check_interval_hours: 24)
+    now = Time.current
+    create(:channel_fixed_schedule, channel:, day_of_week: now.wday, hour: now.hour)
+
+    assert_empty grant
+  end
+
+  test "今の時間帯に予定があり、最後のチェックが30分より前なら貸し出す" do
+    channel = due_channel("a.example.com", last_items_checked_at: 31.minutes.ago, check_interval_hours: 24)
+    now = Time.current
+    create(:channel_fixed_schedule, channel:, day_of_week: now.wday, hour: now.hour)
+
+    assert_equal [ channel.id ], grant.map(&:channel_id)
+  end
+
   test "停止中のチャンネルは貸し出さない" do
     channel = due_channel("a.example.com")
     ChannelStopper.create!(channel:, reason: "test")
