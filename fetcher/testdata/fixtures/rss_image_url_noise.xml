@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Image URL noise</title>
+    <link>https://example.com/</link>
+    <description>image_url with garbage around the URL</description>
+    <item>
+      <title>obj-replacement</title>
+      <link>https://example.com/posts/obj-replacement</link>
+      <guid isPermaLink="false">obj-replacement</guid>
+      <pubDate>Thu, 01 Oct 2026 00:00:00 +0000</pubDate>
+      <media:thumbnail url="￼https://example.com/images/a.png"/>
+    </item>
+    <item>
+      <title>leading-newline</title>
+      <link>https://example.com/posts/leading-newline</link>
+      <guid isPermaLink="false">leading-newline</guid>
+      <pubDate>Thu, 01 Oct 2026 01:00:00 +0000</pubDate>
+      <media:thumbnail url="&#10;https://example.com/images/b.png&#10;"/>
+    </item>
+    <item>
+      <title>prefixed-text</title>
+      <link>https://example.com/posts/prefixed-text</link>
+      <guid isPermaLink="false">prefixed-text</guid>
+      <pubDate>Thu, 01 Oct 2026 02:00:00 +0000</pubDate>
+      <media:thumbnail url="image: https://example.com/images/c.png"/>
+    </item>
+    <item>
+      <title>uppercase-scheme</title>
+      <link>https://example.com/posts/uppercase-scheme</link>
+      <guid isPermaLink="false">uppercase-scheme</guid>
+      <pubDate>Thu, 01 Oct 2026 03:00:00 +0000</pubDate>
+      <media:thumbnail url="￼HTTPS://example.com/images/d.png"/>
+    </item>
+    <item>
+      <title>trailing-ideographic-space</title>
+      <link>https://example.com/posts/trailing-ideographic-space</link>
+      <guid isPermaLink="false">trailing-ideographic-space</guid>
+      <pubDate>Thu, 01 Oct 2026 04:00:00 +0000</pubDate>
+      <media:thumbnail url="https://example.com/images/e.png　"/>
+    </item>
+    <item>
+      <title>no-url</title>
+      <link>https://example.com/posts/no-url</link>
+      <guid isPermaLink="false">no-url</guid>
+      <pubDate>Thu, 01 Oct 2026 05:00:00 +0000</pubDate>
+      <media:thumbnail url="￼images/f.png"/>
+    </item>
+    <item>
+      <title>scheme-only</title>
+      <link>https://example.com/posts/scheme-only</link>
+      <guid isPermaLink="false">scheme-only</guid>
+      <pubDate>Thu, 01 Oct 2026 06:00:00 +0000</pubDate>
+      <media:thumbnail url="￼http:"/>
+    </item>
+  </channel>
+</rss>

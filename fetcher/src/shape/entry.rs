@@ -1,12 +1,14 @@
 //! Channel#fetch_and_save_items と Item のバリデーション・コールバックの再現。
 
 use std::collections::HashMap;
+use std::sync::LazyLock;
 
 use chrono::{DateTime, Utc};
+use regex::Regex;
 
 use crate::model::{EntryData, ShapedEntry, SkipReason, Skipped};
 use crate::parse::extract::RawFeed;
-use crate::ruby::{is_blank, matches_uri_http, opt_presence, ruby_strip, valid_url_column};
+use crate::ruby::{is_blank, opt_presence, ruby_strip, valid_url_column};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ImageCandidate {
@@ -37,6 +39,19 @@ pub struct EntryDraft {
     pub image: ImageCandidate,
     pub data: EntryData,
     pub data_extra: DataExtra,
+}
+
+static IMAGE_URL_START: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?i)https?://").unwrap());
+
+/// Item.normalize_image_url 相当。最初の http(s):// から後ろだけを残し、末尾の空白を取り除く。URL が無ければ None。
+/// 先頭に U+FFFC や改行が付いた image を、そのまま保存しないため (#830)
+pub fn normalize_image_url(value: &str) -> Option<String> {
+    let start = IMAGE_URL_START.find(value)?.start();
+    Some(
+        value[start..]
+            .trim_end_matches(char::is_whitespace)
+            .to_string(),
+    )
 }
 
 /// マルチバイト文字と `"` だけをパーセントエンコードする (Rails と同じ)
@@ -150,10 +165,8 @@ pub fn finalize_entries(
             ImageCandidate::Direct(i) => Some(i),
             ImageCandidate::NeedsOgp => ogp_image,
         };
-        // 不正な image_url は nil に落とす
-        let image = image.filter(|i| is_blank(i) || matches_uri_http(i));
-        // before_validation: 空文字を nil に、タイトルが空なら 〓
-        let image = image.filter(|i| !is_blank(i));
+        // before_validation: URL の部分だけを残し (Item.normalize_image_url)、タイトルが空なら 〓
+        let image = image.as_deref().and_then(normalize_image_url);
         let title = match &draft.title_raw {
             Some(t) if !is_blank(t) => t.clone(),
             _ => "〓".to_string(),
