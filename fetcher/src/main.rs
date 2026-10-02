@@ -122,6 +122,7 @@ async fn main() -> anyhow::Result<()> {
                     token,
                     concurrency,
                     idle_wait: Duration::from_secs(60),
+                    busy_wait: Duration::from_secs(5),
                     deadline: Duration::from_secs(5 * 60),
                     result_retry_base: Duration::from_secs(2),
                     http: HttpConfig {

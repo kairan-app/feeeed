@@ -24,6 +24,7 @@ fn options(api: &MockServer, deadline: Duration) -> RunOptions {
         token: "tok".into(),
         concurrency: 2,
         idle_wait: Duration::from_millis(50),
+        busy_wait: Duration::from_millis(50),
         deadline,
         result_retry_base: Duration::from_millis(1),
         http: http_config(),
@@ -292,10 +293,11 @@ async fn finishes_the_in_flight_channel_on_shutdown_and_stops_leasing() {
         .mount(&api)
         .await;
 
-    // 1回目の貸し出しは頼んだ数 (2) より少ないので、次を頼む前に idle_wait だけ待つ。
+    // 1回目の貸し出しは頼んだ数 (2) より少なく、取得中のチャンネルがあるので、次を頼む前に busy_wait だけ待つ。
     // その待ちの途中、取得の応答 (300ms) を待っている間に止める
     let mut opts = options(&api, Duration::from_secs(30));
     opts.idle_wait = Duration::from_secs(10);
+    opts.busy_wait = Duration::from_secs(10);
     run(opts, tokio::time::sleep(Duration::from_millis(100)))
         .await
         .unwrap();
@@ -365,4 +367,45 @@ async fn skips_slow_entry_ogp_to_send_new_entries_within_the_deadline() {
     assert_eq!(entries.len(), 1);
     assert_eq!(entries[0]["guid"], "gb");
     assert_eq!(entries[0]["image_url"], serde_json::Value::Null);
+}
+
+#[tokio::test]
+async fn asks_again_soon_after_a_short_batch_while_channels_are_in_flight() {
+    let site = MockServer::start().await;
+    Mock::given(path("/feed.xml"))
+        .respond_with(
+            ResponseTemplate::new(200)
+                .set_body_string(rss(&site.uri()))
+                .set_delay(Duration::from_secs(2)),
+        )
+        .mount(&site)
+        .await;
+
+    let api = MockServer::start().await;
+    mount_one_lease(&api, format!("{}/feed.xml", site.uri())).await;
+
+    // 1回目の貸し出しは頼んだ数 (2) より少ないが、取得中のチャンネルがあるので idle_wait (10s) ではなく
+    // busy_wait (50ms) だけ待って、また頼む
+    let mut opts = options(&api, Duration::from_secs(30));
+    opts.idle_wait = Duration::from_secs(10);
+    opts.busy_wait = Duration::from_millis(50);
+    tokio::time::timeout(
+        Duration::from_secs(5),
+        run(opts, tokio::time::sleep(Duration::from_millis(500))),
+    )
+    .await
+    .expect("run should stop after the in-flight channel")
+    .unwrap();
+
+    let leases = api
+        .received_requests()
+        .await
+        .unwrap()
+        .iter()
+        .filter(|r| r.url.path() == "/fetcher/leases")
+        .count();
+    assert!(
+        leases >= 2,
+        "should ask again within busy_wait, got {leases}"
+    );
 }

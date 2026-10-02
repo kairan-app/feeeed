@@ -17,8 +17,11 @@ pub struct RunOptions {
     pub api_url: String,
     pub token: String,
     pub concurrency: usize,
-    /// 貸し出しが空だったとき・失敗したときに待つ時間
+    /// 処理中のチャンネルが無いのに頼んだ数より少なかったとき・貸し出しに失敗したときに待つ時間
     pub idle_wait: Duration,
+    /// 頼んだ数より少なかったが、処理中のチャンネルがあるときに待つ時間。
+    /// 同じホストは同時に1つしか貸し出されないので、idle_wait だけ待つと、残りの多いホストの処理が詰まる
+    pub busy_wait: Duration,
     /// 1チャンネルの持ち時間 (lease の期限 10分より短くする)
     pub deadline: Duration,
     pub result_retry_base: Duration,
@@ -91,6 +94,7 @@ pub async fn run(opts: RunOptions, shutdown: impl Future<Output = ()>) -> anyhow
         };
         let wait = match batch {
             Ok(batch) => {
+                tracing::info!(leased = batch.leases.len(), requested = free, "lease batch");
                 // 頼んだ数より少なければ、今は他に取るべきチャンネルが無い。続けて頼まずに待つ
                 let short = batch.leases.len() < free;
                 let proxy_domains: Arc<HashSet<String>> =
@@ -105,16 +109,21 @@ pub async fn run(opts: RunOptions, shutdown: impl Future<Output = ()>) -> anyhow
                         opts.deadline,
                     ));
                 }
-                short
+                // 処理中のチャンネルがあれば、それが終わるとそのホストの次のチャンネルを貸し出せるので、短く待つ
+                match (short, tasks.is_empty()) {
+                    (false, _) => None,
+                    (true, true) => Some(opts.idle_wait),
+                    (true, false) => Some(opts.busy_wait),
+                }
             }
             Err(e) => {
                 tracing::error!(error = %format!("{e:#}"), "failed to lease channels");
-                true
+                Some(opts.idle_wait)
             }
         };
-        if wait {
+        if let Some(wait) = wait {
             // 待っている間に終わったタスクも片付ける
-            let sleep = tokio::time::sleep(opts.idle_wait);
+            let sleep = tokio::time::sleep(wait);
             tokio::pin!(sleep);
             loop {
                 tokio::select! {

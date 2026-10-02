@@ -130,8 +130,8 @@ Rails の `/fetcher/*` API から貸し出しを受けてフィードを取得�
 FETCHER_API_URL=https://... FETCHER_TOKEN=... cargo run --release -- run
 ```
 
-- 空いている枠 (`FETCHER_CONCURRENCY`、既定 8) の数だけ借りる。何も無ければ60秒待つ
-- 1チャンネルの持ち時間は5分。超えたら `deadline` の失敗として結果を送る
+- 空いている枠 (`FETCHER_CONCURRENCY`、既定 8) の数だけ借りる。頼んだ数より少なければ、処理中のチャンネルがあれば5秒、無ければ60秒待つ。借りるたびに `lease batch` をログに出す
+- 1チャンネルの持ち時間は5分。超えたら `deadline` の失敗として結果を送る。記事の OGP は持ち時間の 3/5 (3分) までしか取らず、残りの entry は画像なしで送る
 - 結果の送信は、接続エラーと 5xx なら最大5回送り直す。409 (lease を失った) なら捨てる
 - SIGTERM を受けたら新しい貸し出しを止め、処理中のチャンネルを終えてから止まる。停止には数分かかる可能性がある
 - ログは JSON で標準出力に出る (`RUST_LOG=info`)。Sentry には送らない。止まっていないかは Rails の `FetcherLagMonitorJob` が見る
