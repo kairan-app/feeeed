@@ -3230,12 +3230,14 @@ Part 2 の PR を作る。本文に、本番での段階移行の手順 (下の�
 
 ## 切り替えの手順 (コードの変更なし。ユーザーと一緒に行う)
 
-1. Part 1・Part 2 をデプロイする (`ROLLOUT_PERCENT` は未設定 = 0)
+1. Part 1・Part 2 をデプロイする (`ROLLOUT_PERCENT` は未設定 = 0)。Procfile に `release:` が無いので、デプロイのあと `heroku run -a feedhub rails db:migrate` で `channel_leases` を作る。0 % の間はこのテーブルを誰も触らないので、migrate を忘れても 10 % に上げるまで気づけない
 2. トークンを発行し、Heroku に `FETCHER_TOKENS` を設定する。自宅の Linux マシンに fetcher を置いて systemd で起動する。ログで「貸し出しが空」になっていることを確かめる
 3. JSON Feed など Rust が扱えない形式のチャンネルを、影モードのレポートで数える: `cat tmp/shadow-runs/reports/*.jsonl | jq -r 'select(.format == "json_feed" or .status == "parse_error") | "\(.channel_id) \(.error)"' | sort | uniq -c`。件数があれば対応を決める (ロールアウトの対象から外すか、fetcher で扱うか)
 4. `heroku config:set -a feedhub ROLLOUT_PERCENT=10`。数時間〜1日、Sentry、1時間あたりの item 作成数、`FetcherLagMonitorJob` の投稿、fetcher のログ (409・送り直し) を見る
 5. 50 → 100 と上げる
 6. 100 で安定したら `heroku config:set -a feedhub SOLID_QUEUE_IN_PUMA=1` → `heroku ps:scale -a feedhub worker=0`。web dyno のメモリ (R14) と DB の接続数を数日見る
+   - `config/puma.rb` は `SOLID_QUEUE_IN_PUMA` のとき `solid_queue_mode :async` にしている (プラグインの既定の fork モードはプロセスが増えて R14 になりやすい)。async モードでは Solid Queue の dispatcher・ワーカーのスレッドが Puma と同じプロセスの DB 接続プールを使う
+   - そのため worker を 0 にする前に、`config/queue.yml` のスレッド数 (各ワーカーの `threads` の合計と、dispatcher・supervisor の分) を数え、Puma のスレッド数 (`RAILS_MAX_THREADS`) と足した数を `config/database.yml` の `pool` が下回らないようにする。`pool` は今 `RAILS_MAX_THREADS` を見ているので、足りなければ `pool` を別の環境変数で大きくできるようにしてから `SOLID_QUEUE_IN_PUMA` を設定する。Heroku Postgres のプランの接続数の上限にも収まるか確かめる
 7. 影モードを止め (`launchctl bootout gui/$(id -u)/app.kairan.feeeed.fetcher-shadow`)、dispatcher の Worker と Hyperdrive を削除する。`dispatcher/` と `fetcher/src/shadow.rs`・`dispatcher_client.rs` の削除は別の PR で行う
 
 巻き戻し: `ROLLOUT_PERCENT=0`、`heroku ps:scale -a feedhub worker=1`、`SOLID_QUEUE_IN_PUMA` を外す。
