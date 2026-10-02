@@ -2,6 +2,10 @@ channel_fetcher:
   class: ChannelItemsFetcherJob
   schedule: "10,59 * * * *"
 
+fetcher_lag_monitor:
+  class: FetcherLagMonitorJob
+  schedule: "40 * * * *"
+
 notification_webhook_dispatcher:
   class: NotificationWebhookDispatcherJob
   schedule: "0 * * * *"
