@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_31_130900) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -138,6 +138,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_130900) do
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_channel_groups_on_id_desc", order: :desc
     t.index ["owner_id"], name: "index_channel_groups_on_owner_id"
+  end
+
+  create_table "channel_leases", id: false, force: :cascade do |t|
+    t.bigint "channel_id", null: false
+    t.string "host", null: false
+    t.string "worker_name", null: false
+    t.datetime "leased_until", null: false
+    t.datetime "created_at", null: false
+    t.index ["channel_id"], name: "index_channel_leases_on_channel_id", unique: true
+    t.index ["host"], name: "index_channel_leases_on_host", unique: true
   end
 
   create_table "channel_stoppers", force: :cascade do |t|
@@ -454,6 +464,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_130900) do
   add_foreign_key "channel_groupings", "channel_groups"
   add_foreign_key "channel_groupings", "channels"
   add_foreign_key "channel_groups", "users", column: "owner_id"
+  add_foreign_key "channel_leases", "channels", on_delete: :cascade
   add_foreign_key "channel_stoppers", "channels"
   add_foreign_key "item_skips", "items"
   add_foreign_key "item_skips", "users"
