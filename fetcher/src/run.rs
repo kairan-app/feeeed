@@ -4,7 +4,7 @@
 use std::collections::HashSet;
 use std::future::Future;
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use tokio::task::JoinSet;
 
@@ -33,9 +33,11 @@ async fn handle(
     deadline: Duration,
 ) {
     let channel_id = lease.channel_id;
+    // 持ち時間の 3/5 を過ぎたら記事の OGP は取らない (取得・照会にかかった時間も含めて数え、残りは余裕として残す)
+    let ogp_deadline = Instant::now() + deadline * 3 / 5;
     let payload = match tokio::time::timeout(
         deadline,
-        process_lease(&lease, &http, &api, &proxy_domains),
+        process_lease(&lease, &http, &api, &proxy_domains, ogp_deadline),
     )
     .await
     {

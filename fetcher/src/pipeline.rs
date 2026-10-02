@@ -2,6 +2,7 @@
 //! Rails の ChannelItemsUpdaterJob (update_info + fetch_and_save_items) と同じ結果になるように作る
 
 use std::collections::HashSet;
+use std::time::Instant;
 
 use crate::api_client::{ApiClient, Lease};
 use crate::dispatcher_client::NewGuidQuery;
@@ -16,12 +17,17 @@ use crate::shape::entry::ImageCandidate;
 /// guid_lookups に1回で送る entry の数
 const LOOKUP_CHUNK: usize = 1000;
 
-/// `Err` は「結果を送らずに lease の期限切れに任せる」(guid の照会ができず、新しい entry を決められない)
+/// `Err` は「結果を送らずに lease の期限切れに任せる」(guid の照会ができず、新しい entry を決められない)。
+///
+/// `ogp_deadline` を過ぎたら、新しい entry の OGP は取らずに画像なしで送る。記事の OGP を1件ずつ取っていると
+/// 持ち時間を使い切ってしまい、結果ごと deadline の失敗になって item が一度も保存されなくなるため
+/// (Rails も OGP が取れなければ画像なしで保存する)
 pub async fn process_lease(
     lease: &Lease,
     http: &HttpClient,
     api: &ApiClient,
     proxy_domains: &HashSet<String>,
+    ogp_deadline: Instant,
 ) -> anyhow::Result<ResultPayload> {
     let res = match http.get_feed(&lease.feed_url, lease.use_proxy).await {
         Ok(r) => r,
@@ -77,15 +83,34 @@ pub async fn process_lease(
 
     // 画像が無い新しい entry は、記事の OGP 画像を取る (Rails と同じ)
     let mut resolved = Vec::with_capacity(new_drafts.len());
+    let mut ogp_skipped = 0usize;
     for d in new_drafts {
         let ogp_image = if d.image == ImageCandidate::NeedsOgp {
-            fetch_ogp(http, &d.url, proxy_domains)
-                .await
-                .and_then(|o| o.image)
+            // 1ページが遅くても持ち時間を越えないように、残り時間で打ち切る
+            let left = ogp_deadline.saturating_duration_since(Instant::now());
+            if left.is_zero() {
+                ogp_skipped += 1;
+                None
+            } else {
+                match tokio::time::timeout(left, fetch_ogp(http, &d.url, proxy_domains)).await {
+                    Ok(ogp) => ogp.and_then(|o| o.image),
+                    Err(_) => {
+                        ogp_skipped += 1;
+                        None
+                    }
+                }
+            }
         } else {
             None
         };
         resolved.push((d, ogp_image, false));
+    }
+    if ogp_skipped > 0 {
+        tracing::info!(
+            channel_id = lease.channel_id,
+            ogp_skipped,
+            "ran out of time for entry OGP, sending those entries without images"
+        );
     }
     let (entries, _) = shape::entry::finalize_entries(resolved);
 

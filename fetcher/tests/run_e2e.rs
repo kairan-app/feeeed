@@ -314,3 +314,55 @@ async fn finishes_the_in_flight_channel_on_shutdown_and_stops_leasing() {
         .count();
     assert_eq!(leases, 1, "no new lease after shutdown");
 }
+
+#[tokio::test]
+async fn skips_slow_entry_ogp_to_send_new_entries_within_the_deadline() {
+    let site = MockServer::start().await;
+    Mock::given(path("/feed.xml"))
+        .respond_with(ResponseTemplate::new(200).set_body_string(rss(&site.uri())))
+        .mount(&site)
+        .await;
+    // 記事のページが OGP の持ち時間 (deadline 2s の 3/5 = 1.2s) より遅い
+    Mock::given(path("/b"))
+        .respond_with(
+            ResponseTemplate::new(200)
+                .set_body_string(
+                    r#"<html><head><meta property="og:image" content="https://img.example/b.png"></head></html>"#,
+                )
+                .set_delay(Duration::from_secs(3)),
+        )
+        .mount(&site)
+        .await;
+
+    let api = MockServer::start().await;
+    mount_one_lease(&api, format!("{}/feed.xml", site.uri())).await;
+    Mock::given(method("POST"))
+        .and(path("/fetcher/channels/1/guid_lookups"))
+        .respond_with(
+            ResponseTemplate::new(200).set_body_json(serde_json::json!({ "new": [false, true] })),
+        )
+        .mount(&api)
+        .await;
+    Mock::given(method("POST"))
+        .and(path("/fetcher/leases/1/result"))
+        .respond_with(
+            ResponseTemplate::new(200)
+                .set_body_json(serde_json::json!({ "created": 1, "skipped": 0 })),
+        )
+        .mount(&api)
+        .await;
+
+    run(
+        options(&api, Duration::from_secs(2)),
+        shutdown_after_result(&api),
+    )
+    .await
+    .unwrap();
+
+    let body = &result_bodies(&api).await[0];
+    assert_eq!(body["fetched"], true, "{body}");
+    let entries = body["entries"].as_array().unwrap();
+    assert_eq!(entries.len(), 1);
+    assert_eq!(entries[0]["guid"], "gb");
+    assert_eq!(entries[0]["image_url"], serde_json::Value::Null);
+}
