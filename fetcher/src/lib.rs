@@ -5,6 +5,7 @@ pub mod http;
 pub mod model;
 pub mod ogp;
 pub mod parse;
+pub mod result;
 pub mod ruby;
 pub mod shadow;
 pub mod shape;
