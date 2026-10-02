@@ -68,7 +68,12 @@ class Channel < ApplicationRecord
     end
 
     def fetch_and_save_items
-      not_stopped.needs_check_now.by_check_priority.find_each do |channel|
+      scope = not_stopped.needs_check_now.by_check_priority
+      # channel_id % 100 < ROLLOUT_PERCENT のチャンネルは fetcher (Rust) が取るので積まない
+      percent = FetcherRollout.percent
+      scope = scope.where("channels.id % 100 >= ?", percent) if percent.positive?
+
+      scope.find_each do |channel|
         ChannelItemsUpdaterJob.perform_later(channel_id: channel.id)
       end
     end
