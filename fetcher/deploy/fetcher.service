@@ -1,0 +1,26 @@
+# fetcher の本番の常駐モード (Rails から貸し出しを受けて取得し、結果を送る)
+# 置き場所の例: /etc/systemd/system/fetcher.service
+[Unit]
+Description=feed fetcher (run mode)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=fetcher
+EnvironmentFile=/etc/fetcher/fetcher.env
+Environment=RUST_LOG=info
+ExecStart=/usr/local/bin/fetcher run
+Restart=always
+RestartSec=10
+# 処理中のチャンネルを持ち時間 (5分) の範囲で終えて、結果を送信する (送信は失敗時に最大5回送り直す)。
+# これより長く待つ必要があるので、systemd はそれより長いタイムアウトを設定する
+TimeoutStopSec=480
+KillSignal=SIGTERM
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
