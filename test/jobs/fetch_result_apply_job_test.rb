@@ -24,4 +24,16 @@ class FetchResultApplyJobTest < ActiveJob::TestCase
     assert_not @channel.items.exists?(guid: "g1")
     assert_nil @channel.reload.last_items_checked_at
   end
+
+  test "renew に失敗したら lease の行を消さない (同じワーカー名の新しい lease かもしれない)" do
+    ChannelLease.where(channel_id: @channel.id).update_all(leased_until: 1.minute.ago)
+
+    FetchResultApplyJob.perform_now(channel_id: @channel.id, worker_name: "w1", entries: @entries, latest_guids: [])
+
+    assert ChannelLease.exists?(channel_id: @channel.id)
+  end
+
+  test "default キューの他のジョブより先に動く優先度で積む" do
+    assert_equal(-10, FetchResultApplyJob.new.priority)
+  end
 end
