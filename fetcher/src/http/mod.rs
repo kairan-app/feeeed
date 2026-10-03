@@ -14,7 +14,8 @@ use host_gate::HostGate;
 const MAX_REDIRECTS: usize = 3;
 
 /// 応答本文の上限。これを超えるフィード・ページは読み切らずに打ち切る。
-pub const DEFAULT_MAX_BODY_BYTES: usize = 20 * 1024 * 1024;
+/// 本番に 57MB のフィードがあり、Rails はそれを読めているので、余裕を見て 64MB にする
+pub const DEFAULT_MAX_BODY_BYTES: usize = 64 * 1024 * 1024;
 
 #[derive(Debug, Clone)]
 pub struct ProxyConfig {

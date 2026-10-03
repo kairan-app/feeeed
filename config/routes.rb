@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
   get "/up" => "rails/health#show", as: :rails_health_check
+
+  namespace :fetcher do
+    post "leases",                               to: "leases#create"
+    post "leases/:channel_id/result",            to: "results#create"
+    post "channels/:channel_id/guid_lookups",    to: "guid_lookups#create"
+  end
+
   get "/manifest.json" => "rails/pwa#manifest", as: :pwa_manifest
 
   if Rails.env.development?

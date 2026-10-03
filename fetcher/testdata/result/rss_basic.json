@@ -1,0 +1,89 @@
+{
+  "fetched": true,
+  "error": null,
+  "final_url": null,
+  "register_proxy_urls": [],
+  "channel": {
+    "title": "Basic RSS",
+    "description": "<p>desc</p>",
+    "site_url": "https://example.com/",
+    "image_url": null,
+    "applied_filters": [],
+    "filter_details": {}
+  },
+  "entries": [
+    {
+      "guid": "https://example.com/posts/1",
+      "title": "Permalink guid only",
+      "url": "https://example.com/posts/1",
+      "image_url": "https://example.com/1.jpg",
+      "published_at": "2026-09-22T00:00:00Z",
+      "data": {
+        "entry_id": "https://example.com/posts/1",
+        "title": "Permalink guid only",
+        "url": "https://example.com/posts/1",
+        "published": "2026-09-22T00:00:00.000Z",
+        "summary": "<p>hello <b>world</b></p>",
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "post-2",
+      "title": "Non-permalink guid with link",
+      "url": "https://example.com/posts/2",
+      "image_url": "https://example.com/2.png",
+      "published_at": "2026-09-22T01:00:00Z",
+      "data": {
+        "entry_id": "post-2",
+        "title": "Non-permalink guid with link",
+        "url": "https://example.com/posts/2",
+        "published": "2026-09-22T01:00:00.000Z",
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "post-3",
+      "title": "日本語のURL",
+      "url": "https://example.com/posts/%E6%97%A5%E6%9C%AC%E8%AA%9E?q=%22x%22",
+      "image_url": null,
+      "published_at": "2026-09-22T11:00:00Z",
+      "data": {
+        "entry_id": "post-3",
+        "title": "日本語のURL",
+        "url": "https://example.com/posts/日本語?q=\"x\"",
+        "published": "2026-09-22T11:00:00.000Z",
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    },
+    {
+      "guid": "https://example.com/posts/4",
+      "title": "No guid, link only",
+      "url": "https://example.com/posts/4",
+      "image_url": null,
+      "published_at": "2026-09-22T12:00:00Z",
+      "data": {
+        "entry_id": null,
+        "title": "No guid, link only",
+        "url": "https://example.com/posts/4",
+        "published": "2026-09-22T12:00:00.000Z",
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": null,
+        "enclosure_type": null
+      }
+    }
+  ],
+  "latest_guids": [
+    "post-3",
+    "https://example.com/posts/日本語?q=\"x\"",
+    "https://example.com/posts/4"
+  ]
+}

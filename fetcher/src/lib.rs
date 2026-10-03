@@ -1,3 +1,4 @@
+pub mod api_client;
 pub mod dispatcher_client;
 pub mod encoding;
 pub mod filters;
@@ -5,7 +6,10 @@ pub mod http;
 pub mod model;
 pub mod ogp;
 pub mod parse;
+pub mod pipeline;
+pub mod result;
 pub mod ruby;
+pub mod run;
 pub mod shadow;
 pub mod shape;
 

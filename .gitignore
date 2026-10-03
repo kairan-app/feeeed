@@ -53,5 +53,7 @@
 /fetcher/tmp/
 /fetcher/*.jsonl
 /*.jsonl
+# fetcher の本番用の環境変数ファイル (設定例ファイルのみをコミット)
+/fetcher/deploy/fetcher.env
 /dispatcher/node_modules
 /dispatcher/.wrangler

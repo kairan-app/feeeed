@@ -122,6 +122,41 @@ jq -c '.channel_id as $c | .diffs[] | select(.item_created_at != null and .item_
 jq -s 'map(select(.status != "ok")) | group_by([.status, (.error | split(":")[0])]) | map({status: .[0].status, kind: (.[0].error | split(":")[0]), count: length})' tmp/shadow-report.jsonl
 ```
 
+## 本番の常駐モード (`run`)
+
+Rails の `/fetcher/*` API から貸し出しを受けてフィードを取得し、結果を Rails に送る。Rails がモデルを通して保存する。
+
+```bash
+FETCHER_API_URL=https://... FETCHER_TOKEN=... cargo run --release -- run
+```
+
+- 空いている枠 (`FETCHER_CONCURRENCY`、既定 8) の数だけ借りる。頼んだ数より少なければ、処理中のチャンネルがあれば5秒、無ければ60秒待つ。借りるたびに `lease batch` をログに出す
+- 1チャンネルの持ち時間は5分。超えたら `deadline` の失敗として結果を送る。記事の OGP は持ち時間の 3/5 (3分) までしか取らず、残りの entry は画像なしで送る
+- 結果の送信は、接続エラーと 5xx なら最大5回送り直す。409 (lease を失った) なら捨てる
+- SIGTERM を受けたら新しい貸し出しを止め、処理中のチャンネルを終えてから止まる。停止には数分かかる可能性がある
+- ログは JSON で標準出力に出る (`RUST_LOG=info`)。Sentry には送らない。止まっていないかは Rails の `FetcherLagMonitorJob` が見る
+
+### トークンの発行
+
+```bash
+token=$(openssl rand -hex 32)
+echo "$token"                                   # fetcher の FETCHER_TOKEN に入れる
+printf %s "$token" | shasum -a 256 | cut -d' ' -f1   # Rails の FETCHER_TOKENS に {"<ワーカー名>": "<この値>"} で入れる
+```
+
+### Linux (systemd) で常駐させる
+
+1. `cargo build --release` で作った `target/release/fetcher` を `/usr/local/bin/fetcher` に置く
+2. 専用のユーザーを作る: `sudo useradd --system --no-create-home fetcher`
+3. `deploy/fetcher.env.example` を `/etc/fetcher/fetcher.env` にコピーして値を入れる (`chmod 600`、所有者は root)
+4. `deploy/fetcher.service` を `/etc/systemd/system/` に置き、`sudo systemctl daemon-reload && sudo systemctl enable --now fetcher`
+5. ログを見る: `journalctl -u fetcher -f`
+
+### 段階移行
+
+Rails の `ROLLOUT_PERCENT` (既定 0) で、`channel_id % 100` がこれ未満のチャンネルを fetcher に任せる。0 → 10 → 50 → 100 と上げる。
+巻き戻すときは `ROLLOUT_PERCENT=0` にする (lease は10分で切れる)。
+
 ## golden テスト
 
 `testdata/fixtures/*.xml` は手書きの合成フィード (第三者のコンテンツは入れない)。

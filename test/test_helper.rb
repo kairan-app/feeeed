@@ -22,3 +22,18 @@ class ActionDispatch::IntegrationTest
     get "/dev/login", params: { user_id: user.id }
   end
 end
+
+# fetcher (Rust) 向け API のテスト用
+module FetcherApiTestHelper
+  def with_fetcher_tokens(tokens = { "w1" => "secret-token" })
+    old = ENV["FETCHER_TOKENS"]
+    ENV["FETCHER_TOKENS"] = tokens.transform_values { Digest::SHA256.hexdigest(_1) }.to_json
+    yield
+  ensure
+    ENV["FETCHER_TOKENS"] = old
+  end
+
+  def fetcher_headers(token = "secret-token")
+    { "Authorization" => "Bearer #{token}", "Content-Type" => "application/json" }
+  end
+end

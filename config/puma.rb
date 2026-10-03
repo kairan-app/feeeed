@@ -34,7 +34,13 @@ port ENV.fetch("PORT", 3000)
 plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
-plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
+if ENV["SOLID_QUEUE_IN_PUMA"]
+  plugin :solid_queue
+  # プラグインの既定は fork モードで、supervisor とワーカーごとに別のプロセスを立てるので、
+  # web の dyno のメモリでは足りない。今の worker (bin/jobs --mode async) と同じく、Puma のプロセスの中のスレッドで動かす。
+  # (solid_queue_mode は plugin :solid_queue を読み込んだときに Puma の DSL に足される)
+  solid_queue_mode :async
+end
 
 plugin :tailwindcss if ENV.fetch("RAILS_ENV", "development") == "development"
 

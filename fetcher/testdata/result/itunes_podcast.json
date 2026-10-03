@@ -1,0 +1,55 @@
+{
+  "fetched": true,
+  "error": null,
+  "final_url": null,
+  "register_proxy_urls": [],
+  "channel": {
+    "title": "Podcast",
+    "description": "A podcast",
+    "site_url": "https://example.com/podcast",
+    "image_url": "https://example.com/cover.jpg",
+    "applied_filters": [],
+    "filter_details": {}
+  },
+  "entries": [
+    {
+      "guid": "ep1",
+      "title": "Episode 1",
+      "url": "https://example.com/podcast/1",
+      "image_url": "https://example.com/ep1.jpg",
+      "published_at": "2026-09-24T06:00:00Z",
+      "data": {
+        "entry_id": "ep1",
+        "title": "Episode 1",
+        "url": "https://example.com/podcast/1",
+        "published": "2026-09-24T06:00:00.000Z",
+        "summary": "episode one",
+        "itunes_subtitle": "sub one",
+        "enclosure_url": "https://example.com/ep1.mp3",
+        "enclosure_type": "audio/mpeg"
+      }
+    },
+    {
+      "guid": "ep2",
+      "title": "Episode 2 without link",
+      "url": "https://example.com/ep2.mp3",
+      "image_url": null,
+      "published_at": "2026-09-25T06:00:00Z",
+      "data": {
+        "entry_id": "ep2",
+        "title": "Episode 2 without link",
+        "url": null,
+        "published": "2026-09-25T06:00:00.000Z",
+        "summary": null,
+        "itunes_subtitle": null,
+        "enclosure_url": "https://example.com/ep2.mp3",
+        "enclosure_type": "audio/mpeg"
+      }
+    }
+  ],
+  "latest_guids": [
+    "ep1",
+    "https://example.com/podcast/1",
+    "ep2"
+  ]
+}
