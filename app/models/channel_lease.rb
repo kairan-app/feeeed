@@ -9,6 +9,14 @@ class ChannelLease < ApplicationRecord
   # feed_url からホストを取り出す式 (dispatcher の selectDueChannels と同じ)
   HOST_SQL = "lower(substring(channels.feed_url from '^[a-zA-Z][a-zA-Z0-9+.-]*://([^/:?#]+)'))".freeze
 
+  # 同時に来た別の貸し出しと、チャンネルかホストがぶつかった行は一意制約で飛ばす
+  INSERT_SKIPPING_CONFLICTS_SQL = <<~SQL.squish.freeze
+    INSERT INTO channel_leases (channel_id, host, worker_name, leased_until, created_at)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT DO NOTHING
+    RETURNING channel_id
+  SQL
+
   class << self
     # チェックが必要なチャンネルを、ホストが重ならないように最大 max 件貸し出す
     def grant!(worker_name:, max:, rollout_percent:, now: Time.current)
@@ -40,16 +48,13 @@ class ChannelLease < ApplicationRecord
 
     private
 
+    # 1行ずつ入れる (1回の貸し出しは最大でも32件)。SQL に値を埋め込まないよう、定数の SQL にプレースホルダで渡す
     def insert_skipping_conflicts(rows)
-      values = rows.map { |r|
-        sanitize_sql_array([ "(?, ?, ?, ?, ?)", r[:channel_id], r[:host], r[:worker_name], r[:leased_until], r[:created_at] ])
-      }.join(", ")
-      connection.select_values(<<~SQL.squish)
-        INSERT INTO channel_leases (channel_id, host, worker_name, leased_until, created_at)
-        VALUES #{values}
-        ON CONFLICT DO NOTHING
-        RETURNING channel_id
-      SQL
+      rows.filter_map { |r|
+        connection.select_value(
+          sanitize_sql_array([ INSERT_SKIPPING_CONFLICTS_SQL, r[:channel_id], r[:host], r[:worker_name], r[:leased_until], r[:created_at] ])
+        )
+      }
     end
 
     # ホストごとに優先度の一番高いチャンネルを1つずつ選び、その中から優先度順に max 件
@@ -63,19 +68,16 @@ class ChannelLease < ApplicationRecord
         .where("channels.id % 100 < ?", rollout_percent)
         .select(:id, :feed_url, :site_url, :check_interval_hours, :last_items_checked_at)
         .select(Arel.sql("#{HOST_SQL} AS host"))
-      # HOST_SQL の正規表現に ? があるので、find_by_sql の配列 (プレースホルダ) 形式は使わない
-      Channel.find_by_sql(<<~SQL.squish)
-        SELECT * FROM (
-          SELECT DISTINCT ON (due.host) due.* FROM (#{due.to_sql}) due
-          WHERE due.host IS NOT NULL
-            AND NOT EXISTS (
-              SELECT 1 FROM channel_leases l WHERE l.channel_id = due.id OR l.host = due.host
-            )
-          ORDER BY due.host, due.check_interval_hours, due.last_items_checked_at, due.id
-        ) per_host
-        ORDER BY per_host.check_interval_hours, per_host.last_items_checked_at, per_host.id
-        LIMIT #{Integer(max)}
-      SQL
+      per_host = Channel.unscoped.from(due, :due)
+        .select("DISTINCT ON (due.host) due.*")
+        .where("due.host IS NOT NULL")
+        .where("NOT EXISTS (SELECT 1 FROM channel_leases l WHERE l.channel_id = due.id OR l.host = due.host)")
+        .order("due.host, due.check_interval_hours, due.last_items_checked_at, due.id")
+      Channel.unscoped.from(per_host, :per_host)
+        .select("per_host.*")
+        .order("per_host.check_interval_hours, per_host.last_items_checked_at, per_host.id")
+        .limit(max)
+        .to_a
     end
   end
 end
