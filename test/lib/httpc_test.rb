@@ -62,9 +62,10 @@ class HttpcTest < ActiveSupport::TestCase
 
       stub_direct_get(url, response)
 
-      assert_raises(RuntimeError) do
+      error = assert_raises(Httpc::HTTPError) do
         Httpc.get_with_redirect_info(url)
       end
+      assert_equal 404, error.status
     end
 
     test "HTTP エラーの例外メッセージは本文を切り詰めたUTF-8にする" do
@@ -79,7 +80,7 @@ class HttpcTest < ActiveSupport::TestCase
 
       stub_direct_get(url, response)
 
-      error = assert_raises(RuntimeError) do
+      error = assert_raises(Httpc::HTTPError) do
         Httpc.get_with_redirect_info(url)
       end
 
