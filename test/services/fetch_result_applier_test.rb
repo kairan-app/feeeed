@@ -118,8 +118,10 @@ class FetchResultApplierTest < ActiveSupport::TestCase
       assert_equal({ created: 0, skipped: 1 }, result)
     end
 
-    test "バリデーションに落ちた entry は Sentry に warning を送って飛ばし、残りは保存する" do
-      Sentry.expects(:capture_message).with(regexp_matches(/validation failed/), has_entry(level: :warning)).once
+    test "バリデーションに落ちた entry は Sentry に送らずログに残して飛ばし、残りは保存する" do
+      Sentry.expects(:capture_message).never
+      Rails.logger.stubs(:warn)
+      Rails.logger.expects(:warn).with(regexp_matches(/Skipped item \(validation\)/)).once
 
       result = @applier.save_items!([ entry("bad", published_at: nil), entry("good") ], latest_guids: [])
 

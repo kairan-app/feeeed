@@ -3,6 +3,16 @@ require "faraday/follow_redirects"
 require "faraday-cookie_jar"
 
 class Httpc
+  # 相手のサーバーが 2xx 以外を返したときの例外。ステータスコードで見分けられるようにする
+  class HTTPError < StandardError
+    attr_reader :status
+
+    def initialize(message, status:)
+      super(message)
+      @status = status
+    end
+  end
+
   PROXY_TRIGGERING_ERRORS = [
     Faraday::ConnectionFailed,
     Faraday::TimeoutError
@@ -11,6 +21,15 @@ class Httpc
   PROXY_TRIGGERING_STATUSES = [ 403 ].freeze
 
   ERROR_BODY_LENGTH_LIMIT = 200
+
+  # 相手のサイトの状態で起きる失敗。アプリのバグではないので、呼び出し側で Sentry に送らずログに留めるのに使う
+  EXTERNAL_ERRORS = [
+    HTTPError,
+    Faraday::ConnectionFailed,
+    Faraday::TimeoutError,
+    Faraday::SSLError,
+    Faraday::FollowRedirects::RedirectLimitReached
+  ].freeze
 
   def self.get(url)
     if proxy_available? && ProxyRequiredDomain.required?(url)
@@ -86,7 +105,7 @@ class Httpc
   # 本文はBINARYで非ASCIIを含むことがあるので、UTF-8に正規化して切り詰めてから例外メッセージに入れる
   def self.raise_http_error(response)
     body = response.body.to_s.dup.force_encoding(Encoding::UTF_8).scrub.truncate(ERROR_BODY_LENGTH_LIMIT)
-    raise "HTTP request failed with status #{response.status}: #{body}"
+    raise HTTPError.new("HTTP request failed with status #{response.status}: #{body}", status: response.status)
   end
 
   def self.handle_response(response)

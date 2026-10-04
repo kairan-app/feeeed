@@ -160,13 +160,9 @@ class Channel < ApplicationRecord
 
       parameters = build_from(feed, final_feed_url)
 
-      # 認識できないフィード形式の場合はスキップ
+      # 認識できないフィード形式の場合はスキップ。取得のたびに同じ理由で起きるので、Sentry には送らずログに留める
       if parameters.nil?
-        Sentry.capture_message(
-          "Skipped channel update: unrecognized feed format",
-          level: :warning,
-          extra: { feed_url: feed_url, feed_class: feed.class.name, skip_reason: "unrecognized_feed_format" }
-        )
+        Rails.logger.warn "[Channel] Skipped channel update (unrecognized feed format) - Feed: #{feed_url}, Class: #{feed.class.name}"
         return Channel.find_by(feed_url: feed_url)
       end
 
@@ -422,11 +418,7 @@ class Channel < ApplicationRecord
               self.site_url.presence
 
         if url.blank?
-          Sentry.capture_message(
-            "Skipped entry: no URL available",
-            level: :warning,
-            extra: { channel_id: self.id, channel_title: self.title, item_title: entry.title, skip_reason: "no_url" }
-          )
+          log_skipped_entry(entry, "no_url")
           next
         end
 
@@ -444,11 +436,7 @@ class Channel < ApplicationRecord
 
         guid = entry_id_of(entry) || entry.url
         if guid.nil?
-          Sentry.capture_message(
-            "Skipped entry: no guid (entry_id and url both nil)",
-            level: :warning,
-            extra: { channel_id: self.id, channel_title: self.title, item_title: entry.title, skip_reason: "no_guid" }
-          )
+          log_skipped_entry(entry, "no_guid")
           next
         end
 
@@ -489,21 +477,7 @@ class Channel < ApplicationRecord
       rescue ActiveRecord::RecordInvalid => e
         error_count += 1
 
-        # バリデーションエラーはデータ品質の問題なのでwarningレベルで送信
-        Sentry.capture_message(
-          "Skipped entry: validation failed - #{e.message}",
-          level: :warning,
-          extra: {
-            channel_id: self.id,
-            channel_title: self.title,
-            item_title: entry.title,
-            item_guid: entry_id_of(entry) || entry.url,
-            skip_reason: "validation_failed",
-            validation_errors: e.message
-          }
-        )
-
-        Rails.logger.warn "[Channel] Skipped item (validation) - Channel: #{self.id}, Item: #{entry.title} - #{e.message}"
+        log_skipped_entry(entry, "validation_failed", e.message)
       rescue StandardError => e
         error_count += 1
 
@@ -756,5 +730,14 @@ class Channel < ApplicationRecord
     return nil if id.nil? || id == :no_buffer || id.to_s.strip.empty?
 
     id
+  end
+
+  # スキップした entry をログに残す。次の取得でも同じようにスキップされるので Sentry には送らない。
+  # FetcherGolden はこの通知を購読して、スキップした entry と理由を集める
+  def log_skipped_entry(entry, reason, detail = nil)
+    ActiveSupport::Notifications.instrument("skip_entry.channel", title: entry.title, reason:)
+    message = "[Channel] Skipped item (#{reason}) - Channel: #{id}, Item: #{entry.title}"
+    message += " - #{detail}" if detail
+    Rails.logger.warn message
   end
 end

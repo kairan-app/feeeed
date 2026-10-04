@@ -30,4 +30,35 @@ class ChannelItemsUpdaterJobTest < ActiveJob::TestCase
 
     assert_operator @channel.reload.last_items_checked_at, :>, 1.minute.ago
   end
+
+  test "相手のサイトが HTTP エラーを返したときは Sentry に送らない" do
+    Httpc.stubs(:get_with_redirect_info).raises(Httpc::HTTPError.new("HTTP request failed with status 404: ", status: 404))
+    Sentry.expects(:capture_exception).never
+    Sentry.expects(:capture_message).never
+
+    ChannelItemsUpdaterJob.perform_now(channel_id: @channel.id)
+  end
+
+  test "タイムアウトや接続の失敗は Sentry に送らない" do
+    Httpc.stubs(:get_with_redirect_info).raises(Faraday::TimeoutError)
+    Sentry.expects(:capture_exception).never
+
+    ChannelItemsUpdaterJob.perform_now(channel_id: @channel.id)
+  end
+
+  test "フィードを解釈できないときは、1回の実行で warning を1件だけ送る" do
+    Httpc.stubs(:get_with_redirect_info).returns({ body: "not a feed", final_url: @channel.feed_url, redirected: false })
+    Sentry.expects(:capture_exception).never
+    Sentry.expects(:capture_message).with("Could not parse the feed", has_entries(level: :warning)).once
+
+    ChannelItemsUpdaterJob.perform_now(channel_id: @channel.id)
+  end
+
+  test "アプリのバグらしい例外は Sentry に送る" do
+    Channel.any_instance.stubs(:update_info).raises(NoMethodError)
+    Channel.any_instance.stubs(:fetch_and_save_items)
+    Sentry.expects(:capture_exception).with(instance_of(NoMethodError), anything).once
+
+    ChannelItemsUpdaterJob.perform_now(channel_id: @channel.id)
+  end
 end

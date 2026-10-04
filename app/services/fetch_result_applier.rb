@@ -57,8 +57,8 @@ class FetchResultApplier
         ItemCreationNotifierJob.perform_later(item.id) if notifiable.include?(item.guid)
       else
         counts[:skipped] += 1
-        # 同じ guid が既に保存されている (別の取得と重なった) のはデータの問題ではないので知らせない
-        report_invalid(entry, item) unless item.errors.of_kind?(:guid, :taken)
+        # 同じ guid が既に保存されている (別の取得と重なった) のはデータの問題ではないのでログにも残さない
+        log_invalid(entry, item) unless item.errors.of_kind?(:guid, :taken)
       end
     rescue ActiveRecord::RecordNotUnique
       counts[:skipped] += 1
@@ -114,14 +114,9 @@ class FetchResultApplier
     )
   end
 
-  def report_invalid(entry, item)
+  # バリデーションに落ちた entry は次の取得でも同じように落ちるので、Sentry には送らずログに留める
+  def log_invalid(entry, item)
     messages = item.errors.full_messages.join(", ")
-    Sentry.capture_message(
-      "Skipped entry: validation failed - #{messages}",
-      level: :warning,
-      extra: { channel_id: @channel.id, channel_title: @channel.title, item_title: entry["title"],
-               item_guid: entry["guid"], skip_reason: "validation_failed", validation_errors: messages }
-    )
     Rails.logger.warn "[FetchResultApplier] Skipped item (validation) - Channel: #{@channel.id}, Item: #{entry['title']} - #{messages}"
   end
 
