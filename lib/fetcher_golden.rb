@@ -1,5 +1,6 @@
 # Rust製fetcherの正解データとして、Railsの取り込み処理が保存する結果をHashで返す。
 # HTTP (フィード取得・OGP)・Sentry・sleepを一時的に差し替え、DBへの変更はロールバックする。
+# スキップした entry は Channel が出す skip_entry.channel の通知から集める。
 class FetcherGolden
   FORMATS = {
     "Feedjira::Parser::ITunesRSS" => "itunes_rss",
@@ -90,17 +91,14 @@ class FetcherGolden
       [ Httpc, :get_with_redirect_info, ->(_url) { { body: body.dup, final_url: feed_url, redirected: false } } ],
       [ OpenGraph, :new, ->(_url) { NULL_OGP } ],
       [ Sentry, :capture_exception, ->(*_args, **_opts) { nil } ],
-      [ Sentry, :capture_message, lambda { |_message, **opts|
-        extra = opts[:extra] || {}
-        skipped << { title: extra[:item_title], reason: extra[:skip_reason] } if extra[:skip_reason]
-        nil
-      } ]
+      [ Sentry, :capture_message, ->(*_args, **_opts) { nil } ]
     ]
+    on_skip = ->(*, payload) { skipped << { title: payload[:title], reason: payload[:reason] } }
 
     override_singletons(overrides) do
       Channel.define_method(:sleep) { |*| nil }
       begin
-        block.call
+        ActiveSupport::Notifications.subscribed(on_skip, "skip_entry.channel", &block)
       ensure
         Channel.remove_method(:sleep)
       end
