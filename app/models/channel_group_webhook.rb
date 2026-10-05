@@ -12,7 +12,8 @@ class ChannelGroupWebhook < ApplicationRecord
 
   class << self
     def notify
-      find_each { ChannelGroupWebhookNotifierJob.perform_later(_1.id) }
+      # 1件ずつ積むと INSERT が webhook の数だけ走るので、まとめて積む
+      ActiveJob.perform_all_later(ids.map { ChannelGroupWebhookNotifierJob.new(_1) })
     end
   end
 
@@ -22,7 +23,7 @@ class ChannelGroupWebhook < ApplicationRecord
 
   def notify_items_to_discord(since: nil)
     at = since || last_notified_at || 6.hours.ago
-    items = channel_group.items.where("items.created_at >= ?", at)
+    items = channel_group.items.preload(:channel).where("items.created_at >= ?", at)
     return if items.empty?
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each do |channel, sub_items|
@@ -40,7 +41,7 @@ class ChannelGroupWebhook < ApplicationRecord
 
   def notify_items_to_slack(since: nil)
     at = since || last_notified_at || 6.hours.ago
-    items = channel_group.items.where("items.created_at >= ?", at)
+    items = channel_group.items.preload(:channel).where("items.created_at >= ?", at)
     return if items.empty?
 
     items.group_by(&:channel).sort_by { |_, items| items.map(&:created_at).max }.each { |channel, sub_items|

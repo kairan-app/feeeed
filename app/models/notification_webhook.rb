@@ -17,7 +17,8 @@ class NotificationWebhook < ApplicationRecord
 
   class << self
     def notify
-      where(notify_hour: Time.current.hour).find_each { NotificationWebhookNotifierJob.perform_later(_1.id) }
+      # 1件ずつ積むと INSERT が webhook の数だけ走るので、まとめて積む
+      ActiveJob.perform_all_later(where(notify_hour: Time.current.hour).ids.map { NotificationWebhookNotifierJob.new(_1) })
     end
   end
 
@@ -38,7 +39,7 @@ class NotificationWebhook < ApplicationRecord
 
   def notify_pawprints_to_discord(since: nil)
     at = since || default_since_time
-    pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
+    pawprints = user.pawprints.preload(item: :channel).where("created_at >= ?", at).order(:id)
 
     if pawprints.empty?
       touch(:last_notified_at)
@@ -65,7 +66,7 @@ class NotificationWebhook < ApplicationRecord
 
   def notify_pawprints_to_slack(since: nil)
     at = since || default_since_time
-    pawprints = user.pawprints.where("created_at >= ?", at).order(:id)
+    pawprints = user.pawprints.preload(item: :channel).where("created_at >= ?", at).order(:id)
 
     if pawprints.empty?
       touch(:last_notified_at)
@@ -98,7 +99,7 @@ class NotificationWebhook < ApplicationRecord
 
   def notify_subscribed_items_to_discord(since: nil)
     at = since || default_since_time
-    items = user.subscribed_items.where("items.created_at >= ?", at).order("items.id")
+    items = user.subscribed_items.preload(:channel).where("items.created_at >= ?", at).order("items.id")
 
     if items.empty?
       touch(:last_notified_at)
