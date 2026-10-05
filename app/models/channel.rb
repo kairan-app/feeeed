@@ -389,10 +389,10 @@ class Channel < ApplicationRecord
       if mode == :all
         feed.entries
       elsif mode == :only_non_existing
-        feed.entries.reject {
-          self.items.exists?(guid: entry_id_of(_1)) ||
-          self.items.exists?(guid: _1.url)
-        }
+        # エントリごとに問い合わせると N+1 になるので、guid の候補をまとめて1回で引く
+        candidates = feed.entries.flat_map { [ entry_id_of(_1), _1.url ] }.compact
+        existing_guids = self.items.where(guid: candidates).pluck(:guid).to_set
+        feed.entries.reject { existing_guids.include?(entry_id_of(_1)) || existing_guids.include?(_1.url) }
       else
         # only_recent: ソートして新しい順に10件取得
         feed.entries.sort_by { _1.published || Time.at(0) }.reverse.take(10)

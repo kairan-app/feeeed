@@ -96,6 +96,24 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
 
   # FEEEED-8T/B3: published が nil のエントリがあると sort_by(&:published) で
   # ArgumentError: comparison of Time with nil failed が発生する
+  describe "保存済みのエントリを飛ばす (only_non_existing)" do
+    test "guid か url で保存済みのエントリは、1件ずつ問い合わせずに飛ばす" do
+      @channel.items.create!(guid: "g1", title: "one", url: "https://example.com/1", published_at: 2.days.ago)
+      @channel.items.create!(guid: "https://example.com/2", title: "two", url: "https://example.com/2", published_at: 1.day.ago)
+      entries = [
+        build_mock_entry(entry_id: "g1", url: "https://example.com/1", title: "one (edited)"),
+        build_mock_entry(entry_id: "g2", url: "https://example.com/2", title: "two (edited)")
+      ]
+      stub_feed_with_entries(entries)
+
+      assert_no_queries_match(/"items"\."guid" = /) do
+        @channel.fetch_and_save_items
+      end
+
+      assert_equal [ "one", "two" ], @channel.items.order(:guid).pluck(:title)
+    end
+  end
+
   describe "エントリのpublishedがnilの場合 (FEEEED-8T)" do
     test "published が nil のエントリがあっても sort_by でクラッシュせず処理が継続される" do
       entries = [
