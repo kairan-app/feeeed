@@ -49,7 +49,7 @@ class ChannelItemsUpdaterJobTest < ActiveJob::TestCase
   test "フィードを解釈できないときは、1回の実行で warning を1件だけ送る" do
     Httpc.stubs(:get_with_redirect_info).returns({ body: "not a feed", final_url: @channel.feed_url, redirected: false })
     Sentry.expects(:capture_exception).never
-    Sentry.expects(:capture_message).with("Could not parse the feed", has_entries(level: :warning)).once
+    Sentry.expects(:capture_message).with("Could not parse the feed - channel_id: #{@channel.id}", has_entries(level: :warning)).once
 
     ChannelItemsUpdaterJob.perform_now(channel_id: @channel.id)
   end

@@ -107,7 +107,7 @@ class FetchResultApplier
 
   def report_failure(kind, message)
     Sentry.capture_message(
-      "Fetcher could not process the feed: #{kind}",
+      "Fetcher could not process the feed: #{kind} - channel_id: #{@channel.id}",
       level: :warning,
       fingerprint: [ "fetcher-feed-failure", kind, @channel.id.to_s ],
       extra: { channel_id: @channel.id, feed_url: @channel.feed_url, kind:, message: }
