@@ -53,6 +53,21 @@ class GuestAccessTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "存在しないユーザー名のページは 404 を返す" do
+    get "/@no-such-user"
+    assert_response :not_found
+  end
+
+  test "存在しないユーザー名の pawprints は 404 を返す" do
+    get "/@no-such-user/pawprints", as: :json
+    assert_response :not_found
+  end
+
+  test "存在しないユーザー名の subscribed_items は 404 を返す" do
+    get "/@no-such-user/subscribed_items", as: :json
+    assert_response :not_found
+  end
+
   test "guest can access about page" do
     get "/about"
     assert_response :success
