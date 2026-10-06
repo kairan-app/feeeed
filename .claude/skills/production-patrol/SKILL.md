@@ -48,25 +48,25 @@ heroku logs -a feedhub -n 1500
 `.sentryclirc` で org/project は設定済み。
 
 ```bash
-sentry-cli issues list --status unresolved
+sentry-cli issues list --query "is:unresolved"
 ```
 
-イベント数と種類で Tier に分ける。
+`--status unresolved` は絞り込みが効かず、resolve 済みの issue も混ざるので使わない。
 
-- **Tier 1 (コード修正で直せる)**: バリデーションエラー、nil 参照、型エラー、エンコーディングエラーなど
-- **Tier 2 (調査が必要)**: N+1 クエリ、パフォーマンス系
-- **Tier 3 (外部要因・要監視)**: HTTP 4xx/5xx、タイムアウト、接続エラー
-- **Tier 4 (無視してよい)**: 外部サービスの一時的な障害。`Faraday::TimeoutError` などは基本ここ
+外部要因の失敗 (フィード取得の HTTP 4xx/5xx・タイムアウト・接続や SSL のエラー) は Sentry に送らず、ログだけにしてある。そのため、Sentry に届く error はアプリのバグの可能性が高い。見るのは次の2つだけでよい。
 
-warning レベルの issue はデータ品質の問題なので、すぐ直す必要はないが、増えていないかの傾向は見る。
+- **前回の巡回から新しく出た error、または resolve 済みから再発した error**: backtrace を読み、原因を確かめて要対応にする。issue の詳細は `~/.sentryclirc` のトークンで REST API を叩いて取る (例: `/api/0/organizations/feeeed/issues/<SHORT-ID>/events/latest/`)
+- **warning「Could not parse the feed」**: パースできないフィードを、チャンネルごとに別の issue としてまとめたもの。チャンネルの数が急に増えたときだけ様子見として報告する
+
+info (N+1 Query・Slow DB Query など) は、増え方が急でない限り報告しなくてよい。
 DB や Heroku で見つけたものと同じ原因の issue があれば、まとめて扱う。
 
 ## 2. 判定する
 
 領域ごとに「要対応 / 様子見 / 問題なし / 確認できず」を付ける。
 
-- **要対応**: 放っておくと壊れ続けるもの、利用者に影響が出ているもの。例: 同じ失敗ジョブが毎日積まれ続けている、チャンネルのチェックが止まっている、recurring タスクが途切れている、DB 接続数が15を超えている、Sentry の Tier 1
-- **様子見**: 単発や少数で、増えていないもの。Sentry の Tier 2〜3、外部サービス起因の失敗など
+- **要対応**: 放っておくと壊れ続けるもの、利用者に影響が出ているもの。例: 同じ失敗ジョブが毎日積まれ続けている、チャンネルのチェックが止まっている、recurring タスクが途切れている、DB 接続数が15を超えている、Sentry に新しい error が出た
+- **様子見**: 単発や少数で、増えていないもの。外部サービス起因の失敗、パースできないフィードのチャンネルの増加など
 - **問題なし**: 何も見つからなかった
 - **確認できず**: コマンドが失敗した、権限で止められたなど
 
