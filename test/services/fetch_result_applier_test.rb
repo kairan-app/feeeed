@@ -62,7 +62,7 @@ class FetchResultApplierTest < ActiveSupport::TestCase
 
     test "フィードを解釈できなかった失敗は Sentry に warning を送る" do
       Sentry.expects(:capture_message).with(
-        "Fetcher could not process the feed: parse",
+        "Fetcher could not process the feed: parse - channel_id: #{@channel.id}",
         has_entries(level: :warning, fingerprint: [ "fetcher-feed-failure", "parse", @channel.id.to_s ])
       ).once
 

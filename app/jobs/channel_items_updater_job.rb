@@ -60,7 +60,7 @@ class ChannelItemsUpdaterJob < ApplicationJob
 
       @parse_failure_reported = true
       Sentry.capture_message(
-        "Could not parse the feed",
+        "Could not parse the feed - channel_id: #{channel.id}",
         level: :warning,
         fingerprint: [ "feed-parse-failure", channel.id.to_s ],
         extra: { channel_id: channel.id, feed_url: channel.feed_url, context: context }
