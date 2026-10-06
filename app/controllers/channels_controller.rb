@@ -11,6 +11,8 @@ class ChannelsController < ApplicationController
 
   def show
     page = (params[:page].presence || 1).to_i
+    raise ActiveRecord::RecordNotFound if page > Item.max_pages
+
     @channel = Channel.find(params[:channel_id])
     @items = @channel.items.preload(:pawprints).order(published_at: :desc, title: :desc).page(page).per(48)
     @fixed_schedules = @channel.fixed_schedules.order(:day_of_week, :hour)

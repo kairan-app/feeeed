@@ -3,6 +3,9 @@ class Item < ApplicationRecord
   include EmptyStringsAreAlignedToNil
   include UrlHttpValidator
 
+  # 深いページは OFFSET が大きくなって遅い。robots.txt を無視してページを順に辿るクローラーも来るので、ページ数に上限を設ける
+  max_pages 100
+
   belongs_to :channel
   has_many :pawprints, dependent: :destroy
   has_many :pawed_users, through: :pawprints, source: :user
