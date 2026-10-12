@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# 本番 DB (feedhub) に読み取り専用でつなぐ psql
+# 接続した時点で default_transaction_read_only が on になるので、SQL に SET を書き忘れても書き込みは失敗する
+# 引数はそのまま heroku pg:psql に渡す
+#   例: .claude/skills/production-patrol/bin/ro-psql --file .claude/skills/production-patrol/queries.sql
+#   例: .claude/skills/production-patrol/bin/ro-psql -c "SELECT count(*) FROM channels;"
+set -euo pipefail
+
+export PGOPTIONS="${PGOPTIONS:+$PGOPTIONS }-c default_transaction_read_only=on"
+exec heroku pg:psql -a feedhub "$@"

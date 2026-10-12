@@ -10,7 +10,7 @@ description: 本番環境 (Heroku の feedhub) を見回って、失敗ジョブ
 ## 守ること
 
 - 本番に対しては読み取りだけ。失敗ジョブの破棄、dyno の再起動、Sentry issue の resolve などの書き込みはしない
-- DB は必ず `SET default_transaction_read_only = on;` を打ってから読む (`queries.sql` の先頭に入っている)
+- DB は必ず `bin/ro-psql` を通して読む。接続した時点で読み取り専用 (`default_transaction_read_only = on`) になるので、SQL に `SET` を書き忘れても書き込みは失敗する。`heroku pg:psql` を直接使わない
 - Issue やこの会話の報告に、ユーザーのメールアドレスや名前などの個人情報を書かない。ID と件数で表す
 
 ## 1. 見回る
@@ -20,8 +20,10 @@ description: 本番環境 (Heroku の feedhub) を見回って、失敗ジョブ
 ### 1-1. DB (失敗ジョブ・止まったチャンネル・キュー)
 
 ```bash
-heroku pg:psql -a feedhub --file .claude/skills/production-patrol/queries.sql
+.claude/skills/production-patrol/bin/ro-psql --file .claude/skills/production-patrol/queries.sql
 ```
+
+追加で調べるときも同じスクリプトを使う (例: `.claude/skills/production-patrol/bin/ro-psql -c "SELECT ..."`)。
 
 - **失敗ジョブ**: ジョブ × 例外クラスごとの件数と、いつからいつまで出ているか。特定の `channel_id` に偏っていないか。同じ失敗が毎時積まれ続けているものは、エラー処理そのものが壊れている可能性がある (#805 はこれだった)。気になる組み合わせは `solid_queue_failed_executions.error` の backtrace を読んで、どこで落ちているかまで確かめる
 - **止まったチャンネル**: 停止中 (`channel_stoppers`) を除いて、チェック間隔の3倍かつ24時間以上チェックされていないチャンネル。失敗ジョブの `channel_id` と重なるなら同じ原因の可能性が高い
