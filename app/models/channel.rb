@@ -474,7 +474,16 @@ class Channel < ApplicationRecord
         success_count += 1
 
         ItemCreationNotifierJob.perform_later(item.id) if new_item && guid.in?(notifiable_guids)
+      rescue ActiveRecord::RecordNotUnique
+        # ほかの取得が同じ Item を先に保存した (#853)
+        success_count += 1
       rescue ActiveRecord::RecordInvalid => e
+        # ほかの取得が同じ Item を先に保存した (#853)
+        if e.record.errors.of_kind?(:guid, :taken)
+          success_count += 1
+          next
+        end
+
         error_count += 1
 
         log_skipped_entry(entry, "validation_failed", e.message)

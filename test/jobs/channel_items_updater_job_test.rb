@@ -61,4 +61,40 @@ class ChannelItemsUpdaterJobTest < ActiveJob::TestCase
 
     ChannelItemsUpdaterJob.perform_now(channel_id: @channel.id)
   end
+
+  # #853: 前のジョブが長引いているうちに次のジョブが積まれると、同じフィードを二重に取りに行く
+  # 待たされるかどうかは Solid Queue に積んだ結果で確かめる
+  describe "同じチャンネルのジョブの重なり (#853)" do
+    setup do
+      @other = Channel.create!(title: "ほかのチャンネル", feed_url: "https://example.com/other.xml", site_url: "https://example.com")
+      @original_adapter = ChannelItemsUpdaterJob.queue_adapter
+      ChannelItemsUpdaterJob.queue_adapter = :solid_queue
+      # Channel を作ったときに積まれたジョブが、セマフォを握ったままにならないようにする
+      SolidQueue::Job.delete_all
+      SolidQueue::Semaphore.delete_all
+    end
+
+    teardown do
+      ChannelItemsUpdaterJob.queue_adapter = @original_adapter
+    end
+
+    test "同じチャンネルのジョブは同時に1つしか動かず、後から積んだものは待たされる" do
+      ChannelItemsUpdaterJob.perform_later(channel_id: @channel.id)
+      ChannelItemsUpdaterJob.perform_later(channel_id: @channel.id, mode: :only_recent)
+
+      jobs = SolidQueue::Job.where(class_name: "ChannelItemsUpdaterJob").order(:id)
+      assert_equal 2, jobs.count
+      assert jobs.first.ready?
+      assert jobs.second.blocked?
+    end
+
+    test "ほかのチャンネルのジョブは待たされない" do
+      ChannelItemsUpdaterJob.perform_later(channel_id: @channel.id)
+      ChannelItemsUpdaterJob.perform_later(channel_id: @other.id)
+
+      jobs = SolidQueue::Job.where(class_name: "ChannelItemsUpdaterJob")
+      assert_equal 2, jobs.count
+      assert jobs.all?(&:ready?)
+    end
+  end
 end
