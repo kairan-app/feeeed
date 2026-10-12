@@ -1,4 +1,9 @@
 class ChannelItemsUpdaterJob < ApplicationJob
+  # 同じチャンネルのジョブが重なると、同じフィードを二重に取りに行き、同じ Item を両方が保存しようとする (#853)。
+  # 後から積まれたジョブは、先のジョブが終わるまで待たせる。
+  # duration は一番長くかかるジョブより長めにする (これを過ぎると待たずに動き出す)
+  limits_concurrency to: 1, key: ->(channel_id:, **) { channel_id }, duration: 30.minutes
+
   def perform(channel_id:, mode: :only_non_existing)
     channel = Channel.find(channel_id)
 

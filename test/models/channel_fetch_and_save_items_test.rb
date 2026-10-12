@@ -452,6 +452,48 @@ class ChannelFetchAndSaveItemsTest < ActiveSupport::TestCase
     end
   end
 
+  # #853: 同じチャンネルの取得が重なると、両方が同じ guid を新しい Item と判断して保存しようとする。
+  # 後から保存する方は、もう一方が先に保存したものとして扱い、エラーにしない
+  describe "ほかの取得と同じ Item を同時に保存しようとした場合 (#853)" do
+    include ActiveJob::TestHelper
+
+    setup do
+      ActiveJob::Base.queue_adapter = :test
+      @channel.stubs(:sleep)
+      @entry = build_mock_entry(entry_id: "entry-1", url: "https://example.com/1", published: 1.hour.ago, title: "Entry 1")
+      stub_feed_with_entries([ @entry ])
+    end
+
+    test "読んだあとにほかの取得が保存していても、Sentry に送らずスキップ扱いにもしない" do
+      # OpenGraph を取りに行っている間に、ほかの取得が同じ guid の Item を保存する
+      OpenGraph.stubs(:new).with do
+        Item.create!(channel: @channel, guid: "entry-1", title: "Entry 1", url: "https://example.com/1", published_at: 1.hour.ago)
+      end.returns(OpenStruct.new(image: nil))
+      Sentry.expects(:capture_exception).never
+      skipped = []
+      callback = ->(*, payload) { skipped << payload[:reason] }
+
+      ActiveSupport::Notifications.subscribed(callback, "skip_entry.channel") do
+        @channel.fetch_and_save_items(:all)
+      end
+
+      assert_empty skipped
+      assert_equal 1, Item.where(channel: @channel, guid: "entry-1").count
+      assert_no_enqueued_jobs(only: ItemCreationNotifierJob)
+    end
+
+    test "INSERT が一意制約で落ちても Sentry に送らない" do
+      OpenGraph.stubs(:new).returns(OpenStruct.new(image: nil))
+      Item.any_instance.stubs(:update!).raises(ActiveRecord::RecordNotUnique)
+      Sentry.expects(:capture_exception).never
+
+      assert_nothing_raised do
+        @channel.fetch_and_save_items(:all)
+      end
+      assert_no_enqueued_jobs(only: ItemCreationNotifierJob)
+    end
+  end
+
   # FEEEED-90: build_from が nil を返すフィード形式の場合、
   # save_from 内の parameters.merge! で NoMethodError が発生する
   describe "認識できないフィード形式の場合 (FEEEED-90)" do
