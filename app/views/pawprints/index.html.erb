@@ -15,7 +15,7 @@
     <%= search_form_for @pawprint_q, url: pawprints_path, as: :pawprint_q, method: :get do |f| %>
       <%= hidden_field_tag :scope, @scope %>
       <div class="mb-2">
-        <%= f.search_field :memo_or_item_title_or_item_channel_title_cont, placeholder: "Search by memo, item title, or channel title...", class: "w-full p-2 border border-[#cccccc] rounded" %>
+        <%= f.search_field :memo_or_item_title_or_item_channel_title_i_cont, placeholder: "Search by memo, item title, or channel title...", class: "w-full p-2 border border-[#cccccc] rounded" %>
       </div>
       <div class="flex flex-wrap gap-4 items-center justify-between text-sm">
         <div class="flex flex-wrap gap-4 items-center">

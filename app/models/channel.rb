@@ -290,7 +290,7 @@ class Channel < ApplicationRecord
 
     def similar_to(channel)
       Channel.ransack({
-        g: { "0" => { m: "or", title_cont: channel.title, site_url_cont: channel.site_url } }
+        g: { "0" => { m: "or", title_i_cont: channel.title, site_url_i_cont: channel.site_url } }
       }).result
     end
 
