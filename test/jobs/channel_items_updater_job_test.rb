@@ -67,15 +67,16 @@ class ChannelItemsUpdaterJobTest < ActiveJob::TestCase
   describe "同じチャンネルのジョブの重なり (#853)" do
     setup do
       @other = Channel.create!(title: "ほかのチャンネル", feed_url: "https://example.com/other.xml", site_url: "https://example.com")
-      @original_adapter = ChannelItemsUpdaterJob.queue_adapter
-      ChannelItemsUpdaterJob.queue_adapter = :solid_queue
+      # ChannelItemsUpdaterJob に直接設定すると、ほかのテストが ActiveJob::Base で切り替えても効かなくなる
+      @original_adapter = ActiveJob::Base.queue_adapter
+      ActiveJob::Base.queue_adapter = :solid_queue
       # Channel を作ったときに積まれたジョブが、セマフォを握ったままにならないようにする
       SolidQueue::Job.delete_all
       SolidQueue::Semaphore.delete_all
     end
 
     teardown do
-      ChannelItemsUpdaterJob.queue_adapter = @original_adapter
+      ActiveJob::Base.queue_adapter = @original_adapter
     end
 
     test "同じチャンネルのジョブは同時に1つしか動かず、後から積んだものは待たされる" do
