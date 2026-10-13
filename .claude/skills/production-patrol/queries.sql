@@ -1,5 +1,6 @@
 -- /production-patrol 用の読み取り専用クエリ
--- 実行: heroku pg:psql -a feedhub --file .claude/skills/production-patrol/queries.sql
+-- 実行: .claude/skills/production-patrol/bin/ro-psql --file .claude/skills/production-patrol/queries.sql
+-- ro-psql は接続時点で読み取り専用にする。直接 heroku pg:psql で流したときのために、ここでも SET しておく
 SET default_transaction_read_only = on;
 
 \echo '== 1. 失敗ジョブ (ジョブ × 例外クラス × 落ちた箇所)'
