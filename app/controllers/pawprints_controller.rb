@@ -43,15 +43,15 @@ class PawprintsController < ApplicationController
   def pawprints_base_query(scope)
     case scope
     when "my"
-      current_user.pawprints.eager_load(:user, :item)
+      current_user.pawprints.eager_load(:user, item: :channel)
     when "to_me"
       Pawprint
         .joins(item: :channel)
         .joins("INNER JOIN ownerships ON ownerships.channel_id = channels.id")
         .where(ownerships: { user_id: current_user.id })
-        .eager_load(:user, :item)
+        .eager_load(:user, item: :channel)
     else
-      Pawprint.eager_load(:user, :item)
+      Pawprint.eager_load(:user, item: :channel)
     end
   end
 
