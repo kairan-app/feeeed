@@ -20,7 +20,9 @@ class PawprintsController < ApplicationController
 
     base_query = pawprints_base_query(@scope)
     @pawprint_q = base_query.ransack(search_params)
-    @pawprints = @pawprint_q.result.order(id: :desc).page(params[:page])
+    # Ransack の条件は items や channels の列を見るが、Arel で組まれるので Active Record からは参照していると分からない。
+    # kaminari 1.3.0 以降は参照していない eager_load を件数のクエリから外すので、references で明示して JOIN を残す
+    @pawprints = @pawprint_q.result.references(:items, :channels).order(id: :desc).page(params[:page])
 
     @title = pawprints_title(@scope)
   end
