@@ -75,7 +75,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    addressable (2.9.0)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
     ahoy_matey (5.5.0)
       activesupport (>= 7.2)
@@ -178,8 +178,8 @@ GEM
     google-cloud-env (2.4.1)
       base64 (~> 0.2)
       faraday (>= 1.0, < 3.a)
-    google-logging-utils (0.2.1)
-    googleauth (1.17.6)
+    google-logging-utils (0.2.2)
+    googleauth (1.17.7)
       faraday (>= 1.0, < 3.a)
       google-cloud-env (~> 2.2)
       google-logging-utils (~> 0.1)
@@ -436,7 +436,7 @@ GEM
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       logger
-    signet (0.22.1)
+    signet (0.22.2)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 4.0)
@@ -561,7 +561,7 @@ CHECKSUMS
   activerecord (8.1.4) sha256=3b4957ea7f246c9231bd7faa909312eac03a9101aaf87977b6c52733ff00b04f
   activestorage (8.1.4) sha256=f4956f3ec9ee63e5e0b332b57c877cb627f82b56f4cc902279310d2aa285c7a8
   activesupport (8.1.4) sha256=891dd3fe43c4fc8391934b237b1189bb1f661c932a84a840043db9d46a4e80df
-  addressable (2.9.0) sha256=7fdf6ac3660f7f4e867a0838be3f6cf722ace541dd97767fa42bc6cfa980c7af
+  addressable (2.9.2) sha256=9117c7e7d6ee07230e75ce41fb9401ae55354dc654fcd0e862ba41d539e9a610
   ahoy_matey (5.5.0) sha256=84280579c1e690233bd0bffa2bdde601b3c4cb0e0cc31684238ef37f1e8cdbc6
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   aws-eventstream (1.4.1) sha256=ceb6a99c61df4bb00344e54aed0351574beca24f87a0d1487d1d2ed80929ce96
@@ -612,8 +612,8 @@ CHECKSUMS
   fugit (1.14.0) sha256=e311a9cc85a54bb67649df45060e721282a1e2c8ebad40e41874a3a7d576f37e
   globalid (1.4.0) sha256=037f12fbf1d9d7a014d501c2d5c77356fd4ddd96d7a7991d6700bba96706f427
   google-cloud-env (2.4.1) sha256=987cc58afc50ce2903128ab4dcd442159be4457246b8137e41d49d5c3fc590dd
-  google-logging-utils (0.2.1) sha256=73945c3ac6800eba802c26b1744765d5057cc4d89182c7255ee1347b0ca96dc7
-  googleauth (1.17.6) sha256=d4fd30f99aeb28ae46ef521cf8ac50927a453b8c6600f8940437ac11ad90bdfc
+  google-logging-utils (0.2.2) sha256=ad2436ef22e918e2b1c3ad2bbaf5949f42f5389d49fd37e41b43bbdd3068e27c
+  googleauth (1.17.7) sha256=9db21857ddbe055a8b0d44ddb75d4ceda97511167431e30121c77c25a9ce9fe5
   graphql (2.6.14) sha256=3b20053c488cdaaef747e10f17453b16b163b59d039533a26e4d5b23505dc228
   hiredis (0.6.3) sha256=7f052e320f7d24b5c2a9fdf67c6ff6facdf6e256394a703511bce34ecf445212
   http-cookie (1.1.6) sha256=ba4b82be64de61dc281243dac70e3c382c45142f20268ed9276a3670c93feaa9
@@ -714,7 +714,7 @@ CHECKSUMS
   selenium-webdriver (4.51.0) sha256=09edf1b7fc360e0570bac609676f804ed527fe0b2f285e03233561e29b0ec105
   sentry-rails (7.2.0) sha256=c3874fed94a68f3f60a917243b6e25414ff284455abd14e3351479a32807af79
   sentry-ruby (7.2.0) sha256=2da448c2b7028a7691f31ae5c946830b8e694d0aec78ef2b9e5c7e1da9c3e01a
-  signet (0.22.1) sha256=6e73e9f2bdc2f038a5fdc8a89d248792b1b55e9ca50ee1ba458d8f1d9f0a2151
+  signet (0.22.2) sha256=9c6861bb599845ea0cb05ffadd3d64c7a3b07a29bdee0f5352bcbe87b7ade21d
   solid_queue (1.7.0) sha256=6566b70b801d1c317c81bba7bcdd5677c019afac584a30374b4164002ca356d3
   sprockets (4.2.2) sha256=761e5a49f1c288704763f73139763564c845a8f856d52fba013458f8af1b59b1
   sprockets-rails (3.5.2) sha256=a9e88e6ce9f8c912d349aa5401509165ec42326baf9e942a85de4b76dbc4119e
