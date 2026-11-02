@@ -10,8 +10,8 @@ WORKDIR /app
 COPY Gemfile /app/Gemfile
 COPY Gemfile.lock /app/Gemfile.lock
 
-RUN gem update --system 4.0.12 --no-document && \
-    gem install bundler -v 4.0.12 --no-document
+RUN gem update --system 4.0.14 --no-document && \
+    gem install bundler -v 4.0.14 --no-document
 RUN bundle install
 
 COPY . /app
