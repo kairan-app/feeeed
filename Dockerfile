@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1
 
-FROM ruby:4.0.5
+FROM ruby:4.0.9
 
 RUN apt-get update -qq && apt-get install -y nodejs postgresql-client libvips-dev
 
