@@ -2,7 +2,10 @@ class PawprintCreationNotifierJob < ApplicationJob
   queue_as :disco
 
   def perform(pawprint_id)
-    pawprint = Pawprint.find(pawprint_id)
+    # 足あとを付けてすぐ外すと、ジョブが動くころにはもう消えている。外した足あとは通知しなくてよい
+    pawprint = Pawprint.find_by(id: pawprint_id)
+    return if pawprint.nil?
+
     user = pawprint.user
 
     content = "@#{user.name} pawed!"
