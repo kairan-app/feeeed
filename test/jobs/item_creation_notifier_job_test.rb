@@ -19,4 +19,15 @@ class ItemCreationNotifierJobTest < ActiveJob::TestCase
 
     assert_enqueued_jobs 1, only: DiscoPosterJob
   end
+
+  test "アイテムがもう消えていたら何もしない" do
+    item_id = @item.id
+    @item.destroy!
+
+    assert_nothing_raised do
+      ItemCreationNotifierJob.perform_now(item_id)
+    end
+
+    assert_no_enqueued_jobs only: DiscoPosterJob
+  end
 end
