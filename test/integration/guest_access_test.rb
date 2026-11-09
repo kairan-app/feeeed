@@ -83,6 +83,12 @@ class GuestAccessTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "guest can access manifest.json even with HTML Accept header" do
+    get "/manifest.json", headers: { "Accept" => "text/html,text/plain" }
+    assert_response :success
+    assert_equal "application/json", response.media_type
+  end
+
   # join_requests/new requires pending_auth session (redirects without it)
   test "guest is redirected from join_requests/new without pending auth" do
     get "/join_requests/new"

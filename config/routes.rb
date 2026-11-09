@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     post "channels/:channel_id/guid_lookups",    to: "guid_lookups#create"
   end
 
-  get "/manifest.json" => "rails/pwa#manifest", as: :pwa_manifest
+  get "/manifest.json" => "rails/pwa#manifest", as: :pwa_manifest, defaults: { format: :json }
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine => "/letter_opener"
