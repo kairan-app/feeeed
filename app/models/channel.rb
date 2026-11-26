@@ -526,6 +526,8 @@ class Channel < ApplicationRecord
     return "" if host.nil?
 
     "https://www.google.com/s2/favicons?domain_url=#{host}"
+  rescue Addressable::URI::InvalidURIError
+    ""
   end
 
   def image_url_or_placeholder

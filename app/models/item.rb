@@ -85,9 +85,15 @@ class Item < ApplicationRecord
     enclosure_url
   end
 
+  def url_host
+    Addressable::URI.parse(self.url).host
+  rescue Addressable::URI::InvalidURIError
+    nil
+  end
+
   def to_discord_embed
     {
-      author: { name: [ channel.title, Addressable::URI.parse(self.url).host ].join(" | "), url: channel.site_url },
+      author: { name: [ channel.title, url_host ].compact.join(" | "), url: channel.site_url },
       title: self.title,
       url: self.url,
       thumbnail: { url: self.image_url },

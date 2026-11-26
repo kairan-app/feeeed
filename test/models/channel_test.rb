@@ -640,4 +640,34 @@ class ChannelTest < ActiveSupport::TestCase
       assert_equal "https://example.com/a.png", channel.image_url_or_placeholder
     end
   end
+
+  # #922: パースできない URL だと Addressable::URI::InvalidURIError でページが 500 になっていた
+  describe "favicon_url" do
+    test "site_url のホストからファビコンの URL を作る" do
+      channel = create(:channel, site_url: "https://example.com/")
+      assert_equal "https://www.google.com/s2/favicons?domain_url=example.com", channel.favicon_url
+    end
+
+    test "site_url がパースできない URL なら空文字を返す" do
+      channel = create(:channel)
+      [
+        "http://exa mple.com/",
+        "foo http://example.com",
+        "http://example.com:99999/",
+        "http://[127.0.0.1]/",
+        "http://a:b:80/"
+      ].each do |value|
+        channel.update_column(:site_url, value)
+        assert_equal "", channel.favicon_url, value.inspect
+      end
+    end
+
+    test "site_url が無く、最新のアイテムの URL がパースできないなら空文字を返す" do
+      channel = create(:channel)
+      channel.update_column(:site_url, nil)
+      item = create(:item, channel:)
+      item.update_column(:url, "http://exa mple.com/")
+      assert_equal "", channel.favicon_url
+    end
+  end
 end
