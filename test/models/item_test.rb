@@ -51,4 +51,39 @@ class ItemTest < ActiveSupport::TestCase
       end
     end
   end
+
+  # #922: パースできない URL だと Addressable::URI::InvalidURIError で通知ジョブが落ちていた
+  describe "url_host" do
+    test "URL のホストを返す" do
+      item = create(:item, url: "https://example.com/a")
+      assert_equal "example.com", item.url_host
+    end
+
+    test "パースできない URL なら nil を返す" do
+      item = create(:item)
+      [
+        "http://exa mple.com/",
+        "foo http://example.com",
+        "http://example.com:99999/",
+        "http://[127.0.0.1]/",
+        "http://a:b:80/"
+      ].each do |value|
+        item.update_column(:url, value)
+        assert_nil item.url_host, value.inspect
+      end
+    end
+  end
+
+  describe "to_discord_embed" do
+    test "author の name はチャンネル名と URL のホスト" do
+      item = create(:item, url: "https://example.com/a")
+      assert_equal "#{item.channel.title} | example.com", item.to_discord_embed[:author][:name]
+    end
+
+    test "パースできない URL ならチャンネル名だけにする" do
+      item = create(:item)
+      item.update_column(:url, "http://exa mple.com/")
+      assert_equal item.channel.title, item.to_discord_embed[:author][:name]
+    end
+  end
 end
