@@ -392,9 +392,9 @@ GEM
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
-    redis (6.0.0)
-      redis-client (= 0.30.1)
-    redis-client (0.30.1)
+    redis (6.1.0)
+      redis-client (= 0.31.0)
+    redis-client (0.31.0)
       connection_pool
     regexp_parser (2.12.0)
     reline (0.7.0)
@@ -720,8 +720,8 @@ CHECKSUMS
   ransack (6.1.2) sha256=f40ea4541dde8a0c20845a1527331d266a5b9e9b4a82697a61ecc2dc2fc31879
   rbs (4.2.0) sha256=51f7b886dcc05bc09e10b901daa6a81829f6adc03101d6ca9ea4aac6103e0674
   rdoc (8.1.0) sha256=befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a
-  redis (6.0.0) sha256=de71c10edd106986b759ec7ecdd08b63b9c0ee7414a0d0c1da73d31ba2bccda6
-  redis-client (0.30.1) sha256=5151bc5c7bbfe48623732cdae3b900d8a22dc691cc7cdfacfb351ac55116522d
+  redis (6.1.0) sha256=ad610b85950bac0669cd98473515f9adf5137813443359e0342864b65a28b2c1
+  redis-client (0.31.0) sha256=6820cb2a21e6795a823141f50fd25e655de2b8dc8ff833b43509a27b0263fd75
   regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
   rexml (3.4.4) sha256=19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142
