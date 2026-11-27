@@ -439,7 +439,7 @@ GEM
     safely_block (1.0.0)
     sax-machine (1.3.2)
     securerandom (0.4.1)
-    selenium-webdriver (4.53.0)
+    selenium-webdriver (4.54.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rubyzip (>= 1.2.2, < 4.0)
@@ -737,7 +737,7 @@ CHECKSUMS
   safely_block (1.0.0) sha256=bea80e084e620adeada62fd98cf461bbb9888d40dc0f06d337df9d01e1a658e5
   sax-machine (1.3.2) sha256=a1112678039eea4c402827ca0d377744e0f882fd6386f29f7b0023d938750d3a
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
-  selenium-webdriver (4.53.0) sha256=211aa56ca366de20abf2af22f8f7742c5389ab834ab0d97de5e2bcb5f44f418d
+  selenium-webdriver (4.54.0) sha256=05d70985b35d340db8d9d976ef5ed6e4559f2fad849f44359cc83d9c46698f7d
   sentry-rails (7.3.0) sha256=2941ecc5b8f66ede5f7ff9e23d7f714d110675c20490a1be8162f35bf81b98ff
   sentry-ruby (7.3.0) sha256=b097f082e6609c778ca3ac28fa61ce38af998040e042660ff7196fcdcad9f1a4
   signet (0.22.2) sha256=9c6861bb599845ea0cb05ffadd3d64c7a3b07a29bdee0f5352bcbe87b7ade21d
